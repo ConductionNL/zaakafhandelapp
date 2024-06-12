@@ -7,18 +7,25 @@
     "npm": "^10.0.0"
   },
   "scripts": {
-    "build": "NODE_ENV=production webpack --config webpack.js --progress",
-    "dev": "NODE_ENV=development webpack --config webpack.js --progress",
-    "watch": "NODE_ENV=development webpack --config webpack.js --progress --watch",
+    "build": "NODE_ENV=production webpack --config webpack.config.js --progress",
+    "dev": "NODE_ENV=development webpack --config webpack.config.js --progress",
+    "watch": "NODE_ENV=development webpack --config webpack.config.js --progress --watch",
     "lint": "eslint src",
+    "lint-fix": "npm run lint -- --fix",
     "stylelint": "stylelint src/**/*.vue src/**/*.scss src/**/*.css"
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
   ],
   "dependencies": {
-    "@nextcloud/vue": "^8.11.2",
-    "vue": "^2.7.16"
+    "@nextcloud/axios": "^2.3.0",
+    "@nextcloud/dialogs": "^3.2.0",
+    "@nextcloud/initial-state": "^2.0.0",
+    "@nextcloud/l10n": "^2.0.1",
+    "@nextcloud/router": "^2.0.1",
+    "@nextcloud/vue": "^7.5.0",
+    "vue": "^2.7.14",
+    "vue-material-design-icons": "^5.2.0"
   },
   "devDependencies": {
     "@nextcloud/browserslist-config": "^3.0.1",
