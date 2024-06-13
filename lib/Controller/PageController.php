@@ -29,8 +29,7 @@ class PageController extends Controller
 
 	/**
 	 * This returns the template of the main app's page
-	 * It adds some initialState data (file list and fixed_gif_size config value)
-	 * and also provide some data to the template (app version)
+	 * It adds some data to the template (app version)
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -39,7 +38,7 @@ class PageController extends Controller
 	 */
 	public function mainPage(): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
+		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'index',

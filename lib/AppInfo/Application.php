@@ -23,7 +23,7 @@ class Application extends App implements IBootstrap
 	 */
 	public function __construct(array $urlParams = [])
 	{
-		parent::__construct(self::APP_ID, $urlParams);
+		parent::__construct(appName: self::APP_ID, urlParams: $urlParams);
 	}
 
 	public function register(IRegistrationContext $context): void

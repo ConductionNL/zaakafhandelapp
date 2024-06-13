@@ -2,6 +2,9 @@
 
 return [
 	'routes' => [
-		['name' => 'page#mainPage', 'url' => '/', 'verb' => 'GET'],
+		[
+			'name' => 'page#mainPage',
+			'url' => '/', 'verb' => 'GET'
+		],
 	],
 ];
