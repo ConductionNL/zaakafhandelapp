@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 use OCP\Util;
 
-Util::addScript(OCA\DsoNextcloud\AppInfo\Application::APP_ID, 'main');
-
+$appId = OCA\DsoNextcloud\AppInfo\Application::APP_ID;
+Util::addScript($appId, $appId . '-mainScript');
+Util::addStyle($appId, 'main');
 ?>
+
 
 <div id="dsonextcloud"></div>
