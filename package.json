@@ -14,14 +14,19 @@
     "lint-fix": "npm run lint -- --fix",
     "stylelint": "stylelint src/**/*.vue src/**/*.scss src/**/*.css"
   },
-  "browserslist": ["extends @nextcloud/browserslist-config"],
+  "browserslist": [
+    "extends @nextcloud/browserslist-config"
+  ],
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@nextcloud/axios": "^2.5.0",
     "@nextcloud/dialogs": "^3.2.0",
     "@nextcloud/initial-state": "^2.2.0",
     "@nextcloud/l10n": "^2.0.1",
     "@nextcloud/router": "^2.0.1",
     "@nextcloud/vue": "^7.5.0",
+    "bootstrap-vue": "^2.23.1",
     "vue": "^2.7.14",
     "vue-loading-overlay": "^3.4.3",
     "vue-material-design-icons": "^5.3.0"

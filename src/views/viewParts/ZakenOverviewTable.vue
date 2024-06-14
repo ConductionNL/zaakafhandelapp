@@ -1,42 +1,54 @@
 <template>
   <div class="container">
-    <button @click="fetchData">Reload</button>
-    <table class="vld-parent table" ref="table">
+    <table class="vld-parent table" ref="table" :current-page="currentPage">
       <tr>
         <th>Zaaknummer</th>
         <th>Aanvrager</th>
         <th>Zaaktype</th>
-        <th>Status</th>
-        <th>Behandelaar</th>
-        <th>Indiendatum</th>
+        <th>Archief Status</th>
+        <th>Vertrouwelijkheid</th>
+        <th>Startdatum</th>
+        <th></th>
       </tr>
-      <tr v-for="(component, i) in components" :key="`${component}${i}`" class="table-rows">
-        <td>
-          {{ component.name }}
+      <tr v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" class="table-rows">
+        <td class="td">
+          {{ zaak?.identificatie === "string" ? "ZAAK-2019-183641313" : (zaak?.identificatie ?? "Onbekend") }}
         </td>
-        <td>
-          {{ component.softwareType }}
+        <td class="td">
+          {{ zaak?.softwareType ?? "Onbekend" }}
         </td>
-        <td>
-          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
+        <td class="td">
+          {{ zaak?.zaaktype === "http://localhost/api/ztc/v1/zaaktypen/a1748dd6-50a3-464d-b95e-554e87298ce9" ?
+            "Aanmelding hondenbelasting" : (zaak?.zaaktype ?? "Onbekend") }}
         </td>
-        <td>
-          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
+        <td class="td">
+          {{ zaak?.archiefstatus ?? "Onbekend" }}
         </td>
-        <td>
-          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
+        <td class="td">
+          {{ zaak?.vertrouwelijkheidaanduiding ?? "Onbekend" }}
         </td>
-        <td>
-          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
+        <td class="td">
+          {{ zaak?.startdatum ?? "Onbekend" }}
+        </td>
+        <td class="td">
+          <a class="link" href="#">Details</a>
         </td>
       </tr>
     </table>
+
+    <b-pagination class="pagination" @page-click="onPageClick" v-model="currentPage" :total-rows="zaken?.count"
+      :per-page="perPageLimit"></b-pagination>
+
   </div>
 </template>
 <script>
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import { BPaginationNav, BPagination } from 'bootstrap-vue'
+Vue.component('b-pagination-nav', BPaginationNav)
+Vue.component('b-pagination', BPagination)
+
 Vue.use(Loading);
 
 export default {
@@ -46,15 +58,17 @@ export default {
   },
   data() {
     return {
-      components: '',
+      zaken: '',
       fullPage: false,
+      currentPage: 1,
+      perPageLimit: 10,
     }
   },
   mounted() {
     this.fetchData()
   },
   methods: {
-    fetchData() {
+    fetchData(newPage) {
       let loader = this.$loading.show({
         container: this.fullPage ? null : this.$refs.table,
         canCancel: true,
@@ -63,14 +77,17 @@ export default {
         loader: "dots",
       });
       fetch(
-        'https://api.opencatalogi.nl/api/search?page=1&limit=10&extend[]=all&isBasedOn=IS%20NULL&order[embedded.rating.rating]=desc&embedded.rating.rating[%3E%3D]=16&developmentStatus=stable',
+        'https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken?' + new URLSearchParams({ page: newPage ?? this.currentPage, _limit: this.perPageLimit }),
         {
           method: 'GET',
+          headers: {
+            "Authorization": "key"
+          }
         },
       )
         .then((response) => {
           response.json().then((data) => {
-            this.components = data.results
+            this.zaken = data
           })
           loader.hide()
         })
@@ -79,29 +96,32 @@ export default {
           loader.hide()
         })
     },
+    onPageClick(event, page) {
+      this.fetchData(page)
+    }
   },
 }
 </script>
 <style>
-button {
-  padding: 12px 32px;
-  font-size: 16px;
-  border-radius: 8px;
+.container {
+  margin-block-start: 75px;
+  margin-inline-end: auto;
+  margin-inline-start: auto;
+  max-inline-size: calc(1140px - 24px - 24px);
+  padding-inline-end: 24px;
+  padding-inline-start: 24px;
 }
 
 .table {
   min-height: 200px;
-}
-
-table {
   border-collapse: collapse;
   width: 100%;
   table-layout: auto !important;
   word-wrap: break-word;
+  margin-block-end: 24px;
 }
 
-td {
-  padding: 24px;
+.td {
   border-bottom: 1px solid rgb(224, 242, 237);
 }
 
@@ -120,13 +140,20 @@ td {
   background-color: rgb(244, 246, 245);
 }
 
-.container {
-  background-color: purple;
-  margin-block-start: 75px;
-  margin-inline-end: auto;
-  margin-inline-start: auto;
-  max-inline-size: calc(1140px - 24px - 24px);
-  padding-inline-end: 24px;
-  padding-inline-start: 24px;
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+.link {
+  color: #1a0dab
+}
+
+.link:hover {
+  cursor: pointer;
+  color: #1a0dab;
+  text-decoration: underline;
 }
 </style>
