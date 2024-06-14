@@ -2,12 +2,12 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>dsonextcloud</id>
-	<name>DSO Nextcloud</name>
-	<summary>DSO Nextcloud</summary>
-	<description>This is a DSO Nextcloud project for the municipality Buren and is done by ConductionNL</description>
+	<name>Zaak Afhandel App</name>
+	<summary>ZAA</summary>
+	<description>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionNL</description>
 	<version>1.0.0</version>
 	<licence>agpl</licence>
-	<author mail="remko@conduction.nl" homepage="">Remko Huisman (Conduction)</author>
+	<author mail="remko@conduction.nl" homepage="">Remko Huisman (ConductionNL)</author>
 	<namespace>DsoNextcloud</namespace>
 	<category>dashboard</category>
 	<bugs>https://github.com/ConductionNL/dsonextcloud/issues</bugs>
@@ -17,7 +17,7 @@
 	<navigations>
 		<navigation>
 			<id>dsonextcloud</id>
-			<name>DSO Nextcloud</name>
+			<name>ZAA (Zaak Afhandel App)</name>
 			<route>dsonextcloud.page.mainPage</route>
 			<icon>app.svg</icon>
 			<order>8</order>
