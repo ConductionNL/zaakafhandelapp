@@ -6,11 +6,20 @@
       <h2 class="heading">Overzicht samenwerkingen</h2>
       <hr>
       <button class="button">Samenwerking starten</button>
+      <samenwerking-overview-table />
     </div>
   </div>
 </template>
 <script>
+import SamenwerkingOverviewTable from './SamenwerkingOverviewTable'
+
+
 export default {
+  name: "app",
+  components: {
+    SamenwerkingOverviewTable
+  }
+
 }
 </script>
 <style>
@@ -31,17 +40,18 @@ export default {
 .button {
   padding: 12px 12px !important;
   color: #39870c !important;
-  background-color: transparent !important;
+  background-color: #ffffff !important;
   font-weight: normal !important;
   border-width: 1px !important;
   border-style: solid !important;
   border-color: #39870c !important;
-  border-radius: 3px !important;
+  border-radius: 4px !important;
+  font-size: 1rem;
 }
 
 .button:hover {
-  color: #285e08 !important;
-  background-color: transparent !important;
-  border-color: #285e08 !important;
+  color: #ffffff !important;
+  background-color: #39870c !important;
+  border-color: #39870c !important;
 }
 </style>
