@@ -28,7 +28,7 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 Vue.use(Loading);
 
 export default {
-  name: "SamenwerkingOverviewTable",
+  name: "ZakenOverviewTable",
   props: {
     msg: String,
   },
