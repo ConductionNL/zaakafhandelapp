@@ -1,1 +1,1 @@
-# DSO-Nextcloud
+# Zaak Afhandel App (ZAA)
