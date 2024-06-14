@@ -3,6 +3,7 @@
     <div>
       <h1 class="heading">Zaken</h1>
       <ZakenOverviewTable />
+     
     </div>
   </div>
 </template>

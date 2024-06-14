@@ -3,9 +3,12 @@
     <button @click="fetchData">Reload</button>
     <table class="vld-parent table" ref="table">
       <tr>
-        <th>Naam</th>
-        <th>SoftwareType</th>
-        <th>Laag</th>
+        <th>Zaaknummer</th>
+        <th>Aanvrager</th>
+        <th>Zaaktype</th>
+        <th>Status</th>
+        <th>Behandelaar</th>
+        <th>Indiendatum</th>
       </tr>
       <tr v-for="(component, i) in components" :key="`${component}${i}`" class="table-rows">
         <td>
@@ -13,6 +16,15 @@
         </td>
         <td>
           {{ component.softwareType }}
+        </td>
+        <td>
+          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
+        </td>
+        <td>
+          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
+        </td>
+        <td>
+          {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}
         </td>
         <td>
           {{ component?.embedded?.nl?.embedded?.commonground?.layerType }}

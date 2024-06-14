@@ -17,7 +17,7 @@
 	<navigations>
 		<navigation>
 			<id>dsonextcloud</id>
-			<name>DSO Nextcloud</name>
+			<name>ZAA (Zaak Afhandel App)</name>
 			<route>dsonextcloud.page.mainPage</route>
 			<icon>app.svg</icon>
 			<order>8</order>
