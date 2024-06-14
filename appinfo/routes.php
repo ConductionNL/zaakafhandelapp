@@ -2,29 +2,31 @@
 
 return [
 	'routes' => [
-		[
-			'name' => 'page#mainPage',
-			'url' => '/', 'verb' => 'GET'
-		],
-		[
-			'name' => 'zaken#index',
-			'url' => '/zaken', 'verb' => 'GET'
-		],
-		[
-			'name' => 'zaakTypen#index',
-			'url' => '/zaak_typen', 'verb' => 'GET'
-		],
-		[
-			'name' => 'taken#index',
-			'url' => '/taken', 'verb' => 'GET'
-		],
-		[
-			'name' => 'klanten#index',
-			'url' => '/klanten', 'verb' => 'GET'
-		],
-		[
-			'name' => 'contactMomenten#index',
-			'url' => '/contact_momenten', 'verb' => 'GET'
-		],
+		['name' => 'page#mainPage', 'url' => '/', 'verb' => 'GET'],
+		['name' => 'zaken#index', 'url' => '/zaken', 'verb' => 'GET'],
+		['name' => 'zaken#read', 'url' => '/zaken/read/{id}', 'verb' => 'GET'],
+		['name' => 'zaken#create', 'url' => '/zaken/create/{id}', 'verb' => 'GET'],
+		['name' => 'zaken#update', 'url' => '/zaken/update/{id}', 'verb' => 'GET'],
+		['name' => 'zaken#delete', 'url' => '/zaken/delete/{id}', 'verb' => 'GET'],
+		['name' => 'zaakTypen#index','url' => '/zaak_typen', 'verb' => 'GET'],
+		['name' => 'zaakTypen#read', 'url' => '/zaak_typen/read/{id}', 'verb' => 'GET'],
+		['name' => 'zaakTypen#create', 'url' => '/zaak_typen/create/{id}', 'verb' => 'GET'],
+		['name' => 'zaakTypen#update', 'url' => '/zaak_typen/update/{id}', 'verb' => 'GET'],
+		['name' => 'zaakTypen#delete', 'url' => '/zaak_typen/delete/{id}', 'verb' => 'GET'],
+		['name' => 'taken#index','url' => '/taken', 'verb' => 'GET'],
+		['name' => 'taken#read', 'url' => '/taken/read/{id}', 'verb' => 'GET'],
+		['name' => 'taken#create', 'url' => '/taken/create/{id}', 'verb' => 'GET'],
+		['name' => 'taken#update', 'url' => '/taken/update/{id}', 'verb' => 'GET'],
+		['name' => 'taken#delete', 'url' => '/taken/delete/{id}', 'verb' => 'GET'],
+		['name' => 'klanten#index','url' => '/klanten', 'verb' => 'GET'],
+		['name' => 'klanten#read', 'url' => '/klanten/read/{id}', 'verb' => 'GET'],
+		['name' => 'klanten#create', 'url' => '/klanten/create/{id}', 'verb' => 'GET'],
+		['name' => 'klanten#update', 'url' => '/klanten/update/{id}', 'verb' => 'GET'],
+		['name' => 'klanten#delete', 'url' => '/klanten/delete/{id}', 'verb' => 'GET'],
+		['name' => 'contactMomenten#index','url' => '/contact_momenten', 'verb' => 'GET'],
+		['name' => 'contactMomenten#read', 'url' => '/contact_momenten/read/{id}', 'verb' => 'GET'],
+		['name' => 'contactMomenten#create', 'url' => '/contact_momenten/create/{id}', 'verb' => 'GET'],
+		['name' => 'contactMomenten#update', 'url' => '/contact_momenten/update/{id}', 'verb' => 'GET'],
+		['name' => 'contactMomenten#delete', 'url' => '/contact_momenten/delete/{id}', 'verb' => 'GET'],
 	],
 ];
