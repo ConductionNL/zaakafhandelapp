@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="tableContainer">
     <table class="vld-parent table" ref="table" :current-page="currentPage">
       <tr>
         <th>Zaaknummer</th>
@@ -15,7 +15,7 @@
           {{ zaak?.identificatie === "string" ? "ZAAK-2019-183641313" : (zaak?.identificatie ?? "Onbekend") }}
         </td>
         <td class="td">
-          {{ zaak?.softwareType ?? "Onbekend" }}
+          {{ zaak?.bronorganisatie !== "string" ? zaak?.bronorganisatie : "Onbekend" }}
         </td>
         <td class="td">
           {{ zaak?.zaaktype === "http://localhost/api/ztc/v1/zaaktypen/a1748dd6-50a3-464d-b95e-554e87298ce9" ?
@@ -31,7 +31,7 @@
           {{ zaak?.startdatum ?? "Onbekend" }}
         </td>
         <td class="td">
-          <a class="link" href="#">Details</a>
+          <a class="link" :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">Details</a>
         </td>
       </tr>
     </table>
@@ -103,13 +103,8 @@ export default {
 }
 </script>
 <style>
-.container {
-  margin-block-start: 75px;
-  margin-inline-end: auto;
-  margin-inline-start: auto;
-  max-inline-size: calc(1140px - 24px - 24px);
-  padding-inline-end: 24px;
-  padding-inline-start: 24px;
+.tableContainer {
+  padding: 24px
 }
 
 .table {

@@ -3,9 +3,7 @@
 use OCP\Util;
 
 $appId = OCA\DsoNextcloud\AppInfo\Application::APP_ID;
-Util::addScript($appId, $appId . '-mainScript');
+Util::addScript($appId, $appId . '-zakenScript');
 Util::addStyle($appId, 'main');
 ?>
-
-
-<div id="dashboard"></div>
+<div id="zaken"></div>

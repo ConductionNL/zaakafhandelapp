@@ -38,9 +38,7 @@ class ZakenController extends Controller
 	 */
 	public function index(): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-
-		return new TemplateResponse();
+		return new TemplateResponse(Application::APP_ID, "zakenIndex", []);
 	}
 
 	/**
@@ -52,16 +50,9 @@ class ZakenController extends Controller
 	 *
 	 * @return TemplateResponse
 	 */
-	public function read(string $id): TemplateResponse
+	public function detail(string $id): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
-			Application::APP_ID,
-			'index',
-			[
-				'app_version' => $appVersion,
-			]
-		);
+		return new TemplateResponse(Application::APP_ID, "zakenDetail", ['id' => $id]);
 	}
 
 	/**

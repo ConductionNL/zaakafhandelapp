@@ -1,4 +1,4 @@
-body {
+/* body {
   min-height: 100%;
   height: auto;
 }
@@ -19,10 +19,10 @@ body {
 
 hr {
   color: #cccccc;
-}
+} */
 
 /* Headings */
-h1 {
+/* h1 {
   display: block !important;
   font-size: 2em !important;
   margin-block-start: 0.67em !important;
@@ -80,4 +80,4 @@ h6 {
   margin-inline-end: 0px !important;
   font-weight: bold !important;
   unicode-bidi: isolate !important;
-}
+} */

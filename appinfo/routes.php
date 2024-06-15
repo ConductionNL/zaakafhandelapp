@@ -4,7 +4,7 @@ return [
 	'routes' => [
 		['name' => 'page#mainPage', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'zaken#index', 'url' => '/zaken', 'verb' => 'GET'],
-		['name' => 'zaken#read', 'url' => '/zaken/read/{id}', 'verb' => 'GET'],
+		['name' => 'zaken#detail', 'url' => '/zaken/{id}', 'verb' => 'GET'],
 		['name' => 'zaken#create', 'url' => '/zaken/create/{id}', 'verb' => 'GET'],
 		['name' => 'zaken#update', 'url' => '/zaken/update/{id}', 'verb' => 'GET'],
 		['name' => 'zaken#delete', 'url' => '/zaken/delete/{id}', 'verb' => 'GET'],

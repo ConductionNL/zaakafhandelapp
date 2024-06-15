@@ -16,6 +16,18 @@ webpackConfig.entry = {
     import: path.join(__dirname, "src", "mainScript.js"),
     filename: appId + "-mainScript.js",
   },
+  taken: {
+    import: path.join(__dirname, "src", "takenScript.js"),
+    filename: appId + "-takenScript.js",
+  },
+  zaken: {
+    import: path.join(__dirname, "src", "zakenScript.js"),
+    filename: appId + "-zakenScript.js",
+  },
+  zakenDetail: {
+    import: path.join(__dirname, "src", "zakenDetailScript.js"),
+    filename: appId + "-zakenDetailScript.js",
+  },
 };
 
 module.exports = webpackConfig;
