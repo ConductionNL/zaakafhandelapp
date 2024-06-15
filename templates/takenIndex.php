@@ -1,6 +1,5 @@
 <?php
 
-use OCP\Util;
 
 ?>
 

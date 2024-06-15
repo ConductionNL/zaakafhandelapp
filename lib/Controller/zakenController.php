@@ -40,7 +40,10 @@ class ZakenController extends Controller
 	{
 		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
 
-		return new TemplateResponse();
+		// https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken?page=1&_limit=10
+		$cases = [];
+
+		return new TemplateResponse(Application::APP_ID, "zakenIndex",["cases"=>$cases]);
 	}
 
 	/**

@@ -40,7 +40,9 @@ class TakenController extends Controller
 	{
 		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
 
-		return new TemplateResponse(Application::APP_ID, "takenIndex",[]);
+		$tasks = [];
+
+		return new TemplateResponse(Application::APP_ID, "takenIndex",["tasks"=>$tasks]);
 	}
 
 	/**
