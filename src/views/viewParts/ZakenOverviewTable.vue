@@ -81,7 +81,7 @@ export default {
         {
           method: 'GET',
           headers: {
-            "Authorization": "key"
+            "Authorization": "2877fe72-89a4-412a-af44-722899494117"
           }
         },
       )

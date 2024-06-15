@@ -48,7 +48,7 @@
     <div id="app-content">
       <!-- app-content-wrapper is optional, only use if app-content-list  -->
       <div class="zakenContainer">
-        <h1 class="h1">Zaken</h1>
+        <h1 class="h1">Zaak Typen</h1>
         <ZakenOverviewTable />
       </div>
     </div>
