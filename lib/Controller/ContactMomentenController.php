@@ -38,14 +38,7 @@ class ContactMomentenController extends Controller
 	 */
 	public function index(): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
-			Application::APP_ID,
-			'index',
-			[
-				'app_version' => $appVersion,
-			]
-		);
+		return new TemplateResponse(Application::APP_ID, "contactMomentenIndex", []);
 	}
 
 	/**
