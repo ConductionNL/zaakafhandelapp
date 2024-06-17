@@ -6,6 +6,7 @@ use OCP\IConfig;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
+use GuzzleHttp\Client;
 
 use OCA\DsoNextcloud\AppInfo\Application;
 

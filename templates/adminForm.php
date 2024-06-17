@@ -8,7 +8,8 @@ use OCP\Util;
 $appId = OCA\DsoNextcloud\AppInfo\Application::APP_ID;
 Util::addStyle($appId, 'main');
 ?>
-<div id="survey_client" class="section">
+
+<div id="<?php p($appId) ?>" class="section">
 	<h2><?php p($l->t('Zaak Afhandel App')); ?></h2>
 
 	<p>

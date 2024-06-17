@@ -2,10 +2,13 @@
 
 namespace OCA\DsoNextcloud\Controller;
 
+use GuzzleHttp\Client;
 use OCP\IConfig;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
+use OCP\IAppConfig;
 
 use OCA\DsoNextcloud\AppInfo\Application;
 
@@ -21,7 +24,7 @@ class ZakenController extends Controller
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		IConfig $config
+		IAppConfig $config
 	) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
@@ -62,18 +65,35 @@ class ZakenController extends Controller
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
-	 * @return TemplateResponse
+	 * @return JSONResponse
 	 */
-	public function update(string $id): TemplateResponse
+	public function api($id): JSONResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
-			Application::APP_ID,
-			'index',
-			[
-				'app_version' => $appVersion,
-			]
-		);
+		$zakenLocation = $this->config->getValueString(Application::APP_ID, 'zaken_location');
+		$zakenKey = $this->config->getValueString(Application::APP_ID, 'zaken_key');
+
+		// Lets add the id if provided
+		if($id){
+			$zakenLocation = $zakenLocation.'/'.$id;
+		}
+
+		// Lets default the request type
+		$requestType = 'GET';
+
+		// Temp  test stuff REMOVE AFTHER TESTING
+		$zakenLocation = 'https://api.github.com/repos/guzzle/guzzle';
+		$zakenKey = 'asdas';
+
+		// Lets make the call based on https://docs.guzzlephp.org/en/5.3/quickstart.html?highlight=json
+		$client = new Client();
+		$response = $client->request($requestType, $zakenLocation, ['headers' => ['authorization' => $zakenKey]]);
+
+		// Bit of pass trough
+		$data = json_decode($response->getBody());
+		$status = $response->getStatusCode();
+		$headers = $response->getHeaders();
+
+		return new JSONResponse($data,$status,$headers);
 	}
 
 	/**
@@ -88,7 +108,8 @@ class ZakenController extends Controller
 	public function create(string $id): TemplateResponse
 	{
 		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
+
+		return new JSONResponse(
 			Application::APP_ID,
 			'index',
 			[
