@@ -58,16 +58,21 @@ class ZakenController extends Controller
 	}
 
 	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
+	 * This passes zaken api requests to the zaken api and adds a key
 	 *
-	 * @NoAdminRequired
+	 * @CORS
 	 * @NoCSRFRequired
+	 * @NoAdminRequired
+	 *
+	 * @param int $id
+	 * @param string $title
+	 * @param string $content
 	 *
 	 * @return JSONResponse
 	 */
 	public function api($id): JSONResponse
 	{
+		// This (very obviusly) should be a service
 		$zakenLocation = $this->config->getValueString(Application::APP_ID, 'zaken_location');
 		$zakenKey = $this->config->getValueString(Application::APP_ID, 'zaken_key');
 
@@ -77,7 +82,10 @@ class ZakenController extends Controller
 		}
 
 		// Lets default the request type
-		$requestType = 'GET';
+		$requestType = $this->request->getMethod();
+		$data = $this->request->getParam();
+		$headers = $this->request->getHeaders();
+		$headers['authorization'] = $zakenKey;
 
 		// Temp  test stuff REMOVE AFTHER TESTING
 		$zakenLocation = 'https://api.github.com/repos/guzzle/guzzle';
@@ -85,7 +93,8 @@ class ZakenController extends Controller
 
 		// Lets make the call based on https://docs.guzzlephp.org/en/5.3/quickstart.html?highlight=json
 		$client = new Client();
-		$response = $client->request($requestType, $zakenLocation, ['headers' => ['authorization' => $zakenKey]]);
+
+		$response = $client->request($requestType, $zakenLocation, ['headers' => $headers,'json' => $data]);
 
 		// Bit of pass trough
 		$data = json_decode($response->getBody());
@@ -106,7 +115,7 @@ class ZakenController extends Controller
 	 */
 	public function create(string $id): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
+		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
 
 		return new JSONResponse(
 			Application::APP_ID,
@@ -128,7 +137,7 @@ class ZakenController extends Controller
 	 */
 	public function delete(string $id): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
+		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'index',
