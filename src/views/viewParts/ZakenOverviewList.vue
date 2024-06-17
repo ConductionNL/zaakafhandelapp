@@ -1,20 +1,23 @@
 <template>
-	<div class="app-content-list">
-		<a class="app-content-list-item" v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">
-			<div class="app-content-list-item-star icon-starred"></div>
-			<div class="app-content-list-item-icon" style="background-color: rgb(41, 97, 156);">N</div>
-			<div class="app-content-list-item-line-one">{{ zaak?.omschrijving ?? "Onbekend" }}</div>
-			<div class="app-content-list-item-line-two">{{ zaak?.zaaktype ?? "Onbekend" }}</div>
-			<span class="app-content-list-item-details">{{ zaak?.einddatumGepland ?? "Onbekend" }}</span>
-			<div class="icon-more"></div>
-		</a>
-	</div>
+  <div class="app-content-list">
+    <a class="app-content-list-item" v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`"
+      :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">
+      <div class="app-content-list-item-star icon-starred"></div>
+      <div class="app-content-list-item-icon" style="background-color: rgb(41, 97, 156);">N</div>
+      <div class="app-content-list-item-line-one">{{ zaak?.omschrijving ?? "Onbekend" }}</div>
+      <div class="app-content-list-item-line-two">{{ zaak?.zaaktype ?? "Onbekend" }}</div>
+      <span class="app-content-list-item-details">{{ zaak?.einddatumGepland ?? "Onbekend" }}</span>
+      <div class="icon-more"></div>
+    </a>
+  </div>
 </template>
 <script>
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import { BPaginationNav, BPagination } from 'bootstrap-vue'
+import { TEMP_AUTHORIZATION_KEY } from '../../data/TempAuthKey';
+
 Vue.component('b-pagination-nav', BPaginationNav)
 Vue.component('b-pagination', BPagination)
 
@@ -50,7 +53,7 @@ export default {
         {
           method: 'GET',
           headers: {
-            "Authorization": "2877fe72-89a4-412a-af44-722899494117"
+            "Authorization": TEMP_AUTHORIZATION_KEY
           }
         },
       )

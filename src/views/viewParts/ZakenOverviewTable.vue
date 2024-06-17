@@ -46,6 +46,8 @@ import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import { BPaginationNav, BPagination } from 'bootstrap-vue'
+import { TEMP_AUTHORIZATION_KEY } from '../../data/TempAuthKey';
+
 Vue.component('b-pagination-nav', BPaginationNav)
 Vue.component('b-pagination', BPagination)
 
@@ -81,7 +83,7 @@ export default {
         {
           method: 'GET',
           headers: {
-            "Authorization": "2877fe72-89a4-412a-af44-722899494117"
+            "Authorization": TEMP_AUTHORIZATION_KEY
           }
         },
       )
