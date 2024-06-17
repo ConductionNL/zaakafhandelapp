@@ -1,6 +1,7 @@
 <template>
 	<div class="app-content-list">
 		<a class="app-content-list-item" v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">
+
 			<div class="app-content-list-item-star icon-starred"></div>
 			<div class="app-content-list-item-icon" style="background-color: rgb(41, 97, 156);">N</div>
 			<div class="app-content-list-item-line-one">{{ zaak?.omschrijving ?? "Onbekend" }}</div>
