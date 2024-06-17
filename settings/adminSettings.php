@@ -78,7 +78,6 @@ class AdminSettings implements ISettings {
 			'zaakTypenKey' => $zaakTypenKey,
 		];
 
-
 		return new TemplateResponse(Application::APP_ID, 'adminForm', $parameters);
 	}
 

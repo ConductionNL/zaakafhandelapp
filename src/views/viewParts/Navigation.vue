@@ -36,7 +36,7 @@
 				<div class="app-navigation-new">
 					<ul>
 						<li><a href="/index.php/apps/dsonextcloud/zaak_typen">Zaak Typen</a></li>
-						<li><a href="#">Configruatie</a></li>
+						<li><a href="/index.php/apps/dsonextcloud/configuration">Configuration</a></li>
 					</ul>
 				</div>
 			</div>

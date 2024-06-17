@@ -3,7 +3,6 @@
 namespace OCA\DsoNextcloud\Controller;
 
 use GuzzleHttp\Client;
-use OCP\IConfig;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;

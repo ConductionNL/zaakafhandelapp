@@ -4,7 +4,8 @@ return [
 	'routes' => [
 		['name' => 'page#mainPage', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/configuration', 'verb' => 'GET'],
-		['name' => 'configuration#update', 'url' => '/configuration', 'verb' => 'POST'],
+		['name' => 'configuration#api', 'url' => '/configuration/api', 'verb' => 'GET'],
+		//['name' => 'configuration#api', 'url' => '/configuration/api', 'verb' => 'POST'],
 		['name' => 'zaken#index', 'url' => '/zaken', 'verb' => 'GET'],
 		['name' => 'zaken#api', 'url' => '/zaken/api', 'verb' => 'GET'],
 		//['name' => 'zaken#api', 'url' => '/zaken/api/{id}', 'verb' => 'GET'],

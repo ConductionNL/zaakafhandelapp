@@ -2,9 +2,10 @@
 
 namespace OCA\DsoNextcloud\Controller;
 
-use OCP\IConfig;
+use OCP\IAppConfig;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 
 use OCA\DsoNextcloud\AppInfo\Application;
@@ -21,7 +22,7 @@ class ConfigurationController extends Controller
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		IConfig $config
+		IAppConfig $config
 	) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
@@ -37,7 +38,7 @@ class ConfigurationController extends Controller
 	 */
 	public function index(): TemplateResponse
 	{
-		return new TemplateResponse(Application::APP_ID, "configurationIndex", []);
+		return new TemplateResponse(Application::APP_ID, 'configuration', []);
 	}
 
 	/**
@@ -46,10 +47,33 @@ class ConfigurationController extends Controller
 	 *
 	 * @NoCSRFRequired
 	 *
-	 * @return TemplateResponse
+	 * @return JSONResponse
 	 */
-	public function update(): TemplateResponse
+	public function api(): JSONResponse
 	{
-		return new TemplateResponse(Application::APP_ID, "zakenIndex", []);
+		// Getting the config
+		$zakenLocation = $this->config->getValueString(Application::APP_ID, 'zaken_location', '');
+		$zakenKey = $this->config->getValueString(Application::APP_ID, 'zaken_key', '');
+		$takenLocation = $this->config->getValueString(Application::APP_ID, 'taken_location', '');
+		$takenKey = $this->config->getValueString(Application::APP_ID, 'taken_key', '');
+		$contactMomentenLocation = $this->config->getValueString(Application::APP_ID, 'contact_momenten_location', '');
+		$klantenLocation = $this->config->getValueString(Application::APP_ID, 'klanten_location', '');
+		$klantenKey = $this->config->getValueString(Application::APP_ID, 'klanten_key', '');
+		$zaakTypenLocation = $this->config->getValueString(Application::APP_ID, 'zaak_typen_location', '');
+		$zaakTypenKey = $this->config->getValueString(Application::APP_ID, 'zaak_typen_key', '');
+
+		$data = [
+			'zakenLocation' => $zakenLocation,
+			'zakenKey' => $zakenKey,
+			'takenLocation' => $takenLocation,
+			'takenKey' => $takenKey,
+			'contactMomentenLocation' => $contactMomentenLocation,
+			'klantenLocation' => $klantenLocation,
+			'klantenKey' => $klantenKey,
+			'zaakTypenLocation' => $zaakTypenLocation,
+			'zaakTypenKey' => $zaakTypenKey,
+		];
+
+		return new JSONResponse($data);
 	}
 }
