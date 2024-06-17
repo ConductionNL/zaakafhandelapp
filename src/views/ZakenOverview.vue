@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-	  <Navigation />
+    <Navigation />
 
 
 
@@ -8,22 +8,22 @@
       <!-- app-content-wrapper is optional, only use if app-content-list  -->
       <div class="zakenContainer">
         <h1 class="h1">Zaken</h1>
-        <ZakenOverviewTable />
+        <ZakenOverviewList />
       </div>
     </div>
   </div>
 </template>
 <script>
 
-import ZakenOverviewTable from './viewParts/ZakenOverviewTable.vue';
+import ZakenOverviewList from './viewParts/ZakenOverviewList.vue';
 import Navigation from './viewParts/Navigation.vue';
 
 
 export default {
   name: "app",
   components: {
-    ZakenOverviewTable,
-	  Navigation
+    ZakenOverviewList,
+    Navigation
   }
 
 }
