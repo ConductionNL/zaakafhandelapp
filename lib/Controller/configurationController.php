@@ -26,6 +26,7 @@ class ConfigurationController extends Controller
 	) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
+		$this->request = $request;
 	}
 
 	/**
@@ -51,6 +52,22 @@ class ConfigurationController extends Controller
 	 */
 	public function api(): JSONResponse
 	{
+		// Handle POST
+		if($this->request->getMethod() === "POST"){
+
+			
+			$zakenLocation = $this->config->setValueString(Application::APP_ID, 'zaken_location', '');
+			$zakenKey = $this->config->setValueString(Application::APP_ID, 'zaken_key', '');
+			$takenLocation = $this->config->setValueString(Application::APP_ID, 'taken_location', '');
+			$takenKey = $this->config->setValueString(Application::APP_ID, 'taken_key', '');
+			$contactMomentenLocation = $this->config->setValueString(Application::APP_ID, 'contact_momenten_location', '');
+			$klantenLocation = $this->config->setValueString(Application::APP_ID, 'klanten_location', '');
+			$klantenKey = $this->config->setValueString(Application::APP_ID, 'klanten_key', '');
+			$zaakTypenLocation = $this->config->setValueString(Application::APP_ID, 'zaak_typen_location', '');
+			$zaakTypenKey = $this->config->setValueString(Application::APP_ID, 'zaak_typen_key', '');
+		}
+
+
 		// Getting the config
 		$zakenLocation = $this->config->getValueString(Application::APP_ID, 'zaken_location', '');
 		$zakenKey = $this->config->getValueString(Application::APP_ID, 'zaken_key', '');
