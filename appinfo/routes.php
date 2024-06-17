@@ -1,6 +1,6 @@
 <?php
 
-return [[
+return [
 	'resources' => [
 		'zaken' => ['url' => '/zaken/api'],
 		'zaakTypen' => ['url' => '/zaakTypen/api'],
@@ -20,5 +20,5 @@ return [[
 		['name' => 'taken#index','url' => '/taken', 'verb' => 'GET'],
 		['name' => 'klanten#index','url' => '/klanten', 'verb' => 'GET'],
 		['name' => 'contactMomenten#index','url' => '/contact_momenten', 'verb' => 'GET'],
-	],
+	]
 ];
