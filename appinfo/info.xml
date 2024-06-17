@@ -6,8 +6,8 @@
 	<summary>ZAA</summary>
 	<description>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionNL</description>
 	<version>1.0.0</version>
-	<licence>agpl</licence>
-	<author mail="remko@conduction.nl" homepage="">Remko Huisman (ConductionNL)</author>
+	<licence>eupl 1.2</licence>
+	<author mail="info@conduction.nl" homepage="https://conduction.nl/">Conduction</author>
 	<namespace>DsoNextcloud</namespace>
 	<category>dashboard</category>
 	<bugs>https://github.com/ConductionNL/dsonextcloud/issues</bugs>
