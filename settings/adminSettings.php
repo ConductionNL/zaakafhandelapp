@@ -86,7 +86,7 @@ class AdminSettings implements ISettings {
 	 * @return string the section ID, e.g. 'sharing'
 	 */
 	public function getSection() {
-		return Application::APP_ID,;
+		return 'additional',;
 	}
 
 	/**
