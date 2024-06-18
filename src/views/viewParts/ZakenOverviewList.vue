@@ -1,15 +1,23 @@
 <template>
-  <div class="app-content-list">
-    <a class="app-content-list-item" v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`"
-      :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">
-      <div class="app-content-list-item-star icon-starred"></div>
-      <div class="app-content-list-item-icon" style="background-color: rgb(41, 97, 156);">N</div>
-      <div class="app-content-list-item-line-one">{{ zaak?.omschrijving ?? "Onbekend" }}</div>
-      <div class="app-content-list-item-line-two">{{ zaak?.zaaktype ?? "Onbekend" }}</div>
-      <span class="app-content-list-item-details">{{ zaak?.einddatumGepland ?? "Onbekend" }}</span>
-      <div class="icon-more"></div>
-    </a>
-  </div>
+  <NcAppContentList>
+    <ul>
+      <div class="listHeader">
+        <NcTextField class="searchField" disabled :value.sync="search" label="Search" trailing-button-icon="close"
+          :show-trailing-button="search !== ''" @trailing-button-click="clearText">
+          <Magnify :size="20" />
+        </NcTextField>
+      </div>
+
+      <NcListItem v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`"
+        :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id" :name="zaak?.omschrijving"
+        :details="zaak?.einddatumGepland">
+        <template #subname>
+          {{ zaak?.zaaktype === 'http://localhost/api/ztc/v1/zaaktypen/a1748dd6-50a3-464d-b95e-554e87298ce9' ?
+            'Aanmelding hondenbelasting' : (zaak?.zaaktype ?? 'Onbekend') }}
+        </template>
+      </NcListItem>
+    </ul>
+  </NcAppContentList>
 </template>
 <script>
 import Vue from 'vue';
@@ -17,6 +25,8 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import { BPaginationNav, BPagination } from 'bootstrap-vue'
 import { TEMP_AUTHORIZATION_KEY } from '../../data/TempAuthKey';
+import { NcListItem, NcAppContentList, NcTextField } from '@nextcloud/vue';
+import Magnify from 'vue-material-design-icons/Magnify'
 
 Vue.component('b-pagination-nav', BPaginationNav)
 Vue.component('b-pagination', BPagination)
@@ -28,9 +38,16 @@ export default {
   props: {
     msg: String,
   },
+  components: {
+    NcListItem,
+    NcAppContentList,
+    NcTextField,
+    Magnify
+  },
   data() {
     return {
       zaken: '',
+      search: '',
       fullPage: false,
       currentPage: 1,
       perPageLimit: 10,
@@ -70,57 +87,25 @@ export default {
     },
     onPageClick(event, page) {
       this.fetchData(page)
+    },
+    clearText() {
+      this.search = ''
     }
   },
 }
 </script>
 <style>
-.tableContainer {
-  padding: 24px
+.listHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--color-main-background);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.table {
-  min-height: 200px;
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: auto !important;
-  word-wrap: break-word;
-  margin-block-end: 24px;
-}
-
-.td {
-  border-bottom: 1px solid rgb(224, 242, 237);
-}
-
-.header-item {
-  padding: 30px 20px;
-  font-size: 12px;
-  background-color: rgb(224, 242, 237);
-  text-transform: uppercase;
-}
-
-.table-rows:nth-child(odd) {
-  background-color: rgb(250, 250, 250);
-}
-
-.table-rows:nth-child(n):hover {
-  background-color: rgb(244, 246, 245);
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  align-items: center;
-}
-
-.link {
-  color: #1a0dab
-}
-
-.link:hover {
-  cursor: pointer;
-  color: #1a0dab;
-  text-decoration: underline;
+.searchField {
+  padding-inline-start: 65px;
+  padding-inline-end: 20px;
+  margin-block-end: 6px;
 }
 </style>
