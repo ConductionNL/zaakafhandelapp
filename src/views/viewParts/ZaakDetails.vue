@@ -6,9 +6,10 @@
 			<BriefcaseAccountOutline />
 		</template>
 		<template #action>
-			<NcButton type="primary">
+			<NcButton type="primary" @click="showModal">
 				Zaak aanmaken
 			</NcButton>
+			<zaakToevoegen />
 		</template>
 	</NcEmptyContent>
 </template>
@@ -17,6 +18,7 @@
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import zaakToevoegen from './zaakToevoegen.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline';
 
 import {
@@ -32,7 +34,8 @@ export default {
 	components: {
 		NcEmptyContent,
 		BriefcaseAccountOutline,
-		NcButton
+		NcButton,
+		zaakToevoegen
 	}
 }
 </script>
