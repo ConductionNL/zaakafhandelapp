@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-	  <Navigation />
+    <Navigation selected="zaak_typen" />
 
 
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<Navigation />
+		<Navigation selected="taken" />
 
 		<div id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->

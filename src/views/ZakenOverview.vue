@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <Navigation />
-
-
+    <Navigation selected="zaken" />
 
     <div id="app-content">
       <!-- app-content-wrapper is optional, only use if app-content-list  -->

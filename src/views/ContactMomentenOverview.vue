@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-	  <Navigation />
+    <Navigation selected="contact_momenten" />
 
 
 
@@ -23,7 +23,7 @@ export default {
   name: "app",
   components: {
     ZakenOverviewTable,
-	  Navigation
+    Navigation
   }
 
 }
