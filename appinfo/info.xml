@@ -18,7 +18,7 @@
 		<navigation>
 			<id>dsonextcloud</id>
 			<name>ZAA (Zaak Afhandel App)</name>
-			<route>dsonextcloud.page.mainPage</route>
+			<route>dsonextcloud.zaken.index</route>
 			<icon>app.svg</icon>
 			<order>8</order>
 		</navigation>
