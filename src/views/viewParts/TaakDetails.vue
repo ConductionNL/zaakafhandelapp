@@ -1,5 +1,5 @@
 <template>
-	<NcAppSidebar>
+	<NcAppContentDetails>
 		<NcEmptyContent
 			description="Nog geen taak geselecteerd">
 			<template #icon>
@@ -16,7 +16,7 @@
 				</NcButton>
 			</template>
 		</NcEmptyContent>
-	</NcAppSidebar>
+	</NcAppContentDetails>
 </template>
 <script>
 
@@ -28,7 +28,8 @@ import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline
 import {
 	NcAppSidebar,
 	NcEmptyContent,
-	NcButton
+	NcButton,
+	NcAppContentDetails
 } from '@nextcloud/vue';
 
 
@@ -40,7 +41,8 @@ export default {
 		NcAppSidebar,
 		NcEmptyContent,
 		CalendarMonthOutline,
-		NcButton
+		NcButton,
+		NcAppContentDetails
 	}
 }
 </script>

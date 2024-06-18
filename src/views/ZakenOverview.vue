@@ -1,19 +1,24 @@
 <template>
-  <div class="container">
-    <Navigation selected="zaken" />
-
-    <NcAppContent>
-      <ZakenList />
-    </NcAppContent>
-	  <ZaakDetails />
-  </div>
+	<NcContent appName="dsonextcloud">
+		<Navigation selected="zaken" />
+		<NcAppContent>
+			<template #list>
+				<ZakenList />
+			</template>
+			<template #default>
+				<ZaakDetails />
+			</template>
+		</NcAppContent>
+		<ZaakSidebar />
+  </NcContent>
 </template>
 <script>
 
 import ZakenList from './viewParts/ZakenList.vue';
 import Navigation from './viewParts/Navigation.vue';
 import ZaakDetails from './viewParts/ZaakDetails.vue';
-import { NcAppContent } from '@nextcloud/vue';
+import ZaakSidebar from './viewParts/ZaakSidebar.vue';
+import { NcAppContent,NcContent } from '@nextcloud/vue';
 
 
 export default {
@@ -22,14 +27,10 @@ export default {
 	ZakenList,
     Navigation,
 	ZaakDetails,
-    NcAppContent
+	  ZaakSidebar,
+    NcAppContent, NcContent
+
   }
 
 }
 </script>
-<style>
-.container {
-  display: flex;
-  width: 100%;
-}
-</style>

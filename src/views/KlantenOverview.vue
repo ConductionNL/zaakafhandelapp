@@ -1,19 +1,19 @@
 <template>
-  <div class="container">
+	<NcContent appName="dsonextcloud">
 	<Navigation selected="klanten" />
 
 	  <NcAppContent>
 		  <KlantenList />
 	  </NcAppContent>
 	  <KlantDetails />
-  </div>
+	</NcContent>
 </template>
 <script>
 
 import KlantenList from './viewParts/KlantenList.vue';
 import Navigation from './viewParts/Navigation.vue';
 import KlantDetails from './viewParts/KlantDetails.vue';
-import { NcAppContent } from '@nextcloud/vue';
+import { NcAppContent,NcContent } from '@nextcloud/vue';
 
 
 export default {
@@ -22,14 +22,9 @@ export default {
 		KlantenList,
 		Navigation,
 		KlantDetails,
-		NcAppContent
+		NcAppContent,
+		NcContent
 	}
 
 }
 </script>
-<style>
-.container {
-	display: flex;
-	width: 100%;
-}
-</style>
