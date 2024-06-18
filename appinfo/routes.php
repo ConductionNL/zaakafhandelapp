@@ -1,13 +1,13 @@
 <?php
 
 return [
-	'resources' => [
-		'zaken' => ['url' => '/zaken/api'],
-		'zaakTypen' => ['url' => '/zaakTypen/api'],
-		'taken' => ['url' => '/taken/api'],
-		'klanten' => ['url' => '/klanten/api'],
-		'contactMomenten' => ['url' => '/contactMomenten/api'],
-	],
+	// 'resources' => [
+	// 	'zaken' => ['url' => '/zaken/api'],
+	// 	'zaakTypen' => ['url' => '/zaakTypen/api'],
+	// 	'taken' => ['url' => '/taken/api'],
+	// 	'klanten' => ['url' => '/klanten/api'],
+	// 	'contactMomenten' => ['url' => '/contactMomenten/api'],
+	// ],
 	'routes' => [
 		['name' => 'page#mainPage', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/configuration', 'verb' => 'GET'],

@@ -1,46 +1,44 @@
 <template>
-	<div id="app-navigation" class="">
-		<div class="app-navigation-new">
-			<button type="button" class="icon-add">
-				Zaak Aanmaken
-			</button>
-		</div>
+	<div>
+		<NcAppNavigation>
+			<NcAppNavigationList>
+				<NcAppNavigationNewItem name="Zaak Aanmaken" icon="" @new-item="function (value) { alert(value) }">
+					<template #icon>
+						<Plus :size="20" />
+					</template>
+				</NcAppNavigationNewItem>
+				<NcAppNavigationItem name="Zaken" href="/index.php/apps/dsonextcloud/zaken" />
+				<NcAppNavigationItem name="Taken" href=" /index.php/apps/dsonextcloud/taken" />
+				<NcAppNavigationItem name="Klanten" href=" /index.php/apps/dsonextcloud/klanten" />
+				<NcAppNavigationItem name="Contact Momenten" href=" /index.php/apps/dsonextcloud/contact_momenten" />
+			</NcAppNavigationList>
+			<NcAppNavigationSettings>
+				<NcAppNavigationItem name="Zaak Typen" href=" /index.php/apps/dsonextcloud/zaak_typen" />
+				<NcAppNavigationItem name="Configuration" href=" /index.php/apps/dsonextcloud/configuration" />
 
-		<!-- Your navigation here -->
-		<ul id="usergrouplist">
-			<li class="app-navigation-entry active">
-				<a class="app-navigation-entry-link" href="/index.php/apps/dsonextcloud/zaken">Zaken</a>
-				<div class="app-navigation-entry-utils">
-					<ul>
-						<li class="app-navigation-entry-utils-counter"></li>
-					</ul>
-				</div>
-			</li>
-			<li>
-				<a href="/index.php/apps/dsonextcloud/taken">Taken</a>
-			</li>
-			<li><a href="/index.php/apps/dsonextcloud/klanten">Klanten</a></li>
-			<li>
-				<a href="/index.php/apps/dsonextcloud/contact_momenten">Contact Momenten</a>
-			</li>
-		</ul>
-
-		<div id="app-settings">
-			<!-- app settings -->
-			<div id="app-settings-header">
-				<button class="settings-button" data-apps-slide-toggle="#app-settings-content">
-					Settings
-				</button>
-			</div>
-			<div id="app-settings-content">
-				<div class="app-navigation-new">
-					<ul>
-						<li><a href="/index.php/apps/dsonextcloud/zaak_typen">Zaak Typen</a></li>
-						<li><a href="/index.php/apps/dsonextcloud/configuration">Configuration</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+			</NcAppNavigationSettings>
+		</NcAppNavigation>
 	</div>
 </template>
+<script>
+import Vue from 'vue';
+import { NcAppNavigation, NcAppNavigationList, NcAppNavigationItem, NcAppNavigationNewItem, NcAppNavigationSettings } from '@nextcloud/vue';
+import Plus from 'vue-material-design-icons/Plus'
 
+Vue.prototype.OC = window.OC
+Vue.prototype.OCA = window.OCA
+
+export default {
+	name: "Navigation",
+	components: {
+		NcAppNavigation,
+		NcAppNavigationList,
+		NcAppNavigationItem,
+		NcAppNavigationNewItem,
+		NcAppNavigationSettings,
+		Plus
+	}
+
+}
+</script>
+<style></style>
