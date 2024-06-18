@@ -1,25 +1,68 @@
 <template>
 	<NcAppSidebar
 		:starred="starred"
-		name="cat-picture.jpg"
+		name="Samenwerkings verzoek"
 		subname="last edited 3 weeks ago">
-		<NcAppSidebarTab name="Search" id="search-tab">
+		<NcAppSidebarTab name="Eigenschappen" id="eigenschappen-tab">
 			<template #icon>
 				<Magnify :size="20" />
 			</template>
-			Search tab content
 		</NcAppSidebarTab>
-		<NcAppSidebarTab name="Settings" id="settings-tab">
+		<NcAppSidebarTab name="Documenten" id="documenten-tab">
 			<template #icon>
 				<Cog :size="20" />
 			</template>
-			Settings tab content
+			<NcButton type="primary">
+				Document toevoegen
+			</NcButton>
 		</NcAppSidebarTab>
-		<NcAppSidebarTab name="Sharing" id="share-tab">
+		<NcAppSidebarTab name="Rollen" id="rollen-tab">
 			<template #icon>
 				<ShareVariant :size="20" />
 			</template>
-			Sharing tab content
+			<NcButton type="primary">
+				Rol aanmaken
+			</NcButton>
+		</NcAppSidebarTab>
+		<NcAppSidebarTab name="Objecten" id="objecten-tab">
+			<template #icon>
+				<ShareVariant :size="20" />
+			</template>
+			<NcButton type="primary">
+				Object aanmaken
+			</NcButton>
+		</NcAppSidebarTab>
+		<NcAppSidebarTab name="Besluiten" id="besluiten-tab">
+			<template #icon>
+				<ShareVariant :size="20" />
+			</template>
+			<NcButton type="primary">
+				Besluit aanmaken
+			</NcButton>
+		</NcAppSidebarTab>
+		<NcAppSidebarTab name="Taken" id="taken-tab">
+			<template #icon>
+				<ShareVariant :size="20" />
+			</template>
+			<NcButton type="primary">
+				Taak aanmaken
+			</NcButton>
+		</NcAppSidebarTab>
+		<NcAppSidebarTab name="Contact Momenten" id="contact-momenten-tab">
+			<template #icon>
+				<ShareVariant :size="20" />
+			</template>
+			<NcButton type="primary">
+				Contact moment aanmaken
+			</NcButton>
+		</NcAppSidebarTab>
+		<NcAppSidebarTab name="Publicaties" id="publicaties-tab">
+			<template #icon>
+				<ShareVariant :size="20" />
+			</template>
+			<NcButton type="primary">
+				Publicatie aanmaken
+			</NcButton>
 		</NcAppSidebarTab>
 	</NcAppSidebar>
 </template>
@@ -28,7 +71,7 @@
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import Cog from 'vue-material-design-icons/Cog.vue'
 import ShareVariant from 'vue-material-design-icons/ShareVariant.vue'
-import { NcAppSidebar,NcAppSidebarTab } from '@nextcloud/vue';
+import { NcAppSidebar,NcAppSidebarTab,NcButton } from '@nextcloud/vue';
 
 export default {
 	name: "ZaakDetails",
@@ -37,7 +80,8 @@ export default {
 		Cog,
 		ShareVariant,
 		NcAppSidebar,
-		NcAppSidebarTab
+		NcAppSidebarTab,
+		NcButton
 	},
 	data() {
 		return {
@@ -46,3 +90,8 @@ export default {
 	},
 }
 </script>
+<style>
+.app-sidebar {
+	min-width: 800px;
+}
+</style>
