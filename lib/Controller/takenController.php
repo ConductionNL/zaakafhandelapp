@@ -6,6 +6,7 @@ use OCP\IConfig;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
+use GuzzleHttp\Client;
 
 use OCA\DsoNextcloud\AppInfo\Application;
 
@@ -38,11 +39,7 @@ class TakenController extends Controller
 	 */
 	public function index(): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-
-		$tasks = [];
-
-		return new TemplateResponse(Application::APP_ID, "takenIndex",["tasks"=>$tasks]);
+		return new TemplateResponse(Application::APP_ID, "takenIndex", []);
 	}
 
 	/**

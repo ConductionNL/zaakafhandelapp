@@ -1,8 +1,9 @@
 <?php
 
+use OCP\Util;
 
 $appId = OCA\DsoNextcloud\AppInfo\Application::APP_ID;
-Util::addScript($appId, $appId . '-takenScript');
+Util::addScript($appId, $appId . '-zaakTypenScript');
 Util::addStyle($appId, 'main');
 ?>
-<div id="taken"></div>
+<div id="zaakTypen"></div>

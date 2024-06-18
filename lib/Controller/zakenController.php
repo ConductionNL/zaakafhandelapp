@@ -2,10 +2,12 @@
 
 namespace OCA\DsoNextcloud\Controller;
 
-use OCP\IConfig;
+use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
+use OCP\IAppConfig;
 
 use OCA\DsoNextcloud\AppInfo\Application;
 
@@ -21,7 +23,7 @@ class ZakenController extends Controller
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		IConfig $config
+		IAppConfig $config
 	) {
 		parent::__construct($appName, $request);
 		$this->config = $config;
@@ -38,12 +40,7 @@ class ZakenController extends Controller
 	 */
 	public function index(): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-
-		// https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken?page=1&_limit=10
-		$cases = [];
-
-		return new TemplateResponse(Application::APP_ID, "zakenIndex",["cases"=>$cases]);
+		return new TemplateResponse(Application::APP_ID, "zakenIndex", []);
 	}
 
 	/**
@@ -55,37 +52,56 @@ class ZakenController extends Controller
 	 *
 	 * @return TemplateResponse
 	 */
-	public function read(string $id): TemplateResponse
+	public function detail(string $id): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
-			Application::APP_ID,
-			'index',
-			[
-				'app_version' => $appVersion,
-			]
-		);
+		return new TemplateResponse(Application::APP_ID, "zakenDetail", ['id' => $id]);
 	}
 
 	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
+	 * This passes zaken api requests to the zaken api and adds a key
 	 *
-	 * @NoAdminRequired
+	 * @CORS
 	 * @NoCSRFRequired
+	 * @NoAdminRequired
 	 *
-	 * @return TemplateResponse
+	 * @param int $id
+	 * @param string $title
+	 * @param string $content
+	 *
+	 * @return JSONResponse
 	 */
-	public function update(string $id): TemplateResponse
+	public function api($id): JSONResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
-			Application::APP_ID,
-			'index',
-			[
-				'app_version' => $appVersion,
-			]
-		);
+		// This (very obviusly) should be a service
+		$zakenLocation = $this->config->getValueString(Application::APP_ID, 'zaken_location');
+		$zakenKey = $this->config->getValueString(Application::APP_ID, 'zaken_key');
+
+		// Lets add the id if provided
+		if($id){
+			$zakenLocation = $zakenLocation.'/'.$id;
+		}
+
+		// Lets default the request type
+		$requestType = $this->request->getMethod();
+		$data = $this->request->getParam();
+		$headers = $this->request->getHeaders();
+		$headers['authorization'] = $zakenKey;
+
+		// Temp  test stuff REMOVE AFTHER TESTING
+		$zakenLocation = 'https://api.github.com/repos/guzzle/guzzle';
+		$zakenKey = 'asdas';
+
+		// Lets make the call based on https://docs.guzzlephp.org/en/5.3/quickstart.html?highlight=json
+		$client = new Client();
+
+		$response = $client->request($requestType, $zakenLocation, ['headers' => $headers,'json' => $data]);
+
+		// Bit of pass trough
+		$data = json_decode($response->getBody());
+		$status = $response->getStatusCode();
+		$headers = $response->getHeaders();
+
+		return new JSONResponse($data,$status,$headers);
 	}
 
 	/**
@@ -99,8 +115,9 @@ class ZakenController extends Controller
 	 */
 	public function create(string $id): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
-		return new TemplateResponse(
+		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
+
+		return new JSONResponse(
 			Application::APP_ID,
 			'index',
 			[
@@ -120,7 +137,7 @@ class ZakenController extends Controller
 	 */
 	public function delete(string $id): TemplateResponse
 	{
-		$appVersion = $this->config->getAppValue(appName: Application::APP_ID, key: 'installed_version');
+		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
 		return new TemplateResponse(
 			Application::APP_ID,
 			'index',

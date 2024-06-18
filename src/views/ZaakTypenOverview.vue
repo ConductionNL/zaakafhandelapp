@@ -1,27 +1,28 @@
 <template>
   <div class="container">
-    <Navigation selected="zaken" />
+    <Navigation selected="zaak_typen" />
+
+
 
     <div id="app-content">
       <!-- app-content-wrapper is optional, only use if app-content-list  -->
       <div class="zakenContainer">
-        <h1 class="h1">Zaken</h1>
-        <ZakenOverviewList />
+        <h1 class="h1">Zaak Typen</h1>
+        <ZakenOverviewTable />
       </div>
     </div>
   </div>
 </template>
 <script>
-
-import ZakenOverviewList from './viewParts/ZakenOverviewList.vue';
+import ZakenOverviewTable from './viewParts/ZakenOverviewTable.vue';
 import Navigation from './viewParts/Navigation.vue';
 
 
 export default {
   name: "app",
   components: {
-    ZakenOverviewList,
-    Navigation
+    ZakenOverviewTable,
+	  Navigation
   }
 
 }
