@@ -3,22 +3,25 @@
     <Navigation selected="zaken" />
 
     <NcAppContent>
-      <ZakenOverviewList />
+      <ZakenList />
     </NcAppContent>
+	  <ZaakDetails />
   </div>
 </template>
 <script>
 
-import ZakenOverviewList from './viewParts/ZakenOverviewList.vue';
+import ZakenList from './viewParts/ZakenList.vue';
 import Navigation from './viewParts/Navigation.vue';
+import ZaakDetails from './viewParts/ZaakDetails.vue';
 import { NcAppContent } from '@nextcloud/vue';
 
 
 export default {
   name: "app",
   components: {
-    ZakenOverviewList,
+	ZakenList,
     Navigation,
+	ZaakDetails,
     NcAppContent
   }
 

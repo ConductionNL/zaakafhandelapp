@@ -38,7 +38,7 @@ class KlantenController extends Controller
 	 */
 	public function index(): TemplateResponse
 	{
-		return new TemplateResponse(Application::APP_ID, "takenIndex", []);
+		return new TemplateResponse(Application::APP_ID, "klantenIndex", []);
 	}
 
 	/**

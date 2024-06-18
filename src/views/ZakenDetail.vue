@@ -4,31 +4,7 @@
 
     <div id="app-content">
       <!-- app-content-wrapper is optional, only use if app-content-list  -->
-      <div class="zakenContainer">
-        <h1 class="h1">{{ zaak.omschrijving }}</h1>
-        <div class="grid">
-          <div class="gridContent">
-            <h4>SamenwerkingsID:</h4>
-            <span>{{ zaak.identificatie }}</span>
-          </div>
-          <div class="gridContent">
-            <h4>Aangemaakt Door:</h4>
-            <span>{{ zaak.bronorganisatie }}</span>
-          </div>
-          <div class="gridContent">
-            <h4>Startdatum:</h4>
-            <span>{{ zaak.startdatum }}</span>
-          </div>
-          <div class="gridContent">
-            <h4>Status:</h4>
-            <span>{{ zaak.archiefstatus }}</span>
-          </div>
-        </div>
-        <div>
-          <h4>Beschrijving samenwerking:</h4>
-          <p>{{ zaak.toelichting }}</p>
-        </div>
-      </div>
+      <ZaakDetails />
     </div>
   </div>
 </template>
@@ -38,6 +14,7 @@ import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import Navigation from './viewParts/Navigation.vue';
+import ZaakDetails from './viewParts/ZaakDetails.vue';
 import { TEMP_AUTHORIZATION_KEY } from '../data/TempAuthKey';
 
 Vue.use(Loading);

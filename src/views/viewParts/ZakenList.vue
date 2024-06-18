@@ -16,17 +16,46 @@
             'Aanmelding hondenbelasting' : (zaak?.zaaktype ?? 'Onbekend') }}
         </template>
       </NcListItem>
+
+		<NcListItem v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`"
+			:name="zaak?.omschrijving"
+			:bold="false"
+			:force-display-actions="true"
+			:details="'1h'"
+			:counter-number="44">
+			:href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id"
+			<template #icon>
+				<BriefcaseOutline disable-menu :size="44" user="janedoe" display-name="Jane Doe" />
+			</template>
+			<template #subname>
+				{{ zaak?.zaaktype === 'http://localhost/api/ztc/v1/zaaktypen/a1748dd6-50a3-464d-b95e-554e87298ce9' ?
+				'Aanmelding hondenbelasting' : (zaak?.zaaktype ?? 'Onbekend') }}
+			</template>
+			<template #actions>
+				<NcActionButton>
+					Button one
+				</NcActionButton>
+				<NcActionButton>
+					Button two
+				</NcActionButton>
+				<NcActionButton>
+					Button three
+				</NcActionButton>
+			</template>
+		</NcListItem>
     </ul>
   </NcAppContentList>
 </template>
 <script>
+
 import Vue from 'vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import { BPaginationNav, BPagination } from 'bootstrap-vue'
 import { TEMP_AUTHORIZATION_KEY } from '../../data/TempAuthKey';
-import { NcListItem, NcAppContentList, NcTextField } from '@nextcloud/vue';
-import Magnify from 'vue-material-design-icons/Magnify'
+import { NcListItem,NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField } from '@nextcloud/vue';
+import Magnify from 'vue-material-design-icons/Magnify';
+import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline';
 
 Vue.component('b-pagination-nav', BPaginationNav)
 Vue.component('b-pagination', BPagination)
@@ -34,14 +63,18 @@ Vue.component('b-pagination', BPagination)
 Vue.use(Loading);
 
 export default {
-  name: "ZakenOverviewTable",
+  name: "ZakenList",
   props: {
     msg: String,
   },
   components: {
     NcListItem,
+    NcListItemIcon,
+	  NcActionButton,
+	  NcAvatar,
     NcAppContentList,
     NcTextField,
+	  BriefcaseOutline,
     Magnify
   },
   data() {
