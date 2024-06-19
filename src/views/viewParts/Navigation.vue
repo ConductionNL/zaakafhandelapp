@@ -9,7 +9,7 @@
 			<NcAppNavigationItem :active="selected === 'zaken'" icon="" name="Zaken"
 				href="/index.php/apps/dsonextcloud/zaken">
 				<template #icon>
-					<FolderOutline :size="20" />
+					<BriefcaseAccountOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem :active="selected === 'taken'" icon="" name="Taken"
@@ -21,7 +21,7 @@
 			<NcAppNavigationItem :active="selected === 'klanten'" icon="" name="Klanten"
 				href=" /index.php/apps/dsonextcloud/klanten">
 				<template #icon>
-					<BriefcaseAccountOutline :size="20" />
+					<AccountGroupOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem :active="selected === 'contact_momenten'" icon="" name="Contact Momenten"
@@ -45,7 +45,7 @@
 			<NcAppNavigationItem :active="selected === 'configuration'" icon="" name="Configuration"
 				href=" /index.php/apps/dsonextcloud/configuration">
 				<template #icon>
-					<DatabaseCogOutline :size="20" />
+					<BriefcaseOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 
@@ -56,12 +56,12 @@
 <script>
 import { NcAppNavigation, NcAppNavigationList, NcAppNavigationItem, NcAppNavigationNewItem, NcAppNavigationSettings } from '@nextcloud/vue';
 import Plus from 'vue-material-design-icons/Plus'
-import FolderOutline from 'vue-material-design-icons/FolderOutline'
+import AccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
-import DatabaseCogOutline from 'vue-material-design-icons/DatabaseCogOutline'
+import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline'
 
 export default {
 	name: "Navigation",
@@ -75,12 +75,12 @@ export default {
 		NcAppNavigationNewItem,
 		NcAppNavigationSettings,
 		Plus,
-		FolderOutline,
+		BriefcaseOutline,
 		CalendarMonthOutline,
 		ChatOutline,
 		BriefcaseAccountOutline,
 		AlphaTBoxOutline,
-		DatabaseCogOutline
+		AccountGroupOutline
 	}
 }
 </script>
