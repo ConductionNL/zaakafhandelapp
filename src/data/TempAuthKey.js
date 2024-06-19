@@ -1,1 +1,0 @@
-export const TEMP_AUTHORIZATION_KEY = "key"
