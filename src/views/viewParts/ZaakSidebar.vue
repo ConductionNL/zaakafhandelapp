@@ -30,6 +30,15 @@
 				Publiceren
 			</NcButton>
 		</NcAppSidebarTab>
+		<NcAppSidebarTab name="Notities" id="notities-tab">
+			<template #icon>
+				<ShareVariant :size="20" />
+			</template>
+			Notities
+			<NcButton type="primary">
+				notities
+			</NcButton>
+		</NcAppSidebarTab>
 	</NcAppSidebar>
 </template>
 <script>
