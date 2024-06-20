@@ -1,24 +1,36 @@
 <template>
-	<NcModal
-		v-if="modal"
-		ref="modalRef"
-		@close="closeModal"
-		name="Name inside modal">
+	<NcModal v-if="zaakAanmakenModal"  @close="closeModal">
 		<div class="modal__content">
-			<h2>Zaak Type</h2>
+			<h2>Zaak aanmaken</h2>
 			<div class="form-group">
-				<label for="pizza">What is the most important pizza item?</label>
-				<NcSelect input-id="pizza" :options="['Cheese', 'Tomatos', 'Pineapples']" v-model="pizza" />
+				<NcTextField label="Identificatie" :value.sync="identificatie" />
 			</div>
-			<h2>Please enter your name</h2>
 			<div class="form-group">
-				<NcTextField label="First Name" :value.sync="firstName" />
+				<NcTextField label="Omschrijving" :value.sync="omschrijving" />
+			</div>
+			<div class="form-group">
+				<NcTextArea label="Toelichting" :value.sync="toelichting" />
+			</div>
+			<div class="form-group">
+				<NcTextField label="Bronorganisatie" :value.sync="bronorganisatie" />
+			</div>
+			<div class="form-group">
+				<NcTextField label="VerantwoordelijkeOrganisatie" :value.sync="verantwoordelijkeOrganisatie" />
+			</div>
+			<div class="form-group">
+				<NcTextField label="Zaaktype" :value.sync="zaaktype" />
+			</div>
+			<div class="form-group">
+				<NcTextField label="Archiefstatus" :value.sync="archiefstatus" />
+			</div>
+			<div class="form-group">
+				<NcTextField label="Startdatum" :value.sync="startdatum" />
 			</div>
 
+
 			<NcButton
-				:disabled="!firstName || !lastName || !pizza"
-				@click="closeModal"
-				type="primary">
+				:disabled="!identificatie || !omschrijving || !toelichting || !bronorganisatie || !verantwoordelijkeOrganisatie || !zaaktype || !archiefstatus || !startdatum"
+				@click="addZaak" type="primary">
 				Submit
 			</NcButton>
 		</div>
@@ -26,7 +38,7 @@
 </template>
 <script>
 
-import { ref } from 'vue'
+import { inject } from 'vue'
 
 import { NcModal,NcButton,NcSelect,NcTextField  } from '@nextcloud/vue';
 
@@ -40,12 +52,11 @@ export default {
 	},
 	setup() {
 		return {
-			modalRef: ref(null),
+			zaakAanmakenModal: inject("zaakAanmakenModal")
 		}
 	},
 	data() {
 		return {
-			modal: false,
 			firstName: '',
 			lastName: '',
 			pizza: [],
@@ -55,7 +66,7 @@ export default {
 		showModal() {
 			this.firstName = ''
 			this.lastName = ''
-			this.modal = true
+			this.zaakAanmakenModal = true
 		},
 		closeModal() {
 			this.modal = false

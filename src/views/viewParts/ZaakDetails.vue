@@ -7,8 +7,7 @@
 			<NcButton type="primary" @click="showModal">
 				Zaak aanmaken
 			</NcButton>
-
-			<NcModal v-if="modal" ref="modalRef" @close="closeModal">
+			<NcModal v-if="zaakAanmakenModalTwee"  @close="closeModal">
 				<div class="modal__content">
 					<h2>Zaak aanmaken</h2>
 					<div class="form-group">
@@ -46,12 +45,13 @@
 			</NcModal>
 
 			<zaakToevoegen />
+
 		</template>
 	</NcEmptyContent>
 </template>
 <script>
 
-import Vue from 'vue';
+import { inject } from 'vue'
 import zaakToevoegen from './zaakToevoegen.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline';
 import { NcEmptyContent, NcButton, NcModal, NcTextField, NcSelect, NcEmojiPicker, NcTextArea } from '@nextcloud/vue';
@@ -61,12 +61,13 @@ export default {
 	name: "ZaakDetails",
 	setup() {
 		return {
-			modalRef: Vue.ref(null),
+			zaakAanmakenModal: inject("zaakAanmakenModal")
 		}
 	},
 	data() {
 		return {
-			modal: false,
+			zaakAanmakenModal: false,
+			zaakAanmakenModalTwee: false,
 			identificatie: '',
 			omschrijving: '',
 			toelichting: '',
@@ -99,10 +100,10 @@ export default {
 			this.zaaktype = 'http://localhost/api/ztc/v1/zaaktypen/a1748dd6-50a3-464d-b95e-554e87298ce9'
 			this.archiefstatus = ''
 			this.startdatum = ''
-			this.modal = true
+			this.zaakAanmakenModalTwee = true
 		},
 		closeModal() {
-			this.modal = false
+			this.zaakAanmakenModalTwee = false
 		},
 
 		addZaak() {
@@ -135,7 +136,8 @@ export default {
 	}
 }
 </script>
-<style>
+
+<style scoped>
 .modal__content {
 	margin: 50px;
 	text-align: center;
