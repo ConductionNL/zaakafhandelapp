@@ -13,14 +13,15 @@
 		<!-- <ZaakSidebar /> -->
 	</NcContent>
 </template>
-<script>
 
+<script>
 import ZakenList from './viewParts/ZakenList.vue';
 import Navigation from './viewParts/Navigation.vue';
 import ZaakDetails from './viewParts/ZaakDetails.vue';
 import ZakenDetail from './ZakenDetail.vue';
 import ZaakSidebar from './viewParts/ZaakSidebar.vue';
 import { NcAppContent, NcContent } from '@nextcloud/vue';
+
 export default {
 	name: "app",
 	components: {

@@ -8,9 +8,9 @@
         </NcTextField>
       </div>
 
-      <NcListItem v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" :name="zaak?.omschrijving" :bold="false"
-        :force-display-actions="true" :active="activeZaak === zaak.id" :details="'1h'" :counter-number="44"
-        @click="setActive(zaak.id)">
+      <NcListItem v-if="!loading" v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" :name="zaak?.omschrijving"
+        :bold="false" :force-display-actions="true" :active="activeZaak === zaak.id" :details="'1h'"
+        :counter-number="44" @click="setActive(zaak.id)">
 
         <template #icon>
           <BriefcaseOutline :class="activeZaak === zaak.id && 'selectedZaakIcon'" disable-menu :size="44" user="janedoe"
@@ -33,36 +33,16 @@
         </template>
       </NcListItem>
 
-      <div v-if="loading">
-        <div class="skeletonContainer">
-          <VueSkeletonLoader type="circle" :size="44" animation="fade" />
-
-          <div class="skeletonParagraph">
-            <VueSkeletonLoader type="rectangle" :width="200" :height="15" animation="fade" rounded />
-            <VueSkeletonLoader class="skeletonParagraphLastChild" type="rectangle" :width="165" :height="15"
-              animation="fade" rounded />
-          </div>
-        </div>
-
-        <div class="skeletonContainer">
-          <VueSkeletonLoader type="circle" :size="44" animation="fade" />
-
-          <div class="skeletonParagraph">
-            <VueSkeletonLoader type="rectangle" :width="200" :height="15" animation="fade" rounded />
-            <VueSkeletonLoader class="skeletonParagraphLastChild" type="rectangle" :width="165" :height="15"
-              animation="fade" rounded />
-          </div>
-        </div>
-      </div>
+      <NcLoadingIcon v-if="loading" class="loadingIcon" :size="64" appearance="dark"
+        name="Zaken aan het laden" />
     </ul>
   </NcAppContentList>
 </template>
 <script>
 import { TEMP_AUTHORIZATION_KEY } from '../../data/TempAuthKey';
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField } from '@nextcloud/vue';
+import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue';
 import Magnify from 'vue-material-design-icons/Magnify';
 import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline';
-import VueSkeletonLoader from 'skeleton-loader-vue';
 
 export default {
   name: "ZakenList",
@@ -75,7 +55,7 @@ export default {
     NcTextField,
     BriefcaseOutline,
     Magnify,
-    VueSkeletonLoader
+    NcLoadingIcon
   },
   data() {
     return {
@@ -144,19 +124,7 @@ export default {
   fill: white;
 }
 
-.skeletonContainer {
-  display: flex;
-  padding: 8px 10px;
-  margin: 4px;
-}
-
-.skeletonParagraph {
-  align-content: center;
-  margin-inline-start: 10px;
-
-}
-
-.skeletonParagraphLastChild {
-  margin-block-start: 3px;
+.loadingIcon {
+  margin-block-start: var(--zaa-margin-20);
 }
 </style>
