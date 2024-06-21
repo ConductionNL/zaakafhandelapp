@@ -49,7 +49,7 @@ export default {
         loader: "dots",
       });
       fetch(
-        'https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken?' + new URLSearchParams({ page: newPage ?? this.currentPage, _limit: this.perPageLimit }),
+        'https://api.test.common-gateway.commonground.nu/api/kic/v1/klantcontacten?' + new URLSearchParams({ page: newPage ?? this.currentPage, _limit: this.perPageLimit }),
         {
           method: 'GET',
           headers: {
