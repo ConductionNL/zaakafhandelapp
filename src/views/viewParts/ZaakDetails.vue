@@ -1,5 +1,5 @@
 <template>
-	<NcEmptyContent name="Geen zaak" description="Nog geen zaak geselecteerd">
+	<NcEmptyContent name="Geen zaak" description="Nog geen zaak geselecteerd" class="zaakDetailsContainer">
 		<template #icon>
 			<BriefcaseAccountOutline />
 		</template>
@@ -35,8 +35,6 @@
 					<div class="form-group">
 						<NcTextField label="Startdatum" :value.sync="startdatum" />
 					</div>
-
-
 					<NcButton
 						:disabled="!identificatie || !omschrijving || !toelichting || !bronorganisatie || !verantwoordelijkeOrganisatie || !zaaktype || !archiefstatus || !startdatum"
 						@click="addZaak" type="primary">
@@ -49,8 +47,8 @@
 		</template>
 	</NcEmptyContent>
 </template>
-<script>
 
+<script>
 import Vue from 'vue';
 import zaakToevoegen from './zaakToevoegen.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline';
@@ -135,9 +133,16 @@ export default {
 	}
 }
 </script>
+
 <style>
 .modal__content {
-	margin: 50px;
+	margin: var(--zaa-margin-50);
 	text-align: center;
+}
+
+.zaakDetailsContainer {
+	margin-block-start: var(--zaa-margin-20);
+	margin-inline-start: var(--zaa-margin-20);
+	margin-inline-end: var(--zaa-margin-20);
 }
 </style>
