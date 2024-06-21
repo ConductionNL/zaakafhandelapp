@@ -13,8 +13,8 @@
 		<!-- <ZaakSidebar /> -->
 	</NcContent>
 </template>
-<script>
 
+<script>
 import ZakenList from './viewParts/ZakenList.vue';
 import Navigation from './viewParts/Navigation.vue';
 import ZaakDetails from './viewParts/ZaakDetails.vue';
