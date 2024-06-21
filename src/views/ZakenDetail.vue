@@ -81,17 +81,16 @@
         </BTabs>
       </div>
     </div>
-    <div v-if="loading" class="zakenDetailContainer">
-      <VueSkeletonLoader type="rectangle" :width="400" :height="200" animation="fade" />
-    </div>
+    <NcLoadingIcon v-if="loading" class="zakenDetailLoadingContainer" :size="100" appearance="dark"
+      name="Zaak details aan het laden" />
   </div>
 </template>
 
 <script>
-import VueSkeletonLoader from 'skeleton-loader-vue';
 import Navigation from './viewParts/Navigation.vue';
 import { TEMP_AUTHORIZATION_KEY } from '../data/TempAuthKey';
 import { BTabs, BTab } from 'bootstrap-vue'
+import { NcLoadingIcon } from '@nextcloud/vue';
 
 export default {
   name: "ZakenDetail",
@@ -111,7 +110,7 @@ export default {
   },
   components: {
     Navigation,
-    VueSkeletonLoader,
+    NcLoadingIcon,
     BTabs,
     BTab,
   },
@@ -155,7 +154,8 @@ export default {
 </script>
 
 <style>
-.zakenDetailContainer {
+.zakenDetailContainer,
+.zakenDetailLoadingContainer {
   margin-block-start: var(--zaa-margin-20);
   margin-inline-start: var(--zaa-margin-20);
   margin-inline-end: var(--zaa-margin-20);
