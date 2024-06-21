@@ -31,22 +31,52 @@
       <div class="tabContainer">
         <BTabs content-class="mt-3" justified>
           <BTab title="Eigenschappen" active>
-            <p class="tabPanel">Eigenschappen</p>
+            <p v-if="zaak?.eigenschappen?.length > 0" class="tabPanel">
+              <span v-for="(eigenschap, i) in zaak?.eigenschappen" :key="i">
+                {{ eigenschap }}
+              </span>
+            </p>
+            <p v-else class="tabPanel">Geen eigenschappen gevonden</p>
           </BTab>
-          <BTab title="Bestanden" active>
-            <p class="tabPanel">Bestanden</p>
+          <BTab title="Bestanden">
+            <p v-if="zaak?.bestanden?.length > 0" class="tabPanel">
+              <span v-for="(bestand, i) in zaak?.bestanden" :key="i">
+                {{ bestand }}
+              </span>
+            </p>
+            <p v-else class="tabPanel">Geen bestanden gevonden</p>
           </BTab>
-          <BTab title="Taken" active>
-            <p class="tabPanel">Taken</p>
+          <BTab title="Taken">
+            <p v-if="zaak?.taken?.length > 0" class="tabPanel">
+              <span v-for="(taak, i) in zaak?.taken" :key="i">
+                {{ taak }}
+              </span>
+            </p>
+            <p v-else class="tabPanel">Geen taken gevonden</p>
           </BTab>
-          <BTab title="Rollen" active>
-            <p class="tabPanel">Rollen</p>
+          <BTab title="Rollen">
+            <p v-if="zaak?.rollen?.length > 0" class="tabPanel">
+              <span v-for="(rol, i) in zaak?.rollen" :key="i">
+                {{ rol }}
+              </span>
+            </p>
+            <p v-else class="tabPanel">Geen rollen gevonden</p>
           </BTab>
-          <BTab title="Contact Momenten" active>
-            <p class="tabPanel">Contact Momenten</p>
+          <BTab title="Contact Momenten">
+            <p v-if="zaak?.contactmomenten?.length > 0" class="tabPanel">
+              <span v-for="(contactmoment, i) in zaak?.contactmomenten" :key="i">
+                {{ contactmoment }}
+              </span>
+            </p>
+            <p v-else class="tabPanel">Geen contact momenten gevonden</p>
           </BTab>
-          <BTab title="Publicaties" active>
-            <p class="tabPanel">Publicaties</p>
+          <BTab title="Publicaties">
+            <p v-if="zaak?.publicaties?.length > 0" class="tabPanel">
+              <span v-for="(publicatie, i) in zaak?.publicaties" :key="i">
+                {{ publicatie }}
+              </span>
+            </p>
+            <p v-else class="tabPanel">Geen publicaties gevonden</p>
           </BTab>
         </BTabs>
       </div>
