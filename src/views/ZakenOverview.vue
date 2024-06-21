@@ -1,51 +1,50 @@
 <template>
-  <div class="container">
-    <Navigation selected="zaken" />
-
-    <div id="app-content">
-      <!-- app-content-wrapper is optional, only use if app-content-list  -->
-      <div class="zakenContainer">
-        <h1 class="h1">Zaken</h1>
-        <ZakenOverviewList />
-      </div>
-    </div>
-  </div>
+	<NcContent appName="dsonextcloud">
+		<Navigation selected="zaken" />
+		<NcAppContent>
+			<template #list>
+				<ZakenList @activeZaak="updateActiveZaak" @activeZaakId="updateActiveZaakId" />
+			</template>
+			<template #default>
+				<ZaakDetails v-if="activeZaak !== true" />
+				<ZakenDetail :zaakId="activeZaakId" v-if="activeZaak === true && activeZaakId" />
+			</template>
+		</NcAppContent>
+		<!-- <ZaakSidebar /> -->
+	</NcContent>
 </template>
 <script>
 
-import ZakenOverviewList from './viewParts/ZakenOverviewList.vue';
+import ZakenList from './viewParts/ZakenList.vue';
 import Navigation from './viewParts/Navigation.vue';
-
-
+import ZaakDetails from './viewParts/ZaakDetails.vue';
+import ZakenDetail from './ZakenDetail.vue';
+import ZaakSidebar from './viewParts/ZaakSidebar.vue';
+import { NcAppContent, NcContent } from '@nextcloud/vue';
 export default {
-  name: "app",
-  components: {
-    ZakenOverviewList,
-    Navigation
-  }
-
+	name: "app",
+	components: {
+		ZakenList,
+		Navigation,
+		ZaakDetails,
+		ZakenDetail,
+		ZaakSidebar,
+		NcAppContent,
+		NcContent
+	},
+	data() {
+		return {
+			activeZaak: false,
+			activeZaakId: '',
+		}
+	},
+	methods: {
+		updateActiveZaak(variable) {
+			this.activeZaak = variable
+		},
+		updateActiveZaakId(variable) {
+			this.activeZaakId = variable
+		}
+	}
 }
 </script>
-<style>
-.container {
-  display: flex;
-  width: 100%;
-}
-
-.h1 {
-  display: block !important;
-  font-size: 2em !important;
-  margin-block-start: 0.67em !important;
-  margin-block-end: 0.67em !important;
-  margin-inline-start: 0px !important;
-  margin-inline-end: 0px !important;
-  font-weight: bold !important;
-  unicode-bidi: isolate !important;
-}
-
-.zakenContainer {
-  margin-block-start: 20px;
-  margin-inline-start: 20px;
-  margin-inline-end: 20px;
-}
-</style>

@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <Navigation />
-
-    <div id="app-content">
+    <div v-if="!loading" id="app-content">
       <!-- app-content-wrapper is optional, only use if app-content-list  -->
       <div class="zakenContainer">
         <h1 class="h1">{{ zaak.omschrijving }}</h1>
@@ -30,64 +28,71 @@
         </div>
       </div>
     </div>
+    <div v-if="loading">
+      <VueSkeletonLoader type="rectangle" :width="400" :height="200" animation="fade" />
+    </div>
   </div>
 </template>
 <script>
 
-import Vue from 'vue';
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+import VueSkeletonLoader from 'skeleton-loader-vue';
 import Navigation from './viewParts/Navigation.vue';
 import { TEMP_AUTHORIZATION_KEY } from '../data/TempAuthKey';
 
-Vue.use(Loading);
-
 export default {
   name: "ZakenDetail",
+  props: {
+    zaakId: {
+      type: String,
+      required: true
+    },
+  },
+  watch: {
+    zaakId: {
+      handler(newZaakId) {
+        this.fetchData(newZaakId)
+      },
+      deep: true
+    }
+  },
   components: {
-    Navigation
+    Navigation,
+    VueSkeletonLoader
   },
   data() {
     return {
       zaak: '',
-      fullPage: false,
-      currentPage: 1,
-      perPageLimit: 10,
+      oldZaakId: '',
+      loading: false,
     }
   },
   mounted() {
-    const url = new URL(window.location)
-    const id = url.pathname.split("/").pop()
-    this.fetchData(id)
+    this.fetchData(this.zaakId)
   },
   methods: {
     fetchData(id) {
-      let loader = this.$loading.show({
-        container: this.fullPage ? null : this.$refs.table,
-        canCancel: true,
-        onCancel: this.onCancel,
-        color: "#39870c",
-        loader: "dots",
-      });
-      fetch(
-        `https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken/${id}`,
-        {
-          method: 'GET',
-          headers: {
-            "Authorization": TEMP_AUTHORIZATION_KEY
-          }
-        },
-      )
-        .then((response) => {
-          response.json().then((data) => {
-            this.zaak = data
+      this.loading = true,
+        fetch(
+          `https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken/${id}`,
+          {
+            method: 'GET',
+            headers: {
+              "Authorization": TEMP_AUTHORIZATION_KEY
+            }
+          },
+        )
+          .then((response) => {
+            response.json().then((data) => {
+              this.zaak = data
+              this.oldZaakId = id
+            })
+            this.loading = false
           })
-          loader.hide()
-        })
-        .catch((err) => {
-          console.error(err)
-          loader.hide()
-        })
+          .catch((err) => {
+            console.error(err)
+            this.oldZaakId = id
+            this.loading = false
+          })
     },
   },
 }

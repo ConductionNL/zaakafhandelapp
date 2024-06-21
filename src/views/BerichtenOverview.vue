@@ -1,6 +1,5 @@
 <template>
-  <div class="container">
-	  <Navigation />
+	<NcContent appName="dsonextcloud">	  <Navigation />
 
 
 
@@ -11,7 +10,7 @@
         <ZakenOverviewTable />
       </div>
     </div>
-  </div>
+	</NcContent>
 </template>
 <script>
 
