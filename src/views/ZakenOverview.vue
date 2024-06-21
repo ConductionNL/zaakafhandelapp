@@ -1,36 +1,51 @@
 <template>
-  <div class="container">
-    <div>
-      <h1 class="heading">Zaken</h1>
-      <ZakenOverviewTable />
-     
-    </div>
-  </div>
+	<NcContent appName="dsonextcloud">
+		<Navigation selected="zaken" />
+		<NcAppContent>
+			<template #list>
+				<ZakenList @activeZaak="updateActiveZaak" @activeZaakId="updateActiveZaakId" />
+			</template>
+			<template #default>
+				<ZaakDetails v-if="activeZaak !== true" />
+				<ZakenDetail :zaakId="activeZaakId" v-if="activeZaak === true && activeZaakId" />
+			</template>
+		</NcAppContent>
+		<!-- <ZaakSidebar /> -->
+	</NcContent>
 </template>
-<script>
-import ZakenOverviewTable from './viewParts/ZakenOverviewTable.vue';
 
+<script>
+import ZakenList from './viewParts/ZakenList.vue';
+import Navigation from './viewParts/Navigation.vue';
+import ZaakDetails from './viewParts/ZaakDetails.vue';
+import ZakenDetail from './ZakenDetail.vue';
+import ZaakSidebar from './viewParts/ZaakSidebar.vue';
+import { NcAppContent, NcContent } from '@nextcloud/vue';
 
 export default {
-  name: "app",
-  components: {
-    ZakenOverviewTable
-  }
-
+	name: "app",
+	components: {
+		ZakenList,
+		Navigation,
+		ZaakDetails,
+		ZakenDetail,
+		ZaakSidebar,
+		NcAppContent,
+		NcContent
+	},
+	data() {
+		return {
+			activeZaak: false,
+			activeZaakId: '',
+		}
+	},
+	methods: {
+		updateActiveZaak(variable) {
+			this.activeZaak = variable
+		},
+		updateActiveZaakId(variable) {
+			this.activeZaakId = variable
+		}
+	}
 }
 </script>
-<style>
-.container {
-  background-color: #ffffff;
-  margin-block-start: 75px;
-  margin-inline-end: auto;
-  margin-inline-start: auto;
-  max-inline-size: calc(1140px - 24px - 24px);
-  padding-inline-end: 24px;
-  padding-inline-start: 24px;
-}
-
-.heading {
-  color: #275937;
-}
-</style>

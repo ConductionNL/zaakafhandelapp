@@ -1,45 +1,14 @@
 <template>
-  <div class="tableContainer">
-    <table class="vld-parent table" ref="table" :current-page="currentPage">
-      <tr>
-        <th>Zaaknummer</th>
-        <th>Aanvrager</th>
-        <th>Zaaktype</th>
-        <th>Archief Status</th>
-        <th>Vertrouwelijkheid</th>
-        <th>Startdatum</th>
-        <th></th>
-      </tr>
-      <tr v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" class="table-rows">
-        <td class="td">
-          {{ zaak?.identificatie === "string" ? "ZAAK-2019-183641313" : (zaak?.identificatie ?? "Onbekend") }}
-        </td>
-        <td class="td">
-          {{ zaak?.bronorganisatie !== "string" ? zaak?.bronorganisatie : "Onbekend" }}
-        </td>
-        <td class="td">
-          {{ zaak?.zaaktype === "http://localhost/api/ztc/v1/zaaktypen/a1748dd6-50a3-464d-b95e-554e87298ce9" ?
-            "Aanmelding hondenbelasting" : (zaak?.zaaktype ?? "Onbekend") }}
-        </td>
-        <td class="td">
-          {{ zaak?.archiefstatus ?? "Onbekend" }}
-        </td>
-        <td class="td">
-          {{ zaak?.vertrouwelijkheidaanduiding ?? "Onbekend" }}
-        </td>
-        <td class="td">
-          {{ zaak?.startdatum ?? "Onbekend" }}
-        </td>
-        <td class="td">
-          <a class="link" :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">Details</a>
-        </td>
-      </tr>
-    </table>
-
-    <b-pagination class="pagination" @page-click="onPageClick" v-model="currentPage" :total-rows="zaken?.count"
-      :per-page="perPageLimit"></b-pagination>
-
-  </div>
+	<div class="app-content-list">
+		<a class="app-content-list-item" v-for="(zaak, i) in zaken.results" :key="`${zaak}${i}`" :href="'/index.php/apps/dsonextcloud/zaken/' + zaak.id">
+			<div class="app-content-list-item-star icon-starred"></div>
+			<div class="app-content-list-item-icon" style="background-color: rgb(41, 97, 156);">N</div>
+			<div class="app-content-list-item-line-one">{{ zaak?.omschrijving ?? "Onbekend" }}</div>
+			<div class="app-content-list-item-line-two">{{ zaak?.zaaktype ?? "Onbekend" }}</div>
+			<span class="app-content-list-item-details">{{ zaak?.einddatumGepland ?? "Onbekend" }}</span>
+			<div class="icon-more"></div>
+		</a>
+	</div>
 </template>
 <script>
 import Vue from 'vue';
@@ -79,7 +48,7 @@ export default {
         loader: "dots",
       });
       fetch(
-        'https://api.test.common-gateway.commonground.nu/api/zrc/v1/zaken?' + new URLSearchParams({ page: newPage ?? this.currentPage, _limit: this.perPageLimit }),
+        'https://api.test.common-gateway.commonground.nu/api/kic/v1/partijen?' + new URLSearchParams({ page: newPage ?? this.currentPage, _limit: this.perPageLimit }),
         {
           method: 'GET',
           headers: {
