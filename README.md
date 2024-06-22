@@ -34,7 +34,11 @@ Wacht totdat de app zichtbaar is in de navigatie balk en klik op de app.
 
 ![navigationBarZaa](img/navigationBarZaa.png)
 
+## TempAuthKey
+Omdat we nu nog met een temp auth key werken moet je in src/data een bestand TempAuthKey.js toevoegen met daarin één variable namenlijk de zgw auth key
 
+```json
+```
 
 ## Documentatie
 [Icons](https://pictogrammers.com/library/mdi/)
