@@ -42,26 +42,68 @@
 				</template>
 			</NcAppNavigationItem>
 
-			<NcAppNavigationItem :active="selected === 'configuration'" icon="" name="Configuration"
-				href=" /index.php/apps/dsonextcloud/configuration">
+			<NcAppNavigationItem @click="settingsOpen = true" name="Configuration">
 				<template #icon>
 					<BriefcaseOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
+
+			<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
+				<NcAppSettingsSection id="sharing" name="Connections" docUrl="zaakafhandel.app">
+					<template #icon>
+						<Connection :size="20" />
+					</template>
+
+					<p>
+						Here you can set the details for varius connection
+					</p>
+
+					<p>
+						<table>
+							<tbody>
+								<tr>
+									<td class="row-name">ZRC</td>		
+									<td>Location</td>
+									<td><NcTextField :value.sync="zrc_location"
+										id="zrc_location"
+										:label-outside="true"
+										placeholder="https://"/></td>
+									<td>Key</td>
+									<td><NcTextField :value.sync="zrc_key"
+										id="zrc_key"
+										:label-outside="true"
+										placeholder="***"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</p>
+					<NcButton aria-label="Save" type="primary" wide>
+						<template #icon>
+							<ContentSave :size="20" />
+						</template>
+						Save
+					</NcButton>
+
+				</NcAppSettingsSection>
+
+			</NcAppSettingsDialog>
 
 
 		</NcAppNavigationSettings>
 	</NcAppNavigation>
 </template>
 <script>
-import { NcAppNavigation, NcAppNavigationList, NcAppNavigationItem, NcAppNavigationNewItem, NcAppNavigationSettings } from '@nextcloud/vue';
+import { NcAppNavigation, NcAppNavigationList, NcAppNavigationItem, NcAppNavigationNewItem, NcAppNavigationSettings,NcAppSettingsDialog,NcAppSettingsSection,NcButton,NcTextField   } from '@nextcloud/vue';
 import Plus from 'vue-material-design-icons/Plus'
 import AccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
-import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline'
+import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline'  
+import Connection from 'vue-material-design-icons/Connection'
+import Check from 'vue-material-design-icons/Check' 
+import ContentSave from 'vue-material-design-icons/ContentSave' 
 
 export default {
 	name: "Navigation",
@@ -74,14 +116,66 @@ export default {
 		NcAppNavigationItem,
 		NcAppNavigationNewItem,
 		NcAppNavigationSettings,
+		NcAppSettingsDialog,
+		NcAppSettingsSection,
+		NcTextField,
+		NcButton,
+		Connection,
+		Check,
 		Plus,
 		BriefcaseOutline,
 		CalendarMonthOutline,
 		ChatOutline,
 		BriefcaseAccountOutline,
 		AlphaTBoxOutline,
-		AccountGroupOutline
+		AccountGroupOutline,
+		ContentSave
+	},
+	data() {
+		return {
+			settingsOpen: false,
+			zrc_location: "",
+			zrc_key: "",
+			ztc_location: "",
+			ztc_key: "",
+			drc_location: "",
+			drc_key: ""
+		}
+	},
+	methods: {
+		save() {
+			this.zrc_location = ''
+			this.zrc_key = ''
+		}
 	}
 }
 </script>
-<style></style>
+<style>
+table {
+	table-layout: fixed;
+}
+
+td.row-name {
+	padding-inline-start: 16px;
+}
+
+td.row-size {
+	text-align: right;
+	padding-inline-end: 16px;
+}
+
+.table-header {
+	font-weight: normal;
+	color: var(--color-text-maxcontrast);
+}
+
+.sort-icon {
+	color: var(--color-text-maxcontrast);
+	position: relative;
+	inset-inline: -10px;
+}
+
+.row-size .sort-icon {
+	inset-inline: 10px;
+}
+</style>

@@ -35,10 +35,16 @@ Wacht totdat de app zichtbaar is in de navigatie balk en klik op de app.
 ![navigationBarZaa](img/navigationBarZaa.png)
 
 
+````json
+export const TEMP_AUTHORIZATION_KEY = "key"
+````
 
 ## Documentatie
-[Icons](https://pictogrammers.com/library/mdi/)
+- [Icons](https://pictogrammers.com/library/mdi/)
+- [Layout](https://docs.nextcloud.com/server/latest/developer_manual/design/layout.html)
+- [Componenten](https://nextcloud-vue-components.netlify.app/)
+- [Developing on wsl with visual studio](https://code.visualstudio.com/docs/remote/wsl)
 
-[Layout](https://docs.nextcloud.com/server/latest/developer_manual/design/layout.html)
-
-[Componenten](https://nextcloud-vue-components.netlify.app/)
+## Onze favo dev omgeving
+- https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+- https://marketplace.visualstudio.com/items?itemName=Vue.volar
