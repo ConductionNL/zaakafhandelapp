@@ -1,4 +1,4 @@
-import ZakenOverview from "./views/ZakenOverview.vue";
+import ZakenOverview from "./views/zaken/ZakenOverview.vue";
 import Vue from "vue";
 Vue.mixin({ methods: { t, n } });
 

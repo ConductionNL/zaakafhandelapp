@@ -87,8 +87,8 @@
 </template>
 
 <script>
-import Navigation from './viewParts/Navigation.vue';
-import { TEMP_AUTHORIZATION_KEY } from '../data/TempAuthKey';
+import Navigation from '../viewParts/Navigation.vue';
+import { TEMP_AUTHORIZATION_KEY } from '../../data/TempAuthKey';
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue';
 
