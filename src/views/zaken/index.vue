@@ -1,5 +1,5 @@
 <template>
-	<NcContent appName="dsonextcloud">
+	<NcContent app-name="dsonextcloud">
 		<Navigation selected="zaken" />
 		<NcAppContent>
 			<template #list>
@@ -18,7 +18,7 @@
 import ZakenList from './viewParts/ZakenList.vue';
 import Navigation from './viewParts/Navigation.vue';
 import ZaakDetails from './viewParts/ZaakDetails.vue';
-import ZakenDetail from './ZakenDetail.vue';
+import ZakenDetail from './details.vue';
 import ZaakSidebar from './viewParts/ZaakSidebar.vue';
 import { NcAppContent, NcContent } from '@nextcloud/vue';
 
