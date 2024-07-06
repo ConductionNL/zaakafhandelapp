@@ -1,3 +1,15 @@
+# Zaak Afhandel App
+
+Deze nextcloud app voorziet in een klein doch volledige zaak afhandel applicatie
+
+## Features
+
+1. Zaakafhaneling
+2. Toewijzen van taken aan medewerkers en klanten
+3. Versturen van berichten
+4. Inzien en aanpassen van klant gegevens
+
+
 ## Installatie
 
 Volg voor het het lokaal installeren van Nextcloud de handleiding op https://cloud.nextcloud.com/s/iyNGp8ryWxc7Efa?dir=undefined&path=%2F1%20Setting%20up%20a%20development%20environment%2FTutorial%20for%20Windows&openfile=7087340

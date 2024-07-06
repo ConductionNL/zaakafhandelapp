@@ -1,29 +1,27 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-	<id>dsonextcloud</id>
-	<name>Zaak Afhandel App</name>
-	<summary>ZAA</summary>
+	<id>zaakafhandelapp</id>
+	<name>
+	Zaak Afhandel App</name>
+	<summary>The Zaak Afhandel App (ZAA), or in english Case Managment App is a nextcloud app that provid a basic case Managment funtionality</summary>
 	<description>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionNL</description>
 	<version>1.0.0</version>
 	<licence>eupl 1.2</licence>
 	<author mail="info@conduction.nl" homepage="https://conduction.nl/">Conduction</author>
-	<namespace>DsoNextcloud</namespace>
+	<namespace>zaakafhandelapp</namespace>
 	<category>dashboard</category>
-	<bugs>https://github.com/ConductionNL/dsonextcloud/issues</bugs>
+	<bugs>https://github.com/ConductionNL/zaakafhandelapp/issues</bugs>
 	<dependencies>
 		<nextcloud min-version="26" max-version="29"/>
 	</dependencies>
 	<navigations>
 		<navigation>
-			<id>dsonextcloud</id>
-			<name>ZAA (Zaak Afhandel App)</name>
-			<route>dsonextcloud.zaken.index</route>
+			<id>zaakafhandelapp</id>
+			<name>Zaak Afhandel App</name>
+			<route>zaakafhandelapp.zaken.index</route>
 			<icon>app.svg</icon>
 			<order>8</order>
 		</navigation>
 	</navigations>
-	<settings>
-		<admin>OCA\DsoNextcloud\Settings\Admin</admin>
-	</settings>
 </info>
