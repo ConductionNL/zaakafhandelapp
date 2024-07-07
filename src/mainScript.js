@@ -1,6 +1,6 @@
-import DashboardView from "./views/DashboardView.vue";
+import DashboardView from "./App.vue";
 import Vue from "vue";
 Vue.mixin({ methods: { t, n } });
 
-const VueApp = Vue.extend(DashboardView);
+const VueApp = Vue.extend(App);
 new VueApp().$mount("#zaakafhandelapp");
