@@ -22,6 +22,12 @@ Volg voor het het lokaal installeren van Nextcloud de handleiding op https://clo
 
    ![appsOverview.png](img/appsOverview.png)
 
+# Frontend veranderen
+Om de frontend te veranderen verander je de content in de .vue bestanden.
+Elke keer als je iets hebt gewijzigd in en .vue bestand dan moet je `npm run dev` draaien. Een makkelijkere manier om dit bij te houden is `npm run watch` dit commando kijkt naar veranderingen in de .vue bestanden en zet dit meteen door.
+Je moet wel elke keer als je iets veranderd verversen
+
+
 ## Code bekijken
 
 \\wsl.localhost\Ubuntu-20.04\home\user\nextcloud-docker-dev\workspace\server\apps-extra
