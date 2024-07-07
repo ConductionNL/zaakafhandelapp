@@ -19,7 +19,7 @@
 		<navigation>
 			<id>zaakafhandelapp</id>
 			<name>Zaak Afhandel App</name>
-			<route>zaakafhandelapp.zaken.index</route>
+			<route>zaakafhandelapp.dashboard.page</route>
 			<icon>app.svg</icon>
 			<order>8</order>
 		</navigation>
