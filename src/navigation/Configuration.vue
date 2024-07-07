@@ -3,6 +3,24 @@ import { store } from '../store.js'
 </script>
 
 <template><NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
+	<NcAppSettingsSection id="sharing" name="Storage" doc-url="zaakafhandel.app">
+		<template #icon>
+			<Connection :size="20" />
+		</template>
+
+		<p>
+			The ZaakAfhandelApp allows three types of storage:
+			
+			<ul>
+				<li>In the nexcloud database (default)</li>
+				<li>In an seperate object store e.g. monogodb (recomended for small organisations)</li>
+				<li>In seperate zgw registers e.g ZRR, ZDC (recomended of medium and up organisations)</li>
+			</ul>
+
+			The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
+		</p>
+
+	</NcAppSettingsSection>
 	<NcAppSettingsSection id="sharing" name="Connections" doc-url="zaakafhandel.app">
 		<template #icon>
 			<Connection :size="20" />
@@ -11,95 +29,7 @@ import { store } from '../store.js'
 		<p>
 			Here you can set the details for varius Connections
 		</p>
-		<p>
-			<table>
-				<tbody>
-					<tr>
-						<td class="row-name">
-							DRC
-						</td>
-						<td>Location</td>
-						<td>
-							<NcTextField id="drcLocation"
-								:value.sync="configuration.drcLocation"
-								:label-outside="true"
-								placeholder="https://" />
-						</td>
-						<td>Key</td>
-						<td>
-							<NcTextField id="drcKey"
-								:value.sync="configuration.drcKey"
-								:label-outside="true"
-								placeholder="***" />
-						</td>
-					</tr>
-					<tr>
-						<td class="row-name">
-							ORC
-						</td>
-						<td>Location</td>
-						<td>
-							<NcTextField id="orcLocation"
-								:value.sync="configuration.orcLocation"
-								:label-outside="true"
-								placeholder="https://" />
-						</td>
-						<td>Key</td>
-						<td>
-							<NcTextField id="orcKey"
-								:value.sync="configuration.orcKey"
-								:label-outside="true"
-								placeholder="***" />
-						</td>
-					</tr>
-					<tr>
-						<td class="row-name">
-							Elastic
-						</td>
-						<td>Location</td>
-						<td>
-							<NcTextField id="elasticLocation"
-								:value.sync="configuration.elasticLocation"
-								:label-outside="true"
-								placeholder="https://" />
-						</td>
-						<td>Key</td>
-						<td>
-							<NcTextField id="elasticKey"
-								:value.sync="configuration.elasticKey"
-								:label-outside="true"
-								placeholder="***" />
-						</td>
-					</tr>
-					<tr>
-						<td class="row-name">
-							Mongo DB
-						</td>
-						<td>Location</td>
-						<td>
-							<NcTextField id="mongodbLocation"
-								:value.sync="configuration.mongodbLocation"
-								:label-outside="true"
-								placeholder="https://" />
-						</td>
-						<td>Key</td>
-						<td>
-							<NcTextField id="mongodbKey"
-								:value.sync="configuration.mongodbKey"
-								:label-outside="true"
-								placeholder="***" />
-						</td>
-						<td>Cluster name</td>
-						<td>
-							<NcTextField id="mongodbCluster"
-								:value.sync="configuration.mongodbCluster"
-								:label-outside="true"
-								placeholder="***" />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</p>
+		
 		<NcButton aria-label="Save"
 			type="primary"
 			wide
