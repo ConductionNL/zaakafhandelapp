@@ -1,15 +1,18 @@
 <?php
 
-namespace OCA\DsoNextcloud\Controller;
+namespace OCA\ZaakAfhandelApp\Controller;
 
-use OCP\IConfig;
+use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\IAppConfig;
 use OCP\IRequest;
 
-use OCA\DsoNextcloud\AppInfo\Application;
-
-class ContactMomentenController extends Controller
+/**
+ * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ */
+class ZakenController extends Controller
 {
     const TEST_ARRAY = [
         "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [

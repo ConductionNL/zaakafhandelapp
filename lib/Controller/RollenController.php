@@ -1,15 +1,13 @@
 <?php
 
-namespace OCA\DsoNextcloud\Controller;
+namespace OCA\ZaakAfhandelApp\Controller;
 
 use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\IRequest;
 use OCP\IAppConfig;
-
-use OCA\DsoNextcloud\AppInfo\Application;
+use OCP\IRequest;
 
 /**
  * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/

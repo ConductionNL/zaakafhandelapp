@@ -1,14 +1,13 @@
 <?php
 
-namespace OCA\DsoNextcloud\Controller;
+namespace OCA\ZaakAfhandelApp\Controller;
 
-use OCP\IAppConfig;
+use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IAppConfig;
 use OCP\IRequest;
-
-use OCA\DsoNextcloud\AppInfo\Application;
 
 class ConfigurationController extends Controller
 {
