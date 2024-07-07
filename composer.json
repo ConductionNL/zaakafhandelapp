@@ -4,8 +4,18 @@
 	"license": "AGPL-3.0-or-later",
 	"authors": [
 		{
+			"name": "Conduction b.v.",
+			"email": "info@conduction.nl",
+			"homepage": ""
+		},
+		{
 			"name": "Remko Huisman (Conduction)",
 			"email": "remko@conduction.nl",
+			"homepage": ""
+		},
+		{
+			"name": "Ruben van der Linde (Conduction)",
+			"email": "ruben@conduction.nl",
 			"homepage": ""
 		}
 	],
