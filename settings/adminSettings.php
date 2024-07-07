@@ -1,15 +1,13 @@
 <?php
-namespace OCA\DsoNextcloud\Settings;
+namespace OCA\ZaakAfhandelApp\Settings;
 
-use OCA\DsoNextcloud\Collector;
+use OCA\ZaakAfhandelApp\Collector;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\BackgroundJob\IJobList;
 use OCP\IConfig;
 use OCP\IDateTimeFormatter;
 use OCP\IL10N;
 use OCP\Settings\ISettings;
-
-use OCA\DsoNextcloud\AppInfo\Application;
 
 class AdminSettings implements ISettings {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace OCA\DsoNextcloud\AppInfo;
+namespace OCA\ZaakAfhandelApp\AppInfo;
 
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
@@ -10,11 +10,11 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 /**
  * Class Application
  *
- * @package OCA\DsoNextcloud\AppInfo
+ * @package OCA\ZaakAfhandelApp\AppInfo
  */
 class Application extends App implements IBootstrap
 {
-	public const APP_ID = 'dsonextcloud';
+	public const APP_ID = 'zaakafhandelapp';
 
 	/**
 	 * Constructor

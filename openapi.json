@@ -1,9 +1,9 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "dsonextcloud",
+        "title": "zaakafhandelapp",
         "version": "0.0.1",
-        "description": "DSO Nextcloud",
+        "description": "Zaak Afhandel App",
         "license": {
             "name": "agpl"
         }
@@ -47,7 +47,7 @@
         }
     },
     "paths": {
-        "/ocs/v2.php/apps/dsonextcloud/api": {
+        "/ocs/v2.php/apps/zaakafhandelapp/api": {
             "get": {
                 "operationId": "api-index",
                 "summary": "An example API endpoint",

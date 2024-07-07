@@ -1,6 +1,6 @@
 {
-	"name": "nextcloud/dsonextcloud",
-	"description": "This is a DSO Nextcloud project for the municipality Buren and is done by ConductionNL",
+	"name": "nextcloud/zaakafhandelapp",
+	"description": "This nextcloud app provid a basic zaak afhandel component for dutch governemental institutions",
 	"license": "AGPL-3.0-or-later",
 	"authors": [
 		{
@@ -21,7 +21,7 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"OCA\\DsoNextcloud\\": "lib/"
+			"OCA\\ZaakAfhandelApp\\": "lib/"
 		}
 	},
 	"scripts": {

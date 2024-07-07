@@ -17,7 +17,7 @@ Volg voor het het lokaal installeren van Nextcloud de handleiding op https://clo
 !let op! Installatie via de Nextcloud handleiding plaats de code in je ubuntu vm (wml) waarmee die niet vanzelf in windows file explorer terugkomt. Wil je je WSL bekijken via file explorer tik dan \\wsl$ in de adresbalk
 
 1. Navigeer binnen de Nextcloud folder op je wsl naar de workspace/server/apps-extra map, als je de command line interface nog open hebt staan kan dat via cd workspace/server/apps-extra
-2. Clone deze repository naar binnen via het commando `git clone https://github.com/ConductionNL/dsonextcloud`
+2. Clone deze repository naar binnen via het commando `git clone https://github.com/ConductionNL/zaakafhandelapp`
 3. Draai vervolgens de commando's `npm i` en daarna `npm run dev` via de command line interface.
 
    ![appsOverview.png](img/appsOverview.png)
