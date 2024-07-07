@@ -37,6 +37,12 @@ export default {
 		BTabs,
 		BTab
 	},
+	props: {
+		klantId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			klant: [],
@@ -52,13 +58,13 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.klantItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(klantId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/klanten/' + store.klantItem,
+				'/index.php/apps/zaakafhandelapp/api/klanten/' + klantId,
 				{
 					method: 'GET',
 				},

@@ -17,21 +17,21 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(zaken, i) in zakenList.results"
+			<NcListItem v-for="(zaaktypen, i) in zaakTypenList.results"
 				v-if="!loading"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+				:key="`${zaaktypen}${i}`"
+				:name="zaaktypen?.name"
+				:active="store.zaakTypeItem === zaaktypen?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(zaken.id)">
+				@click="setActive(zaaktypen.id)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<AlphaTBoxOutline :class="store.zaakTypenItem === zaaktypen.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ zaaktypen?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -50,17 +50,17 @@ import { store } from '../../store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Zaken aan het laden" />
+				name="Zaak typen aan het laden" />
 		</ul>
 	</NcAppContentList>
 </template>
 <script>
 import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
 import Magnify from 'vue-material-design-icons/Magnify'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
 
 export default {
-	name: 'ZakenList',
+	name: 'ZaakTypeList',
 	components: {
 		NcListItem,
 		NcListItemIcon,
@@ -68,7 +68,7 @@ export default {
 		NcAvatar,
 		NcAppContentList,
 		NcTextField,
-		BriefcaseAccountOutline,
+		AlphaTBoxOutline,
 		Magnify,
 		NcLoadingIcon,
 	},
@@ -76,7 +76,7 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			zakenList: [],
+			zaakTypenList: [],
 		}
 	},
 	mounted() {
@@ -86,14 +86,14 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
+				'/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zakenList = data
+						this.zaakTypenList = data
 					})
 					this.loading = false
 				})
@@ -103,8 +103,8 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setMetadataItem(id);
-			this.$emit('zakenItem', id)
+			store.setZaakTypeItem(id);
+			this.$emit('zaakTypeId', id)
 		},
 		clearText() {
 			this.search = ''

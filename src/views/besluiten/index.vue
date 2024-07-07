@@ -5,7 +5,7 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<ZakenList @metaDataId="updateZakenId" />
+			<ZakenList />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :meta-data-id="zakenId" />
+			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :besluitId="store.besluitItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -46,11 +46,6 @@ export default {
 		return {
 			zakenId: undefined,
 		}
-	},
-	methods: {
-		updateZakenId(variable) {
-			this.zakenId = variable
-		},
-	},
+	}
 }
 </script>

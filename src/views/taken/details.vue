@@ -37,6 +37,12 @@ export default {
 		BTabs,
 		BTab
 	},
+	props: {
+		taakId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			taak: [],
@@ -52,13 +58,13 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.taakItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(taakId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken/' + store.taakItem,
+				'/index.php/apps/zaakafhandelapp/api/taken/' + taakId,
 				{
 					method: 'GET',
 				},

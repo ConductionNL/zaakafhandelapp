@@ -5,7 +5,7 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<BerichtenList @berichtId="updateBerichtId" />
+			<BerichtenList  />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.berichtItem || store.selected != 'berichten' "
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :bericht-id="berichtId" />
+			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :berichtId="store.berichtItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -46,11 +46,6 @@ export default {
 		return {
 			berichtId: undefined,
 		}
-	},
-	methods: {
-		updateBerichtId(variable) {
-			this.berichtId = variable
-		},
-	},
+	}
 }
 </script>

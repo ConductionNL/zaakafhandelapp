@@ -5,7 +5,7 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<TakenList @taakId="updateTaakId" />
+			<TakenList />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.taakItem || store.selected != 'taken' "
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<TaakDetails v-if="store.taakItem && store.selected === 'taken'" :taak-id="takenId" />
+			<TaakDetails v-if="store.taakItem && store.selected === 'taken'" :taakId="store.taakItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -46,11 +46,6 @@ export default {
 		return {
 			takenId: undefined,
 		}
-	},
-	methods: {
-		updateTaakId(variable) {
-			this.takenId = variable
-		},
-	},
+	}
 }
 </script>

@@ -37,6 +37,12 @@ export default {
 		BTabs,
 		BTab
 	},
+	props: {
+		besluitId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			zaak: [],
@@ -44,21 +50,22 @@ export default {
 		}
 	},
 	watch: {
-		zakenId: {
-			handler(zakenId) {
-				this.fetchData(zakenId)
+		besluitId: {
+			handler(besluitId) {
+				this.fetchData(besluitId)
 			},
 			deep: true,
 		},
 	},
+	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.besluitItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(besluitId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + store.zaakItem,
+				'/index.php/apps/zaakafhandelapp/api/zaken/' + besluitId,
 				{
 					method: 'GET',
 				},

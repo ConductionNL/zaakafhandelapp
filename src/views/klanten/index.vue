@@ -5,7 +5,7 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<KlantenList @klantId="updateKlantId" />
+			<KlantenList />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.klantItem || store.selected != 'klanten' "
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<KlantDetails v-if="store.klantItem && store.selected === 'klanten'" :klant-id="klantId" />
+			<KlantDetails v-if="store.klantItem && store.selected === 'klanten'" :klantId="store.klantItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -47,11 +47,6 @@ export default {
 			activeMetaData: false,
 			klantId: undefined,
 		}
-	},
-	methods: {
-		updateKlantId(variable) {
-			this.klantId = variable
-		},
-	},
+	}
 }
 </script>

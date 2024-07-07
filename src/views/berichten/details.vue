@@ -37,6 +37,12 @@ export default {
 		BTabs,
 		BTab
 	},
+	props: {
+		berichtId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			bericht: [],
@@ -51,14 +57,15 @@ export default {
 			deep: true,
 		},
 	},
+	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.berichtItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(berichtId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten/' + store.berichtItem,
+				'/index.php/apps/zaakafhandelapp/api/berichten/' + berichtId,
 				{
 					method: 'GET',
 				},

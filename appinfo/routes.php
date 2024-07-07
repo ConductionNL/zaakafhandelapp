@@ -15,7 +15,7 @@ return [
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/redoc-1.0.2
 	 	'besluiten' => ['url' => 'api/brc'],
 		// Conform ???
-	 	'zaakTypen' => ['url' => 'api/orc'],
+	 	'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		 // Conform ???
 	 	'taken' => ['url' => 'api/taken'],
 	 	'klanten' => ['url' => 'api/klanten'],

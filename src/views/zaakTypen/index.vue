@@ -5,32 +5,32 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<ZakenList @metaDataId="updateZakenId" />
+			<ZaakTypeList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.item || store.selected != 'zaaktypen' "
+			<NcEmptyContent v-if="!store.zaakTypeItem || store.selected != 'zaakTypen' "
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd">				
+				name="Geen Zaaktype"
+				description="Nog geen zaaktype geselecteerd">				
 				<template #icon>
-					<BriefcaseAccountOutline/>
+					<AlphaTBoxOutline/>
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Zaak starten
+					<NcButton type="primary" @click="store.setModal('zaakTypeAdd')">
+						Zaaktype toeveogen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :meta-data-id="zakenId" />
+			<ZaakTypeDetails v-if="store.zaakTypeItem && store.selected === 'zaakTypen'" :zaaktypeId="store.zaakTypeItem" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
 import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import MetaDataList from './list.vue'
-import MetaDataDetails from './details.vue'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import ZaakTypeList from './list.vue'
+import ZaakTypeDetails from './details.vue'
+import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
 
 export default {
 	name: 'ZakenIndex',
@@ -38,20 +38,14 @@ export default {
 		NcAppContent,
 		NcEmptyContent,
 		NcButton,
-		MetaDataList,
-		MetaDataDetails,
-		BriefcaseAccountOutline,
+		ZaakTypeList,
+		ZaakTypeDetails,
+		AlphaTBoxOutline,
 	},
 	data() {
 		return {
-			activeMetaData: false,
 			zaakTypeId: undefined,
 		}
-	},
-	methods: {
-		updateZakenId(variable) {
-			this.zaakTypeId = variable
-		},
-	},
+	}
 }
 </script>

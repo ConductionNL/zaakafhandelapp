@@ -9,12 +9,12 @@ import { store } from '../../store.js'
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<h1 class="h1">
-					{{ zaak.name }}
+					{{ zaaktype.name }}
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
 						<h4>Sammenvatting:</h4>
-						<span>{{ zaak.summary }}</span>
+						<span>{{ zaaktype.summary }}</span>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 		<NcLoadingIcon v-if="loading"
 			:size="100"
 			appearance="dark"
-			name="Zaak details aan het laden" />
+			name="Zaak type details aan het laden" />
 	</div>
 </template>
 
@@ -31,41 +31,47 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'ZaakDetail',
+	name: 'ZaakTypeDetails',
 	components: {
 		NcLoadingIcon,
 		BTabs,
 		BTab
 	},
+	props: {
+		zaaktypeId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
-			zaak: [],
+			zaaktype: [],
 			loading: false,
 		}
 	},
 	watch: {
-		zakenId: {
-			handler(zakenId) {
-				this.fetchData(zakenId)
+		zaaktypeId: {
+			handler(zaaktypeId) {
+				this.fetchData(zaaktypeId)
 			},
 			deep: true,
 		},
 	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.zaakTypeItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(zaaktypeId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + store.zaakItem,
+				'/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen/' + zaaktypeId,
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zaak = data
+						this.zaaktype = data
 					})
 					this.loading = false
 				})

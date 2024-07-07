@@ -37,6 +37,12 @@ export default {
 		BTabs,
 		BTab
 	},
+	props: {
+		statusId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			zaak: [],
@@ -44,21 +50,21 @@ export default {
 		}
 	},
 	watch: {
-		zakenId: {
-			handler(zakenId) {
-				this.fetchData(zakenId)
+		statusId: {
+			handler(statusId) {
+				this.fetchData(statusId)
 			},
 			deep: true,
 		},
 	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(tore.statusItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(statusId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + store.zaakItem,
+				'/index.php/apps/zaakafhandelapp/api/zaken/' + statusId,
 				{
 					method: 'GET',
 				},
