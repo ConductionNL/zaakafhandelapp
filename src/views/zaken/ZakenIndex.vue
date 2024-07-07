@@ -8,28 +8,29 @@ import { store } from '../../store.js'
 			<ZakenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
+			<NcEmptyContent v-if="!store.zaakItem || store.selected != 'zaken' "
 				class="detailContainer"
-				name="Geen besluit"
-				description="Nog geen besluit geselecteerd">				
+				name="Geen Zaak"
+				description="Nog geen zaak geselecteerd">
 				<template #icon>
-					<BriefcaseAccountOutline/>
+					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Besluit aanmaken
+					<NcButton type="primary" @click="store.setModal('zaakAdd')">
+						Zaak starten
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :besluitId="store.besluitItem" />
+			<ZaakDetails v-if="store.zaakItem && store.selected === 'zaken'" :zaakId="store.zaakItem" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import MetaDataList from './list.vue'
-import MetaDataDetails from './details.vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import ZakenList from './ZakenList.vue'
+import ZaakDetails from './ZaakDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
@@ -38,14 +39,14 @@ export default {
 		NcAppContent,
 		NcEmptyContent,
 		NcButton,
-		MetaDataList,
-		MetaDataDetails,
+		ZakenList,
+		ZaakDetails,
 		BriefcaseAccountOutline,
 	},
 	data() {
 		return {
-			zakenId: undefined,
+			zaakId: undefined,
 		}
-	}
+	},
 }
 </script>

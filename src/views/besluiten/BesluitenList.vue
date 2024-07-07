@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul>
+		<ul v-if="!loading">
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -18,7 +18,6 @@ import { store } from '../../store.js'
 			</div>
 
 			<NcListItem v-for="(zaken, i) in zakenList.results"
-				v-if="!loading"
 				:key="`${zaken}${i}`"
 				:name="zaken?.name"
 				:active="store.zakenItem === zaken?.id"
@@ -45,27 +44,27 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-
-			<NcLoadingIcon v-if="loading"
-				class="loadingIcon"
-				:size="64"
-				appearance="dark"
-				name="Zaken aan het laden" />
 		</ul>
+
+		<NcLoadingIcon v-if="loading"
+			class="loadingIcon"
+			:size="64"
+			appearance="dark"
+			name="Besluiten aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
+// eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZakenList',
+	name: 'BesluitenList',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
 		NcTextField,
 		BriefcaseAccountOutline,
@@ -86,7 +85,7 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
+				'/index.php/apps/zaakafhandelapp/api/zaken',
 				{
 					method: 'GET',
 				},
@@ -103,8 +102,7 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setZaakItem(id);
-			this.$emit('zaakId', id)
+			store.setMetadataItem(id);
 		},
 		clearText() {
 			this.search = ''

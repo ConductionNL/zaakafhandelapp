@@ -11,9 +11,9 @@ import { store } from '../../store.js'
 			<NcEmptyContent v-if="!store.zaakTypeItem || store.selected != 'zaakTypen' "
 				class="detailContainer"
 				name="Geen Zaaktype"
-				description="Nog geen zaaktype geselecteerd">				
+				description="Nog geen zaaktype geselecteerd">
 				<template #icon>
-					<AlphaTBoxOutline/>
+					<AlphaTBoxOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('zaakTypeAdd')">
@@ -27,13 +27,14 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import ZaakTypeList from './list.vue'
-import ZaakTypeDetails from './details.vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import ZaakTypeList from './ZaakTypenList.vue'
+import ZaakTypeDetails from './ZaakTypeDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
 
 export default {
-	name: 'ZakenIndex',
+	name: 'ZakenTypenIndex',
 	components: {
 		NcAppContent,
 		NcEmptyContent,
@@ -46,6 +47,6 @@ export default {
 		return {
 			zaakTypeId: undefined,
 		}
-	}
+	},
 }
 </script>

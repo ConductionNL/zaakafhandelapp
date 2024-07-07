@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul>
+		<ul v-if="!loading">
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -17,21 +17,20 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(berichten, i) in berichtenList.results"
-				v-if="!loading"
-				:key="`${berichten}${i}`"
-				:name="berichten?.name"
-				:active="store.berichtItem === berichten?.id"
+			<NcListItem v-for="(zaken, i) in zakenList.results"
+				:key="`${zaken}${i}`"
+				:name="zaken?.name"
+				:active="store.zakenItem === zaken?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(berichten.id)">
+				@click="store.setZaakItem(zaken.id)">
 				<template #icon>
-					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44"/>
 				</template>
 				<template #subname>
-					{{ berichten?.summary }}
+					{{ zaken?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -45,30 +44,28 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-
-			<NcLoadingIcon v-if="loading"
-				class="loadingIcon"
-				:size="64"
-				appearance="dark"
-				name="Berichten aan het laden" />
 		</ul>
+
+		<NcLoadingIcon v-if="loading"
+			class="loadingIcon"
+			:size="64"
+			appearance="dark"
+			name="Zaken aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
 import Magnify from 'vue-material-design-icons/Magnify'
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'BerichtenList',
+	name: 'ZakenList',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
 		NcTextField,
-		ChatOutline,
+		BriefcaseAccountOutline,
 		Magnify,
 		NcLoadingIcon,
 	},
@@ -76,7 +73,7 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			berichtenList: [],
+			zakenList: [],
 		}
 	},
 	mounted() {
@@ -86,14 +83,14 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten',
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.berichtenList = data
+						this.zakenList = data
 					})
 					this.loading = false
 				})
@@ -101,10 +98,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setBerichtItem(id);
-			this.$emit('berichtId', id)
 		},
 		clearText() {
 			this.search = ''

@@ -5,33 +5,22 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul>
-			<div class="listHeader">
-				<NcTextField class="searchField"
-					disabled
-					:value.sync="search"
-					label="Search"
-					trailing-button-icon="close"
-					:show-trailing-button="search !== ''"
-					@trailing-button-click="clearText">
-					<Magnify :size="20" />
-				</NcTextField>
-			</div>
 
-			<NcListItem v-for="(zaaktypen, i) in zaakTypenList.results"
+			<NcListItem v-for="(zaken, i) in zakenList.results"
 				v-if="!loading"
-				:key="`${zaaktypen}${i}`"
-				:name="zaaktypen?.name"
-				:active="store.zaakTypeItem === zaaktypen?.id"
+				:key="`${zaken}${i}`"
+				:name="zaken?.name"
+				:active="store.zakenItem === zaken?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(zaaktypen.id)">
+				@click="setActive(zaken.id)">
 				<template #icon>
-					<AlphaTBoxOutline :class="store.zaakTypenItem === zaaktypen.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaaktypen?.summary }}
+					{{ zaken?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -50,17 +39,19 @@ import { store } from '../../store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Zaak typen aan het laden" />
+				name="Zaken aan het laden" />
 		</ul>
 	</NcAppContentList>
 </template>
 <script>
 import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
-import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
+// eslint-disable-next-line n/no-missing-import
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZaakTypeList',
+	name: 'ZaakRollen',
 	components: {
 		NcListItem,
 		NcListItemIcon,
@@ -68,7 +59,7 @@ export default {
 		NcAvatar,
 		NcAppContentList,
 		NcTextField,
-		AlphaTBoxOutline,
+		BriefcaseAccountOutline,
 		Magnify,
 		NcLoadingIcon,
 	},
@@ -76,7 +67,7 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			zaakTypenList: [],
+			zakenList: [],
 		}
 	},
 	mounted() {
@@ -86,14 +77,14 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen',
+				'/index.php/apps/zaakafhandelapp/api/zaken',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zaakTypenList = data
+						this.zakenList = data
 					})
 					this.loading = false
 				})
@@ -103,8 +94,8 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setZaakTypeItem(id);
-			this.$emit('zaakTypeId', id)
+			store.setMetadataItem(id);
+			this.$emit('zakenItem', id)
 		},
 		clearText() {
 			this.search = ''

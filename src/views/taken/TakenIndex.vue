@@ -11,9 +11,9 @@ import { store } from '../../store.js'
 			<NcEmptyContent v-if="!store.taakItem || store.selected != 'taken' "
 				class="detailContainer"
 				name="Geen taak"
-				description="Nog geen taak geselecteerd">				
+				description="Nog geen taak geselecteerd">
 				<template #icon>
-					<CalendarMonthOutline/>
+					<CalendarMonthOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('taakAdd')">
@@ -27,13 +27,14 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import TakenList from './list.vue'
-import TaakDetails from './details.vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import TakenList from './TakenList.vue'
+import TaakDetails from './TaakDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
 
 export default {
-	name: 'ZakenIndex',
+	name: 'TakenIndex',
 	components: {
 		NcAppContent,
 		NcEmptyContent,
@@ -46,6 +47,6 @@ export default {
 		return {
 			takenId: undefined,
 		}
-	}
+	},
 }
 </script>

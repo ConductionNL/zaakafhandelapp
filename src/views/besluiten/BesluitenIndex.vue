@@ -5,47 +5,47 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<ZakenList />
+			<BesluitenList />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
 				class="detailContainer"
-				name="Geen Status"
-				description="Nog geen status geselecteerd">				
+				name="Geen besluit"
+				description="Nog geen besluit geselecteerd">
 				<template #icon>
-					<BriefcaseAccountOutline/>
+					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Status selecteren
+						Besluit aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :statusId="store.statusItem" />
+			<BesluitDetails v-if="store.item && store.selected === 'zaken'" :besluitId="store.besluitItem" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
 import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import MetaDataList from './list.vue'
-import MetaDataDetails from './details.vue'
+import BesluitenList from './BesluitenList.vue'
+import BesluitDetails from './BesluitDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZakenIndex',
+	name: 'BesluitenIndex',
 	components: {
 		NcAppContent,
 		NcEmptyContent,
 		NcButton,
-		MetaDataList,
-		MetaDataDetails,
+		BesluitenList,
+		BesluitDetails,
 		BriefcaseAccountOutline,
 	},
 	data() {
 		return {
-			activeMetaData: false,
-			metaDataId: undefined,
+			zakenId: undefined,
 		}
 	}
 }

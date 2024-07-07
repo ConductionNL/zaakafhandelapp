@@ -11,9 +11,9 @@ import { store } from '../../store.js'
 			<NcEmptyContent v-if="!store.klantItem || store.selected != 'klanten' "
 				class="detailContainer"
 				name="Geen klant"
-				description="Nog geen klant geselecteerd">				
+				description="Nog geen klant geselecteerd">
 				<template #icon>
-					<AccountOutline/>
+					<AccountOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('klantAdd')">
@@ -27,13 +27,14 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import KlantenList from './list.vue'
-import KlantDetails from './details.vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import KlantenList from './KlantenList.vue'
+import KlantDetails from './KlantDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import AccountOutline from 'vue-material-design-icons/AccountOutline'
 
 export default {
-	name: 'ZakenIndex',
+	name: 'KlantenIndex',
 	components: {
 		NcAppContent,
 		NcEmptyContent,

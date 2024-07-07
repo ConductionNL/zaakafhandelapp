@@ -11,9 +11,9 @@ import { store } from '../../store.js'
 			<NcEmptyContent v-if="!store.berichtItem || store.selected != 'berichten' "
 				class="detailContainer"
 				name="Geen bericht"
-				description="Nog geen bericht geselecteerd">				
+				description="Nog geen bericht geselecteerd">
 				<template #icon>
-					<ChatOutline/>
+					<ChatOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('berichtAdd')">
@@ -27,13 +27,13 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import BerichtenList from './list.vue'
-import BerichDetails from './details.vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import BerichtenList from './BerichtenList.vue'
+import BerichDetails from './BerichtDetails.vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
-	name: 'ZakenIndex',
+	name: 'BerichtenIndex',
 	components: {
 		NcAppContent,
 		NcEmptyContent,

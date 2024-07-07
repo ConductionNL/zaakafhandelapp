@@ -5,41 +5,42 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<ZakenList/>
+			<RollenList />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
 				class="detailContainer"
-				name="Geen document"
-				description="Nog geen document geselecteerd">				
+				name="Geen Rol"
+				description="Nog geen rol geselecteerd">
 				<template #icon>
-					<BriefcaseAccountOutline/>
+					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Document toevoegen
+						Rol toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :documentId="store.documentItem" />
+			<RolDetails v-if="store.item && store.selected === 'zaken'" :rolId="store.rolItem" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import MetaDataList from './list.vue'
-import MetaDataDetails from './details.vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import RollenList from './RollenList.vue'
+import RolDetails from './RolDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZakenIndex',
+	name: 'RollenIndex',
 	components: {
 		NcAppContent,
 		NcEmptyContent,
 		NcButton,
-		MetaDataList,
-		MetaDataDetails,
+		RollenList,
+		RolDetails,
 		BriefcaseAccountOutline,
 	},
 	data() {
@@ -47,6 +48,6 @@ export default {
 			activeMetaData: false,
 			metaDataId: undefined,
 		}
-	}
+	},
 }
 </script>

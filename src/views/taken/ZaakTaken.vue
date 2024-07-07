@@ -43,7 +43,9 @@ import { store } from '../../store.js'
 </template>
 <script>
 import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
+// eslint-disable-next-line n/no-missing-import
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
 
 export default {

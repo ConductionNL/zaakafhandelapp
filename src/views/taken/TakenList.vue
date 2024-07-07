@@ -17,21 +17,21 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(klanten, i) in klantenList.results"
+			<NcListItem v-for="(taken, i) in takenList.results"
 				v-if="!loading"
-				:key="`${klanten}${i}`"
-				:name="klanten?.name"
-				:active="store.klantItem === klanten?.id"
+				:key="`${taken}${i}`"
+				:name="taken?.name"
+				:active="store.taakItem === taken?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(klanten.id)">
+				@click="setActive(taken.id)">
 				<template #icon>
-					<AccountOutline :class="store.klantItem === klanten.id && 'selectedZaakIcon'"
+					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ klanten?.summary }}
+					{{ taken?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -50,33 +50,33 @@ import { store } from '../../store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Klanten aan het laden" />
+				name="Taken aan het laden" />
 		</ul>
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
-import AccountOutline from 'vue-material-design-icons/AccountOutline'
+// eslint-disable-next-line n/no-missing-import
+import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
 
 export default {
-	name: 'KlantenList',
+	name: 'TakenList',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
 		NcTextField,
-		AccountOutline,
+		CalendarMonthOutline,
 		Magnify,
-		NcLoadingIcon
+		NcLoadingIcon,
 	},
 	data() {
 		return {
 			search: '',
 			loading: true,
-			klantenList: [],
+			takenList: [],
 		}
 	},
 	mounted() {
@@ -86,14 +86,14 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/klanten',
+				'/index.php/apps/zaakafhandelapp/api/taken',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.klantenList = data
+						this.takenList = data
 					})
 					this.loading = false
 				})
@@ -103,8 +103,8 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setKlantItem(id);
-			this.$emit('klantId', id)
+			store.setTaakItem(id);
+			this.$emit('taakId', id)
 		},
 		clearText() {
 			this.search = ''
@@ -112,6 +112,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .listHeader {
     position: sticky;

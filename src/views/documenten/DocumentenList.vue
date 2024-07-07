@@ -5,6 +5,17 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul>
+			<div class="listHeader">
+				<NcTextField class="searchField"
+					disabled
+					:value.sync="search"
+					label="Search"
+					trailing-button-icon="close"
+					:show-trailing-button="search !== ''"
+					@trailing-button-click="clearText">
+					<Magnify :size="20" />
+				</NcTextField>
+			</div>
 
 			<NcListItem v-for="(zaken, i) in zakenList.results"
 				v-if="!loading"
@@ -17,7 +28,7 @@ import { store } from '../../store.js'
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44" />
+						:size="44"/>
 				</template>
 				<template #subname>
 					{{ zaken?.summary }}
@@ -44,17 +55,17 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
+// eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZaakRollen',
+	name: 'ZakenList',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
 		NcTextField,
 		BriefcaseAccountOutline,

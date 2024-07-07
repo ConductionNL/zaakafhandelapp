@@ -5,6 +5,17 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul>
+			<div class="listHeader">
+				<NcTextField class="searchField"
+					disabled
+					:value.sync="search"
+					label="Search"
+					trailing-button-icon="close"
+					:show-trailing-button="search !== ''"
+					@trailing-button-click="clearText">
+					<Magnify :size="20" />
+				</NcTextField>
+			</div>
 
 			<NcListItem v-for="(berichten, i) in berichtenList.results"
 				v-if="!loading"
@@ -44,17 +55,15 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
 import Magnify from 'vue-material-design-icons/Magnify'
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
-	name: 'ZaakBerichten',
+	name: 'BerichtenList',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
 		NcTextField,
 		ChatOutline,

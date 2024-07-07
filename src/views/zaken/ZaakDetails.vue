@@ -2,7 +2,6 @@
 import { store } from '../../store.js'
 </script>
 
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -63,7 +62,7 @@ import { store } from '../../store.js'
 							<ZaakTaken :zaakId="store.zaakItem" />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichen :zaakId="store.zaakItem" />
+							<ZaakBerichten :zaakId="store.zaakItem" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
@@ -81,7 +80,7 @@ import { store } from '../../store.js'
 
 <script>
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcLoadingIcon, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
@@ -90,32 +89,31 @@ import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
 import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 // Views
-import ZaakEigenschappen from '../eigenschappen/zaakEigenschappen.vue'
-import ZaakBerichten from '../berichten/zaakBerichten.vue'
-import ZaakRollen from '../rollen/zaakRollen.vue'
-import ZaakTaken from '../taken/zaakTaken.vue'
-import ZaakDocumenten from '../documenten/zaakDocumenten.vue'
+import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
+import ZaakBerichten from '../berichten/ZaakBerichten.vue'
+import ZaakRollen from '../rollen/ZaakRollen.vue'
+import ZaakTaken from '../taken/ZaakTaken.vue'
+import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
 
 export default {
 	name: 'ZaakDetails',
 	components: {
 		NcLoadingIcon,
-		NcButton,
 		NcActions,
 		NcActionButton,
 		BTabs,
 		BTab,
 		DotsHorizontal,
-		Pencil ,
+		Pencil,
 		AccountPlus,
 		CalendarPlus,
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 		ZaakEigenschappen,
-		ZaakBerichten,
 		ZaakRollen,
 		ZaakTaken,
-		ZaakDocumenten
+		ZaakBerichten,
+		ZaakDocumenten,
 	},
 	data() {
 		return {
@@ -132,13 +130,13 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.zaakItem)
 	},
 	methods: {
-		fetchData() {
+		fetchData(zakenId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + store.zaakItem,
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zakenId,
 				{
 					method: 'GET',
 				},

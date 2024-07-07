@@ -17,21 +17,23 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(taken, i) in takenList.results"
+			<NcListItem v-for="(zaken, i) in zakenList.results"
 				v-if="!loading"
-				:key="`${taken}${i}`"
-				:name="taken?.name"
-				:active="store.taakItem === taken?.id"
+				:key="`${zaken}${i}`"
+				:name="zaken?.name"
+				:active="store.zakenItem === zaken?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(taken.id)">
+				@click="setActive(zaken.id)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44" />
+						:size="44"
+						user="janedoe"
+						display-name="Jane Doe" />
 				</template>
 				<template #subname>
-					{{ taken?.summary }}
+					{{ zaken?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -50,25 +52,25 @@ import { store } from '../../store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Taken aan het laden" />
+				name="Zaken aan het laden" />
 		</ul>
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
+// eslint-disable-next-line n/no-missing-import
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'TakenList',
+	name: 'ZakenList',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
 		NcTextField,
-		CalendarMonthOutline,
+		BriefcaseAccountOutline,
 		Magnify,
 		NcLoadingIcon,
 	},
@@ -76,7 +78,7 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			takenList: [],
+			zakenList: [],
 		}
 	},
 	mounted() {
@@ -86,14 +88,14 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
+				'/index.php/apps/zaakafhandelapp/api/zaken',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.takenList = data
+						this.zakenList = data
 					})
 					this.loading = false
 				})
@@ -103,8 +105,8 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setTaakItem(id);
-			this.$emit('taakId', id)
+			store.setMetadataItem(id);
+			this.$emit('zakenItem', id)
 		},
 		clearText() {
 			this.search = ''
@@ -112,7 +114,6 @@ export default {
 	},
 }
 </script>
-
 <style>
 .listHeader {
     position: sticky;

@@ -2,7 +2,6 @@
 import { store } from '../../store.js'
 </script>
 
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -38,7 +37,7 @@ export default {
 		BTab
 	},
 	props: {
-		rollId: {
+		resultaatId: {
 			type: String,
 			required: true,
 		},
@@ -50,21 +49,21 @@ export default {
 		}
 	},
 	watch: {
-		rollId: {
-			handler(rollId) {
-				this.fetchData(rollId)
+		resultaatId: {
+			handler(resultaatId) {
+				this.fetchData(resultaatId)
 			},
 			deep: true,
 		},
 	},
 	mounted() {
-		this.fetchData(store.rolItem)
+		this.fetchData(resultaatItem)
 	},
 	methods: {
-		fetchData(rollId) {
+		fetchData(resultaatId) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + rollId,
+				'/index.php/apps/zaakafhandelapp/api/zaken/' + resultaatId,
 				{
 					method: 'GET',
 				},
