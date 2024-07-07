@@ -8,14 +8,67 @@ import { store } from '../../store.js'
 		<div v-if="!loading" id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
-				<h1 class="h1">
-					{{ zaak.name }}
-				</h1>
-				<div class="grid">
-					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
-						<span>{{ zaak.summary }}</span>
-					</div>
+				<div class="head">
+					<h1 class="h1">
+						{{ zaak.name }}
+					</h1>
+					<NcActions :primary="true" menu-name="Acties">
+						<template #icon>
+							<DotsHorizontal :size="20" />
+						</template>
+						<NcActionButton @click="store.setModal('zaakEdit')">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+						<NcActionButton>
+							<template #icon>
+								<FileDocumentPlusOutline :size="20" />
+							</template>
+							Document toevoegen
+						</NcActionButton>
+						<NcActionButton>
+							<template #icon>
+								<AccountPlus :size="20" />
+							</template>
+							Rol toevoegen
+						</NcActionButton>
+						<NcActionButton>
+							<template #icon>
+								<CalendarPlus :size="20" />
+							</template>
+							Taak toevoegen
+						</NcActionButton>
+						<NcActionButton>
+							<template #icon>
+								<VectorPolylineEdit :size="20" />
+							</template>
+							Status wijzigen
+						</NcActionButton>
+					</NcActions>
+				</div>
+				<div class="tabContainer">
+					<BTabs content-class="mt-3" justified>
+						<BTab title="Eigenschappen" active>
+							<ZaakEigenschappen :zaakId="store.zaakItem" />
+						</BTab>
+						<BTab title="Documenten">
+							<ZaakDocumenten :zaakId="store.zaakItem" />
+						</BTab>
+						<BTab title="Rollen">
+							<ZaakRollen :zaakId="store.zaakItem" />
+						</BTab>
+						<BTab title="Taken">
+							<ZaakTaken :zaakId="store.zaakItem" />
+						</BTab>
+						<BTab title="Berichten">
+							<ZaakBerichen :zaakId="store.zaakItem" />
+						</BTab>
+						<BTab title="Synchronisaties">
+							Todo: Koppelings info met DSO
+						</BTab>
+					</BTabs>
 				</div>
 			</div>
 		</div>
@@ -28,14 +81,41 @@ import { store } from '../../store.js'
 
 <script>
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcLoadingIcon } from '@nextcloud/vue'
+import { NcLoadingIcon, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
+// Icons
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
+import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
+import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
+import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
+// Views
+import ZaakEigenschappen from '../eigenschappen/zaakEigenschappen.vue'
+import ZaakBerichten from '../berichten/zaakBerichten.vue'
+import ZaakRollen from '../rollen/zaakRollen.vue'
+import ZaakTaken from '../taken/zaakTaken.vue'
+import ZaakDocumenten from '../documenten/zaakDocumenten.vue'
 
 export default {
 	name: 'ZaakDetails',
 	components: {
 		NcLoadingIcon,
+		NcButton,
+		NcActions,
+		NcActionButton,
 		BTabs,
-		BTab
+		BTab,
+		DotsHorizontal,
+		Pencil ,
+		AccountPlus,
+		CalendarPlus,
+		FileDocumentPlusOutline,
+		VectorPolylineEdit,
+		ZaakEigenschappen,
+		ZaakBerichten,
+		ZaakRollen,
+		ZaakTaken,
+		ZaakDocumenten
 	},
 	data() {
 		return {
@@ -80,7 +160,16 @@ export default {
 
 <style>
 h4 {
-  font-weight: bold
+  font-weight: bold;
+}
+
+.head{
+	display: flex;
+	justify-content: space-between;
+}
+
+.button{
+	max-height: 10px;
 }
 
 .h1 {
@@ -94,51 +183,9 @@ h4 {
   unicode-bidi: isolate !important;
 }
 
-.grid {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: 1fr 1fr;
-  margin-block-start: var(--zaa-margin-50);
-  margin-block-end: var(--zaa-margin-50);
-}
-
-.gridContent {
+.dataContent {
   display: flex;
-  gap: 25px;
+  flex-direction: column;
 }
 
-.tabContainer>* ul>li {
-  display: flex;
-  flex: 1;
-}
-
-.tabContainer>* ul>li:hover {
-  background-color: var(--color-background-hover);
-}
-
-.tabContainer>* ul>li>a {
-  flex: 1;
-  text-align: center;
-}
-
-.tabContainer>* ul>li>.active {
-  background: transparent !important;
-  color: var(--color-main-text) !important;
-  border-bottom: var(--default-grid-baseline) solid var(--color-primary-element) !important;
-}
-
-.tabContainer>* ul {
-  display: flex;
-  margin: 10px 8px 0 8px;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.tabPanel {
-  padding: 20px 10px;
-  min-height: 100%;
-  max-height: 100%;
-  height: 100%;
-  overflow: auto;
-}
 </style>
