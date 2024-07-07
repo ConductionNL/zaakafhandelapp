@@ -2,68 +2,48 @@
 import { store } from '../store.js'
 </script>
 
-<template><NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
-	<NcAppSettingsSection id="sharing" name="Storage" doc-url="zaakafhandel.app">
-		<template #icon>
-			<Connection :size="20" />
-		</template>
+<template>
+	<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
+		<NcAppSettingsSection id="sharing" name="Storage" doc-url="zaakafhandel.app">
+			<template #icon>
+				<Connection :size="20" />
+			</template>
 
-		<p>
-			The ZaakAfhandelApp allows three types of storage:
+			<p>
+				The ZaakAfhandelApp allows three types of storage:
+				
+				<ul>
+					<li>In the nexcloud database (default)</li>
+					<li>In an seperate object store e.g. monogodb (recomended for small organisations)</li>
+					<li>In seperate zgw registers e.g ZRR, ZDC (recomended of medium and up organisations)</li>
+				</ul>
+
+				The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
+			</p>
+
+		</NcAppSettingsSection>
+		<NcAppSettingsSection id="sharing" name="Connections" doc-url="zaakafhandel.app">
+			<template #icon>
+				<Connection :size="20" />
+			</template>
+
+			<p>
+				Here you can set the details for varius Connections
+			</p>
 			
-			<ul>
-				<li>In the nexcloud database (default)</li>
-				<li>In an seperate object store e.g. monogodb (recomended for small organisations)</li>
-				<li>In seperate zgw registers e.g ZRR, ZDC (recomended of medium and up organisations)</li>
-			</ul>
-
-			The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
-		</p>
-
-	</NcAppSettingsSection>
-	<NcAppSettingsSection id="sharing" name="Connections" doc-url="zaakafhandel.app">
-		<template #icon>
-			<Connection :size="20" />
-		</template>
-
-		<p>
-			Here you can set the details for varius Connections
-		</p>
-		
-		<NcButton aria-label="Save"
-			type="primary"
-			wide
-			@click="saveConfig()">
+		</NcAppSettingsSection>
+		<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
 			<template #icon>
-				<ContentSave :size="20" />
+				<Connection :size="20" />
 			</template>
-			Save
-		</NcButton>
-	</NcAppSettingsSection>
-	<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
-		<template #icon>
-			<Connection :size="20" />
-		</template>
 
-		<p>
-			Here you can set the details for your organisation
-		</p>
+			<p>
+				Here you can set the details for your organisation
+			</p>
 
-		<NcTextField id="organisationName" :value.sync="configuration.organisationName" />
-		<NcTextField id="organisationOin" :value.sync="configuration.organisationOin" />
-		<NcTextArea id="organisationPki" :value.sync="configuration.organisationPki" />
-
-		<NcButton aria-label="Save"
-			type="primary"
-			wide
-			@click="saveConfig()">
-			<template #icon>
-				<ContentSave :size="20" />
-			</template>
-			Save
-		</NcButton>
-	</NcAppSettingsSection>
-</NcAppSettingsDialog>
+			
+		</NcAppSettingsSection>
+	</NcAppSettingsDialog>
 </template>
 <script>
 
@@ -94,6 +74,16 @@ import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
 import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline'
 import CogOutline from 'vue-material-design-icons/CogOutline.vue'
 import ContentSave from 'vue-material-design-icons/ContentSave.vue'
+import DatabaseEyeOutline from 'vue-material-design-icons/DatabaseEyeOutline.vue'
+import DatabaseCogOutline from 'vue-material-design-icons/DatabaseCogOutline.vue'
+import LayersSearchOutline from 'vue-material-design-icons/LayersSearchOutline.vue'  
+import LayersOutline from 'vue-material-design-icons/LayersOutline.vue' 
+import FileTreeOutline from 'vue-material-design-icons/FileTreeOutline.vue' 
+import Finance from 'vue-material-design-icons/Finance.vue' 
+
+
+
+
 
 
 export default {
@@ -120,6 +110,11 @@ export default {
 		FileTreeOutline,
 		CogOutline,
 		ContentSave,
+		DatabaseEyeOutline,
+		DatabaseCogOutline,
+		LayersSearchOutline,
+		LayersOutline,
+		FileTreeOutline,
 		Finance,
 	},
 	data() {

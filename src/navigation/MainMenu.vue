@@ -55,8 +55,6 @@ import { store } from '../store.js'
 				</template>
 			</NcAppNavigationItem>
 
-			<Configuration />
-			
 		</NcAppNavigationSettings>
 	</NcAppNavigation>
 </template>

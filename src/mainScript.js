@@ -1,4 +1,4 @@
-import DashboardView from "./App.vue";
+import App from "./App.vue";
 import Vue from "vue";
 Vue.mixin({ methods: { t, n } });
 
