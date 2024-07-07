@@ -4,10 +4,8 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul>
-
+		<ul v-if="!loading">
 			<NcListItem v-for="(zaken, i) in zakenList.results"
-				v-if="!loading"
 				:key="`${zaken}${i}`"
 				:name="zaken?.name"
 				:active="store.zakenItem === zaken?.id"
@@ -17,7 +15,7 @@ import { store } from '../../store.js'
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44"/>
+						:size="44" />
 				</template>
 				<template #subname>
 					{{ zaken?.summary }}
@@ -44,21 +42,17 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-import Magnify from 'vue-material-design-icons/Magnify'
+import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
 	name: 'ZaakDocumenten',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
 		NcAppContentList,
-		NcTextField,
 		BriefcaseAccountOutline,
-		Magnify,
 		NcLoadingIcon,
 	},
 	data() {

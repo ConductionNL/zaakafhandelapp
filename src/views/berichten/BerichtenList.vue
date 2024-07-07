@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul>
+		<ul v-if="!loading">
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -18,7 +18,6 @@ import { store } from '../../store.js'
 			</div>
 
 			<NcListItem v-for="(berichten, i) in berichtenList.results"
-				v-if="!loading"
 				:key="`${berichten}${i}`"
 				:name="berichten?.name"
 				:active="store.berichtItem === berichten?.id"
@@ -28,7 +27,7 @@ import { store } from '../../store.js'
 				<template #icon>
 					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44"/>
+						:size="44" />
 				</template>
 				<template #subname>
 					{{ berichten?.summary }}
@@ -45,18 +44,20 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-
-			<NcLoadingIcon v-if="loading"
-				class="loadingIcon"
-				:size="64"
-				appearance="dark"
-				name="Berichten aan het laden" />
 		</ul>
+
+		<NcLoadingIcon v-if="loading"
+			class="loadingIcon"
+			:size="64"
+			appearance="dark"
+			name="Berichten aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
 import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
+// eslint-disable-next-line n/no-missing-import
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {

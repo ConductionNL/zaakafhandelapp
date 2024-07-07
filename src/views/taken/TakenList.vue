@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul>
+		<ul v-if="!loading">
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -18,7 +18,6 @@ import { store } from '../../store.js'
 			</div>
 
 			<NcListItem v-for="(taken, i) in takenList.results"
-				v-if="!loading"
 				:key="`${taken}${i}`"
 				:name="taken?.name"
 				:active="store.taakItem === taken?.id"
@@ -45,13 +44,13 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-
-			<NcLoadingIcon v-if="loading"
-				class="loadingIcon"
-				:size="64"
-				appearance="dark"
-				name="Taken aan het laden" />
 		</ul>
+
+		<NcLoadingIcon v-if="loading"
+			class="loadingIcon"
+			:size="64"
+			appearance="dark"
+			name="Taken aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -104,7 +103,6 @@ export default {
 		},
 		setActive(id) {
 			store.setTaakItem(id);
-			this.$emit('taakId', id)
 		},
 		clearText() {
 			this.search = ''

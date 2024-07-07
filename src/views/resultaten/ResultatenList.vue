@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul>
+		<ul v-if="!loading">
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -18,7 +18,6 @@ import { store } from '../../store.js'
 			</div>
 
 			<NcListItem v-for="(zaken, i) in zakenList.results"
-				v-if="!loading"
 				:key="`${zaken}${i}`"
 				:name="zaken?.name"
 				:active="store.zakenItem === zaken?.id"
@@ -47,13 +46,13 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-
-			<NcLoadingIcon v-if="loading"
-				class="loadingIcon"
-				:size="64"
-				appearance="dark"
-				name="Zaken aan het laden" />
 		</ul>
+
+		<NcLoadingIcon v-if="loading"
+			class="loadingIcon"
+			:size="64"
+			appearance="dark"
+			name="Zaken aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -64,7 +63,7 @@ import Magnify from 'vue-material-design-icons/Magnify'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZakenList',
+	name: 'ResultatenList',
 	components: {
 		NcListItem,
 		NcActionButton,
