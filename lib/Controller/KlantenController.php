@@ -57,8 +57,8 @@ class KlantenController extends Controller
 	{			
         return new TemplateResponse(
             //Application::APP_ID,
-            'opencatalog',
-            'CatalogiIndex',
+            'zaakafhandelapp',
+            'index',
             []
         );
 	}

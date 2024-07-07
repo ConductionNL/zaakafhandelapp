@@ -162,7 +162,7 @@ export default {
 			this.loading = true
 			// Catalogi details
 			fetch(
-				'/index.php/apps/opencatalog/catalogi/api',
+				'/index.php/apps/zaakafhandelapp/catalogi/api',
 				{
 					method: 'GET',
 				},
@@ -179,7 +179,7 @@ export default {
 				})
 
 			fetch(
-				'/index.php/apps/opencatalog/configuration',
+				'/index.php/apps/zaakafhandelapp/configuration',
 				{
 					method: 'GET',
 				},
@@ -201,7 +201,7 @@ export default {
 				body: JSON.stringify(this.configuration),
 			}
 
-			fetch('/index.php/apps/opencatalog/configuration', requestOptions)
+			fetch('/index.php/apps/talog/configuration', requestOptions)
 				.then((response) => {
 					response.json().then((data) => {
 						this.configuration = data
