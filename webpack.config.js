@@ -10,7 +10,7 @@ webpackConfig.stats = {
   modules: false,
 };
 
-const appId = "dsonextcloud";
+const appId = "zaakafhandelapp";
 webpackConfig.entry = {
   main: {
     import: path.join(__dirname, "src", "mainScript.js"),
