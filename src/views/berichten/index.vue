@@ -5,30 +5,32 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<ZakenList @metaDataId="updateZakenId" />
+			<BerichtenList @berichtId="updateBerichtId" />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
+			<NcEmptyContent v-if="!store.berichtItem || store.selected != 'berichten' "
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd"
-				icon ="BriefcaseAccountOutline">
+				name="Geen bericht"
+				description="Nog geen bericht geselecteerd">				
+				<template #icon>
+					<ChatOutline/>
+				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Zaak starten
+					<NcButton type="primary" @click="store.setModal('berichtAdd')">
+						Bericht aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :meta-data-id="zakenId" />
+			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :bericht-id="berichtId" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
 import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import MetaDataList from './list.vue'
-import MetaDataDetails from './details.vue'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import BerichtenList from './list.vue'
+import BerichDetails from './details.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
 	name: 'ZakenIndex',
@@ -36,19 +38,18 @@ export default {
 		NcAppContent,
 		NcEmptyContent,
 		NcButton,
-		MetaDataList,
-		MetaDataDetails,
-		BriefcaseAccountOutline,
+		BerichtenList,
+		BerichDetails,
+		ChatOutline,
 	},
 	data() {
 		return {
-			activeMetaData: false,
-			metaDataId: undefined,
+			berichtId: undefined,
 		}
 	},
 	methods: {
-		updateZakenId(variable) {
-			this.zakenId = variable
+		updateBerichtId(variable) {
+			this.berichtId = variable
 		},
 	},
 }

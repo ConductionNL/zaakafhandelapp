@@ -28,9 +28,7 @@ import { store } from '../../store.js'
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44"
-						user="janedoe"
-						display-name="Jane Doe" />
+						:size="44" />
 				</template>
 				<template #subname>
 					{{ zaken?.summary }}

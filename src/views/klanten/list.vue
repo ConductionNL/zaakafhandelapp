@@ -17,23 +17,21 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(zaken, i) in zakenList.results"
+			<NcListItem v-for="(klanten, i) in klantenList.results"
 				v-if="!loading"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+				:key="`${klanten}${i}`"
+				:name="klanten?.name"
+				:active="store.klantItem === klanten?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(zaken.id)">
+				@click="setActive(klanten.id)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<AccountOutline :class="store.klantItem === klanten.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44"
-						user="janedoe"
-						display-name="Jane Doe" />
+						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ klanten?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -52,17 +50,17 @@ import { store } from '../../store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Zaken aan het laden" />
+				name="Klanten aan het laden" />
 		</ul>
 	</NcAppContentList>
 </template>
 <script>
 import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
 import Magnify from 'vue-material-design-icons/Magnify'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import AccountOutline from 'vue-material-design-icons/AccountOutline'
 
 export default {
-	name: 'ZakenList',
+	name: 'KlantenList',
 	components: {
 		NcListItem,
 		NcListItemIcon,
@@ -70,15 +68,15 @@ export default {
 		NcAvatar,
 		NcAppContentList,
 		NcTextField,
-		BriefcaseAccountOutline,
+		AccountOutline,
 		Magnify,
-		NcLoadingIcon,
+		NcLoadingIcon
 	},
 	data() {
 		return {
 			search: '',
 			loading: true,
-			zakenList: [],
+			klantenList: [],
 		}
 	},
 	mounted() {
@@ -88,14 +86,14 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
+				'/index.php/apps/zaakafhandelapp/api/klanten',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zakenList = data
+						this.klantenList = data
 					})
 					this.loading = false
 				})
@@ -105,8 +103,8 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setMetadataItem(id);
-			this.$emit('zakenItem', id)
+			store.setKlantItem(id);
+			this.$emit('klantId', id)
 		},
 		clearText() {
 			this.search = ''

@@ -31,7 +31,7 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'ZaakDetail',
+	name: 'ZaakDetails',
 	components: {
 		NcLoadingIcon,
 		BTabs,
@@ -58,7 +58,7 @@ export default {
 		fetchData() {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + store.zaakItem,
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + store.zaakItem,
 				{
 					method: 'GET',
 				},

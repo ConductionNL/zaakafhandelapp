@@ -8,11 +8,13 @@ import { store } from '../../store.js'
 			<ZakenList @metaDataId="updateZakenId" />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
+			<NcEmptyContent v-if="!store.item || store.selected != 'zaaktypen' "
 				class="detailContainer"
 				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd"
-				icon ="BriefcaseAccountOutline">
+				description="Nog geen zaak geselecteerd">				
+				<template #icon>
+					<BriefcaseAccountOutline/>
+				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('zakenAdd')">
 						Zaak starten
@@ -43,12 +45,12 @@ export default {
 	data() {
 		return {
 			activeMetaData: false,
-			metaDataId: undefined,
+			zaakTypeId: undefined,
 		}
 	},
 	methods: {
 		updateZakenId(variable) {
-			this.zakenId = variable
+			this.zaakTypeId = variable
 		},
 	},
 }

@@ -10,12 +10,14 @@ import { store } from '../../store.js'
 		<template #default>
 			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd"
-				icon ="BriefcaseAccountOutline">
+				name="Geen document"
+				description="Nog geen document geselecteerd">				
+				<template #icon>
+					<BriefcaseAccountOutline/>
+				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Zaak starten
+						Document toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>

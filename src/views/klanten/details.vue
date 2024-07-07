@@ -9,12 +9,12 @@ import { store } from '../../store.js'
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<h1 class="h1">
-					{{ zaak.name }}
+					{{ klant.name }}
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
 						<h4>Sammenvatting:</h4>
-						<span>{{ zaak.summary }}</span>
+						<span>{{ klant.summary }}</span>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 		<NcLoadingIcon v-if="loading"
 			:size="100"
 			appearance="dark"
-			name="Zaak details aan het laden" />
+			name="Klant details aan het laden" />
 	</div>
 </template>
 
@@ -31,7 +31,7 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'ZaakDetail',
+	name: 'KlantDetails',
 	components: {
 		NcLoadingIcon,
 		BTabs,
@@ -39,14 +39,14 @@ export default {
 	},
 	data() {
 		return {
-			zaak: [],
+			klant: [],
 			loading: false,
 		}
 	},
 	watch: {
-		zakenId: {
-			handler(zakenId) {
-				this.fetchData(zakenId)
+		klantId: {
+			handler(klantId) {
+				this.fetchData(klantId)
 			},
 			deep: true,
 		},
@@ -58,14 +58,14 @@ export default {
 		fetchData() {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + store.zaakItem,
+				'/index.php/apps/zaakafhandelapp/api/klanten/' + store.klantItem,
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zaak = data
+						this.klant = data
 					})
 					this.loading = false
 				})

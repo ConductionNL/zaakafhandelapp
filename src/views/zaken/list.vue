@@ -28,9 +28,7 @@ import { store } from '../../store.js'
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
-						:size="44"
-						user="janedoe"
-						display-name="Jane Doe" />
+						:size="44"/>
 				</template>
 				<template #subname>
 					{{ zaken?.summary }}
@@ -88,7 +86,7 @@ export default {
 		fetchData(newPage) {
 			this.loading = true,
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
 				{
 					method: 'GET',
 				},
@@ -105,8 +103,8 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setMetadataItem(id);
-			this.$emit('zakenItem', id)
+			store.setZaakItem(id);
+			this.$emit('zaakId', id)
 		},
 		clearText() {
 			this.search = ''

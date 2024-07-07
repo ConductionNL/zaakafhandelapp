@@ -5,30 +5,32 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<ZakenList @metaDataId="updateZakenId" />
+			<KlantenList @klantId="updateKlantId" />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
+			<NcEmptyContent v-if="!store.klantItem || store.selected != 'klanten' "
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd"
-				icon ="BriefcaseAccountOutline">
+				name="Geen klant"
+				description="Nog geen klant geselecteerd">				
+				<template #icon>
+					<AccountOutline/>
+				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Zaak starten
+					<NcButton type="primary" @click="store.setModal('klantAdd')">
+						Klant toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZakenDetails v-if="store.item && store.selected === 'zaken'" :meta-data-id="zakenId" />
+			<KlantDetails v-if="store.klantItem && store.selected === 'klanten'" :klant-id="klantId" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
 import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
-import MetaDataList from './list.vue'
-import MetaDataDetails from './details.vue'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import KlantenList from './list.vue'
+import KlantDetails from './details.vue'
+import AccountOutline from 'vue-material-design-icons/AccountOutline'
 
 export default {
 	name: 'ZakenIndex',
@@ -36,19 +38,19 @@ export default {
 		NcAppContent,
 		NcEmptyContent,
 		NcButton,
-		MetaDataList,
-		MetaDataDetails,
-		BriefcaseAccountOutline,
+		KlantenList,
+		KlantDetails,
+		AccountOutline,
 	},
 	data() {
 		return {
 			activeMetaData: false,
-			metaDataId: undefined,
+			klantId: undefined,
 		}
 	},
 	methods: {
-		updateZakenId(variable) {
-			this.zakenId = variable
+		updateKlantId(variable) {
+			this.klantId = variable
 		},
 	},
 }

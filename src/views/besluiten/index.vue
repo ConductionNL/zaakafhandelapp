@@ -10,12 +10,14 @@ import { store } from '../../store.js'
 		<template #default>
 			<NcEmptyContent v-if="!store.item || store.selected != 'zaken' "
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd"
-				icon ="BriefcaseAccountOutline">
+				name="Geen besluit"
+				description="Nog geen besluit geselecteerd">				
+				<template #icon>
+					<BriefcaseAccountOutline/>
+				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('zakenAdd')">
-						Zaak starten
+						Besluit aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
@@ -42,8 +44,7 @@ export default {
 	},
 	data() {
 		return {
-			activeMetaData: false,
-			metaDataId: undefined,
+			zakenId: undefined,
 		}
 	},
 	methods: {

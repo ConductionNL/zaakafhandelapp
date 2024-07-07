@@ -5,55 +5,64 @@ import { store } from '../store.js'
 <template>
 	<NcAppNavigation>
 		<NcAppNavigationList>
-			<NcAppNavigationNewItem name="Zaak Starten" @new-item="store.modal = 'zaakAdd'">
+			<NcAppNavigationNewItem 
+			name="Zaak Starten" @new-item="store.modal = 'zaakAdd'">
 				<template #icon>
 					<Plus :size="20" />
 				</template>
 			</NcAppNavigationNewItem>
 			<NcAppNavigationItem 
 				:active="store.selected === 'dashboard'" 
-				icon="Finance" name="Dashboard"
+				name="Dashboard"
 				@click="store.setSelected('dashboard')">
+				<template #icon>
+					<Finance :size="20" />
+				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem 
-				:active="store.selected.selected === 'zaken'" 
-				icon="BriefcaseAccountOutline" 
+				:active="store.selected === 'zaken'" 
 				name="Zaken"
 				@click="store.setSelected('zaken')">
+				<template #icon>
+					<BriefcaseAccountOutline :size="20" />
+				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem 
 				:active="store.selected === 'taken'" 
-				icon="CalendarMonthOutline" 
 				name="Taken"
 				@click="store.setSelected('taken')">
+				<template #icon>
+					<CalendarMonthOutline :size="20" />
+				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem 
 				:active="store.selected === 'klanten'" 
-				icon="AccountGroupOutline" 
-				name="Klanten"
-				@click="store.setSelected('klanten')">				
+				name="Klanten" 
+				@click="store.setSelected('klanten')">		
+				<template #icon>
+					<AccountGroupOutline :size="20" />
+				</template>		
 			</NcAppNavigationItem>
 			<NcAppNavigationItem 
 				:active="store.selected === 'berichten'" 
-				icon="ChatOutline" 
 				name="Berichten"
 				@click="store.setSelected('berichten')">
+				<template #icon>
+					<ChatOutline :size="20" />
+				</template>
 			</NcAppNavigationItem>
 		</NcAppNavigationList>
 
 		<NcAppNavigationSettings>
 			<NcAppNavigationItem 
 				:active="store.selected === 'zaakTypen'" 
-				name="zaakTypen" 
-				icon="AlphaTBoxOutline"
+				name="zaak Typen" 
 				@click="store.setSelected('zaakTypen')">
-			</NcAppNavigationItem>
-
-			<NcAppNavigationItem name="Configuration" @click="settingsOpen = true">
 				<template #icon>
-					<CogOutline :size="20" />
+					<AlphaTBoxOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
+
 
 		</NcAppNavigationSettings>
 	</NcAppNavigation>
@@ -66,7 +75,8 @@ import {
 	NcAppNavigation,
 	NcAppNavigationList,
 	NcAppNavigationItem,
-	NcAppNavigationNewItem
+	NcAppNavigationNewItem,
+	NcAppNavigationSettings
 } from '@nextcloud/vue'
 
 import Configuration from './Configuration.vue'
@@ -81,6 +91,7 @@ import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
 import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline'
 import CogOutline from 'vue-material-design-icons/CogOutline.vue'
 import ContentSave from 'vue-material-design-icons/ContentSave.vue'
+import Finance from 'vue-material-design-icons/Finance.vue'
 
 
 export default {
@@ -92,6 +103,7 @@ export default {
 		NcAppNavigationList,
 		NcAppNavigationItem,
 		NcAppNavigationNewItem,
+		NcAppNavigationSettings,
 		Configuration,
 		Plus,
 		AccountGroupOutline,
@@ -99,7 +111,8 @@ export default {
 		BriefcaseAccountOutline,
 		BriefcaseOutline,
 		CogOutline,
-		ContentSave
+		ContentSave,
+		Finance
 	},
 }
 </script>
