@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<RolDetails v-if="store.item && store.selected === 'zaken'" :rolId="store.rolItem" />
+			<RolDetails v-if="store.item && store.selected === 'zaken'" :rol-id="store.rolItem" />
 		</template>
 	</NcAppContent>
 </template>

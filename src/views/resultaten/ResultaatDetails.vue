@@ -1,4 +1,4 @@
-s<script setup>
+<script setup>
 import { store } from '../../store.js'
 </script>
 
@@ -58,7 +58,7 @@ export default {
 	},
 	methods: {
 		fetchData(resultaatId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zaken/' + resultaatId,
 				{

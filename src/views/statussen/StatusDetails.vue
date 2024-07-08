@@ -58,7 +58,7 @@ export default {
 	},
 	methods: {
 		fetchData(statusId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zaken/' + statusId,
 				{

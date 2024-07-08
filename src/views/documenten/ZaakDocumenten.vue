@@ -11,7 +11,7 @@ import { store } from '../../store.js'
 				:active="store.zakenItem === zaken?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(zaken.id)">
+				@click="store.setMetadataItem(zaken.id)">
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
 						disable-menu
@@ -67,7 +67,7 @@ export default {
 	},
 	methods: {
 		fetchData(newPage) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zaken',
 				{
@@ -84,10 +84,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setMetadataItem(id);
-			this.$emit('zakenItem', id)
 		},
 		clearText() {
 			this.search = ''

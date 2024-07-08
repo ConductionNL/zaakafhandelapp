@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<TaakDetails v-if="store.taakItem && store.selected === 'taken'" :taakId="store.taakItem" />
+			<TaakDetails v-if="store.taakItem && store.selected === 'taken'" :taak-id="store.taakItem" />
 		</template>
 	</NcAppContent>
 </template>

@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<DocumentDetails v-if="store.item && store.selected === 'zaken'" :documentId="store.documentItem" />
+			<DocumentDetails v-if="store.item && store.selected === 'zaken'" :document-id="store.documentItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -48,6 +48,6 @@ export default {
 			activeMetaData: false,
 			metaDataId: undefined,
 		}
-	}
+	},
 }
 </script>

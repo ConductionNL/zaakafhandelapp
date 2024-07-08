@@ -12,7 +12,7 @@ import { store } from '../../store.js'
 				:active="store.taakItem === taken?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(taken.id)">
+				@click="store.setTaakItem(taken.id)">
 				<template #icon>
 					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
 						disable-menu
@@ -67,7 +67,7 @@ export default {
 	},
 	methods: {
 		fetchData(newPage) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/taken',
 				{
@@ -84,10 +84,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setTaakItem(id);
-			this.$emit('taakId', id)
 		},
 		clearText() {
 			this.search = ''

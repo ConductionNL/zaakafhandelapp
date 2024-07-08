@@ -2,7 +2,6 @@
 import { store } from '../../store.js'
 </script>
 
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -60,7 +59,7 @@ export default {
 	},
 	methods: {
 		fetchData(besluitId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zaken/' + besluitId,
 				{

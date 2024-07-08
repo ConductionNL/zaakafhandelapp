@@ -1,12 +1,11 @@
 <template>
 	<!-- Placeholder -->
-	<div>
-	</div>
+	<div />
 </template>
 
 <script>
 
 export default {
-	name: 'Modals'
+	name: 'Modals',
 }
 </script>

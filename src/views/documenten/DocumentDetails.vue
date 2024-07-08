@@ -58,8 +58,8 @@ export default {
 		this.fetchData(store.documentItem)
 	},
 	methods: {
-		fetchData() {
-			this.loading = true,
+		fetchData(documentId) {
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zaken/' + documentId,
 				{

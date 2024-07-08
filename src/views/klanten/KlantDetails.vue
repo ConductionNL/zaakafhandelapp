@@ -58,7 +58,7 @@ export default {
 	},
 	methods: {
 		fetchData(klantId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/klanten/' + klantId,
 				{

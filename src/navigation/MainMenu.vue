@@ -73,11 +73,17 @@ import {
 	NcAppNavigationList,
 	NcAppNavigationItem,
 	NcAppNavigationNewItem,
-	NcAppNavigationSettings
+	NcAppNavigationSettings,
 } from '@nextcloud/vue'
 
 // Icons
 import Finance from 'vue-material-design-icons/Finance.vue'
+import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import AccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline.vue'
+import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'MainMenu',
@@ -87,7 +93,13 @@ export default {
 		NcAppNavigationItem,
 		NcAppNavigationNewItem,
 		NcAppNavigationSettings,
-		Finance
+		Finance,
+		AlphaTBoxOutline,
+		ChatOutline,
+		AccountGroupOutline,
+		CalendarMonthOutline,
+		BriefcaseAccountOutline,
+		Plus,
 	},
 }
 </script>

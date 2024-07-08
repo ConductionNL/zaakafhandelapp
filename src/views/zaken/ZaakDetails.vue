@@ -50,19 +50,19 @@ import { store } from '../../store.js'
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen :zaakId="store.zaakItem" />
+							<ZaakEigenschappen :zaak-id="store.zaakItem" />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten :zaakId="store.zaakItem" />
+							<ZaakDocumenten :zaak-id="store.zaakItem" />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen :zaakId="store.zaakItem" />
+							<ZaakRollen :zaak-id="store.zaakItem" />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken :zaakId="store.zaakItem" />
+							<ZaakTaken :zaak-id="store.zaakItem" />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten :zaakId="store.zaakItem" />
+							<ZaakBerichten :zaak-id="store.zaakItem" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
@@ -115,6 +115,12 @@ export default {
 		ZaakBerichten,
 		ZaakDocumenten,
 	},
+	props: {
+		zaakId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			zaak: [],
@@ -122,9 +128,9 @@ export default {
 		}
 	},
 	watch: {
-		zakenId: {
-			handler(zakenId) {
-				this.fetchData(zakenId)
+		zaakId: {
+			handler(zaakId) {
+				this.fetchData(zaakId)
 			},
 			deep: true,
 		},
@@ -133,10 +139,10 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
-		fetchData(zakenId) {
-			this.loading = true,
+		fetchData(zaakId) {
+			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zakenId,
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId,
 				{
 					method: 'GET',
 				},

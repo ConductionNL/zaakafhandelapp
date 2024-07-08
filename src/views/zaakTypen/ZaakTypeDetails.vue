@@ -31,7 +31,7 @@ import { NcLoadingIcon } from '@nextcloud/vue'
 export default {
 	name: 'ZaakTypeDetails',
 	components: {
-		NcLoadingIcon
+		NcLoadingIcon,
 	},
 	props: {
 		zaaktypeId: {
@@ -58,7 +58,7 @@ export default {
 	},
 	methods: {
 		fetchData(zaaktypeId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen/' + zaaktypeId,
 				{

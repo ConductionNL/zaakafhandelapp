@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<KlantDetails v-if="store.klantItem && store.selected === 'klanten'" :klantId="store.klantItem" />
+			<KlantDetails v-if="store.klantItem && store.selected === 'klanten'" :klant-id="store.klantItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -48,6 +48,6 @@ export default {
 			activeMetaData: false,
 			klantId: undefined,
 		}
-	}
+	},
 }
 </script>

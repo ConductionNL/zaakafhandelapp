@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZaakDetails v-if="store.zaakItem && store.selected === 'zaken'" :zaakId="store.zaakItem" />
+			<ZaakDetails v-if="store.zaakItem && store.selected === 'zaken'" :zaak-id="store.zaakItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -42,11 +42,6 @@ export default {
 		ZakenList,
 		ZaakDetails,
 		BriefcaseAccountOutline,
-	},
-	data() {
-		return {
-			zaakId: undefined,
-		}
 	},
 }
 </script>

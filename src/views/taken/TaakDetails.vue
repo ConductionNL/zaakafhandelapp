@@ -2,7 +2,6 @@
 import { store } from '../../store.js'
 </script>
 
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -27,15 +26,12 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'TaakDetail',
+	name: 'TaakDetails',
 	components: {
 		NcLoadingIcon,
-		BTabs,
-		BTab
 	},
 	props: {
 		taakId: {
@@ -62,7 +58,7 @@ export default {
 	},
 	methods: {
 		fetchData(taakId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/taken/' + taakId,
 				{

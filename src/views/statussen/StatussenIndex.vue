@@ -21,13 +21,13 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<StatusDetails v-if="store.item && store.selected === 'zaken'" :statusId="store.statusItem" />
+			<StatusDetails v-if="store.item && store.selected === 'zaken'" :status-id="store.statusItem" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import StatussenList from './StatussenList.vue'
 import StatusDetails from './StatusDetails.vue'
 // eslint-disable-next-line n/no-missing-import

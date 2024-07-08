@@ -21,13 +21,13 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BesluitDetails v-if="store.item && store.selected === 'zaken'" :besluitId="store.besluitItem" />
+			<BesluitDetails v-if="store.item && store.selected === 'zaken'" :besluit-id="store.besluitItem" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent,NcButton } from '@nextcloud/vue'
+import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import BesluitenList from './BesluitenList.vue'
 import BesluitDetails from './BesluitDetails.vue'
 // eslint-disable-next-line n/no-missing-import
@@ -47,6 +47,6 @@ export default {
 		return {
 			zakenId: undefined,
 		}
-	}
+	},
 }
 </script>

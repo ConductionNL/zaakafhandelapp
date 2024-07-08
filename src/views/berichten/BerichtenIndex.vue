@@ -5,7 +5,7 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContent>
 		<template #list>
-			<BerichtenList  />
+			<BerichtenList />
 		</template>
 		<template #default>
 			<NcEmptyContent v-if="!store.berichtItem || store.selected != 'berichten' "
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :berichtId="store.berichtItem" />
+			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :bericht-id="store.berichtItem" />
 		</template>
 	</NcAppContent>
 </template>
@@ -30,6 +30,7 @@ import { store } from '../../store.js'
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import BerichtenList from './BerichtenList.vue'
 import BerichDetails from './BerichtDetails.vue'
+// eslint-disable-next-line n/no-missing-import
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
@@ -46,6 +47,6 @@ export default {
 		return {
 			berichtId: undefined,
 		}
-	}
+	},
 }
 </script>

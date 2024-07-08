@@ -5,7 +5,6 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul v-if="!loading">
-
 			<NcListItem v-for="(zaken, i) in zakenList.results"
 				:key="`${zaken}${i}`"
 				:name="zaken?.name"
@@ -68,7 +67,7 @@ export default {
 	},
 	methods: {
 		fetchData(newPage) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zaken',
 				{

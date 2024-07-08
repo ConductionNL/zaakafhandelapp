@@ -11,7 +11,7 @@ import { store } from '../../store.js'
 				:active="store.berichtItem === berichten?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(berichten.id)">
+				@click="store.setBerichtItem(berichten.id)">
 				<template #icon>
 					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"
 						disable-menu
@@ -43,6 +43,7 @@ import { store } from '../../store.js'
 </template>
 <script>
 import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
+// eslint-disable-next-line n/no-missing-import
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
@@ -66,7 +67,7 @@ export default {
 	},
 	methods: {
 		fetchData(newPage) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/berichten',
 				{
@@ -83,9 +84,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setBerichtItem(id);
 		},
 		clearText() {
 			this.search = ''

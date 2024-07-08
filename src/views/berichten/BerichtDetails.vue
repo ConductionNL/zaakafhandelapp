@@ -59,7 +59,7 @@ export default {
 	},
 	methods: {
 		fetchData(berichtId) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/berichten/' + berichtId,
 				{

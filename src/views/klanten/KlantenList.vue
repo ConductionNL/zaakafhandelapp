@@ -69,7 +69,7 @@ export default {
 		NcTextField,
 		AccountOutline,
 		Magnify,
-		NcLoadingIcon
+		NcLoadingIcon,
 	},
 	data() {
 		return {
@@ -83,7 +83,7 @@ export default {
 	},
 	methods: {
 		fetchData(newPage) {
-			this.loading = true,
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/klanten',
 				{
