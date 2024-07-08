@@ -57,12 +57,21 @@ import { store } from '../store.js'
 		<NcAppNavigationSettings>
 			<NcAppNavigationItem
 				:active="store.selected === 'zaakTypen'"
-				name="zaak Typen"
+				name="Zaak Typen"
 				@click="store.setSelected('zaakTypen')">
 				<template #icon>
 					<AlphaTBoxOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
+			<NcAppNavigationItem
+				:active="store.selected === 'auditTrail'"
+				name="Audit trail"
+				@click="store.setSelected('auditTrail')">
+				<template #icon>
+					<SortVariantLock :size="20" />
+				</template>
+			</NcAppNavigationItem>
+			<Configuration />
 		</NcAppNavigationSettings>
 	</NcAppNavigation>
 </template>
@@ -76,6 +85,9 @@ import {
 	NcAppNavigationSettings,
 } from '@nextcloud/vue'
 
+// Configuration
+import Configuration from './Configuration.vue'
+
 // Icons
 import Finance from 'vue-material-design-icons/Finance.vue'
 import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
@@ -84,6 +96,7 @@ import AccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline.v
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import SortVariantLock from 'vue-material-design-icons/SortVariantLock.vue'
 
 export default {
 	name: 'MainMenu',
@@ -100,6 +113,8 @@ export default {
 		CalendarMonthOutline,
 		BriefcaseAccountOutline,
 		Plus,
+		SortVariantLock,
+		Configuration,
 	},
 }
 </script>

@@ -9,7 +9,7 @@ import { store } from '../../store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ zaak.name }}
+						{{ zaak.omschrijving }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
@@ -50,19 +50,25 @@ import { store } from '../../store.js'
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen :zaak-id="store.zaakItem" />
+							<ZaakEigenschappen :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten :zaak-id="store.zaakItem" />
+							<ZaakDocumenten :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen :zaak-id="store.zaakItem" />
+							<ZaakRollen :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken :zaak-id="store.zaakItem" />
+							<ZaakTaken :zaak-id="zaak.uuid" />
+						</BTab>
+						<BTab title="Besluiten">
+							<ZaakBesluiten :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten :zaak-id="store.zaakItem" />
+							<ZaakBerichten :zaak-id="zaak.uuid" />
+						</BTab>
+						<BTab title="Zaken">
+							<ZakenZaken :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
@@ -93,7 +99,9 @@ import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
 import ZaakBerichten from '../berichten/ZaakBerichten.vue'
 import ZaakRollen from '../rollen/ZaakRollen.vue'
 import ZaakTaken from '../taken/ZaakTaken.vue'
+import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
+import ZakenZaken from '../zaken/ZakenZaken.vue'
 
 export default {
 	name: 'ZaakDetails',
@@ -113,7 +121,9 @@ export default {
 		ZaakRollen,
 		ZaakTaken,
 		ZaakBerichten,
+		ZaakBesluiten,
 		ZaakDocumenten,
+		ZakenZaken,
 	},
 	props: {
 		zaakId: {

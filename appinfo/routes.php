@@ -8,6 +8,10 @@ return [
 	 	'rollen' => ['url' => 'api/zrc/rollen'],
 	 	'statussen' => ['url' => 'api/zrc/statussen'],
 	 	'zaakinformatieobjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
+	 	'zaakobjecten' => ['url' => 'api/zrc/zaakobjecten'],
+	 	'zaakbesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
+	 	'zaakeigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+	 	'zaakaudittrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 	 	'zaakTypen' => ['url' => 'api/ztc'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
@@ -22,6 +26,7 @@ return [
 	 	'berichten' => ['url' => 'api/berichten'],
 	 ],
 	'routes' => [
+		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#show', 'url' => '/api/configuration', 'verb' => 'GET'],
 		['name' => 'configuration#update', 'url' => '/api/configuration', 'verb' => 'PUT'],

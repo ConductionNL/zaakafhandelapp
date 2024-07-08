@@ -1,25 +1,25 @@
+// Zaken behorende bij een andere zaak
 <script setup>
 import { store } from '../../store.js'
 </script>
 
 <template>
-	<div>
+	<NcAppContentList>
 		<ul v-if="!loading">
-			<NcListItem v-for="(taken, i) in takenList.results"
-				:key="`${taken}${i}`"
-				:name="taken?.name"
-				:bold="true"
-				:active="store.taakItem === taken?.id"
+			<NcListItem v-for="(zaken, i) in zakenList.results"
+				:key="`${zaken}${i}`"
+				:name="zaken?.omschrijving"
+				:active="store.zakenItem === zaken?.uuid"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setTaakItem(taken.id)">
+				@click="store.setZaakItem(zaken.uuid)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.zakenItem === zaken.uuid && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ taken?.summary }}
+					{{ zaken?.zaaktype }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -39,20 +39,21 @@ import { store } from '../../store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Taken aan het laden" />
-	</div>
+			name="Zaken aan het laden" />
+	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
 // eslint-disable-next-line n/no-missing-import
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
 export default {
-	name: 'ZaakTaken',
+	name: 'ZakenZaken',
 	components: {
 		NcListItem,
 		NcActionButton,
-		CalendarMonthOutline,
+		NcAppContentList,
+		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
 	props: {
@@ -65,7 +66,7 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			takenList: [],
+			zakenList: [],
 		}
 	},
 	watch: {
@@ -83,14 +84,14 @@ export default {
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.takenList = data
+						this.zakenList = data
 					})
 					this.loading = false
 				})
@@ -105,7 +106,6 @@ export default {
 	},
 }
 </script>
-
 <style>
 .listHeader {
     position: sticky;
