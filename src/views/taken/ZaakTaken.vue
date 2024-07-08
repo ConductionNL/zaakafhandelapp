@@ -55,6 +55,12 @@ export default {
 		CalendarMonthOutline,
 		NcLoadingIcon,
 	},
+	props: {
+		zaakId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			search: '',
@@ -62,11 +68,19 @@ export default {
 			takenList: [],
 		}
 	},
+	watch: {
+		zaakId: {
+			handler(zaakId) {
+				this.fetchData(zaakId)
+			},
+			deep: true,
+		},
+	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.zaakItem)
 	},
 	methods: {
-		fetchData(newPage) {
+		fetchData(zaakId) {
 			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/taken',

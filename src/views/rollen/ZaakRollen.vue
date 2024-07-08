@@ -55,6 +55,12 @@ export default {
 		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
+	props: {
+		zaakId: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			search: '',
@@ -62,14 +68,22 @@ export default {
 			zakenList: [],
 		}
 	},
+	watch: {
+		zaakId: {
+			handler(zaakId) {
+				this.fetchData(zaakId)
+			},
+			deep: true,
+		},
+	},
 	mounted() {
-		this.fetchData()
+		this.fetchData(store.zaakItem)
 	},
 	methods: {
-		fetchData(newPage) {
+		fetchData(zaakId) {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
+				'/index.php/apps/zaakafhandelapp/api/zrc/rollen',
 				{
 					method: 'GET',
 				},
