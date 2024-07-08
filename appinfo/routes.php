@@ -8,6 +8,7 @@ return [
 	 	'rollen' => ['url' => 'api/zrc/rollen'],
 	 	'statussen' => ['url' => 'api/zrc/statussen'],
 	 	'zaakinformatieobjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
+	 	'zaakobjecten' => ['url' => 'api/zrc/zaakobjecten'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 	 	'zaakTypen' => ['url' => 'api/ztc'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0

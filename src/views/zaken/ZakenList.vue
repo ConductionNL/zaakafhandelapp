@@ -19,18 +19,18 @@ import { store } from '../../store.js'
 
 			<NcListItem v-for="(zaken, i) in zakenList.results"
 				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+				:name="zaken?.omschrijving"
+				:active="store.zakenItem === zaken?.uuid"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setZaakItem(zaken.id)">
+				@click="store.setZaakItem(zaken.uuid)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.zakenItem === zaken.uuid && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ zaken?.zaaktype }}
 				</template>
 				<template #actions>
 					<NcActionButton>
