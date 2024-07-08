@@ -28,108 +28,108 @@
 				</template>
 				<div class="wrapper">
 					<b>Klanten API</b>
-					<NcTextField :value.sync="klanten_location"
+					<NcTextField :value.sync="configuration.klantenLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="klanten_location !== ''"
-						@trailing-button-click="klanten_location = ''">
+						:show-trailing-button="configuration.klantenLocation !== ''"
+						@trailing-button-click="configuration.klantenLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="klanten_key"
+					<NcTextField :value.sync="configuration.klantenKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="klanten_key !== ''"
-						@trailing-button-click="klanten_key = ''">
+						:show-trailing-button="configuration.klantenKey !== ''"
+						@trailing-button-click="configuration.klantenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
 					<b>Berichten API</b>
-					<NcTextField :value.sync="berichten_location"
+					<NcTextField :value.sync="configuration.berichtenLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="berichten_location !== ''"
-						@trailing-button-click="berichten_location = ''">
+						:show-trailing-button="configuration.berichtenLocation !== ''"
+						@trailing-button-click="configuration.berichtenLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="berichten_key"
+					<NcTextField :value.sync="configuration.berichtenKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="berichten_key !== ''"
-						@trailing-button-click="berichten_key = ''">
+						:show-trailing-button="configuration.berichtenKey !== ''"
+						@trailing-button-click="configuration.berichtenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
 					<b>Taken API</b>
-					<NcTextField :value.sync="taken_location"
+					<NcTextField :value.sync="configuration.takenLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="taken_location !== ''"
-						@trailing-button-click="taken_location = ''">
+						:show-trailing-button="configuration.takenLocation !== ''"
+						@trailing-button-click="configuration.takenLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="taken_key"
+					<NcTextField :value.sync="configuration.takenKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="taken_key !== ''"
-						@trailing-button-click="taken_key = ''">
+						:show-trailing-button="configuration.takenKey !== ''"
+						@trailing-button-click="configuration.takenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<b>Zaken Regiser</b>
-					<NcTextField :value.sync="zrc_location"
+					<b>Zaken Register</b>
+					<NcTextField :value.sync="configuration.zrcLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="zrc_location !== ''"
-						@trailing-button-click="zrc_location = ''">
+						:show-trailing-button="configuration.zrcLocation !== ''"
+						@trailing-button-click="configuration.zrcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="zrc_key"
+					<NcTextField :value.sync="configuration.zrcKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="zrc_key !== ''"
-						@trailing-button-click="zrc_key = ''">
+						:show-trailing-button="configuration.zrcKey !== ''"
+						@trailing-button-click="configuration.zrcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<b>Objecten Regiser</b>
-					<NcTextField :value.sync="orc_location"
+					<b>Objecten Register</b>
+					<NcTextField :value.sync="configuration.orcLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="orc_location !== ''"
-						@trailing-button-click="orc_location = ''">
+						:show-trailing-button="configuration.orcLocation !== ''"
+						@trailing-button-click="configuration.orcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="zrc_key"
+					<NcTextField :value.sync="configuration.zrcKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="zrc_key !== ''"
-						@trailing-button-click="zrc_key = ''">
+						:show-trailing-button="configuration.zrcKey !== ''"
+						@trailing-button-click="configuration.zrcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<b>Documenten Regiser</b>
-					<NcTextField :value.sync="drc_location"
+					<b>Documenten Register</b>
+					<NcTextField :value.sync="configuration.drcLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="drc_location !== ''"
-						@trailing-button-click="drc_location = ''">
+						:show-trailing-button="configuration.drcLocation !== ''"
+						@trailing-button-click="configuration.drcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="zrc_key"
+					<NcTextField :value.sync="configuration.zrcKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="zrc_key !== ''"
-						@trailing-button-click="zrc_key = ''">
+						:show-trailing-button="configuration.zrcKey !== ''"
+						@trailing-button-click="configuration.zrcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<b>Besluiten Regiser</b>
-					<NcTextField :value.sync="brc_location"
+					<b>Besluiten Register</b>
+					<NcTextField :value.sync="configuration.brcLocation"
 						label="The location (url)"
 						trailing-button-icon="close"
-						:show-trailing-button="brc_location !== ''"
-						@trailing-button-click="brc_location = ''">
+						:show-trailing-button="configuration.brcLocation !== ''"
+						@trailing-button-click="configuration.brcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="brc_key"
+					<NcTextField :value.sync="configuration.brcKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="brc_key !== ''"
-						@trailing-button-click="brc_key = ''">
+						:show-trailing-button="configuration.brcKey !== ''"
+						@trailing-button-click="configuration.brcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
 				</div>
@@ -138,10 +138,33 @@
 				<template #icon>
 					<OfficeBuildingOutline :size="20" />
 				</template>
-
-				<p>
-					Here you can set the details for your organisation
-				</p>
+				<div class="wrapper">
+					<NcTextField :value.sync="configuration.organisationName"
+						label="The name of your organisation"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.organisationName !== ''"
+						@trailing-button-click="configuration.organisationName = ''" />
+					<NcTextField :value.sync="configuration.organisationOIN"
+						label="The oin of your organisation"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.organisationOIN !== ''"
+						@trailing-button-click="configuration.organisationOIN = ''" />
+					<NcTextField :value.sync="configuration.organisationRSIN"
+						label="The rsin of your organisation"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.organisationRSIN !== ''"
+						@trailing-button-click="configuration.organisationRSIN = ''" />
+					<NcTextField :value.sync="configuration.organisationKVK"
+						label="The kvk of your organisation"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.organisationKVK !== ''"
+						@trailing-button-click="configuration.organisationKVK = ''" />
+					<NcTextArea
+						:value.sync="configuration.organisationPKI"
+						label="A PKI for yout organisation"
+						placeholder="Your public PKI certificates here"
+						helper-text="PKI certificates are used for connections on the FCS network" />
+				</div>
 			</NcAppSettingsSection>
 		</NcAppSettingsDialog>
 	</div>
@@ -153,6 +176,7 @@ import {
 	NcAppSettingsSection,
 	NcAppNavigationItem,
 	NcTextField,
+	NcTextArea,
 } from '@nextcloud/vue'
 
 import Database from 'vue-material-design-icons/Database.vue'
@@ -169,6 +193,7 @@ export default {
 		NcAppSettingsSection,
 		NcAppNavigationItem,
 		NcTextField,
+		NcTextArea,
 		CogOutline,
 		Connection,
 		Database,
@@ -180,40 +205,33 @@ export default {
 		return {
 			// all of this is settings and should be moved
 			settingsOpen: false,
-			zrc_location: '',
-			zrc_key: '',
-			orc_location: '',
-			orc_key: '',
-			drc_location: '',
-			drc_key: '',
-			brc_location: '',
-			brc_key: '',
-			klanten_location: '',
-			klanten_key: '',
-			Taken_location: '',
-			Taken_key: '',
-			Berichten_location: '',
-			Berichten_key: '',
-			elastic_location: '',
-			elastic_key: '',
 			loading: true,
-			organisation_name: '',
-			organisation_oin: '',
-			organisation_pki: '',
 			catalogi: [],
 			configuration: {
 				drcLocation: '',
 				drcKey: '',
 				orcLocation: '',
 				orcKey: '',
+				zrcLocation: '',
+				zrcKey: '',
+				brcLocation: '',
+				brcKey: '',
+				klantenLocation: '',
+				klantenKey: '',
+				berichtenLocation: '',
+				berichtenKey: '',
+				takenLocation: '',
+				takenKey: '',
 				elasticLocation: '',
 				elasticKey: '',
 				mongodbLocation: '',
 				mongodbKey: '',
 				mongodbCluster: '',
 				organisationName: '',
-				organisationOin: '',
-				organisationPki: '',
+				organisationOIN: '',
+				organisationPKI: '',
+				organisationRSIN: '',
+				organisationKVK: '',
 			},
 		}
 	},
