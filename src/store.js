@@ -14,6 +14,7 @@ export const store = reactive({
 	zaakTypeItem: false,
 	klantItem: false,
 	taakItem: false,
+	taakId: false,
 	berichtItem: false,
 	// Lets add some setters
 	setSelected(selected) {
@@ -43,6 +44,10 @@ export const store = reactive({
 	setTaakItem(taakItem) {
 		this.taakItem = taakItem
 		console.log('Active taak item set to ' + taakItem)
+	},
+	setTaakId(taakId) {
+		this.taakId = taakId
+		console.log('Active taak id set to ' + taakId)
 	},
 	setBerichtItem(berichtItem) {
 		this.berichtItem = berichtItem
