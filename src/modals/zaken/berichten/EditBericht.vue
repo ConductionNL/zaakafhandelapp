@@ -7,43 +7,69 @@ import { store } from '../../../store.js'
 		<div class="modal__content">
 			<h2>Bericht aanpassen</h2>
 			<div class="form-group">
-				<NcTextField label="Onderwerp" :value.sync="bericht.onderwerp" />
+				<NcTextField label="Onderwerp"
+					:value.sync="bericht.onderwerp"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextArea label="Berichttekst" :value.sync="bericht.berichttekst" />
+				<NcTextArea label="Berichttekst"
+					:value.sync="bericht.berichttekst"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextArea label="Inhoud (base64)" :value.sync="bericht.inhoud" />
+				<NcTextArea label="Inhoud (base64)"
+					:value.sync="bericht.inhoud"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Bijlage type" :value.sync="bericht.bijlageType" />
+				<NcTextField label="Bijlage type"
+					:value.sync="bericht.bijlageType"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Soort gebruiker" :value.sync="bericht.soortGebruiker" />
+				<NcTextField label="Soort gebruiker"
+					:value.sync="bericht.soortGebruiker"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Publicatiedatum" :value.sync="bericht.publicatieDatum" :loading="berichtLoading" />
+				<NcTextField label="Publicatiedatum"
+					:value.sync="bericht.publicatieDatum"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Aanmaak datum" :value.sync="bericht.aanmaakDatum" :loading="berichtLoading" />
+				<NcTextField label="Aanmaak datum"
+					:value.sync="bericht.aanmaakDatum"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Bericht type" :value.sync="bericht.berichtType" :loading="berichtLoading" />
+				<NcTextField label="Bericht type"
+					:value.sync="bericht.berichtType"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Referentie" :value.sync="bericht.referentie" :loading="berichtLoading" />
+				<NcTextField label="Referentie"
+					:value.sync="bericht.referentie"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Bericht ID" :value.sync="bericht.berichtID" :loading="berichtLoading" />
+				<NcTextField label="Bericht ID"
+					:value.sync="bericht.berichtID"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Batch ID" :value.sync="bericht.batchID" :loading="berichtLoading" />
+				<NcTextField label="Batch ID"
+					:value.sync="bericht.batchID"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Gebruiker ID" :value.sync="bericht.gebruikerID" :loading="berichtLoading" />
+				<NcTextField label="Gebruiker ID"
+					:value.sync="bericht.gebruikerID"
+					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Volgorde" :value.sync="bericht.volgorde" :loading="berichtLoading" />
+				<NcTextField label="Volgorde"
+					:value.sync="bericht.volgorde"
+					:loading="berichtLoading" />
 			</div>
 			<div v-if="succesMessage" class="success">
 				Bericht succesvol opgeslagen
@@ -105,7 +131,6 @@ export default {
 				.then((response) => {
 					response.json().then((data) => {
 						this.bericht = data
-						console.log(data)
 						// this.oldZaakId = id
 					})
 					this.berichtLoading = false
@@ -123,7 +148,7 @@ export default {
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/berichten/${store.berichtItem}`,
 				{
-					method: 'PATCH',
+					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json',
 					},
