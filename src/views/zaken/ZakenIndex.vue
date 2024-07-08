@@ -30,8 +30,7 @@ import { store } from '../../store.js'
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import ZakenList from './ZakenList.vue'
 import ZaakDetails from './ZaakDetails.vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ZakenIndex',
