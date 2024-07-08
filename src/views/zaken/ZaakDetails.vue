@@ -33,7 +33,7 @@ import { store } from '../../store.js'
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="store.setModal('editTaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
