@@ -59,7 +59,7 @@ import { store } from '../../store.js'
 				</div>
 			</div>
 
-			<NcButton :disabled="!title && !catalogi?.value?.id && !metaData?.value?.id || taakLoading" type="primary" @click="addTaak">
+			<NcButton :disabled="!title" type="primary" @click="addTaak">
 				Starten
 			</NcButton>
 		</div>

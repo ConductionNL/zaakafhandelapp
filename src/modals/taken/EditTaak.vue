@@ -64,7 +64,7 @@ import { store } from '../../store.js'
 				appearance="dark"
 				name="Edit taak model is aan het laden." />
 
-			<NcButton :disabled="!catalogName" type="primary" @click="editTaak">
+			<NcButton type="primary" @click="editTaak">
 				Opslaan
 			</NcButton>
 		</div>
