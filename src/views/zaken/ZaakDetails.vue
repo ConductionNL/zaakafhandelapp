@@ -39,6 +39,12 @@ import { store } from '../../store.js'
 							</template>
 							Taak toevoegen
 						</NcActionButton>
+						<NcActionButton @click="store.setModal('addBericht')">
+							<template #icon>
+								<MessagePlus :size="20" />
+							</template>
+							Bericht toevoegen
+						</NcActionButton>
 						<NcActionButton>
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
@@ -92,6 +98,7 @@ import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
 import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
+import MessagePlus from 'vue-material-design-icons/MessagePlus.vue'
 import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 // Views
@@ -115,6 +122,7 @@ export default {
 		Pencil,
 		AccountPlus,
 		CalendarPlus,
+		MessagePlus,
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 		ZaakEigenschappen,

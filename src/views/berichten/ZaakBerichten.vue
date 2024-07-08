@@ -18,17 +18,14 @@ import { store } from '../../store.js'
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ berichten?.summary }}
+					{{ berichten?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="editBericht(berichten.id)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
+						Verwijderen
 					</NcActionButton>
 				</template>
 			</NcListItem>
@@ -80,6 +77,10 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
+		editBericht(bericht) {
+			store.setBerichtItem(bericht)
+			store.setModal('editBericht')
+		},
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(
