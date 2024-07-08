@@ -28,8 +28,8 @@ return [
 	'routes' => [
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'configuration#show', 'url' => '/api/configuration', 'verb' => 'GET'],
-		['name' => 'configuration#update', 'url' => '/api/configuration', 'verb' => 'PUT'],
+		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
+		['name' => 'configuration#create', 'url' => '/api/configuration', 'verb' => 'POST'],
 		['name' => 'zaken#page', 'url' => '/zaken', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],
 		['name' => 'statussen#page', 'url' => '/statussen', 'verb' => 'GET'],
