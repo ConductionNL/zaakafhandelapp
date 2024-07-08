@@ -1,20 +1,17 @@
 :root {
+  --zaa-margin-10: 10px;
   --zaa-margin-20: 20px;
   --zaa-margin-50: 50px;
 }
 
-.detailContainer {
-  margin-block-start: var(--zaa-margin-20);
-  margin-inline-start: var(--zaa-margin-20);
-  margin-inline-end: var(--zaa-margin-20);
-}
-
+/* Lists */
 .listHeader {
   position: sticky;
   top: 0;
   z-index: 1000;
   background-color: var(--color-main-background);
   border-bottom: 1px solid var(--color-border);
+  display: flex;
 }
 
 .searchField {
@@ -26,6 +23,13 @@
 
 .selectedZaakIcon > svg {
   fill: white;
+}
+
+/* Detail pages */
+.detailContainer {
+  margin-block-start: var(--zaa-margin-20);
+  margin-inline-start: var(--zaa-margin-20);
+  margin-inline-end: var(--zaa-margin-20);
 }
 
 .tabContainer > * ul > li {
@@ -55,10 +59,44 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+.tabContainer > * ul[role="tablist"] > * a[role="tab"] {
+  padding-inline-start: 10px;
+  padding-inline-end: 10px;
+  padding-block-start: 10px;
+  padding-block-end: 10px;
+}
+
+.tabContainer > * div[role="tabpanel"] {
+  margin-block-start: var(--zaa-margin-10);
+}
+
 .tabPanel {
   padding: 20px 10px;
   min-height: 100%;
   max-height: 100%;
   height: 100%;
   overflow: auto;
+}
+
+
+/* Modals */
+.form-group > *  {
+  margin-block-end: 10px;
+}
+
+.input-field__label {
+  margin-block: -6px;
+}
+
+.input-field__input:focus + .input-field__label {
+  margin-block: 0px;
+}
+
+.success {
+  color: green;
+}
+
+.modalContent {
+  margin: var(--zaa-margin-50);
+  text-align: center;
 }
