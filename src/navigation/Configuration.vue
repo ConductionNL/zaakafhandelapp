@@ -27,6 +27,30 @@
 					<Connection :size="20" />
 				</template>
 				<div class="wrapper">
+					<b>Mongo DB</b>
+					<NcTextField :value.sync="configuration.mongodbLocation"
+						label="The location (url)"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.mongodbLocation !== ''"
+						@trailing-button-click="configuration.mongodbLocation = ''">
+						<Web :size="20" />
+					</NcTextField>
+					<NcTextField :value.sync="configuration.mongodbKey"
+						label="The location (url)"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.mongodbKey !== ''"
+						@trailing-button-click="configuration.mongodbKey = ''">
+						<Web :size="20" />
+					</NcTextField>
+					<NcTextField :value.sync="configuration.mongodbCluster"
+						label="The cluster"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.mongodbCluster !== ''"
+						@trailing-button-click="configuration.mongodbCluster = ''">
+						<Lock :size="20" />
+					</NcTextField>
+				</div>
+				<div class="wrapper">
 					<b>Klanten API</b>
 					<NcTextField :value.sync="configuration.klantenLocation"
 						label="The location (url)"
@@ -166,6 +190,15 @@
 						helper-text="PKI certificates are used for connections on the FCS network" />
 				</div>
 			</NcAppSettingsSection>
+			<NcButton aria-label="Save"
+				type="primary"
+				wide
+				@click="saveConfig()">
+				<template #icon>
+					<ContentSave :size="20" />
+				</template>
+				Save
+			</NcButton>
 		</NcAppSettingsDialog>
 	</div>
 </template>
@@ -177,6 +210,7 @@ import {
 	NcAppNavigationItem,
 	NcTextField,
 	NcTextArea,
+	NcButton,
 } from '@nextcloud/vue'
 
 import Database from 'vue-material-design-icons/Database.vue'
@@ -185,6 +219,7 @@ import CogOutline from 'vue-material-design-icons/CogOutline.vue'
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import Lock from 'vue-material-design-icons/Lock.vue'
 import Web from 'vue-material-design-icons/Web.vue'
+import ContentSave from 'vue-material-design-icons/ContentSave.vue'
 
 export default {
 	name: 'Configuration',
@@ -194,19 +229,20 @@ export default {
 		NcAppNavigationItem,
 		NcTextField,
 		NcTextArea,
+		NcButton,
 		CogOutline,
 		Connection,
 		Database,
 		Lock,
 		Web,
 		OfficeBuildingOutline,
+		ContentSave,
 	},
 	data() {
 		return {
 			// all of this is settings and should be moved
 			settingsOpen: false,
-			loading: true,
-			catalogi: [],
+			loading: false,
 			configuration: {
 				drcLocation: '',
 				drcKey: '',
@@ -242,26 +278,8 @@ export default {
 		// We use the catalogi in the menu so lets fetch those
 		fetchData(newPage) {
 			this.loading = true
-			// Catalogi details
 			fetch(
-				'/index.php/apps/zaakafhandelapp/catalogi/api',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.catalogi = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-
-			fetch(
-				'/index.php/apps/zaakafhandelapp/configuration',
+				'/index.php/apps/zaakafhandelapp/api/configuration',
 				{
 					method: 'GET',
 				},
@@ -283,7 +301,7 @@ export default {
 				body: JSON.stringify(this.configuration),
 			}
 
-			fetch('/index.php/apps/talog/configuration', requestOptions)
+			fetch('/index.php/apps/zaakafhandelapp/api/configuration', requestOptions)
 				.then((response) => {
 					response.json().then((data) => {
 						this.configuration = data
