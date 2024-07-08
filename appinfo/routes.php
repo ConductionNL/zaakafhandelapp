@@ -9,9 +9,9 @@ return [
 	 	'statussen' => ['url' => 'api/zrc/statussen'],
 	 	'zaakinformatieobjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
 	 	'zaakobjecten' => ['url' => 'api/zrc/zaakobjecten'],
-	 	'zaakbesluiten' => ['url' => 'api/zrc/zaken/[zaak_uuid]/besluiten'],
-	 	'zaakeigenschappen' => ['url' => 'api/zrc/zaken/[zaak_uuid]/eigenschappen'],
-	 	'zaakaudittrail' => ['url' => 'api/zrc/zaken/[zaak_uuid]/audit_trail'],
+	 	'zaakbesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
+	 	'zaakeigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+	 	'zaakaudittrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 	 	'zaakTypen' => ['url' => 'api/ztc'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
@@ -26,14 +26,6 @@ return [
 	 	'berichten' => ['url' => 'api/berichten'],
 	 ],
 	'routes' => [
-		// Extra Api Routes
-		// ['name' => 'zaken#indexBesluiten', 'url' => 'api/zrc/zaken/[zaak_uuid]/besluiten', 'verb' => 'GET'],
-		// ['name' => 'zaken#showBesluiten', 'url' => 'api/zrc/zaken/[zaak_uuid]/besluiten/[uuid]', 'verb' => 'GET'],
-		// ['name' => 'zaken#createBesluiten', 'url' => 'api/zrc/zaken/[zaak_uuid]/besluiten', 'verb' => 'POST'],
-		// ['name' => 'zaken#updateBesluiten', 'url' => 'api/zrc/zaken/[zaak_uuid]/besluiten/[uuid]', 'verb' => 'PUT'],
-		// ['name' => 'zaken#destroyBesluiten', 'url' => 'api/zrc/zaken/[zaak_uuid]/besluiten/[uuid]', 'verb' => 'DELETE'],
-		// ['name' => 'zaken#indexEigenschappen', 'url' => 'api/zrc/zaken/[zaak_uuid]/zaakeigenschappen', 'verb' => 'GET'],
-		// ['name' => 'zaken#indexAutfitTrails', 'url' => 'api/zrc/zaken/[zaak_uuid]/audit_trail', 'verb' => 'GET'],
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#show', 'url' => '/api/configuration', 'verb' => 'GET'],

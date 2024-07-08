@@ -83,7 +83,7 @@ export default {
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + zaakId + '/eigenschappen',
+				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId + '/eigenschappen',
 				{
 					method: 'GET',
 				},
