@@ -11,45 +11,45 @@ import { store } from '../../store.js'
 				<div class="form-group">
 					<NcTextField :disabled="taakLoading"
 						label="Titel"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="title"
 						:loading="taakLoading" />
 
-                    <NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="taakLoading"
 						label="Zaak"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="zaak"
 						:loading="taakLoading" />
-                    
-                    <NcTextField :disabled="taakLoading"
+
+					<NcTextField :disabled="taakLoading"
 						label="Type"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="type"
 						:loading="taakLoading" />
 
-                    <NcSelect :disabled="taakLoading"
-                        v-bind="statusOptions"
-                        v-model="status"
-                        input-label="Status"
-                        :loading="catalogiLoading"
-                        required />
+					<NcSelect v-bind="statusOptions"
+						v-model="status"
+						:disabled="taakLoading"
+						input-label="Status"
+						:loading="catalogiLoading"
+						required />
 
-                    <NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="taakLoading"
 						label="Onderwerp"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="onderwerp"
 						:loading="taakLoading" />
 
-                    <NcTextArea :disabled="taakLoading"
+					<NcTextArea :disabled="taakLoading"
 						label="Toelichting"
 						:value.sync="toelichting"
 						:loading="taakLoading" />
 				</div>
 
-                <div class="form-group">
+				<div class="form-group">
 					<NcTextField :disabled="taakLoading"
 						label="Actie"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="actie"
 						:loading="taakLoading" />
 				</div>
@@ -73,7 +73,6 @@ import {
 	NcTextField,
 	NcTextArea,
 	NcSelect,
-    NcDateTimePicker,
 } from '@nextcloud/vue'
 
 export default {
@@ -84,17 +83,16 @@ export default {
 		NcTextArea,
 		NcButton,
 		NcSelect,
-        NcDateTimePicker,
 	},
 	data() {
 		return {
 			title: '',
 			zaak: '',
 			type: '',
-            status: '',
-            onderwerp: '',
-            toelichting: '',
-            actie: '',
+			status: '',
+			onderwerp: '',
+			toelichting: '',
+			actie: '',
 			catalogi: {},
 			metaData: {},
 			succesMessage: false,
@@ -102,26 +100,26 @@ export default {
 			metaDataLoading: false,
 			taakLoading: false,
 			hasUpdated: false,
-            statusOptions: {
-                options: [
-                    {
-                        id: 'open',
-                        label: 'Open'
-                    },
-                    {
-                        id: 'ingediend',
-                        label: 'Ingediend'
-                    },
-                    {
-                        id: 'verwerkt',
-                        label: 'Verwerkt'
-                    },
-                    {
-                        id: 'gesloten',
-                        label: 'Gesloten'
-                    },
-                ]
-            }
+			statusOptions: {
+				options: [
+					{
+						id: 'open',
+						label: 'Open',
+					},
+					{
+						id: 'ingediend',
+						label: 'Ingediend',
+					},
+					{
+						id: 'verwerkt',
+						label: 'Verwerkt',
+					},
+					{
+						id: 'gesloten',
+						label: 'Gesloten',
+					},
+				],
+			},
 		}
 	},
 	updated() {

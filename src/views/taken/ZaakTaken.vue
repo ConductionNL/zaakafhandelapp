@@ -22,8 +22,8 @@ import { store } from '../../store.js'
 					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
-                    <NcActionButton @click="editTaak(taak)">
-					    Bewerken
+					<NcActionButton @click="editTaak(taak)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
 						Button two
@@ -80,10 +80,10 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
-        editTaak(taak) {
-            store.setTaakItem(taak)
-            store.setModal("editTaak")
-        },
+		editTaak(taak) {
+			store.setTaakItem(taak)
+			store.setModal('editTaak')
+		},
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(

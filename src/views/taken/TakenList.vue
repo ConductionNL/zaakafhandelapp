@@ -33,8 +33,8 @@ import { store } from '../../store.js'
 					{{ taken?.summary }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="setTaakItem(taken), setModal("editTaak")">
-					    Bewerken
+					<NcActionButton @click="editTaak(taak)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
 						Button two

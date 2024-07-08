@@ -45,7 +45,7 @@ export const store = reactive({
 		this.taakItem = taakItem
 		console.log('Active taak item set to ' + taakItem)
 	},
-    setTaakId(taakId) {
+	setTaakId(taakId) {
 		this.taakId = taakId
 		console.log('Active taak id set to ' + taakId)
 	},

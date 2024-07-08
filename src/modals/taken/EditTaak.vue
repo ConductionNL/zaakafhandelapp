@@ -6,50 +6,50 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'editTaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Taak aanpassen</h2>
-			
-            <div v-if="!taakLoading">
+
+			<div v-if="!taakLoading">
 				<div class="form-group">
 					<NcTextField :disabled="taakLoading"
 						label="Titel"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="taak.title"
 						:loading="taakLoading" />
 
-                    <NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="taakLoading"
 						label="Zaak"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="taak.zaak"
 						:loading="taakLoading" />
-                    
-                    <NcTextField :disabled="taakLoading"
+
+					<NcTextField :disabled="taakLoading"
 						label="Type"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="taak.type"
 						:loading="taakLoading" />
 
-                    <NcSelect :disabled="taakLoading"
-                        v-bind="statusOptions"
-                        v-model="taak.status"
-                        input-label="Status"
-                        :loading="catalogiLoading"
-                        required />
+					<NcSelect v-bind="statusOptions"
+						v-model="taak.status"
+						:disabled="taakLoading"
+						input-label="Status"
+						:loading="catalogiLoading"
+						required />
 
-                    <NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="taakLoading"
 						label="Onderwerp"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="taak.onderwerp"
 						:loading="taakLoading" />
 
-                    <NcTextArea :disabled="taakLoading"
+					<NcTextArea :disabled="taakLoading"
 						label="Toelichting"
 						:value.sync="taak.toelichting"
 						:loading="taakLoading" />
 				</div>
 
-                <div class="form-group">
+				<div class="form-group">
 					<NcTextField :disabled="loading"
 						label="Actie"
-                        maxlength="255"
+						maxlength="255"
 						:value.sync="taak.actie"
 						:loading="taakLoading" />
 				</div>
@@ -59,10 +59,10 @@ import { store } from '../../store.js'
 				</div>
 			</div>
 
-            <NcLoadingIcon v-if="taakLoading"
-                :size="100"
-                appearance="dark"
-                name="Edit taak model is aan het laden." />
+			<NcLoadingIcon v-if="taakLoading"
+				:size="100"
+				appearance="dark"
+				name="Edit taak model is aan het laden." />
 
 			<NcButton :disabled="!catalogName" type="primary" @click="editTaak">
 				Opslaan
@@ -99,8 +99,8 @@ export default {
 				type: '',
 				status: '',
 				onderwerp: '',
-                toelichting: '',
-                actie: '',
+				toelichting: '',
+				actie: '',
 				id: '',
 			},
 			catalogi: {
@@ -117,43 +117,43 @@ export default {
 			metaDataLoading: false,
 			hasUpdated: false,
 			taakLoading: false,
-            statusOptions: {
-                options: [
-                    {
-                        id: 'open',
-                        label: 'Open'
-                    },
-                    {
-                        id: 'ingediend',
-                        label: 'Ingediend'
-                    },
-                    {
-                        id: 'verwerkt',
-                        label: 'Verwerkt'
-                    },
-                    {
-                        id: 'gesloten',
-                        label: 'Gesloten'
-                    },
-                ]
-            }
+			statusOptions: {
+				options: [
+					{
+						id: 'open',
+						label: 'Open',
+					},
+					{
+						id: 'ingediend',
+						label: 'Ingediend',
+					},
+					{
+						id: 'verwerkt',
+						label: 'Verwerkt',
+					},
+					{
+						id: 'gesloten',
+						label: 'Gesloten',
+					},
+				],
+			},
 		}
 	},
-    updated() {
-        if (store.modal === 'editTaak' && this.hasUpdated) {
-            if (this.taak === store.taakItem) return
-            this.hasUpdated = false;
-        }
+	updated() {
+		if (store.modal === 'editTaak' && this.hasUpdated) {
+			if (this.taak === store.taakItem) return
+			this.hasUpdated = false
+		}
 		if (store.modal === 'editTaak' && !this.hasUpdated) {
 			this.fetchCatalogi()
 			this.fetchMetaData()
 			this.fetchData(store.taakId)
 			this.hasUpdated = true
-            this.taak = store.taakItem;
+			this.taak = store.taakItem
 		}
 	},
 	methods: {
-        fetchData(id) {
+		fetchData(id) {
 			this.taakLoading = true
 			fetch(
 				`/index.php/apps/opencatalog/taken/api/${id}`,
@@ -168,14 +168,14 @@ export default {
 						this.catalogi.value = [data.catalogi]
 						this.metaData.value = [data.metaData]
 					})
-					this.taakLoading = false 
+					this.taakLoading = false
 				})
 				.catch((err) => {
 					console.error(err)
 					this.taakLoading = false
 				})
 		},
-        fetchCatalogi() {
+		fetchCatalogi() {
 			this.catalogiLoading = true
 			fetch('/index.php/apps/opencatalog/catalogi/api', {
 				method: 'GET',
@@ -200,7 +200,7 @@ export default {
 					this.catalogiLoading = false
 				})
 		},
-        fetchMetaData() {
+		fetchMetaData() {
 			this.metaDataLoading = true
 			fetch('/index.php/apps/opencatalog/metadata/api', {
 				method: 'GET',
@@ -230,7 +230,7 @@ export default {
 		editTaak() {
 			this.loading = true
 			fetch(
-				`/index.php/apps/opencatalog/taken/api/${id}`,
+				`/index.php/apps/opencatalog/taken/api/${this.taak.id}`,
 				{
 					method: 'PUT',
 					body: JSON.stringify({
@@ -239,8 +239,8 @@ export default {
 						type: this.taak.type,
 						status: this.taak.status,
 						onderwerp: this.taak.onderwerp,
-                        toelichting: this.taak.toelichting,
-                        actie: this.taak.actie,
+						toelichting: this.taak.toelichting,
+						actie: this.taak.actie,
 					}),
 				},
 			)
