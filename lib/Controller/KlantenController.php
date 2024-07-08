@@ -12,6 +12,7 @@ use OCP\IRequest;
 
 class KlantenController extends Controller
 {
+
     public function __construct
 	(
 		$appName,
@@ -69,8 +70,11 @@ class KlantenController extends Controller
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        // Latere zorg
+        $query= $this->request->getParams();
+
+        $results = $klantenService->show([], $id);
+        return new JSONResponse($results);
     }
 
 
@@ -85,7 +89,9 @@ class KlantenController extends Controller
     public function create(): JSONResponse
     {
         // get post from requests
-        return new JSONResponse([]);
+
+        $results = $klantenService->create([]);
+        return new JSONResponse($results);
     }
 
     /**

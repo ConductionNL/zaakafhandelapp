@@ -41,7 +41,8 @@ class KlantenService
 	private function getClient(array $config): Client
 	{
 		// Add any config to the call
-		$config = array_merge($this->getConfig(),$config);
+		$config = array_merge_recursive($config,$this->getConfig());
+
 		// Return the call
 		return new Client($config);
 	}
@@ -55,7 +56,7 @@ class KlantenService
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
-	public function index(array $query): array
+	public function index(array $query): array | null
 	{
 		// let add the query
 		$config = [ 
@@ -65,7 +66,7 @@ class KlantenService
 		];
 
 		// Setuo the client & make the call
-		$returnData = $this->getClient($config)->get();
+		$returnData = $this->getClient($config)->get($this->config->getValueString('zaakafhandelapp', 'klantenLocation'));
 
 		// Turn everything into arrays
 		return json_decode(
@@ -74,150 +75,96 @@ class KlantenService
 		);
 	}
 
-
 	/**
-	 * Save an object to MongoDB
+	 * Finds objects based upon a set of filters.
 	 *
-	 * @param array $data	The data to be saved.
-	 * @param array $config The configuration that should be used by the call.
+	 * @param array $query The filters to compare the object to.
+	 * @param string $id The id of the object to get
 	 *
-	 * @return array The resulting object.
-	 * @throws \GuzzleHttp\Exception\GuzzleException
-	 */
-	public function saveObject(array $data, array $config): array
-	{
-		$client = $this->getClient(config: $config);
-
-		$object 			      = self::BASE_OBJECT;
-		$object['dataSource']     = $config['mongodbCluster'];
-		$object['document']       = $data;
-		$object['document']['id'] = $object['document']['_id'] = Uuid::v4();
-
-		$result = $client->post(
-			uri: 'action/insertOne',
-			options: ['json' => $object],
-		);
-		$resultData =  json_decode(
-			json: $result->getBody()->getContents(),
-			associative: true
-		);
-		$id = $resultData['insertedId'];
-
-		return $this->findObject(filters: ['_id' => $id], config: $config);
-	}
-
-
-	/**
-	 * Finds an object based upon a set of filters (usually the id)
-	 *
-	 * @param array $filters The filters to compare the objects to.
-	 * @param array $config  The config to be used by the call.
-	 *
-	 * @return array The resulting object.
+	 * @return array The objects found for given filters.
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
-	public function findObject(array $filters, array $config): array
+	public function show(array $query, string $id): array | null
 	{
-		$client = $this->getClient(config: $config);
+		// let add the query
+		$config = [ 
+			'defaults' => [
+				'query'   => $query,
+			]
+		];
 
-		$object               = self::BASE_OBJECT;
-		$object['filter']     = $filters;
-		$object['dataSource'] = $config['mongodbCluster'];
+		// Setuo the client & make the call
+		$returnData = $this->getClient($config)->get($this->config->getValueString('zaakafhandelapp', 'klantenLocation').'/'.$id);
 
-		$returnData = $client->post(
-			uri: 'action/findOne',
-			options: ['json' => $object]
-		);
-
-		return json_decode(
-			json: $returnData->getBody()->getContents(),
-			associative: true
-		)['document'];
-	}
-
-	/**
-	 * Updates an object in MongoDB
-	 *
-	 * @param array $filters The filter to search the object with (id)
-	 * @param array $update  The fields that should be updated.
-	 * @param array $config  The configuration to be used by the call.
-	 *
-	 * @return array The updated object.
-	 *
-	 * @throws \GuzzleHttp\Exception\GuzzleException
-	 */
-	public function updateObject(array $filters, array $update, array $config): array
-	{
-		$client = $this->getClient(config: $config);
-
-		$object                   = self::BASE_OBJECT;
-		$object['filter']         = $filters;
-		$object['update']['$set'] = $update;
-		$object['dataSource']     = $config['mongodbCluster'];
-
-		$returnData = $client->post(
-			uri: 'action/updateOne',
-			options: ['json' => $object]
-		);
-
-		return $this->findObject($filters, $config);
-	}
-
-	/**
-	 * Delete an object according to a filter (id specifically)
-	 *
-	 * @param array $filters The filters to use.
-	 * @param array $config  The config to be used by the call.
-	 *
-	 * @return array An empty array.
-	 *
-	 * @throws \GuzzleHttp\Exception\GuzzleException
-	 */
-	public function deleteObject(array $filters, array $config): array
-	{
-		$client = $this->getClient(config: $config);
-
-		$object                   = self::BASE_OBJECT;
-		$object['filter']         = $filters;
-		$object['dataSource']     = $config['mongodbCluster'];
-
-		$returnData = $client->post(
-			uri: 'action/deleteOne',
-			options: ['json' => $object]
-		);
-
-		return [];
-	}
-
-	/**
-	 * Aggregates objects for search facets.
-	 *
-	 * @param array $filters  The filters apply to the search request.
-	 * @param array $pipeline The pipeline to use.
-	 * @param array $config   The configuration to use in the call.
-	 * @return array
-	 * @throws \GuzzleHttp\Exception\GuzzleException
-	 */
-	public function aggregateObjects(array $filters, array $pipeline, array $config):array
-	{
-		$client = $this->getClient(config: $config);
-
-		$object               = self::BASE_OBJECT;
-		$object['filter']     = $filters;
-		$object['pipeline']   = $pipeline;
-		$object['dataSource'] = $config['mongodbCluster'];
-
-		$returnData = $client->post(
-			uri: 'action/aggregate',
-			options: ['json' => $object]
-		);
-
+		// Turn everything into arrays
 		return json_decode(
 			json: $returnData->getBody()->getContents(),
 			associative: true
 		);
+	}
+	
+	/**
+	 * Create an object
+	 *
+	 * @param array $data The data to post.
+	 * 
+	 * @return array The objects found for given filters.
+	 *
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
+	public function create(array $data): array | null
+	{
+		// Setuo the client & make the call
+		$returnData = $this->getClient([])->post($this->config->getValueString('zaakafhandelapp', 'klantenLocation'), $data);
 
+		// Turn everything into arrays
+		return json_decode(
+			json: $returnData->getBody()->getContents(),
+			associative: true
+		);
+	}
+	
+	/**
+	 * Update an object
+	 *
+	 * @param array $data The data to updata.
+	 * @param string $id The id of the object to updata
+	 * 
+	 * @return array The objects found for given filters.
+	 *
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
+	public function update(array $data, string $id): array | null
+	{
+		// Setuo the client & make the call
+		$returnData = $this->getClient([])->put($this->config->getValueString('zaakafhandelapp', 'klantenLocation').'/'.$id, $data);
+
+		// Turn everything into arrays
+		return json_decode(
+			json: $returnData->getBody()->getContents(),
+			associative: true
+		);
 	}
 
+	/**
+	 * Deletes an object
+	 *
+	 * @param string $id The id of the object to delete
+	 * 
+	 * @return array The objects found for given filters.
+	 *
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
+	public function destroy(string $id): array | null
+	{
+		// Setuo the client & make the call
+		$returnData = $this->getClient([])->delete($this->config->getValueString('zaakafhandelapp', 'klantenLocation').'/'.$id);
+
+		// Turn everything into arrays
+		return json_decode(
+			json: $returnData->getBody()->getContents(),
+			associative: true
+		);
+	}
 }
