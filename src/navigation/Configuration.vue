@@ -1,56 +1,71 @@
 <template>
-	<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
-		<NcAppSettingsSection id="sharing" name="Storage" doc-url="zaakafhandel.app">
+	<div>
+		<NcAppNavigationItem name="Configuration" @click="settingsOpen = true">
 			<template #icon>
-				<Connection :size="20" />
+				<CogOutline :size="20" />
 			</template>
+		</NcAppNavigationItem>
+		<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
+			<NcAppSettingsSection id="storage" name="Storage" doc-url="zaakafhandel.app">
+				<template #icon>
+					<Database :size="20" />
+				</template>
 
-			<p>
-				The ZaakAfhandelApp allows three types of storage:
-				<ul>
-					<li>In the nexcloud database (default)</li>
-					<li>In an seperate object store e.g. monogodb (recomended for small organisations)</li>
-					<li>In seperate zgw registers e.g ZRR, ZDC (recomended of medium and up organisations)</li>
-				</ul>
+				<p>
+					The ZaakAfhandelApp allows three types of storage:
+					<ul>
+						<li>In the nexcloud database (default)</li>
+						<li>In an seperate object store e.g. monogodb (recomended for small organisations)</li>
+						<li>In seperate zgw registers e.g ZRR, ZDC (recomended of medium and up organisations)</li>
+					</ul>
 
-				The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
-			</p>
-		</NcAppSettingsSection>
-		<NcAppSettingsSection id="sharing" name="Connections" doc-url="zaakafhandel.app">
-			<template #icon>
-				<Connection :size="20" />
-			</template>
+					The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
+				</p>
+			</NcAppSettingsSection>
+			<NcAppSettingsSection id="connections" name="Connections" doc-url="zaakafhandel.app">
+				<template #icon>
+					<Connection :size="20" />
+				</template>
 
-			<p>
-				Here you can set the details for varius Connections
-			</p>
-		</NcAppSettingsSection>
-		<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
-			<template #icon>
-				<Connection :size="20" />
-			</template>
+				<p>
+					Here you can set the details for varius Connections
+				</p>
+			</NcAppSettingsSection>
+			<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
+				<template #icon>
+					<OfficeBuildingOutline :size="20" />
+				</template>
 
-			<p>
-				Here you can set the details for your organisation
-			</p>
-		</NcAppSettingsSection>
-	</NcAppSettingsDialog>
+				<p>
+					Here you can set the details for your organisation
+				</p>
+			</NcAppSettingsSection>
+		</NcAppSettingsDialog>
+	</div>
 </template>
 <script>
 
 import {
 	NcAppSettingsDialog,
 	NcAppSettingsSection,
+	NcAppNavigationItem,
 } from '@nextcloud/vue'
 
+import Database from 'vue-material-design-icons/Database.vue'
 import Connection from 'vue-material-design-icons/Connection.vue'
+import CogOutline from 'vue-material-design-icons/CogOutline.vue'
+import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 
 export default {
 	name: 'Configuration',
 	components: {
 		NcAppSettingsDialog,
 		NcAppSettingsSection,
+		NcAppNavigationItem,
+		CogOutline,
 		Connection,
+		Database,
+		OfficeBuildingOutline,
 	},
 	data() {
 		return {
