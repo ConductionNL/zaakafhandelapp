@@ -26,15 +26,12 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'ZaakDetail',
+	name: 'RolDetails',
 	components: {
 		NcLoadingIcon,
-		BTabs,
-		BTab
 	},
 	props: {
 		rollId: {

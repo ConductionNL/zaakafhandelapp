@@ -20,6 +20,6 @@ export default {
 		MainMenu,
 		Modals,
 		Views,
-	}
+	},
 }
 </script>

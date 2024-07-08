@@ -23,7 +23,7 @@ import { store } from '../../store.js'
 				:active="store.klantItem === klanten?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(klanten.id)">
+				@click="store.setKlantItem(klanten.id)">
 				<template #icon>
 					<AccountOutline :class="store.klantItem === klanten.id && 'selectedZaakIcon'"
 						disable-menu
@@ -100,10 +100,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setKlantItem(id);
-			this.$emit('klantId', id)
 		},
 		clearText() {
 			this.search = ''

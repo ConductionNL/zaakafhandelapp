@@ -1,7 +1,3 @@
-<script setup>
-import { store } from '../store.js'
-</script>
-
 <template>
 	<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
 		<NcAppSettingsSection id="sharing" name="Storage" doc-url="zaakafhandel.app">
@@ -11,7 +7,6 @@ import { store } from '../store.js'
 
 			<p>
 				The ZaakAfhandelApp allows three types of storage:
-				
 				<ul>
 					<li>In the nexcloud database (default)</li>
 					<li>In an seperate object store e.g. monogodb (recomended for small organisations)</li>
@@ -20,7 +15,6 @@ import { store } from '../store.js'
 
 				The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
 			</p>
-
 		</NcAppSettingsSection>
 		<NcAppSettingsSection id="sharing" name="Connections" doc-url="zaakafhandel.app">
 			<template #icon>
@@ -30,7 +24,6 @@ import { store } from '../store.js'
 			<p>
 				Here you can set the details for varius Connections
 			</p>
-			
 		</NcAppSettingsSection>
 		<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
 			<template #icon>
@@ -40,82 +33,24 @@ import { store } from '../store.js'
 			<p>
 				Here you can set the details for your organisation
 			</p>
-
-			
 		</NcAppSettingsSection>
 	</NcAppSettingsDialog>
 </template>
 <script>
 
 import {
-	NcActions,
-	NcActionButton,
-	NcAppNavigation,
-	NcAppNavigationList,
-	NcAppNavigationItem,
-	NcAppNavigationNewItem,
-	NcAppNavigationSettings,
 	NcAppSettingsDialog,
 	NcAppSettingsSection,
-	NcButton,
-	NcTextField,
-	NcTextArea,
 } from '@nextcloud/vue'
 
 import Connection from 'vue-material-design-icons/Connection.vue'
 
-
-import Plus from 'vue-material-design-icons/Plus'
-import AccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline'
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
-import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
-import BriefcaseOutline from 'vue-material-design-icons/BriefcaseOutline'
-import CogOutline from 'vue-material-design-icons/CogOutline.vue'
-import ContentSave from 'vue-material-design-icons/ContentSave.vue'
-import DatabaseEyeOutline from 'vue-material-design-icons/DatabaseEyeOutline.vue'
-import DatabaseCogOutline from 'vue-material-design-icons/DatabaseCogOutline.vue'
-import LayersSearchOutline from 'vue-material-design-icons/LayersSearchOutline.vue'  
-import LayersOutline from 'vue-material-design-icons/LayersOutline.vue' 
-import FileTreeOutline from 'vue-material-design-icons/FileTreeOutline.vue' 
-import Finance from 'vue-material-design-icons/Finance.vue' 
-
-
-
-
-
-
 export default {
-	name: 'MainMenu',
+	name: 'Configuration',
 	components: {
-		NcActions,
-		NcActionButton,
-		NcAppNavigation,
-		NcAppNavigationList,
-		NcAppNavigationItem,
-		NcAppNavigationNewItem,
-		NcAppNavigationSettings,
 		NcAppSettingsDialog,
 		NcAppSettingsSection,
-		NcTextField,
-		NcTextArea,
-		NcButton,
-		Plus,
 		Connection,
-		DatabaseEyeOutline,
-		DatabaseCogOutline,
-		LayersSearchOutline,
-		LayersOutline,
-		FileTreeOutline,
-		CogOutline,
-		ContentSave,
-		DatabaseEyeOutline,
-		DatabaseCogOutline,
-		LayersSearchOutline,
-		LayersOutline,
-		FileTreeOutline,
-		Finance,
 	},
 	data() {
 		return {

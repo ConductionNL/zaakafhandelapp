@@ -3,48 +3,47 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<ul>
-		<NcListItem v-for="(taken, i) in takenList.results"
-			v-if="!loading"
-			:key="`${taken}${i}`"
-			:name="taken?.name"
-			:bold="true"
-			:active="store.taakItem === taken?.id"
-			:details="'1h'"
-			:counter-number="44"
-			@click="setActive(taken.id)">
-			<template #icon>
-				<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
-					disable-menu
-					:size="44" />
-			</template>
-			<template #subname>
-				{{ taken?.summary }}
-			</template>
-			<template #actions>
-				<NcActionButton>
-					Button one
-				</NcActionButton>
-				<NcActionButton>
-					Button two
-				</NcActionButton>
-				<NcActionButton>
-					Button three
-				</NcActionButton>
-			</template>
-		</NcListItem>
+	<div>
+		<ul v-if="!loading">
+			<NcListItem v-for="(taken, i) in takenList.results"
+				:key="`${taken}${i}`"
+				:name="taken?.name"
+				:bold="true"
+				:active="store.taakItem === taken?.id"
+				:details="'1h'"
+				:counter-number="44"
+				@click="setActive(taken.id)">
+				<template #icon>
+					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
+						disable-menu
+						:size="44" />
+				</template>
+				<template #subname>
+					{{ taken?.summary }}
+				</template>
+				<template #actions>
+					<NcActionButton>
+						Button one
+					</NcActionButton>
+					<NcActionButton>
+						Button two
+					</NcActionButton>
+					<NcActionButton>
+						Button three
+					</NcActionButton>
+				</template>
+			</NcListItem>
+		</ul>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Taken aan het laden" />
-	</ul>
+	</div>
 </template>
 <script>
-import { NcListItem, NcListItemIcon, NcActionButton, NcAvatar, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 // eslint-disable-next-line n/no-missing-import
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
 
@@ -52,12 +51,8 @@ export default {
 	name: 'ZaakTaken',
 	components: {
 		NcListItem,
-		NcListItemIcon,
 		NcActionButton,
-		NcAvatar,
-		NcTextField,
 		CalendarMonthOutline,
-		Magnify,
 		NcLoadingIcon,
 	},
 	data() {

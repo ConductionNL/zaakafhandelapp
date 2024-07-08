@@ -23,7 +23,7 @@ import { store } from '../../store.js'
 				:active="store.berichtItem === berichten?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(berichten.id)">
+				@click="store.setBerichtItem(berichten.id)">
 				<template #icon>
 					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"
 						disable-menu
@@ -100,10 +100,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setBerichtItem(id);
-			this.$emit('berichtId', id)
 		},
 		clearText() {
 			this.search = ''

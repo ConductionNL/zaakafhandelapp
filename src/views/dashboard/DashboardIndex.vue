@@ -1,7 +1,3 @@
-<script setup>
-import { store } from '../../store.js'
-</script>
-
 <template>
 	<NcAppContent>
 		<template #default>
@@ -11,12 +7,12 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcAppContent, NcEmptyContent } from '@nextcloud/vue'
+import { NcAppContent } from '@nextcloud/vue'
 
 export default {
-	name: 'Dashboard',
+	name: 'DashboardIndex',
 	components: {
 		NcAppContent,
-	}
+	},
 }
 </script>

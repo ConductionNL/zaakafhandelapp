@@ -2,7 +2,6 @@
 import { store } from '../../store.js'
 </script>
 
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -27,15 +26,12 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'ZaakDetail',
+	name: 'DocumentDetails',
 	components: {
 		NcLoadingIcon,
-		BTabs,
-		BTab
 	},
 	props: {
 		documentId: {

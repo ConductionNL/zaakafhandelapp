@@ -102,7 +102,7 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setTaakItem(id);
+			store.setTaakItem(id)
 		},
 		clearText() {
 			this.search = ''

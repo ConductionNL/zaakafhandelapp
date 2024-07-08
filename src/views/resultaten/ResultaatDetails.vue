@@ -1,4 +1,4 @@
-<script setup>
+s<script setup>
 import { store } from '../../store.js'
 </script>
 
@@ -26,15 +26,12 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon } from '@nextcloud/vue'
 
 export default {
-	name: 'ZaakDetail',
+	name: 'ResultaatDetails',
 	components: {
 		NcLoadingIcon,
-		BTabs,
-		BTab
 	},
 	props: {
 		resultaatId: {
@@ -57,7 +54,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(resultaatItem)
+		this.fetchData(store.resultaatItem)
 	},
 	methods: {
 		fetchData(resultaatId) {
