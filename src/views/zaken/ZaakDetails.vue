@@ -61,11 +61,14 @@ import { store } from '../../store.js'
 						<BTab title="Taken">
 							<ZaakTaken :zaak-id="zaak.uuid" />
 						</BTab>
+						<BTab title="Besluiten">
+							<ZaakBesluiten :zaak-id="zaak.uuid" />
+						</BTab>
 						<BTab title="Berichten">
 							<ZaakBerichten :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Zaken">
-							<ZaakBerichten :zaak-id="zaak.uuid" />
+							<ZakenZaken :zaak-id="zaak.uuid" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
@@ -96,7 +99,9 @@ import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
 import ZaakBerichten from '../berichten/ZaakBerichten.vue'
 import ZaakRollen from '../rollen/ZaakRollen.vue'
 import ZaakTaken from '../taken/ZaakTaken.vue'
+import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
+import ZakenZaken from '../zaken/ZakenZaken.vue'
 
 export default {
 	name: 'ZaakDetails',
@@ -116,7 +121,9 @@ export default {
 		ZaakRollen,
 		ZaakTaken,
 		ZaakBerichten,
+		ZaakBesluiten,
 		ZaakDocumenten,
+		ZakenZaken,
 	},
 	props: {
 		zaakId: {

@@ -136,7 +136,7 @@ class ZakenController extends Controller
 	
 
     /**
-     * Return (and serach) all objects
+     * Return (and serach) all Zaak
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -150,7 +150,7 @@ class ZakenController extends Controller
     }
 
     /**
-     * Read a single object
+     * Read a single Zaak
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -165,7 +165,7 @@ class ZakenController extends Controller
 
 
     /**
-     * Creatue an object
+     * Creatue an Zaak
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -179,7 +179,7 @@ class ZakenController extends Controller
     }
 
     /**
-     * Update an object
+     * Update an Zaak
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -193,7 +193,7 @@ class ZakenController extends Controller
     }
 
     /**
-     * Delate an object
+     * Delate an Zaak
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -204,4 +204,6 @@ class ZakenController extends Controller
     {
         return new JSONResponse([]);
     }
+
+
 }
