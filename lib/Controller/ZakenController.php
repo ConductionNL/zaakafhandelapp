@@ -18,10 +18,10 @@ class ZakenController extends Controller
         "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
             "url"=> "http://example.com",
             "uuid"=> "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "identificatie"=> "string",
+            "identificatie"=> "ZAAK-2024-1",
             "bronorganisatie"=> "string",
-            "omschrijving"=> "Zaak 1",
-            "toelichting"=> "string",
+            "omschrijving"=> "Deze zaak gaat over een andere zaak",
+            "toelichting"=> "Deze zaak is aangemaakt als een test object, dit test object gaat over de properties van een ander test object. Dit andere test object is nog niet aangemaakt dus dat moet nog gebeuren. Als u dat wilt doen mag dat",
             "zaaktype"=> "http://example.com",
             "registratiedatum"=> "2019-08-24",
             "verantwoordelijkeOrganisatie"=> "string",
@@ -41,7 +41,7 @@ class ZakenController extends Controller
         "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
             "url"=> "http://example.com",
             "uuid"=> "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "identificatie"=> "string",
+            "identificatie"=> "ZAAK-2024-2",
             "bronorganisatie"=> "string",
             "omschrijving"=> "Zaak 2",
             "toelichting"=> "string",
@@ -63,7 +63,7 @@ class ZakenController extends Controller
         "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
             "url"=> "http://example.com",
             "uuid"=> "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "identificatie"=> "string",
+            "identificatie"=> "ZAAK-2024-3",
             "bronorganisatie"=> "string",
             "omschrijving"=> "Zaak 3",
             "toelichting"=> "string",
@@ -85,7 +85,7 @@ class ZakenController extends Controller
         "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
             "url"=> "http://example.com",
             "uuid"=> "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "identificatie"=> "string",
+            "identificatie"=> "ZAAK-2024-4",
             "bronorganisatie"=> "string",
             "omschrijving"=> "Zaak 4",
             "toelichting"=> "string",

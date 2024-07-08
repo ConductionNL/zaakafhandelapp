@@ -134,32 +134,11 @@ export default {
 			this.hasUpdated = false
 		}
 		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.fetchData(store.taakId)
 			this.hasUpdated = true
 			this.taak = store.taakItem
 		}
 	},
 	methods: {
-		fetchData(id) {
-			this.taakLoading = true
-			fetch(
-				`/index.php/apps/opencatalog/taken/api/${id}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.taak = data
-						this.taak.data = JSON.stringify(data.data)
-					})
-					this.taakLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.taakLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},

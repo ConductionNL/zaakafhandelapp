@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -15,35 +15,51 @@ import { store } from '../../store.js'
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="fetchData">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+					<NcActionButton @click="store.setModal('addZaak')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Zaak toevoegen
+					</NcActionButton>
+				</NcActions>
 			</div>
-
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.omschrijving"
-				:active="store.zakenItem === zaken?.uuid"
-				:details="'1h'"
-				:counter-number="44"
-				@click="store.setZaakItem(zaken.uuid)">
-				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.uuid && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ zaken?.zaaktype }}
-				</template>
-				<template #actions>
-					<NcActionButton>
-						Button one
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(zaak, i) in zakenList.results"
+					:key="`${zaak}${i}`"
+					:name="zaak?.identificatie"
+					:force-display-actions="true"
+					:active="store.zaakId === zaak?.uuid"
+					:details="'1h'"
+					:counter-number="44"
+					@click="storeZaak(zaak)">
+					<template #icon>
+						<BriefcaseAccountOutline :class="store.zaakId === zaak.uuid && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ zaak?.zaaktype }}
+					</template>
+					<template #actions>
+						<NcActionButton>
+							Button one
+						</NcActionButton>
+						<NcActionButton>
+							Button two
+						</NcActionButton>
+						<NcActionButton>
+							Button three
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"
@@ -54,22 +70,30 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'ZakenList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		BriefcaseAccountOutline,
 		Magnify,
-		NcLoadingIcon,
+		Refresh,
+		Plus,
 	},
 	data() {
 		return {
@@ -78,11 +102,19 @@ export default {
 			zakenList: [],
 		}
 	},
+	watch: {
+		search: {
+			handler(search) {
+				this.fetchDataWithSearch(search)
+			},
+			deep: true,
+		},
+	},
 	mounted() {
 		this.fetchData()
 	},
 	methods: {
-		fetchData(newPage) {
+		fetchData() {
 			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
@@ -101,6 +133,29 @@ export default {
 					this.loading = false
 				})
 		},
+		fetchDataWithSearch(search) {
+			this.loading = true
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/zrc/zaken?${search}`,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.zakenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
+		storeZaak(zaak) {
+			store.setTaakItem(zaak)
+			store.setZaakId(zaak.uuid)
+		},
 		clearText() {
 			this.search = ''
 		},
@@ -108,13 +163,6 @@ export default {
 }
 </script>
 <style>
-.listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
-}
 
 .searchField {
     padding-inline-start: 65px;

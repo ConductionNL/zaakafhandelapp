@@ -23,7 +23,7 @@ import { store } from '../../store.js'
 					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editTaak(taak)">
+					<NcActionButton @click="showEditTaakModal(taak)">
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
@@ -81,7 +81,7 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
-		editTaak(taak) {
+		showEditTaakModal(taak) {
 			store.setTaakItem(taak)
 			store.setModal('editTaak')
 		},
