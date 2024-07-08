@@ -134,7 +134,7 @@ export default {
 	data() {
 		return {
 			zaak: [],
-			loading: false,
+			loading: true,
 		}
 	},
 	watch: {
@@ -160,8 +160,8 @@ export default {
 				.then((response) => {
 					response.json().then((data) => {
 						this.zaak = data
+						this.loading = false
 					})
-					this.loading = false
 				})
 				.catch((err) => {
 					console.error(err)
