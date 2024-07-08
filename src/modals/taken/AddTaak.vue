@@ -5,38 +5,57 @@ import { store } from '../../store.js'
 <template>
 	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
-			<h2>Zaak starten</h2>
+			<h2>Taak toevoegen</h2>
 
 			<div class="formContainer">
 				<div class="form-group">
-					<NcTextField :disabled="taakLoading" label="Naam" :value.sync="title" />
+					<NcTextField :disabled="taakLoading"
+						label="Titel"
+                        maxlength="255"
+						:value.sync="title"
+						:loading="taakLoading" />
+
+                    <NcTextField :disabled="taakLoading"
+						label="Zaak"
+                        maxlength="255"
+						:value.sync="zaak"
+						:loading="taakLoading" />
+                    
+                    <NcTextField :disabled="taakLoading"
+						label="Type"
+                        maxlength="255"
+						:value.sync="type"
+						:loading="taakLoading" />
+
+                    <NcSelect :disabled="taakLoading"
+                        v-bind="statusOptions"
+                        v-model="status"
+                        input-label="Status"
+                        :loading="catalogiLoading"
+                        required />
+
+                    <NcTextField :disabled="taakLoading"
+						label="Onderwerp"
+                        maxlength="255"
+						:value.sync="onderwerp"
+						:loading="taakLoading" />
+
+                    <NcTextArea :disabled="taakLoading"
+						label="Toelichting"
+						:value.sync="toelichting"
+						:loading="taakLoading" />
 				</div>
-				<div class="form-group">
-					<NcTextArea :disabled="taakLoading" label="Beschrijving" :value.sync="description" />
+
+                <div class="form-group">
+					<NcTextField :disabled="taakLoading"
+						label="Actie"
+                        maxlength="255"
+						:value.sync="actie"
+						:loading="taakLoading" />
 				</div>
-				<div class="selectGrid">
-					<div class="form-group">
-						<NcSelect v-bind="catalogi"
-							v-model="catalogi.value"
-							input-label="Catalogi"
-							:loading="catalogiLoading"
-							:disabled="taakLoading"
-							required />
-					</div>
-					<div class="form-group">
-						<NcSelect v-bind="metaData"
-							v-model="metaData.value"
-							input-label="MetaData"
-							:loading="metaDataLoading"
-							:disabled="taakLoading"
-							required />
-					</div>
-				</div>
-				<div class="form-group">
-					<NcTextArea :disabled="taakLoading" label="Data" :value.sync="data" />
-				</div>
+
 				<div v-if="succesMessage" class="success">
-					Succesfully added publication
+					Taak succesvol opgeslagen
 				</div>
 			</div>
 
@@ -54,6 +73,7 @@ import {
 	NcTextField,
 	NcTextArea,
 	NcSelect,
+    NcDateTimePicker,
 } from '@nextcloud/vue'
 
 export default {
@@ -64,12 +84,17 @@ export default {
 		NcTextArea,
 		NcButton,
 		NcSelect,
+        NcDateTimePicker,
 	},
 	data() {
 		return {
 			title: '',
-			description: '',
-			data: '',
+			zaak: '',
+			type: '',
+            status: '',
+            onderwerp: '',
+            toelichting: '',
+            actie: '',
 			catalogi: {},
 			metaData: {},
 			succesMessage: false,
@@ -77,6 +102,26 @@ export default {
 			metaDataLoading: false,
 			taakLoading: false,
 			hasUpdated: false,
+            statusOptions: {
+                options: [
+                    {
+                        id: 'open',
+                        label: 'Open'
+                    },
+                    {
+                        id: 'ingediend',
+                        label: 'Ingediend'
+                    },
+                    {
+                        id: 'verwerkt',
+                        label: 'Verwerkt'
+                    },
+                    {
+                        id: 'gesloten',
+                        label: 'Gesloten'
+                    },
+                ]
+            }
 		}
 	},
 	updated() {
@@ -147,10 +192,12 @@ export default {
 					},
 					body: JSON.stringify({
 						title: this.title,
-						description: this.description,
-						catalogi: this.catalogi.value.id,
-						metaData: this.metaData.value.id,
-						data: JSON.parse(this.data),
+						zaak: this.zaak,
+						type: this.type,
+						status: this.status,
+						onderwerp: this.onderwerp,
+						toelichting: this.toelichting,
+						actie: this.actie,
 					}),
 				},
 			)
