@@ -16,7 +16,7 @@ import { store } from '../../store.js'
 					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zaakAdd')">
+					<NcButton type="primary" @click="store.setModal('addZaak')">
 						Zaak starten
 					</NcButton>
 				</template>

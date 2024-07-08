@@ -15,7 +15,7 @@ import { store } from '../../store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('zaakEdit')">
+						<NcActionButton @click="store.setModal('editZaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
