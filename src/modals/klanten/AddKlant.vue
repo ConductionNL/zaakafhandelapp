@@ -3,11 +3,11 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editKlant'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="store.modal === 'addKlant'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
-			<h2>Klant aanpassen</h2>
+			<h2>Klant toevoegen</h2>
 
-			<div v-if="!klantLoading">
+			<div class="formContainer">
 				<div class="form-group">
 					<NcTextField :disabled="klantLoading"
 						label="Voornaam"
@@ -16,9 +16,9 @@ import { store } from '../../store.js'
 						:loading="klantLoading" />
 
 					<NcTextField :disabled="klantLoading"
-						label="Tussenvoegsels"
+						label="Tussenvoegsel"
 						maxlength="255"
-						:value.sync="klant.voorvoegsel"
+						:value.sync="klant.tussenvoegsel"
 						:loading="klantLoading" />
 
 					<NcTextField :disabled="klantLoading"
@@ -107,13 +107,8 @@ import { store } from '../../store.js'
 				</div>
 			</div>
 
-			<NcLoadingIcon v-if="klantLoading"
-				:size="100"
-				appearance="dark"
-				name="Edit klant model is aan het laden." />
-
-			<NcButton type="primary" @click="editKlant">
-				Opslaan
+			<NcButton :disabled="!title" type="primary" @click="addKlant">
+				Starten
 			</NcButton>
 		</div>
 	</NcModal>
@@ -124,22 +119,20 @@ import {
 	NcButton,
 	NcModal,
 	NcTextField,
-	NcLoadingIcon,
 } from '@nextcloud/vue'
 
 export default {
-	name: 'EditKlant',
+	name: 'AddKlant',
 	components: {
 		NcModal,
 		NcTextField,
 		NcButton,
-		NcLoadingIcon,
 	},
 	data() {
 		return {
 			klant: {
 				voornaam: '',
-				voorvoegsel: '',
+				tussenvoegsel: '',
 				achternaam: '',
 				telefoonnummer: '',
 				emailadres: '',
@@ -154,70 +147,42 @@ export default {
 				subject: '',
 				subjectIdentificatie: '',
 				subjectType: '',
-				id: '',
 			},
-			loading: false,
 			succesMessage: false,
 			catalogiLoading: false,
 			metaDataLoading: false,
-			hasUpdated: false,
 			klantLoading: false,
+			hasUpdated: false,
 		}
 	},
 	updated() {
-		if (store.modal === 'editKlant' && this.hasUpdated) {
-			if (this.klant === store.klantItem) return
-			this.hasUpdated = false
-		}
-		if (store.modal === 'editKlant' && !this.hasUpdated) {
-			// uncomment when api works
-			// this.fetchData(store.klantId)
+		if (store.modal === 'addKlant' && !this.hasUpdated) {
 			this.hasUpdated = true
-			this.klant = store.klantItem
 		}
 	},
 	methods: {
-		fetchData(id) {
-			this.klantLoading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/klanten/${id}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.klant = data
-						this.klant.data = JSON.stringify(data.data)
-						this.catalogi.value = [data.catalogi]
-						this.metaData.value = [data.metaData]
-					})
-					this.klantLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.klantLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},
-		editKlant() {
-			this.loading = true
+		addKlant() {
+			this.klantLoading = true
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/klanten/${this.klant.id}`,
+				'/index.php/apps/zaakafhandelapp/api/klanten',
 				{
-					method: 'PUT',
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 					body: JSON.stringify(this.klant),
 				},
 			)
 				.then((response) => {
 					this.succesMessage = true
-					this.loading = false
+					this.publicationLoading = false
 					setTimeout(() => (this.succesMessage = false), 2500)
 				})
 				.catch((err) => {
-					this.loading = false
+					this.publicationLoading = false
 					console.error(err)
 				})
 		},
@@ -231,10 +196,6 @@ export default {
     text-align: center;
 }
 
-/* .modal__content > button {
-    margin-block: 6px;
-} */
-
 .zaakDetailsContainer {
     margin-block-start: var(--zaa-margin-20);
     margin-inline-start: var(--zaa-margin-20);
@@ -244,11 +205,4 @@ export default {
 .success {
     color: green;
 }
-
-/* .input-field__label {
-    margin-block: -6px;
-}
-.input-field__input:focus + .input-field__label {
-    margin-block: 0px;
-} */
 </style>

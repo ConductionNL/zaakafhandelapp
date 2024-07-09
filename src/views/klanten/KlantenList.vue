@@ -17,24 +17,24 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(klanten, i) in klantenList.results"
-				:key="`${klanten}${i}`"
-				:name="klanten?.name"
-				:active="store.klantItem === klanten?.id"
+			<NcListItem v-for="(klant, i) in klantenList.results"
+				:key="`${klant}${i}`"
+				:name="fullName(klant)"
+				:active="store.klantId === klant?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setKlantItem(klanten.id)">
+				@click="toggleKlantDetailView(klant?.id)">
 				<template #icon>
-					<AccountOutline :class="store.klantItem === klanten.id && 'selectedZaakIcon'"
+					<AccountOutline :class="store.klantItem === klant.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ klanten?.summary }}
+					{{ klant?.subject }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="editKlant(klant)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
 						Button two
@@ -82,6 +82,17 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		fullName(klant) {
+			return klant.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant.achternaam
+		},
+		toggleKlantDetailView(klantId) {
+			if (store.klantId === klantId) store.setKlantId(false)
+			else store.setKlantId(klantId)
+		},
+		editKlant(klant) {
+			store.setKlantItem(klant)
+			store.setModal('editKlant')
+		},
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
