@@ -20,12 +20,12 @@ import { store } from '../../store.js'
 			<NcListItem v-for="(taken, i) in takenList.results"
 				:key="`${taken}${i}`"
 				:name="taken?.name"
-				:active="store.taakItem === taken?.id"
+				:active="store.taakId === taken?.id"
 				:details="'1h'"
 				:counter-number="44"
 				@click="setActive(taken.id)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
+					<CalendarMonthOutline :class="store.taakId === taken.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -33,8 +33,8 @@ import { store } from '../../store.js'
 					{{ taken?.summary }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="editTaak(taak)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
 						Button two
@@ -102,7 +102,7 @@ export default {
 				})
 		},
 		setActive(id) {
-			store.setTaakItem(id)
+			store.setTaakId(id)
 		},
 		clearText() {
 			this.search = ''
