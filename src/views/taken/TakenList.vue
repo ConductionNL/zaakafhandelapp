@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -15,35 +15,51 @@ import { store } from '../../store.js'
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="fetchData">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+					<NcActionButton @click="store.setModal('addTaak')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Taak toevoegen
+					</NcActionButton>
+				</NcActions>
 			</div>
-
-			<NcListItem v-for="(taak, i) in takenList.results"
-				:key="`${taak}${i}`"
-				:name="taak?.title"
-				:active="store.taakId === taak?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="toggleTaakDetailView(taak.id)">
-				<template #icon>
-					<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ taak?.onderwerp }}
-				</template>
-				<template #actions>
-					<NcActionButton @click="editTaak(taak)">
-						Bewerken
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(taak, i) in takenList.results"
+					:key="`${taak}${i}`"
+					:name="taak?.title"
+					:force-display-actions="true"
+					:active="store.taakId === taak?.id"
+					:details="'1h'"
+					:counter-number="44"
+					@click="toggleTaakDetailView(taak.id)">
+					<template #icon>
+						<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ taak?.onderwerp }}
+					</template>
+					<template #actions>
+						<NcActionButton @click="editTaak(taak)">
+							Bewerken
+						</NcActionButton>
+						<NcActionButton>
+							Button two
+						</NcActionButton>
+						<NcActionButton>
+							Button three
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"
@@ -54,11 +70,14 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'TakenList',
