@@ -15,11 +15,12 @@ import { store } from '../../store.js'
 						:value.sync="taak.title"
 						:loading="taakLoading" />
 
-					<NcTextField :disabled="taakLoading"
-						label="Zaak"
-						maxlength="255"
-						:value.sync="taak.zaak"
-						:loading="taakLoading" />
+					<NcSelect v-bind="zaak"
+						v-model="zaak.value"
+						input-label="Zaak"
+						:loading="zaakLoading"
+						:disabled="taakLoading || zaakLoading"
+						required />
 
 					<NcTextField :disabled="taakLoading"
 						label="Type"
@@ -102,10 +103,12 @@ export default {
 				actie: '',
 				id: '',
 			},
+			zaak: '',
 			loading: false,
 			succesMessage: false,
 			hasUpdated: false,
 			taakLoading: false,
+			zaakLoading: false,
 			statusOptions: {
 				options: [
 					{
@@ -134,6 +137,7 @@ export default {
 			this.hasUpdated = false
 		}
 		if (store.modal === 'editTaak' && !this.hasUpdated) {
+			this.fetchZaken()
 			this.hasUpdated = true
 			this.taak = store.taakItem
 		}
@@ -167,6 +171,34 @@ export default {
 				.catch((err) => {
 					this.loading = false
 					console.error(err)
+				})
+		},
+		fetchZaken() {
+			this.zaakLoading = true
+			fetch('/index.php/apps/zaakafhandelapp/api/zrc/zaken', {
+				method: 'GET',
+			})
+				.then((response) => {
+					response.json().then((data) => {
+						const selectedZaak = Object.entries(data.results).find((zaak) => zaak[1].uuid === this.taak.zaak)
+
+						this.zaak = {
+							options: Object.entries(data.results).map((zaak) => ({
+								id: zaak[1].uuid,
+								label: zaak[1].identificatie,
+							})),
+							value: {
+								id: selectedZaak[1].uuid ?? '',
+								label: selectedZaak[1].identificatie ?? '',
+							},
+
+						}
+					})
+					this.zaakLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.zaakLoading = false
 				})
 		},
 	},

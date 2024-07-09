@@ -3,7 +3,7 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="closeModal">
 		<div class="modalContent">
 			<h2>Taak toevoegen</h2>
 
@@ -15,11 +15,12 @@ import { store } from '../../store.js'
 						:value.sync="title"
 						:loading="taakLoading" />
 
-					<NcTextField :disabled="taakLoading"
-						label="Zaak"
-						maxlength="255"
-						:value.sync="zaak"
-						:loading="taakLoading" />
+					<NcSelect v-bind="zaak"
+						v-model="zaak.value"
+						input-label="Zaak"
+						:loading="zaakLoading"
+						:disabled="taakLoading || zaakLoading || store.taakZaakId !== false "
+						required />
 
 					<NcTextField :disabled="taakLoading"
 						label="Type"
@@ -86,7 +87,7 @@ export default {
 	data() {
 		return {
 			title: '',
-			zaak: '',
+			zaak: {},
 			type: '',
 			status: '',
 			onderwerp: '',
@@ -94,6 +95,7 @@ export default {
 			actie: '',
 			succesMessage: false,
 			taakLoading: false,
+			zaakLoading: false,
 			hasUpdated: false,
 			statusOptions: {
 				options: [
@@ -119,12 +121,16 @@ export default {
 	},
 	updated() {
 		if (store.modal === 'addTaak' && !this.hasUpdated) {
+			this.fetchZaken()
 			this.hasUpdated = true
 		}
 	},
 	methods: {
 		closeModal() {
-			store.modal = false
+			this.hasUpdated = false
+			store.setModal(false)
+			store.setTaakZaakId(false)
+
 		},
 		addTaak() {
 			this.taakLoading = true
@@ -154,6 +160,33 @@ export default {
 				.catch((err) => {
 					this.taakLoading = false
 					console.error(err)
+				})
+		},
+		fetchZaken() {
+			this.zaakLoading = true
+			fetch('/index.php/apps/zaakafhandelapp/api/zrc/zaken', {
+				method: 'GET',
+			})
+				.then((response) => {
+					response.json().then((data) => {
+						const selectedZaak = Object.entries(data.results).find((zaak) => zaak[1].uuid === store.taakZaakId)
+
+						this.zaak = {
+							options: Object.entries(data.results).map((zaak) => ({
+								id: zaak[1].uuid,
+								label: zaak[1].identificatie,
+							})),
+							value: {
+								id: selectedZaak[1].uuid ?? '',
+								label: selectedZaak[1].identificatie ?? '',
+							},
+						}
+					})
+					this.zaakLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.zaakLoading = false
 				})
 		},
 	},
