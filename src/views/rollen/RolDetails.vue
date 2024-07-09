@@ -8,12 +8,12 @@ import { store } from '../../store.js'
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<h1 class="h1">
-					{{ zaak.name }}
+					{{ rol.name }}
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
 						<h4>Sammenvatting:</h4>
-						<span>{{ zaak.summary }}</span>
+						<span>{{ rol.summary }}</span>
 					</div>
 				</div>
 			</div>
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 		<NcLoadingIcon v-if="loading"
 			:size="100"
 			appearance="dark"
-			name="Zaak details aan het laden" />
+			name="Rol details aan het laden" />
 	</div>
 </template>
 
@@ -34,40 +34,41 @@ export default {
 		NcLoadingIcon,
 	},
 	props: {
-		rollId: {
+		rolId: {
 			type: String,
 			required: true,
 		},
 	},
 	data() {
 		return {
-			zaak: [],
+			rol: [],
 			loading: false,
 		}
 	},
 	watch: {
-		rollId: {
-			handler(rollId) {
-				this.fetchData(rollId)
+		rolId: {
+			handler(rolId) {
+				this.fetchData(rolId)
 			},
 			deep: true,
 		},
 	},
+	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData(store.rolItem)
+		this.fetchData(store.rolItem.id)
 	},
 	methods: {
-		fetchData(rollId) {
+		fetchData(rolId) {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken/' + rollId,
+				'/index.php/apps/zaakafhandelapp/api/rollen/' + rolId,
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zaak = data
+						this.rol = data
 					})
 					this.loading = false
 				})

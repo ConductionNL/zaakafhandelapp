@@ -5,31 +5,28 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul v-if="!loading">
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+			<NcListItem v-for="(rollen, i) in rollenList.results"
+				:key="`${rollen}${i}`"
+				:name="rollen?.omschrijving"
+				:active="store.rolId === rollen.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="setZaakRolItem(zaken.id)">
+				@click="setZaakRolItem(rollen.id)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ rollen?.omschrijving }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="editRol(rollen)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
+						Verwijderen
 					</NcActionButton>
 				</template>
 			</NcListItem>
@@ -39,7 +36,7 @@ import { store } from '../../store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			name="Rollen aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -66,7 +63,7 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			zakenList: [],
+			rollenList: [],
 		}
 	},
 	watch: {
@@ -81,19 +78,25 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
+		editRol(rol) {
+			store.setRolItem(rol)
+			store.setRolId(rol.id)
+			store.setModal('editRol')
+		},
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/rollen',
+				`/index.php/apps/zaakafhandelapp/api/zrc/rollen?zaak.id=${zaakId}`,
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zakenList = data
+						this.rollenList = data
 					})
 					this.loading = false
+                    console.log(this.loading)
 				})
 				.catch((err) => {
 					console.error(err)
