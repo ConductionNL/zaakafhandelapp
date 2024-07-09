@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -15,35 +15,51 @@ import { store } from '../../store.js'
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="fetchData">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+					<NcActionButton @click="store.setModal('addKlant')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Klant toevoegen
+					</NcActionButton>
+				</NcActions>
 			</div>
-
-			<NcListItem v-for="(klant, i) in klantenList.results"
-				:key="`${klant}${i}`"
-				:name="fullName(klant)"
-				:active="store.klantId === klant?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="toggleKlantDetailView(klant?.id)">
-				<template #icon>
-					<AccountOutline :class="store.klantItem === klant.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ klant?.subject }}
-				</template>
-				<template #actions>
-					<NcActionButton @click="editKlant(klant)">
-						Bewerken
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(klant, i) in klantenList.results"
+					:key="`${klant}${i}`"
+					:name="fullName(klant)"
+					:active="store.klantId === klant?.id"
+					:force-display-actions="true"
+					:details="'1h'"
+					:counter-number="44"
+					@click="toggleKlantDetailView(klant?.id)">
+					<template #icon>
+						<AccountOutline :class="store.klantItem === klant.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ klant?.subject }}
+					</template>
+					<template #actions>
+						<NcActionButton @click="editKlant(klant)">
+							Bewerken
+						</NcActionButton>
+						<NcActionButton>
+							Button two
+						</NcActionButton>
+						<NcActionButton>
+							Button three
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"
@@ -54,11 +70,14 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import AccountOutline from 'vue-material-design-icons/AccountOutline'
+// Components
+import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon, NcActions } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'KlantenList',

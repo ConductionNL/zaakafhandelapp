@@ -7,9 +7,23 @@ import { store } from '../../store.js'
 		<div v-if="!loading" id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
-				<h1 class="h1">
-					{{ klant.voornaam }} {{ klant.voorvoegsel }} {{ klant.achternaam }}
-				</h1>
+				<div class="head">
+					<h1 class="h1">
+						{{ klant.voornaam }} {{ klant.voorvoegsel }} {{ klant.achternaam }}
+					</h1>
+
+					<NcActions :primary="true" menu-name="Acties">
+						<template #icon>
+							<DotsHorizontal :size="20" />
+						</template>
+						<NcActionButton @click="editKlant(klant)">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+					</NcActions>
+				</div>
 				<span> {{ klant.subject }} </span>
 
 				<div class="grid">
@@ -77,12 +91,19 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcLoadingIcon } from '@nextcloud/vue'
+// Components
+import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+
+// Icons
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 export default {
 	name: 'KlantDetails',
 	components: {
 		NcLoadingIcon,
+		NcActions,
+		NcActionButton,
 	},
 	props: {
 		klantId: {
@@ -108,6 +129,10 @@ export default {
 		this.fetchData(store.klantId)
 	},
 	methods: {
+		editKlant(klant) {
+			store.setKlantItem(klant)
+			store.setModal('editKlant')
+		},
 		fetchData(klantId) {
 			this.loading = true
 			fetch(
