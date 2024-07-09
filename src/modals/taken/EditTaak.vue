@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcModal v-if="store.modal === 'editTaak'" ref="modalRef" @close="store.setModal(false)">
-		<div class="modal__content">
+		<div class="modalContent">
 			<h2>Taak aanpassen</h2>
 
 			<div v-if="!taakLoading">
@@ -31,7 +31,6 @@ import { store } from '../../store.js'
 						v-model="taak.status"
 						:disabled="taakLoading"
 						input-label="Status"
-						:loading="catalogiLoading"
 						required />
 
 					<NcTextField :disabled="taakLoading"
@@ -64,7 +63,7 @@ import { store } from '../../store.js'
 				appearance="dark"
 				name="Edit taak model is aan het laden." />
 
-			<NcButton type="primary" @click="editTaak">
+			<NcButton :disabled="taakLoading" type="primary" @click="editTaak">
 				Opslaan
 			</NcButton>
 		</div>
@@ -135,36 +134,11 @@ export default {
 			this.hasUpdated = false
 		}
 		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.fetchCatalogi()
-			this.fetchMetaData()
-			this.fetchData(store.taakId)
 			this.hasUpdated = true
 			this.taak = store.taakItem
 		}
 	},
 	methods: {
-		fetchData(id) {
-			this.taakLoading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/taken/${id}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.taak = data
-						this.taak.data = JSON.stringify(data.data)
-						this.catalogi.value = [data.catalogi]
-						this.metaData.value = [data.metaData]
-					})
-					this.taakLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.taakLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},
@@ -198,31 +172,3 @@ export default {
 	},
 }
 </script>
-
-<style>
-.modal__content {
-    margin: var(--zaa-margin-50);
-    text-align: center;
-}
-
-/* .modal__content > button {
-    margin-block: 6px;
-} */
-
-.zaakDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
-}
-
-.success {
-    color: green;
-}
-
-/* .input-field__label {
-    margin-block: -6px;
-}
-.input-field__input:focus + .input-field__label {
-    margin-block: 0px;
-} */
-</style>

@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="store.setModal(false)">
-		<div class="modal__content">
+		<div class="modalContent">
 			<h2>Taak toevoegen</h2>
 
 			<div class="formContainer">
@@ -31,7 +31,6 @@ import { store } from '../../store.js'
 						v-model="status"
 						:disabled="taakLoading"
 						input-label="Status"
-						:loading="catalogiLoading"
 						required />
 
 					<NcTextField :disabled="taakLoading"
@@ -120,8 +119,6 @@ export default {
 	},
 	updated() {
 		if (store.modal === 'addTaak' && !this.hasUpdated) {
-			this.fetchCatalogi()
-			this.fetchMetaData()
 			this.hasUpdated = true
 		}
 	},
@@ -151,31 +148,14 @@ export default {
 			)
 				.then((response) => {
 					this.succesMessage = true
-					this.publicationLoading = false
+					this.taakLoading = false
 					setTimeout(() => (this.succesMessage = false), 2500)
 				})
 				.catch((err) => {
-					this.publicationLoading = false
+					this.taakLoading = false
 					console.error(err)
 				})
 		},
 	},
 }
 </script>
-
-<style>
-.modal__content {
-    margin: var(--zaa-margin-50);
-    text-align: center;
-}
-
-.zaakDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
-}
-
-.success {
-    color: green;
-}
-</style>
