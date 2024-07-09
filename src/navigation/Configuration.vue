@@ -66,6 +66,10 @@
 						@trailing-button-click="configuration.klantenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
+
+					<NcSelect v-bind="configuration.klantenAuthType"
+							  v-model="configuration.klantenAuthType.value"
+							  input-label="Klanten AuthType" />
 					<b>Berichten API</b>
 					<NcTextField :value.sync="configuration.berichtenLocation"
 						label="The location (url)"
@@ -134,13 +138,18 @@
 						@trailing-button-click="configuration.drcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.zrcKey"
+					<NcTextField :value.sync="configuration.drcKey"
 						label="The credential (auth key)"
 						trailing-button-icon="close"
-						:show-trailing-button="configuration.zrcKey !== ''"
-						@trailing-button-click="configuration.zrcKey = ''">
+						:show-trailing-button="configuration.drcKey !== ''"
+						@trailing-button-click="configuration.drcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
+
+
+					<NcSelect v-bind="configuration.drcAuthType"
+							  v-model="configuration.drcAuthType.value"
+							  input-label="DRC AuthType" />
 					<b>Besluiten Register</b>
 					<NcTextField :value.sync="configuration.brcLocation"
 						label="The location (url)"
@@ -208,6 +217,7 @@ import {
 	NcAppSettingsDialog,
 	NcAppSettingsSection,
 	NcAppNavigationItem,
+	NcSelect,
 	NcTextField,
 	NcTextArea,
 	NcButton,
@@ -227,6 +237,7 @@ export default {
 		NcAppSettingsDialog,
 		NcAppSettingsSection,
 		NcAppNavigationItem,
+		NcSelect,
 		NcTextField,
 		NcTextArea,
 		NcButton,
@@ -246,16 +257,21 @@ export default {
 			configuration: {
 				drcLocation: '',
 				drcKey: '',
+				drcAuthType: {options: [{label: 'none', id: 'none'}, {label: 'API Key', id: 'apiKey'}, {label: 'Basic Auth', id: 'basic'}]},
 				orcLocation: '',
 				orcKey: '',
 				zrcLocation: '',
 				zrcKey: '',
+				zrcAuthType: '',
+				ztcLocation: '',
+				ztcKey: '',
+				ztcAuthType: '',
 				brcLocation: '',
 				brcKey: '',
+				brcAuthType: '',
 				klantenLocation: '',
 				klantenKey: '',
-				berichtenLocation: '',
-				berichtenKey: '',
+				klantenAuthType: {options: [{label: 'none', id: 'none'}, {label: 'API Key', id: 'apiKey'}, {label: 'Basic Auth', id: 'basic'}]},
 				takenLocation: '',
 				takenKey: '',
 				elasticLocation: '',
