@@ -55,7 +55,7 @@ export default {
 	},
 	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData(store.documentItem)
+		this.fetchData(store.documentId)
 	},
 	methods: {
 		fetchData(documentId) {

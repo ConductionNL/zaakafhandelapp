@@ -11,6 +11,8 @@
 		<EditTaak />
 		<AddRol />
 		<EditRol />
+		<AddDocument />
+		<EditDocument />
 	</div>
 </template>
 
@@ -25,6 +27,8 @@ import AddTaak from './taken/AddTaak.vue'
 import EditTaak from './taken/EditTaak.vue'
 import AddRol from './rollen/AddRol.vue'
 import EditRol from './rollen/EditRol.vue'
+import AddDocument from './documenten/AddDocument.vue'
+import EditDocument from './documenten/EditDocument.vue'
 
 export default {
 	name: 'Modals',
@@ -39,6 +43,8 @@ export default {
 		EditTaak,
 		AddRol,
 		EditRol,
+		AddDocument,
+		EditDocument,
 	},
 }
 </script>

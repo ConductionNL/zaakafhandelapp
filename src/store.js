@@ -18,6 +18,8 @@ export const store = reactive({
 	taakItem: false,
 	taakId: false,
 	berichtId: false,
+	documentId: false,
+	documentItem: false,
 	berichtItem: false,
 	rolId: false,
 	rolItem: false,
@@ -65,6 +67,14 @@ export const store = reactive({
 	setBerichtId(berichtId) {
 		this.berichtId = berichtId
 		console.log('Active bericht ID set to ' + berichtId)
+	},
+	setDocumentItem(documentItem) {
+		this.documentItem = documentItem
+		console.log('Active document item set to ' + documentItem)
+	},
+	setDocumentId(documentId) {
+		this.documentId = documentId
+		console.log('Active document id set to ' + documentId)
 	},
 	setBerichtItem(berichtItem) {
 		this.berichtItem = berichtItem

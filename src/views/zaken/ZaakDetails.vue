@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="store.setModal('addDocument')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>

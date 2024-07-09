@@ -10,7 +10,7 @@ import { store } from '../../store.js'
 			<div class="form-group">
 				<NcTextField label="Omschrijving"
 					:value.sync="rol.omschrijving"
-                    required="true"
+					required="true"
 					:loading="rolLoading" />
 			</div>
 			<div v-if="succesMessage" class="success">

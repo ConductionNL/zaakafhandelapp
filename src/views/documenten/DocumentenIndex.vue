@@ -16,7 +16,7 @@ import { store } from '../../store.js'
 					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zakenAdd')">
+					<NcButton type="primary" @click="store.setModal('addDocument')">
 						Document toevoegen
 					</NcButton>
 				</template>
