@@ -92,11 +92,7 @@ export default {
 			onderwerp: '',
 			toelichting: '',
 			actie: '',
-			catalogi: {},
-			metaData: {},
 			succesMessage: false,
-			catalogiLoading: false,
-			metaDataLoading: false,
 			taakLoading: false,
 			hasUpdated: false,
 			statusOptions: {

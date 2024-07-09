@@ -30,7 +30,7 @@ import { store } from '../../store.js'
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ berichten?.summary }}
+					{{ berichten?.onderwerp }}
 				</template>
 				<template #actions>
 					<NcActionButton @click="editBericht(bericht)">
@@ -110,6 +110,7 @@ export default {
 }
 </script>
 <style>
+
 .listHeader {
     position: sticky;
     top: 0;

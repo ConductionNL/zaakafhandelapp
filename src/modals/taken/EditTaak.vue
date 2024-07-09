@@ -145,7 +145,7 @@ export default {
 		editTaak() {
 			this.loading = true
 			fetch(
-				`/index.php/apps/opencatalog/taken/api/${this.taak.id}`,
+				`/index.php/apps/zaakafhandelapp/api/taken/${this.taak.id}`,
 				{
 					method: 'PUT',
 					body: JSON.stringify({

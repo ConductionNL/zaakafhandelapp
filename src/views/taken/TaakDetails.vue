@@ -7,13 +7,26 @@ import { store } from '../../store.js'
 		<div v-if="!loading" id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
-				<h1 class="h1">
-					{{ taak.name }}
-				</h1>
+				<div class="head">
+					<h1 class="h1">
+						{{ taak.title }}
+					</h1>
+					<NcActions :primary="true" menu-name="Acties">
+						<template #icon>
+							<DotsHorizontal :size="20" />
+						</template>
+						<NcActionButton @click="editTaak(taak)">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+					</NcActions>
+				</div>
 				<div class="grid">
 					<div class="gridContent">
 						<h4>Sammenvatting:</h4>
-						<span>{{ taak.summary }}</span>
+						<span>{{ taak.onderwerp }}</span>
 					</div>
 				</div>
 			</div>
@@ -26,7 +39,12 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcLoadingIcon } from '@nextcloud/vue'
+// Components
+import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+
+// Icons
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 export default {
 	name: 'TaakDetails',
@@ -54,7 +72,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.taakItem)
+		this.fetchData(store.taakId)
 	},
 	methods: {
 		fetchData(taakId) {
@@ -75,6 +93,10 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
+		},
+		editTaak(taak) {
+			store.setTaakItem(taak)
+			store.setModal('editTaak')
 		},
 	},
 }

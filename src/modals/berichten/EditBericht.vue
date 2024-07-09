@@ -120,33 +120,11 @@ export default {
 			this.hasUpdated = false
 		}
 		if (store.modal === 'editBericht' && !this.hasUpdated) {
-			this.fetchData(store.berichtId)
 			this.hasUpdated = true
 			this.bericht = store.berichtItem
 		}
 	},
 	methods: {
-		fetchData(id) {
-			this.berichtLoading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/berichten/${id}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.bericht = data
-						// this.oldZaakId = id
-					})
-					this.berichtLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					// this.oldZaakId = id
-					this.berichtLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},
