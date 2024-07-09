@@ -39,6 +39,12 @@ import { store } from '../../store.js'
 							</template>
 							Taak toevoegen
 						</NcActionButton>
+						<NcActionButton @click="store.setModal('addBericht')">
+							<template #icon>
+								<MessagePlus :size="20" />
+							</template>
+							Bericht toevoegen
+						</NcActionButton>
 						<NcActionButton>
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
@@ -134,7 +140,14 @@ import { store } from '../../store.js'
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
-
+// Icons
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
+import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
+import MessagePlus from 'vue-material-design-icons/MessagePlus.vue'
+import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
+import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
 import ZaakBerichten from '../berichten/ZaakBerichten.vue'
@@ -143,14 +156,6 @@ import ZaakTaken from '../taken/ZaakTaken.vue'
 import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
 import ZakenZaken from '../zaken/ZakenZaken.vue'
-
-// Icons
-import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
-import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
-import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
-import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
-import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 
 export default {
 	name: 'ZaakDetails',
@@ -161,6 +166,13 @@ export default {
 		NcActionButton,
 		BTabs,
 		BTab,
+		DotsHorizontal,
+		Pencil,
+		AccountPlus,
+		CalendarPlus,
+		MessagePlus,
+		FileDocumentPlusOutline,
+		VectorPolylineEdit,
 		// Views
 		ZaakEigenschappen,
 		ZaakRollen,
@@ -227,7 +239,7 @@ export default {
 
 <style>
 
-.grid{
+.test {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 }
