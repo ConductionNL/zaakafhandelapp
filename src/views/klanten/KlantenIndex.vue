@@ -8,7 +8,7 @@ import { store } from '../../store.js'
 			<KlantenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.klantItem || store.selected != 'klanten' "
+			<NcEmptyContent v-if="!store.klantId || store.selected != 'klanten' "
 				class="detailContainer"
 				name="Geen klant"
 				description="Nog geen klant geselecteerd">
@@ -16,12 +16,12 @@ import { store } from '../../store.js'
 					<AccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('klantAdd')">
+					<NcButton type="primary" @click="store.setModal('addKlant')">
 						Klant toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<KlantDetails v-if="store.klantItem && store.selected === 'klanten'" :klant-id="store.klantItem" />
+			<KlantDetails v-if="store.klantId && store.selected === 'klanten'" :klant-id="store.klantId" />
 		</template>
 	</NcAppContent>
 </template>
