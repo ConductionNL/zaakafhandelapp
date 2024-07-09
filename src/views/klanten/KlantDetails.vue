@@ -168,38 +168,4 @@ export default {
     grid-column: 1 / -1;
 }
 
-.tabContainer>* ul>li {
-  display: flex;
-  flex: 1;
-}
-
-.tabContainer>* ul>li:hover {
-  background-color: var(--color-background-hover);
-}
-
-.tabContainer>* ul>li>a {
-  flex: 1;
-  text-align: center;
-}
-
-.tabContainer>* ul>li>.active {
-  background: transparent !important;
-  color: var(--color-main-text) !important;
-  border-bottom: var(--default-grid-baseline) solid var(--color-primary-element) !important;
-}
-
-.tabContainer>* ul {
-  display: flex;
-  margin: 10px 8px 0 8px;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.tabPanel {
-  padding: 20px 10px;
-  min-height: 100%;
-  max-height: 100%;
-  height: 100%;
-  overflow: auto;
-}
 </style>

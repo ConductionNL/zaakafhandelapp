@@ -3,7 +3,7 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<NcAppContentList>
+	<div>
 		<ul v-if="!loading">
 			<NcListItem v-for="(zaken, i) in zakenList.results"
 				:key="`${zaken}${i}`"
@@ -11,6 +11,7 @@ import { store } from '../../store.js'
 				:active="store.zakenItem === zaken?.id"
 				:details="'1h'"
 				:counter-number="44"
+				:force-display-actions="true"
 				@click="store.setMetadataItem(zaken.id)">
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
@@ -39,19 +40,17 @@ import { store } from '../../store.js'
 			:size="64"
 			appearance="dark"
 			name="Zaken aan het laden" />
-	</NcAppContentList>
+	</div>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ZaakEigenschappen',
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
 		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},

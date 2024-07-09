@@ -6,20 +6,21 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul v-if="!loading">
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.omschrijving"
-				:active="store.zakenItem === zaken?.uuid"
+			<NcListItem v-for="(zaak, i) in zakenList.results"
+				:key="`${zaak}${i}`"
+				:name="zaak?.omschrijving"
+				:active="store.zaakId === zaak?.uuid"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setZaakItem(zaken.uuid)">
+				:force-display-actions="true"
+				@click="store.setZaakId(zaak.uuid)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.uuid && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="store.zaakId === zaak.uuid && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.zaaktype }}
+					{{ zaak?.zaaktype }}
 				</template>
 				<template #actions>
 					<NcActionButton>
