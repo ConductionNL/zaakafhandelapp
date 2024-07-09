@@ -1,12 +1,12 @@
 <script setup>
-import { store } from '../../../store.js'
+import { store } from '../../store.js'
 </script>
 
 <template>
 	<NcModal v-if="store.modal === 'editBericht'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanpassen</h2>
-            
+
 			<div class="form-group">
 				<NcTextField label="Onderwerp"
 					:value.sync="bericht.onderwerp"
@@ -152,7 +152,7 @@ export default {
 		},
 		editBericht() {
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/berichten/${store.berichtItem}`,
+				`/index.php/apps/zaakafhandelapp/api/berichten/${store.berichtId}`,
 				{
 					method: 'PUT',
 					headers: {
