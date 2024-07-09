@@ -7,15 +7,65 @@ import { store } from '../../store.js'
 		<div v-if="!loading" id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
-				<h1 class="h1">
-					{{ bericht.name }}
-				</h1>
-				<div class="grid">
-					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
-						<span>{{ bericht.summary }}</span>
-					</div>
-				</div>
+				<div class="head">
+				    <h1 class="h1">
+					    {{ bericht.onderwerp }}
+				    </h1>
+                </div>
+				<!-- <div class="grid"> -->
+					<!-- <div class="gridContent"> -->
+				        <div class="test">
+                            <div>
+                                <h4>Berichttekst:</h4>
+                                <span>{{ bericht.berichttekst }}</span>
+                            </div>
+                            <div>
+                                <h4>Berichttekst:</h4>
+                                <p>{{ bericht.berichttekst }}</p>
+                            </div>
+                            <div>
+                                <h4>Inhoud:</h4>
+                                <p>{{ bericht.inhoud }}</p>
+                            </div>
+                            <div>
+                                <h4>Soort gebruiker:</h4>
+                                <span>{{ bericht.soortGebruiker }}</span>
+                            </div>
+                            <div>
+                                <h4>Publicatiedatum:</h4>
+                                <span>{{ bericht.publicatieDatum }}</span>
+                            </div>
+                            <div>
+                                <h4>Aanmaak datum:</h4>
+                                <span>{{ bericht.aanmaakDatum }}</span>
+                            </div>
+                            <div>
+                                <h4>Bericht type:</h4>
+                                <span>{{ bericht.berichtType }}</span>
+                            </div>
+                            <div>
+                                <h4>Referentie:</h4>
+                                <span>{{ bericht.referentie }}</span>
+                            </div>
+                            <div>
+                                <h4>Bericht ID:</h4>
+                                <span>{{ bericht.berichtID }}</span>
+                            </div>
+                            <div>
+                                <h4>Batch ID:</h4>
+                                <span>{{ bericht.batchID }}</span>
+                            </div>
+                            <div>
+                                <h4>Gebruiker ID:</h4>
+                                <span>{{ bericht.gebruikerID }}</span>
+                            </div>
+                            <div>
+                                <h4>Volgorde:</h4>
+                                <span>{{ bericht.volgorde }}</span>
+                            </div>
+					    </div>
+					<!-- </div> -->
+				<!-- </div> -->
 			</div>
 		</div>
 		<NcLoadingIcon v-if="loading"
@@ -82,6 +132,11 @@ export default {
 </script>
 
 <style>
+.test {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
 h4 {
   font-weight: bold
 }

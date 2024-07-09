@@ -157,14 +157,6 @@ import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
 import ZakenZaken from '../zaken/ZakenZaken.vue'
 
-// Icons
-import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
-import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
-import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
-import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
-import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
-
 export default {
 	name: 'ZaakDetails',
 	components: {
@@ -247,7 +239,7 @@ export default {
 
 <style>
 
-.test{
+.test {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 }
