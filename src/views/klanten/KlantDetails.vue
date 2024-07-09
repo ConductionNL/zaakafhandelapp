@@ -30,9 +30,41 @@ import { store } from '../../store.js'
 						<h5>Adres:</h5>
 						<p>{{ klant.adres }}</p>
 					</div>
-					<div class="gridContent gridFullWidth">
+					<div class="gridContent">
 						<h5>Functie:</h5>
 						<p>{{ klant.functie }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Bedrijfsnaam:</h5>
+						<p>{{ klant.bedrijfsnaam }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Website url:</h5>
+						<p>{{ klant.websiteUrl }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>url:</h5>
+						<p>{{ klant.url }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Bron organisatie:</h5>
+						<p>{{ klant.bronorganisatie }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Aanmaakkanaal:</h5>
+						<p>{{ klant.aanmaakkanaal }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Geverifieerd:</h5>
+						<p>{{ klant.geverifieerd }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Subject Identificatie:</h5>
+						<p>{{ klant.subjectIdentificatie }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Subject Type:</h5>
+						<p>{{ klant.subjectType }}</p>
 					</div>
 				</div>
 			</div>
@@ -104,10 +136,6 @@ export default {
     padding: 0.5rem;
 }
 
-h4 {
-  font-weight: bold
-}
-
 .h1 {
   display: block !important;
   font-size: 2em !important;
@@ -121,7 +149,7 @@ h4 {
 
 .grid {
   display: grid;
-  grid-gap: 24px;
+  grid-gap: 1rem 24px !important;
   grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ) !important;
   margin-block-start: var(--zaa-margin-50);
   margin-block-end: var(--zaa-margin-50);
@@ -131,6 +159,9 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: 2px !important;
+}
+.gridContent > h5 {
+    margin-top: 12px !important;
 }
 
 .gridFullWidth {
