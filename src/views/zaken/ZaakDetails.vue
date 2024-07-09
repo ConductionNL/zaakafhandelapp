@@ -59,8 +59,32 @@ import { store } from '../../store.js'
 						<span>{{ zaak.zaaktype }}</span>
 					</div>
 					<div>
+						<div>
+							<h4>Archiefstatus:</h4>
+							<p>
+								{{ zaak.archiefstatus }}
+							</p>
+						</div>
 						<h4>Registratiedatum:</h4>
 						<span>{{ zaak.registratiedatum }}</span>
+					</div>
+					<div>
+						<h4>Bronorganisatie:</h4>
+						<p>
+							{{ zaak.bronorganisatie }}
+						</p>
+					</div>
+					<div>
+						<h4>VerantwoordelijkeOrganisatie:</h4>
+						<p>
+							{{ zaak.verantwoordelijkeOrganisatie }}
+						</p>
+					</div>
+					<div>
+						<h4>Startdatum:</h4>
+						<p>
+							{{ zaak.startdatum }}
+						</p>
 					</div>
 					<div>
 						<h4>Toelichting:</h4>

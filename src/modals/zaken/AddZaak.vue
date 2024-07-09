@@ -130,9 +130,10 @@ export default {
 					},
 					body: JSON.stringify({
 						identificatie: this.identificatie,
+						omschrijving: this.omschrijving,
 						bronorganisatie: this.bronorganisatie,
 						verantwoordelijkeOrganisatie: this.verantwoordelijkeOrganisatie,
-						omschrijving: this.omschrijving,
+						startdatum: this.startdatum,
 						zaaktype: this.zaaktype.value.id,
 						archiefstatus: this.archiefstatus.value.id,
 						registratiedatum: this.registratiedatum,

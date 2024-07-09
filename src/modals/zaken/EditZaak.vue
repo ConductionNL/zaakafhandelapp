@@ -6,8 +6,6 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'editZaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaak aanpassen</h2>
-			<div>store{{ store.zaakItem }}</div>
-			<div>zaak{{ zaak }}</div>
 			<div class="form-group">
 				<NcTextField :disabled="zaakLoading"
 					label="Identificatie"
@@ -34,13 +32,13 @@ import { store } from '../../store.js'
 					:value.sync="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaaktype"
-					v-model="zaak.zaaktype.value"
+					v-model="zaak.zaaktype"
 					input-label="Zaaktype"
 					:loading="zaakTypeLoading"
 					:disabled="zaakLoading || zaakTypeLoading"
 					required />
 				<NcSelect v-bind="archiefstatus"
-					v-model="zaak.archiefstatus.value"
+					v-model="zaak.archiefstatus"
 					input-label="Archiefstatus"
 					:disabled="zaakLoading"
 					required />
@@ -55,7 +53,7 @@ import { store } from '../../store.js'
 			<div v-if="succesMessage" class="success">
 				Zaak succesvol opgeslagen
 			</div>
-			<NcButton :disabled="!identificatie || !zaaktype.value || !bronorganisatie || !verantwoordelijkeOrganisatie || !startdatum" type="primary" @click="editZaak">
+			<NcButton :disabled="!zaak.identificatie || !zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum" type="primary" @click="editZaak">
 				Opslaan
 			</NcButton>
 		</div>
@@ -77,7 +75,7 @@ export default {
 	data() {
 		return {
 			zaak: {
-				identificatie: 'test',
+				identificatie: '',
 				omschrijving: '',
 				zaaktype: {},
 				registratiedatum: '',
@@ -87,6 +85,7 @@ export default {
 				startdatum: '',
 				archiefstatus: {},
 			},
+			zaaktype: {},
 			zaakLoading: false,
 			succesMessage: false,
 			hasUpdated: false,
@@ -117,10 +116,9 @@ export default {
 		if (store.modal === 'editZaak' && this.hasUpdated) {
 			if (this.zaak === store.zaakItem) return
 			this.hasUpdated = false
-			console.log('test1')
 		}
 		if (store.modal === 'editZaak' && !this.hasUpdated) {
-			console.log('test')
+			this.fetchZaakType()
 			this.hasUpdated = true
 			this.zaak = store.zaakItem
 		}
@@ -130,7 +128,58 @@ export default {
 			store.modal = false
 		},
 		editZaak() {
-			this.succesMessage = true
+			this.zaakLoading = true
+			fetch(
+				`index.php/apps/zaakafhandelapp/api/zrc/zaken/${this.zaak.uuid}`,
+				{
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						identificatie: this.identificatie,
+						omschrijving: this.omschrijving,
+						bronorganisatie: this.bronorganisatie,
+						verantwoordelijkeOrganisatie: this.verantwoordelijkeOrganisatie,
+						startdatum: this.startdatum,
+						zaaktype: this.zaaktype.value,
+						archiefstatus: this.archiefstatus.value,
+						registratiedatum: this.registratiedatum,
+						toelichting: this.toelichting,
+					}),
+				},
+			)
+				.then((response) => {
+					this.succesMessage = true
+					this.zaakLoading = false
+					setTimeout(() => (this.succesMessage = false), 2500)
+				})
+				.catch((err) => {
+					this.zaakLoading = false
+					console.error(err)
+				})
+		},
+		fetchZaakType() {
+			this.zaakTypeLoading = true
+			fetch('/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen', {
+				method: 'GET',
+			})
+				.then((response) => {
+					response.json().then((data) => {
+
+						this.zaaktype = {
+							options: Object.entries(data.results).map((zaaktype) => ({
+								id: zaaktype[1].id,
+								label: zaaktype[1].name,
+							})),
+						}
+					})
+					this.zaakTypeLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.zaakTypeLoading = false
+				})
 		},
 	},
 }

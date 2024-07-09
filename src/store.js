@@ -36,7 +36,7 @@ export const store = reactive({
 	},
 	setZaakId(zaakId) {
 		this.zaakId = zaakId
-		console.log('Active zaak item set to ' + zaakId)
+		console.log('Active zaak id set to ' + zaakId)
 	},
 	setZaakTypeItem(zaakTypeItem) {
 		this.zaakTypeItem = zaakTypeItem

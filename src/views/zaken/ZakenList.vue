@@ -153,7 +153,7 @@ export default {
 				})
 		},
 		storeZaak(zaak) {
-			store.setTaakItem(zaak)
+			store.setZaakItem(zaak)
 			store.setZaakId(zaak.uuid)
 		},
 		clearText() {
