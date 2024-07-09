@@ -8,12 +8,12 @@ import { store } from '../../store.js'
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<h1 class="h1">
-					{{ taak.name }}
+					{{ taak.title }}
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
 						<h4>Sammenvatting:</h4>
-						<span>{{ taak.summary }}</span>
+						<span>{{ taak.onderwerp }}</span>
 					</div>
 				</div>
 			</div>
@@ -54,7 +54,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.taakItem)
+		this.fetchData(store.taakId)
 	},
 	methods: {
 		fetchData(taakId) {

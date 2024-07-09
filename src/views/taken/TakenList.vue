@@ -17,20 +17,20 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(taken, i) in takenList.results"
-				:key="`${taken}${i}`"
-				:name="taken?.name"
-				:active="store.taakId === taken?.id"
+			<NcListItem v-for="(taak, i) in takenList.results"
+				:key="`${taak}${i}`"
+				:name="taak?.title"
+				:active="store.taakId === taak?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="setActive(taken.id)">
+				@click="toggleTaakDetailView(taak.id)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakId === taken.id && 'selectedZaakIcon'"
+					<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ taken?.summary }}
+					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
 					<NcActionButton @click="editTaak(taak)">
@@ -82,6 +82,14 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		toggleTaakDetailView(taakId) {
+			if (store.taakId === taakId) store.setTaakId(false)
+			else store.setTaakId(taakId)
+		},
+		editTaak(taak) {
+			store.setTaakItem(taak)
+			store.setModal('editTaak')
+		},
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -100,9 +108,6 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
-		},
-		setActive(id) {
-			store.setTaakId(id)
 		},
 		clearText() {
 			this.search = ''
