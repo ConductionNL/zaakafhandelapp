@@ -8,12 +8,31 @@ import { store } from '../../store.js'
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<h1 class="h1">
-					{{ klant.name }}
+					{{ klant.voornaam }} {{ klant.voorvoegsel }} {{ klant.achternaam }}
 				</h1>
+				<span> {{ klant.subject }} </span>
+
 				<div class="grid">
+					<div class="gridContent gridFullWidth">
+						<h5>Klantnummer:</h5>
+						<p>{{ klant.klantnummer }}</p>
+					</div>
+
 					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
-						<span>{{ klant.summary }}</span>
+						<h5>Telefoonnummer:</h5>
+						<p>{{ klant.telefoonnummer }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Email adres:</h5>
+						<p>{{ klant.emailadres }}</p>
+					</div>
+					<div class="gridContent">
+						<h5>Adres:</h5>
+						<p>{{ klant.adres }}</p>
+					</div>
+					<div class="gridContent gridFullWidth">
+						<h5>Functie:</h5>
+						<p>{{ klant.functie }}</p>
 					</div>
 				</div>
 			</div>
@@ -81,6 +100,10 @@ export default {
 </script>
 
 <style>
+.detailContainer {
+    padding: 0.5rem;
+}
+
 h4 {
   font-weight: bold
 }
@@ -99,14 +122,19 @@ h4 {
 .grid {
   display: grid;
   grid-gap: 24px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ) !important;
   margin-block-start: var(--zaa-margin-50);
   margin-block-end: var(--zaa-margin-50);
 }
 
 .gridContent {
   display: flex;
-  gap: 25px;
+  flex-direction: column;
+  gap: 2px !important;
+}
+
+.gridFullWidth {
+    grid-column: 1 / -1;
 }
 
 .tabContainer>* ul>li {
