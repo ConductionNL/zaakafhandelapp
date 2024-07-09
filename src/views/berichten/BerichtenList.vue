@@ -20,12 +20,12 @@ import { store } from '../../store.js'
 			<NcListItem v-for="(berichten, i) in berichtenList.results"
 				:key="`${berichten}${i}`"
 				:name="berichten?.name"
-				:active="store.berichtItem === berichten?.id"
+				:active="store.berichtId === berichten?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setBerichtItem(berichten.id)">
+				@click="store.setBerichtItem(berichten)">
 				<template #icon>
-					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"
+					<ChatOutline :class="store.berichtId === berichten.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -81,6 +81,7 @@ export default {
 	methods: {
 		editBericht(bericht) {
 			store.setBerichtItem(bericht)
+			store.setBerichtId(bericht.id)
 			store.setModal('editBericht')
 		},
 		fetchData(newPage) {

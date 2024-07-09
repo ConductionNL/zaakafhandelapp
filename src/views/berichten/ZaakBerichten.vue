@@ -11,7 +11,7 @@ import { store } from '../../store.js'
 				:active="store.berichtItem === berichten?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setBerichtItem(berichten.id)">
+				@click="store.setBerichtItem(berichten)">
 				<template #icon>
 					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"
 						disable-menu
@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					{{ berichten?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editBericht(berichten.id)">
+					<NcActionButton @click="editBericht(berichten)">
 						Bewerken
 					</NcActionButton>
 					<NcActionButton>
@@ -79,6 +79,7 @@ export default {
 	methods: {
 		editBericht(bericht) {
 			store.setBerichtItem(bericht)
+			store.setBerichtId(bericht.id)
 			store.setModal('editBericht')
 		},
 		fetchData(zaakId) {

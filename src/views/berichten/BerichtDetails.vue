@@ -55,7 +55,7 @@ export default {
 	},
 	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData(store.berichtItem)
+		this.fetchData(store.berichtItem.id)
 	},
 	methods: {
 		fetchData(berichtId) {

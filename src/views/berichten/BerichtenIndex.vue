@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :bericht-id="store.berichtItem" />
+			<BerichDetails v-if="store.berichtItem && store.selected === 'berichten'" :bericht-id="store.berichtId" />
 		</template>
 	</NcAppContent>
 </template>

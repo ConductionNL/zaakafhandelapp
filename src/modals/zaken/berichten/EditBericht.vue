@@ -6,6 +6,7 @@ import { store } from '../../../store.js'
 	<NcModal v-if="store.modal === 'editBericht'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanpassen</h2>
+            
 			<div class="form-group">
 				<NcTextField label="Onderwerp"
 					:value.sync="bericht.onderwerp"
@@ -114,9 +115,14 @@ export default {
 		}
 	},
 	updated() {
-		if (!this.hasUpdated) {
-			this.fetchData(store.berichtItem)
+		if (store.modal === 'editBericht' && this.hasUpdated) {
+			if (this.bericht === store.berichtItem) return
+			this.hasUpdated = false
+		}
+		if (store.modal === 'editBericht' && !this.hasUpdated) {
+			this.fetchData(store.berichtId)
 			this.hasUpdated = true
+			this.bericht = store.berichtItem
 		}
 	},
 	methods: {
