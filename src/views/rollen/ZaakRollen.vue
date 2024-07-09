@@ -11,6 +11,7 @@ import { store } from '../../store.js'
 				:active="store.rolId === rollen.id"
 				:details="'1h'"
 				:counter-number="44"
+				:force-display-actions="true"
 				@click="setZaakRolItem(rollen.id)">
 				<template #icon>
 					<BriefcaseAccountOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"

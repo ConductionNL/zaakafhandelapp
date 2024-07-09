@@ -9,7 +9,7 @@ import { store } from '../../store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ zaak.omschrijving }}
+						{{ zaak.identificatie }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
@@ -53,6 +53,52 @@ import { store } from '../../store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
+				<div class="test">
+					<div>
+						<h4>Omschrijving:</h4>
+						<span>{{ zaak.omschrijving }}</span>
+					</div>
+					<div>
+						<h4>
+							Zaaktype:
+						</h4>
+						<span>{{ zaak.zaaktype }}</span>
+					</div>
+					<div>
+						<div>
+							<h4>Archiefstatus:</h4>
+							<p>
+								{{ zaak.archiefstatus }}
+							</p>
+						</div>
+						<h4>Registratiedatum:</h4>
+						<span>{{ zaak.registratiedatum }}</span>
+					</div>
+					<div>
+						<h4>Bronorganisatie:</h4>
+						<p>
+							{{ zaak.bronorganisatie }}
+						</p>
+					</div>
+					<div>
+						<h4>VerantwoordelijkeOrganisatie:</h4>
+						<p>
+							{{ zaak.verantwoordelijkeOrganisatie }}
+						</p>
+					</div>
+					<div>
+						<h4>Startdatum:</h4>
+						<p>
+							{{ zaak.startdatum }}
+						</p>
+					</div>
+					<div>
+						<h4>Toelichting:</h4>
+						<p>
+							{{ zaak.toelichting }}
+						</p>
+					</div>
+				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab title="Eigenschappen" active>
@@ -91,6 +137,7 @@ import { store } from '../../store.js'
 </template>
 
 <script>
+// Components
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
 // Icons
@@ -110,9 +157,18 @@ import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
 import ZakenZaken from '../zaken/ZakenZaken.vue'
 
+// Icons
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
+import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
+import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
+import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
+
 export default {
 	name: 'ZaakDetails',
 	components: {
+		// Components
 		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
@@ -125,6 +181,7 @@ export default {
 		MessagePlus,
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
+		// Views
 		ZaakEigenschappen,
 		ZaakRollen,
 		ZaakTaken,
@@ -132,6 +189,14 @@ export default {
 		ZaakBesluiten,
 		ZaakDocumenten,
 		ZakenZaken,
+		// Icons
+		DotsHorizontal,
+		Pencil,
+		AccountPlus,
+		CalendarPlus,
+		FileDocumentPlusOutline,
+		VectorPolylineEdit,
+
 	},
 	props: {
 		zaakId: {
@@ -142,7 +207,7 @@ export default {
 	data() {
 		return {
 			zaak: [],
-			loading: false,
+			loading: true,
 		}
 	},
 	watch: {
@@ -154,7 +219,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData(store.zaakId)
 	},
 	methods: {
 		fetchData(zaakId) {
@@ -168,8 +233,8 @@ export default {
 				.then((response) => {
 					response.json().then((data) => {
 						this.zaak = data
+						this.loading = false
 					})
-					this.loading = false
 				})
 				.catch((err) => {
 					console.error(err)
@@ -181,6 +246,12 @@ export default {
 </script>
 
 <style>
+
+.test{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
 h4 {
   font-weight: bold;
 }
