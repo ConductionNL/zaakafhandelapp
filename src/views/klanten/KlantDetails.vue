@@ -26,7 +26,7 @@ import { store } from '../../store.js'
 				</div>
 				<span> {{ klant.subject }} </span>
 
-				<div class="grid">
+				<div class="detailGrid">
 					<div class="gridContent gridFullWidth">
 						<h5>Klantnummer:</h5>
 						<p>{{ klant.klantnummer }}</p>

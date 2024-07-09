@@ -5,24 +5,24 @@ import { store } from '../../store.js'
 <template>
 	<NcAppContentList>
 		<ul v-if="!loading">
-			<NcListItem v-for="(berichten, i) in berichtenList.results"
-				:key="`${berichten}${i}`"
-				:name="berichten?.name"
-				:active="store.berichtId === berichten.id"
+			<NcListItem v-for="(bericht, i) in berichtenList.results"
+				:key="`${bericht}${i}`"
+				:name="bericht?.onderwerp"
+				:active="store.berichtId === bericht.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setBerichtItem(berichten)">
+				@click="store.setBerichtItem(bericht)">
 				<template #icon>
-					<ChatOutline :class="store.berichtId === berichten.id && 'selectedZaakIcon'"
+					<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ berichten?.onderwerp }}
+					{{ bericht?.berichttekst }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editBericht(berichten)">
+					<NcActionButton @click="editBericht(bericht)">
 						Bewerken
 					</NcActionButton>
 					<NcActionButton>
@@ -40,9 +40,11 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
+// Components
 import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+
+// Icons
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
 export default {
 	name: 'ZaakBerichten',

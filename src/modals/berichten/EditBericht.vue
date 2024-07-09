@@ -112,6 +112,7 @@ export default {
 			},
 			succesMessage: false,
 			hasUpdated: false,
+			berichtLoading: false,
 		}
 	},
 	updated() {
@@ -129,6 +130,7 @@ export default {
 			store.modal = false
 		},
 		editBericht() {
+			this.berichtLoading = true
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/berichten/${store.berichtId}`,
 				{
@@ -139,9 +141,11 @@ export default {
 					body: JSON.stringify(this.bericht),
 				},
 			).then((response) => {
+				this.berichtLoading = false
 				this.succesMessage = true
 				setTimeout(() => (this.succesMessage = false), 2500)
 			}).catch((err) => {
+				this.berichtLoading = false
 				console.error(err)
 			})
 		},

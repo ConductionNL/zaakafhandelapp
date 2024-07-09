@@ -15,7 +15,7 @@ class TakenController extends Controller
         "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
             "id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
             "title" => "Onderzoek naar Markttrends",
-            "zaak" => "ZAAK-2024-1",
+            "zaak" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
             "type" => "Onderzoek",
             "status" => "open",
             "onderwerp" => "Analyse van de huidige markttrends en voorspellingen voor het komende jaar.",
@@ -25,7 +25,7 @@ class TakenController extends Controller
         "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
             "id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
             "title" => "Ontwikkeling van Nieuw Product",
-            "zaak" => "ZAAK-2024-2",
+            "zaak" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
             "type" => "Ontwikkeling",
             "status" => "ingediend",
             "onderwerp" => "Concept en ontwikkeling van een nieuw innovatief product voor de consumentenmarkt.",
@@ -35,7 +35,7 @@ class TakenController extends Controller
         "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
             "id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
             "title" => "Interne Audit",
-            "zaak" => "ZAAK-2024-3",
+            "zaak" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
             "type" => "Audit",
             "status" => "verwerkt",
             "onderwerp" => "Uitvoering van een interne audit om de naleving van kwaliteitsnormen te controleren.",
@@ -45,7 +45,7 @@ class TakenController extends Controller
         "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
             "id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
             "title" => "Marketingcampagne voor Nieuwe Productlijn",
-            "zaak" => "ZAAK-2024-4",
+            "zaak" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
             "type" => "Campagne",
             "status" => "gesloten",
             "onderwerp" => "Ontwikkeling en lancering van een marketingcampagne voor een nieuwe productlijn.",
@@ -55,41 +55,40 @@ class TakenController extends Controller
     ];
 
     public function __construct(
-		$appName,
-		IRequest $request,
-		private readonly IAppConfig $config
-	)
-    {
+        $appName,
+        IRequest $request,
+        private readonly IAppConfig $config
+    ) {
         parent::__construct($appName, $request);
     }
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{			
+    /**
+     * This returns the template of the main app's page
+     * It adds some data to the template (app version)
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return TemplateResponse
+     */
+    public function page(): TemplateResponse
+    {
         return new TemplateResponse(
             //Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
         );
-	}
-	
+    }
+
 
     /**
      * Return (and serach) all objects
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function index(): JSONResponse
     {
@@ -102,8 +101,8 @@ class TakenController extends Controller
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function show(string $id): JSONResponse
     {
@@ -117,8 +116,8 @@ class TakenController extends Controller
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function create(): JSONResponse
     {
@@ -131,8 +130,8 @@ class TakenController extends Controller
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function update(string $id): JSONResponse
     {
@@ -145,8 +144,8 @@ class TakenController extends Controller
      * 
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function destroy(string $id): JSONResponse
     {

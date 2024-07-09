@@ -33,7 +33,7 @@ import { store } from '../../store.js'
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addTaak')">
+						<NcActionButton @click="addTaakToZaak">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
@@ -53,7 +53,7 @@ import { store } from '../../store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
-				<div class="grid">
+				<div class="detailGrid">
 					<div>
 						<h4>Omschrijving:</h4>
 						<span>{{ zaak.omschrijving }}</span>
@@ -140,6 +140,7 @@ import { store } from '../../store.js'
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
@@ -148,6 +149,7 @@ import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
 import MessagePlus from 'vue-material-design-icons/MessagePlus.vue'
 import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
+
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
 import ZaakBerichten from '../berichten/ZaakBerichten.vue'
@@ -166,13 +168,6 @@ export default {
 		NcActionButton,
 		BTabs,
 		BTab,
-		DotsHorizontal,
-		Pencil,
-		AccountPlus,
-		CalendarPlus,
-		MessagePlus,
-		FileDocumentPlusOutline,
-		VectorPolylineEdit,
 		// Views
 		ZaakEigenschappen,
 		ZaakRollen,
@@ -214,6 +209,10 @@ export default {
 		this.fetchData(store.zaakId)
 	},
 	methods: {
+		addTaakToZaak() {
+			store.setModal('addTaak')
+			store.setTaakZaakId(this.zaak.uuid)
+		},
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(
@@ -238,11 +237,6 @@ export default {
 </script>
 
 <style>
-
-.test {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-}
 
 h4 {
   font-weight: bold;

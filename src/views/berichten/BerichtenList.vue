@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -15,58 +15,92 @@ import { store } from '../../store.js'
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="fetchData">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+					<NcActionButton @click="store.setModal('addBericht')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Bericht toevoegen
+					</NcActionButton>
+				</NcActions>
 			</div>
-
-			<NcListItem v-for="(berichten, i) in berichtenList.results"
-				:key="`${berichten}${i}`"
-				:name="berichten?.name"
-				:active="store.berichtId === berichten?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="store.setBerichtItem(berichten)">
-				<template #icon>
-					<ChatOutline :class="store.berichtId === berichten.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ berichten?.onderwerp }}
-				</template>
-				<template #actions>
-					<NcActionButton @click="editBericht(bericht)">
-						Bewerken
-					</NcActionButton>
-					<NcActionButton>
-						Verwijderen
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(bericht, i) in berichtenList.results"
+					:key="`${bericht}${i}`"
+					:name="bericht?.onderwerp"
+					:active="store.berichtId === bericht?.id"
+					:details="'1h'"
+					:counter-number="44"
+					:force-display-actions="true"
+					@click="storeBericht(bericht)">
+					<template #icon>
+						<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ bericht?.berichttekst }}
+					</template>
+					<template #actions>
+						<NcActionButton @click="editBericht(bericht)">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+						<NcActionButton disabled>
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Berichten aan het laden" />
+			name="berichten aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+//  Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'BerichtenList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
-		ChatOutline,
-		Magnify,
 		NcLoadingIcon,
+		// Icons
+		Magnify,
+		Refresh,
+		Plus,
+		ChatOutline,
+		Pencil,
+		TrashCanOutline,
 	},
 	data() {
 		return {
@@ -83,6 +117,10 @@ export default {
 			store.setBerichtItem(bericht)
 			store.setBerichtId(bericht.id)
 			store.setModal('editBericht')
+		},
+		storeBericht(bericht) {
+			store.setBerichtId(bericht.id)
+			store.setBerichtItem(bericht)
 		},
 		fetchData(newPage) {
 			this.loading = true

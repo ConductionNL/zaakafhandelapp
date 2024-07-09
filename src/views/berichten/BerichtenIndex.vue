@@ -16,7 +16,7 @@ import { store } from '../../store.js'
 					<ChatOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('berichtAdd')">
+					<NcButton type="primary" @click="store.setModal('addBericht')">
 						Bericht aanmaken
 					</NcButton>
 				</template>

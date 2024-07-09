@@ -49,13 +49,16 @@ import { store } from '../../store.js'
 					</template>
 					<template #actions>
 						<NcActionButton @click="editTaak(taak)">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton>
-							Button two
-						</NcActionButton>
-						<NcActionButton>
-							Button three
+						<NcActionButton disabled>
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -78,17 +81,23 @@ import Magnify from 'vue-material-design-icons/Magnify.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'TakenList',
 	components: {
+		// Components
 		NcListItem,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		CalendarMonthOutline,
 		Magnify,
-		NcLoadingIcon,
+		Pencil,
+		TrashCanOutline,
 	},
 	data() {
 		return {

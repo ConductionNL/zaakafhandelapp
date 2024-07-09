@@ -8,64 +8,72 @@ import { store } from '../../store.js'
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
-				    <h1 class="h1">
-					    {{ bericht.onderwerp }}
-				    </h1>
-                </div>
-				<!-- <div class="grid"> -->
-					<!-- <div class="gridContent"> -->
-				        <div class="test">
-                            <div>
-                                <h4>Berichttekst:</h4>
-                                <span>{{ bericht.berichttekst }}</span>
-                            </div>
-                            <div>
-                                <h4>Berichttekst:</h4>
-                                <p>{{ bericht.berichttekst }}</p>
-                            </div>
-                            <div>
-                                <h4>Inhoud:</h4>
-                                <p>{{ bericht.inhoud }}</p>
-                            </div>
-                            <div>
-                                <h4>Soort gebruiker:</h4>
-                                <span>{{ bericht.soortGebruiker }}</span>
-                            </div>
-                            <div>
-                                <h4>Publicatiedatum:</h4>
-                                <span>{{ bericht.publicatieDatum }}</span>
-                            </div>
-                            <div>
-                                <h4>Aanmaak datum:</h4>
-                                <span>{{ bericht.aanmaakDatum }}</span>
-                            </div>
-                            <div>
-                                <h4>Bericht type:</h4>
-                                <span>{{ bericht.berichtType }}</span>
-                            </div>
-                            <div>
-                                <h4>Referentie:</h4>
-                                <span>{{ bericht.referentie }}</span>
-                            </div>
-                            <div>
-                                <h4>Bericht ID:</h4>
-                                <span>{{ bericht.berichtID }}</span>
-                            </div>
-                            <div>
-                                <h4>Batch ID:</h4>
-                                <span>{{ bericht.batchID }}</span>
-                            </div>
-                            <div>
-                                <h4>Gebruiker ID:</h4>
-                                <span>{{ bericht.gebruikerID }}</span>
-                            </div>
-                            <div>
-                                <h4>Volgorde:</h4>
-                                <span>{{ bericht.volgorde }}</span>
-                            </div>
-					    </div>
-					<!-- </div> -->
-				<!-- </div> -->
+					<h1 class="h1">
+						{{ bericht.onderwerp }}
+					</h1>
+
+					<NcActions :primary="true" menu-name="Acties">
+						<template #icon>
+							<DotsHorizontal :size="20" />
+						</template>
+						<NcActionButton @click="editBericht(bericht)">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+					</NcActions>
+				</div>
+				<div class="detailGrid">
+					<div>
+						<h4>Berichttekst:</h4>
+						<span>{{ bericht.berichttekst }}</span>
+					</div>
+					<div>
+						<h4>Berichttekst:</h4>
+						<p>{{ bericht.berichttekst }}</p>
+					</div>
+					<div>
+						<h4>Inhoud:</h4>
+						<p>{{ bericht.inhoud }}</p>
+					</div>
+					<div>
+						<h4>Soort gebruiker:</h4>
+						<span>{{ bericht.soortGebruiker }}</span>
+					</div>
+					<div>
+						<h4>Publicatiedatum:</h4>
+						<span>{{ bericht.publicatieDatum }}</span>
+					</div>
+					<div>
+						<h4>Aanmaak datum:</h4>
+						<span>{{ bericht.aanmaakDatum }}</span>
+					</div>
+					<div>
+						<h4>Bericht type:</h4>
+						<span>{{ bericht.berichtType }}</span>
+					</div>
+					<div>
+						<h4>Referentie:</h4>
+						<span>{{ bericht.referentie }}</span>
+					</div>
+					<div>
+						<h4>Bericht ID:</h4>
+						<span>{{ bericht.berichtID }}</span>
+					</div>
+					<div>
+						<h4>Batch ID:</h4>
+						<span>{{ bericht.batchID }}</span>
+					</div>
+					<div>
+						<h4>Gebruiker ID:</h4>
+						<span>{{ bericht.gebruikerID }}</span>
+					</div>
+					<div>
+						<h4>Volgorde:</h4>
+						<span>{{ bericht.volgorde }}</span>
+					</div>
+				</div>
 			</div>
 		</div>
 		<NcLoadingIcon v-if="loading"
@@ -76,12 +84,23 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcLoadingIcon } from '@nextcloud/vue'
+// Components
+import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+
+// Icons
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 export default {
 	name: 'BerichtDetails',
 	components: {
+		// Components
 		NcLoadingIcon,
+		NcActions,
+		NcActionButton,
+		// Icons
+		Pencil,
+		DotsHorizontal,
 	},
 	props: {
 		berichtId: {
@@ -108,6 +127,10 @@ export default {
 		this.fetchData(store.berichtItem.id)
 	},
 	methods: {
+		editBericht(bericht) {
+			store.setBerichtItem(bericht)
+			store.setModal('editBericht')
+		},
 		fetchData(berichtId) {
 			this.loading = true
 			fetch(
@@ -132,11 +155,6 @@ export default {
 </script>
 
 <style>
-.test {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-}
-
 h4 {
   font-weight: bold
 }

@@ -78,6 +78,10 @@
   overflow: auto;
 }
 
+.detailGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
 
 /* Modals */
 .form-group > *  {

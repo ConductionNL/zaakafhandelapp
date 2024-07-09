@@ -48,14 +48,17 @@ import { store } from '../../store.js'
 						{{ zaak?.zaaktype }}
 					</template>
 					<template #actions>
-						<NcActionButton>
-							Button one
+						<NcActionButton @click="editZaak(zaak)">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
 						</NcActionButton>
-						<NcActionButton>
-							Button two
-						</NcActionButton>
-						<NcActionButton>
-							Button three
+						<NcActionButton disabled>
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -78,7 +81,8 @@ import Magnify from 'vue-material-design-icons/Magnify.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
-
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 export default {
 	name: 'ZakenList',
 	components: {
@@ -94,6 +98,8 @@ export default {
 		Magnify,
 		Refresh,
 		Plus,
+		Pencil,
+		TrashCanOutline,
 	},
 	data() {
 		return {
@@ -151,6 +157,11 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
+		},
+		editZaak(zaak) {
+			store.setZaakItem(zaak)
+			store.setZaakId(zaak.uuid)
+			store.setModal('editZaak')
 		},
 		storeZaak(zaak) {
 			store.setZaakItem(zaak)
