@@ -32,13 +32,13 @@ import { store } from '../../store.js'
 					:value.sync="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaaktype"
-					v-model="zaak.zaaktype"
+					v-model="zaaktype.value"
 					input-label="Zaaktype"
 					:loading="zaakTypeLoading"
-					:disabled="zaakLoading || zaakTypeLoading"
+					disabled
 					required />
 				<NcSelect v-bind="archiefstatus"
-					v-model="zaak.archiefstatus"
+					v-model="archiefstatus.value"
 					input-label="Archiefstatus"
 					:disabled="zaakLoading"
 					required />
@@ -83,7 +83,7 @@ export default {
 				bronorganisatie: '',
 				verantwoordelijkeOrganisatie: '',
 				startdatum: '',
-				archiefstatus: {},
+				archiefstatus: '',
 			},
 			zaaktype: {},
 			zaakLoading: false,
@@ -91,24 +91,7 @@ export default {
 			hasUpdated: false,
 			zaakTypeLoading: false,
 			archiefstatus: {
-				options: [
-					{
-						id: 'nog_te_archiveren',
-						label: 'Nog te archiveren',
-					},
-					{
-						id: 'gearchiveerd',
-						label: 'Gearchiveerd',
-					},
-					{
-						id: 'gearchiveerd_procestermijn_onbekend',
-						label: 'Gearchiveerd procestermijn onbekend',
-					},
-					{
-						id: 'overgedragen',
-						label: 'Overgedragen',
-					},
-				],
+
 			},
 		}
 	},
@@ -118,9 +101,10 @@ export default {
 			this.hasUpdated = false
 		}
 		if (store.modal === 'editZaak' && !this.hasUpdated) {
+			this.zaak = store.zaakItem
+			this.setArchiefStatusOptions()
 			this.fetchZaakType()
 			this.hasUpdated = true
-			this.zaak = store.zaakItem
 		}
 	},
 	methods: {
@@ -159,6 +143,36 @@ export default {
 					console.error(err)
 				})
 		},
+		setArchiefStatusOptions() {
+			const archiefStatusOptions = [
+				{
+					id: 'nog_te_archiveren',
+					label: 'Nog te archiveren',
+				},
+				{
+					id: 'gearchiveerd',
+					label: 'Gearchiveerd',
+				},
+				{
+					id: 'gearchiveerd_procestermijn_onbekend',
+					label: 'Gearchiveerd procestermijn onbekend',
+				},
+				{
+					id: 'overgedragen',
+					label: 'Overgedragen',
+				},
+			]
+
+			const selectedArchiefStatusOption = archiefStatusOptions.find((options) => options.id === this.zaak.archiefstatus)
+
+			this.archiefstatus = {
+				options: archiefStatusOptions,
+				value: {
+					id: selectedArchiefStatusOption.id ?? '',
+					label: selectedArchiefStatusOption.label ?? '',
+				},
+			}
+		},
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 			fetch('/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen', {
@@ -166,12 +180,17 @@ export default {
 			})
 				.then((response) => {
 					response.json().then((data) => {
+						const selectedZaakType = Object.entries(data.results).find((zaaktype) => zaaktype[1].id === this.zaak.zaaktype)
 
 						this.zaaktype = {
 							options: Object.entries(data.results).map((zaaktype) => ({
 								id: zaaktype[1].id,
 								label: zaaktype[1].name,
 							})),
+							value: {
+								id: selectedZaakType[1].id ?? '',
+								label: selectedZaakType[1].name ?? '',
+							},
 						}
 					})
 					this.zaakTypeLoading = false

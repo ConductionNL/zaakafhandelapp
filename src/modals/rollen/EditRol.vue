@@ -10,7 +10,7 @@ import { store } from '../../store.js'
 			<div class="form-group">
 				<NcTextField label="Omschrijving"
 					:value.sync="rol.omschrijving"
-                    required="true"
+					required="true"
 					:loading="rolLoading" />
 			</div>
 			<div v-if="succesMessage" class="success">
@@ -24,14 +24,13 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField, NcTextArea } from '@nextcloud/vue'
+import { NcButton, NcModal, NcTextField } from '@nextcloud/vue'
 
 export default {
 	name: 'EditRol',
 	components: {
 		NcModal,
 		NcTextField,
-		NcTextArea,
 		NcButton,
 	},
 	data() {

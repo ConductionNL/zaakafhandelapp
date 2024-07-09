@@ -58,7 +58,7 @@ import Magnify from 'vue-material-design-icons/Magnify'
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
-	name: 'RolenList',
+	name: 'RollenList',
 	components: {
 		NcListItem,
 		NcActionButton,

@@ -6,7 +6,6 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'editTaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
 			<h2>Taak aanpassen</h2>
-
 			<div v-if="!taakLoading">
 				<div class="form-group">
 					<NcTextField :disabled="taakLoading"
@@ -29,7 +28,7 @@ import { store } from '../../store.js'
 						:loading="taakLoading" />
 
 					<NcSelect v-bind="statusOptions"
-						v-model="taak.status"
+						v-model="statusOptions.value"
 						:disabled="taakLoading"
 						input-label="Status"
 						required />
@@ -110,24 +109,6 @@ export default {
 			taakLoading: false,
 			zaakLoading: false,
 			statusOptions: {
-				options: [
-					{
-						id: 'open',
-						label: 'Open',
-					},
-					{
-						id: 'ingediend',
-						label: 'Ingediend',
-					},
-					{
-						id: 'verwerkt',
-						label: 'Verwerkt',
-					},
-					{
-						id: 'gesloten',
-						label: 'Gesloten',
-					},
-				],
 			},
 		}
 	},
@@ -137,9 +118,10 @@ export default {
 			this.hasUpdated = false
 		}
 		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.fetchZaken()
-			this.hasUpdated = true
 			this.taak = store.taakItem
+			this.fetchZaken()
+			this.setStatusOptions()
+			this.hasUpdated = true
 		}
 	},
 	methods: {
@@ -172,6 +154,36 @@ export default {
 					this.loading = false
 					console.error(err)
 				})
+		},
+		setStatusOptions() {
+			const statusOptions = [
+				{
+					id: 'open',
+					label: 'Open',
+				},
+				{
+					id: 'ingediend',
+					label: 'Ingediend',
+				},
+				{
+					id: 'verwerkt',
+					label: 'Verwerkt',
+				},
+				{
+					id: 'gesloten',
+					label: 'Gesloten',
+				},
+			]
+
+			const selectedStatusOption = statusOptions.find((options) => options.id === this.taak.status)
+
+			this.statusOptions = {
+				options: statusOptions,
+				value: {
+					id: selectedStatusOption.id ?? '',
+					label: selectedStatusOption.label ?? '',
+				},
+			}
 		},
 		fetchZaken() {
 			this.zaakLoading = true
