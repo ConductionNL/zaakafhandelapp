@@ -11,6 +11,7 @@ import { store } from '../../store.js'
 				:active="store.berichtItem === berichten?.id"
 				:details="'1h'"
 				:counter-number="44"
+				:force-display-actions="true"
 				@click="store.setBerichtItem(berichten.id)">
 				<template #icon>
 					<ChatOutline :class="store.berichtItem === berichten.id && 'selectedZaakIcon'"

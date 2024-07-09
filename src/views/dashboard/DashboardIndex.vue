@@ -1,7 +1,9 @@
 <template>
 	<NcAppContent>
 		<template #default>
-			Dashboard hier
+			<div class="dashboardContainer">
+				<h1>Titel Dashboard</h1>
+			</div>
 		</template>
 	</NcAppContent>
 </template>
@@ -16,3 +18,9 @@ export default {
 	},
 }
 </script>
+<style>
+.dashboardContainer {
+    margin-inline-start: 75px;
+    margin-block-start: 20px
+}
+</style>
