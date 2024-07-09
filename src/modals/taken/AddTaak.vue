@@ -93,11 +93,7 @@ export default {
 			onderwerp: '',
 			toelichting: '',
 			actie: '',
-			catalogi: {},
-			metaData: {},
 			succesMessage: false,
-			catalogiLoading: false,
-			metaDataLoading: false,
 			taakLoading: false,
 			hasUpdated: false,
 			statusOptions: {
@@ -130,59 +126,13 @@ export default {
 		}
 	},
 	methods: {
-		fetchCatalogi() {
-			this.catalogiLoading = true
-			fetch('/index.php/apps/opencatalog/catalogi/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.catalogi = {
-							options: Object.entries(data.results).map((catalog) => ({
-								id: catalog[1]._id,
-								label: catalog[1].name,
-							})),
-
-						}
-					})
-					this.catalogiLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.catalogiLoading = false
-				})
-		},
-		fetchMetaData() {
-			this.metaDataLoading = true
-			fetch('/index.php/apps/opencatalog/metadata/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.metaData = {
-							options: Object.entries(data.results).map((metaData) => ({
-								id: metaData[1]._id,
-								label: metaData[1].name,
-							})),
-
-						}
-					})
-					this.metaDataLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.metaDataLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},
 		addTaak() {
 			this.taakLoading = true
 			fetch(
-				'/index.php/apps/opencatalog/taken/api',
+				'/index.php/apps/zaakafhandelapp/api/taken',
 				{
 					method: 'POST',
 					headers: {

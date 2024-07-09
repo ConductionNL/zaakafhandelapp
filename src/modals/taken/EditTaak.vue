@@ -103,18 +103,8 @@ export default {
 				actie: '',
 				id: '',
 			},
-			catalogi: {
-				value: [],
-				options: [],
-			},
-			metaData: {
-				value: [],
-				options: [],
-			},
 			loading: false,
 			succesMessage: false,
-			catalogiLoading: false,
-			metaDataLoading: false,
 			hasUpdated: false,
 			taakLoading: false,
 			statusOptions: {
@@ -156,7 +146,7 @@ export default {
 		fetchData(id) {
 			this.taakLoading = true
 			fetch(
-				`/index.php/apps/opencatalog/taken/api/${id}`,
+				`/index.php/apps/zaakafhandelapp/api/taken/${id}`,
 				{
 					method: 'GET',
 				},
@@ -175,62 +165,13 @@ export default {
 					this.taakLoading = false
 				})
 		},
-		fetchCatalogi() {
-			this.catalogiLoading = true
-			fetch('/index.php/apps/opencatalog/catalogi/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.catalogi = {
-							value: this.catalogi.value,
-							inputLabel: 'Catalogi',
-							options: Object.entries(data.results).map((catalog) => ({
-								id: catalog[1]._id,
-								label: catalog[1].name,
-							})),
-
-						}
-					})
-					this.catalogiLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.catalogiLoading = false
-				})
-		},
-		fetchMetaData() {
-			this.metaDataLoading = true
-			fetch('/index.php/apps/opencatalog/metadata/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.metaData = {
-							inputLabel: 'MetaData',
-							options: Object.entries(data.results).map((metaData) => ({
-								id: metaData[1]._id,
-								label: metaData[1].name,
-							})),
-
-						}
-					})
-					this.metaDataLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.metaDataLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},
 		editTaak() {
 			this.loading = true
 			fetch(
-				`/index.php/apps/opencatalog/taken/api/${this.taak.id}`,
+				`/index.php/apps/zaakafhandelapp/api/taken/${this.taak.id}`,
 				{
 					method: 'PUT',
 					body: JSON.stringify({
