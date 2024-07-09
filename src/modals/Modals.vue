@@ -3,6 +3,8 @@
 	<div>
 		<AddZaak />
 		<EditZaak />
+		<AddKlant />
+		<EditKlant />
 		<AddBericht />
 		<EditBericht />
 		<AddTaak />
@@ -13,6 +15,8 @@
 <script>
 import AddZaak from './zaken/AddZaak.vue'
 import EditZaak from './zaken/EditZaak.vue'
+import AddKlant from './klanten/AddKlant.vue'
+import EditKlant from './klanten/EditKlant.vue'
 import AddBericht from './berichten/AddBericht.vue'
 import EditBericht from './berichten/EditBericht.vue'
 import AddTaak from './taken/AddTaak.vue'
@@ -23,6 +27,8 @@ export default {
 	components: {
 		AddZaak,
 		EditZaak,
+		AddKlant,
+		EditKlant,
 		AddBericht,
 		EditBericht,
 		AddTaak,

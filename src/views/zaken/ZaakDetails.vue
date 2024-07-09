@@ -53,7 +53,7 @@ import { store } from '../../store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
-				<div class="test">
+				<div class="grid">
 					<div>
 						<h4>Omschrijving:</h4>
 						<span>{{ zaak.omschrijving }}</span>

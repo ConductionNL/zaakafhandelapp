@@ -13,6 +13,7 @@ export const store = reactive({
 	zaakItem: false,
 	zaakId: false,
 	zaakTypeItem: false,
+	klantId: false,
 	klantItem: false,
 	taakItem: false,
 	taakId: false,
@@ -43,9 +44,13 @@ export const store = reactive({
 		this.zaakTypeItem = zaakTypeItem
 		console.log('Active zaak type item set to ' + zaakTypeItem)
 	},
+	setKlantId(klantId) {
+		this.klantId = klantId
+		console.log('Active klant id set to ' + klantId)
+	},
 	setKlantItem(klantItem) {
 		this.klantItem = klantItem
-		console.log('Active klamt item set to ' + klantItem)
+		console.log('Active klant item set to ' + klantItem)
 	},
 	setTaakItem(taakItem) {
 		this.taakItem = taakItem
