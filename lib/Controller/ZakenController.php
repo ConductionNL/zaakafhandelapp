@@ -3,6 +3,7 @@
 namespace OCA\ZaakAfhandelApp\Controller;
 
 use GuzzleHttp\Client;
+use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -137,74 +138,85 @@ class ZakenController extends Controller
         );
     }
 
+	/**
+	 * Return (and serach) all objects
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function index(CallService $callService): JSONResponse
+	{
+		// Latere zorg
+		$query= $this->request->getParams();
 
-    /**
-     * Return (and serach) all Zaak
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function index(): JSONResponse
-    {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
-    }
+		$results = $callService->index(source: 'zrc', endpoint: 'zaken');
+		return new JSONResponse($results);
+	}
 
-    /**
-     * Read a single Zaak
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function show(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+	/**
+	 * Read a single object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function show(string $id, CallService $callService): JSONResponse
+	{
+		// Latere zorg
+		$query= $this->request->getParams();
+
+		$results = $callService->show(source: 'zrc', endpoint: 'zaken', id: $id);
+		return new JSONResponse($results);
+	}
 
 
-    /**
-     * Creatue an Zaak
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function create(): JSONResponse
-    {
-        // get post from requests
-        return new JSONResponse([]);
-    }
+	/**
+	 * Creatue an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function create(CallService $callService): JSONResponse
+	{
+		// get post from requests
+		$body = $this->request->getParams();
+		$results = $callService->create(source: 'zrc', endpoint: 'zaken', data: $body);
+		return new JSONResponse($results);
+	}
 
-    /**
-     * Update an Zaak
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function update(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+	/**
+	 * Update an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function update(string $id, CallService $callService): JSONResponse
+	{
+		$body = $this->request->getParams();
+		$results = $callService->update(source: 'zrc', endpoint: 'zaken', data: $body, id: $id);
+		return new JSONResponse($results);
+	}
 
-    /**
-     * Delate an Zaak
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function destroy(string $id): JSONResponse
-    {
-        return new JSONResponse([]);
-    }
+	/**
+	 * Delate an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function destroy(string $id, CallService $callService): JSONResponse
+	{
+		$callService->destroy(source: 'zrc', endpoint: 'zaken', id: $id);
+
+		return new JsonResponse([]);
+	}
+
 }

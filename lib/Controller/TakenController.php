@@ -3,6 +3,7 @@
 namespace OCA\ZaakAfhandelApp\Controller;
 
 use GuzzleHttp\Client;
+use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -62,93 +63,103 @@ class TakenController extends Controller
         parent::__construct($appName, $request);
     }
 
-    /**
-     * This returns the template of the main app's page
-     * It adds some data to the template (app version)
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return TemplateResponse
-     */
-    public function page(): TemplateResponse
-    {
+	/**
+	 * This returns the template of the main app's page
+	 * It adds some data to the template (app version)
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return TemplateResponse
+	 */
+	public function page(): TemplateResponse
+	{
         return new TemplateResponse(
             //Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
         );
-    }
+	}
+
+	/**
+	 * Return (and serach) all objects
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function index(CallService $klantenService): JSONResponse
+	{
+		// Latere zorg
+		$query= $this->request->getParams();
+
+		$results = $klantenService->index(source: 'klanten', endpoint: 'taken');
+		return new JSONResponse($results);
+	}
+
+	/**
+	 * Read a single object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function show(string $id, CallService $klantenService): JSONResponse
+	{
+		// Latere zorg
+		$query= $this->request->getParams();
+
+		$results = $klantenService->show(source: 'klanten', endpoint: 'taken', id: $id);
+		return new JSONResponse($results);
+	}
 
 
-    /**
-     * Return (and serach) all objects
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function index(): JSONResponse
-    {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
-    }
+	/**
+	 * Creatue an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function create(CallService $callService): JSONResponse
+	{
+		// get post from requests
+		$body = $this->request->getParams();
+		$results = $callService->create(source: 'klanten', endpoint: 'taken', data: $body);
+		return new JSONResponse($results);
+	}
 
-    /**
-     * Read a single object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function show(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+	/**
+	 * Update an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function update(string $id, CallService $callService): JSONResponse
+	{
+		$body = $this->request->getParams();
+		$results = $callService->update(source: 'klanten', endpoint: 'taken', data: $body, id: $id);
+		return new JSONResponse($results);
+	}
 
+	/**
+	 * Delate an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 */
+	public function destroy(string $id, CallService $callService): JSONResponse
+	{
+		$callService->destroy(source: 'klanten', endpoint: 'taken', id: $id);
 
-    /**
-     * Creatue an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function create(): JSONResponse
-    {
-        // get post from requests
-        return new JSONResponse([]);
-    }
-
-    /**
-     * Update an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function update(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
-
-    /**
-     * Delate an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     */
-    public function destroy(string $id): JSONResponse
-    {
-        return new JSONResponse([]);
-    }
+		return new JsonResponse([]);
+	}
 }

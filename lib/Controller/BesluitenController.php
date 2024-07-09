@@ -3,6 +3,7 @@
 namespace OCA\ZaakAfhandelApp\Controller;
 
 use GuzzleHttp\Client;
+use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
@@ -57,7 +58,7 @@ class BesluitenController extends Controller
 	 * @return TemplateResponse
 	 */
 	public function page(): TemplateResponse
-	{			
+	{
         return new TemplateResponse(
             //Application::APP_ID,
             'zaakafhandelapp',
@@ -65,75 +66,85 @@ class BesluitenController extends Controller
             []
         );
 	}
-	
 
-    /**
-     * Return (and serach) all objects
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
+	/**
+	 * Return (and serach) all objects
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
-     */
-    public function index(): JSONResponse
-    {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
-    }
+	 */
+	public function index(CallService $callService): JSONResponse
+	{
+		// Latere zorg
+		$query= $this->request->getParams();
 
-    /**
-     * Read a single object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
+		$results = $callService->index(source: 'brc', endpoint: 'besluiten');
+		return new JSONResponse($results);
+	}
+
+	/**
+	 * Read a single object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
-     */
-    public function show(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+	 */
+	public function show(string $id, CallService $callService): JSONResponse
+	{
+		// Latere zorg
+		$query= $this->request->getParams();
+
+		$results = $callService->show(source: 'brc', endpoint: 'besluiten', id: $id);
+		return new JSONResponse($results);
+	}
 
 
-    /**
-     * Creatue an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
+	/**
+	 * Creatue an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
-     */
-    public function create(): JSONResponse
-    {
-        // get post from requests
-        return new JSONResponse([]);
-    }
+	 */
+	public function create(CallService $callService): JSONResponse
+	{
+		// get post from requests
+		$body = $this->request->getParams();
+		$results = $callService->create(source: 'brc', endpoint: 'besluiten', data: $body);
+		return new JSONResponse($results);
+	}
 
-    /**
-     * Update an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
+	/**
+	 * Update an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
-     */
-    public function update(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+	 */
+	public function update(string $id, CallService $callService): JSONResponse
+	{
+		$body = $this->request->getParams();
+		$results = $callService->update(source: 'brc', endpoint: 'besluiten', data: $body, id: $id);
+		return new JSONResponse($results);
+	}
 
-    /**
-     * Delate an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
+	/**
+	 * Delate an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
-     */
-    public function destroy(string $id): JSONResponse
-    {
-        return new JSONResponse([]);
-    }
+	 */
+	public function destroy(string $id, CallService $callService): JSONResponse
+	{
+		$callService->destroy(source: 'brc', endpoint: 'besluiten', id: $id);
+
+		return new JsonResponse([]);
+	}
 }

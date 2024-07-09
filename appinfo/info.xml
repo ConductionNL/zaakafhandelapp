@@ -9,7 +9,7 @@
 	<version>1.0.0</version>
 	<licence>eupl 1.2</licence>
 	<author mail="info@conduction.nl" homepage="https://conduction.nl/">Conduction</author>
-	<namespace>zaakafhandelapp</namespace>
+	<namespace>ZaakAfhandelApp</namespace>
 	<category>dashboard</category>
 	<bugs>https://github.com/ConductionNL/zaakafhandelapp/issues</bugs>
 	<dependencies>
