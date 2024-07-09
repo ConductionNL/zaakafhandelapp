@@ -17,30 +17,27 @@ import { store } from '../../store.js'
 				</NcTextField>
 			</div>
 
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+			<NcListItem v-for="(rollen, i) in rollenList.results"
+				:key="`${rollen}${i}`"
+				:name="rollen?.name"
+				:active="store.rolId === rollen?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setMetadataItem(zaken.id)">
+				@click="store.setRolItem(rollen)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ rollen?.summary }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="editRol(rol)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
+						Verwijderen
 					</NcActionButton>
 				</template>
 			</NcListItem>
@@ -50,7 +47,7 @@ import { store } from '../../store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			name="Rollen aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -58,16 +55,16 @@ import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIco
 // eslint-disable-next-line n/no-missing-import
 import Magnify from 'vue-material-design-icons/Magnify'
 // eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
 export default {
-	name: 'RollenList',
+	name: 'RolenList',
 	components: {
 		NcListItem,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
-		BriefcaseAccountOutline,
+		ChatOutline,
 		Magnify,
 		NcLoadingIcon,
 	},
@@ -75,24 +72,29 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			zakenList: [],
+			rollenList: [],
 		}
 	},
 	mounted() {
 		this.fetchData()
 	},
 	methods: {
+		editRol(rol) {
+			store.setRolItem(rol)
+			store.setRolId(rol.id)
+			store.setModal('editRol')
+		},
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zaken',
+				'/index.php/apps/zaakafhandelapp/api/rollen',
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zakenList = data
+						this.rollenList = data
 					})
 					this.loading = false
 				})

@@ -27,7 +27,7 @@ import { store } from '../../store.js'
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="store.setModal('addRol')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>

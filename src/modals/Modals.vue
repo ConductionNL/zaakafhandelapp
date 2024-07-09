@@ -7,16 +7,20 @@
 		<EditBericht />
 		<AddTaak />
 		<EditTaak />
+		<AddRol />
+		<EditRol />
 	</div>
 </template>
 
 <script>
 import AddZaak from './zaken/AddZaak.vue'
 import EditZaak from './zaken/EditZaak.vue'
-import AddBericht from './zaken/berichten/AddBericht.vue'
-import EditBericht from './zaken/berichten/EditBericht.vue'
+import AddBericht from './berichten/AddBericht.vue'
+import EditBericht from './berichten/EditBericht.vue'
 import AddTaak from './taken/AddTaak.vue'
 import EditTaak from './taken/EditTaak.vue'
+import AddRol from './rollen/AddRol.vue'
+import EditRol from './rollen/EditRol.vue'
 
 export default {
 	name: 'Modals',
@@ -27,6 +31,8 @@ export default {
 		EditBericht,
 		AddTaak,
 		EditTaak,
+		AddRol,
+		EditRol,
 	},
 }
 </script>
