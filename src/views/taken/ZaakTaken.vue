@@ -5,25 +5,25 @@ import { store } from '../../store.js'
 <template>
 	<div>
 		<ul v-if="!loading">
-			<NcListItem v-for="(taken, i) in takenList.results"
-				:key="`${taken}${i}`"
-				:name="taken?.name"
+			<NcListItem v-for="(taak, i) in takenList.results"
+				:key="`${taak}${i}`"
+				:name="taak?.title"
 				:bold="true"
-				:active="store.taakItem === taken?.id"
+				:active="store.taakId === taak?.id"
 				:details="'1h'"
 				:counter-number="44"
-				@click="store.setTaakItem(taken.id)">
+				@click="store.setTaakId(taak.id)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakItem === taken.id && 'selectedZaakIcon'"
+					<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ taken?.summary }}
+					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="editTaak(taak)">
+						Bewerken
 					</NcActionButton>
 					<NcActionButton>
 						Button two
@@ -80,6 +80,10 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
+		editTaak(taak) {
+			store.setTaakItem(taak)
+			store.setModal('editTaak')
+		},
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(

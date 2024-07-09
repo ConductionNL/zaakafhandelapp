@@ -54,7 +54,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.klantItem)
+		this.fetchData(store.klantId)
 	},
 	methods: {
 		fetchData(klantId) {
