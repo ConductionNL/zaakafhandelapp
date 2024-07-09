@@ -12,6 +12,7 @@ import { store } from '../../store.js'
 				:active="store.taakId === taak?.id"
 				:details="'1h'"
 				:counter-number="44"
+				:force-display-actions="true"
 				@click="store.setTaakId(taak.id)">
 				<template #icon>
 					<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
@@ -22,14 +23,11 @@ import { store } from '../../store.js'
 					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editTaak(taak)">
+					<NcActionButton @click="showEditTaakModal(taak)">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
 						Bewerken
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
 					</NcActionButton>
 				</template>
 			</NcListItem>
@@ -43,9 +41,12 @@ import { store } from '../../store.js'
 	</div>
 </template>
 <script>
+// Components
 import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
+
+// Icons
+import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 export default {
 	name: 'ZaakTaken',
@@ -80,7 +81,7 @@ export default {
 		this.fetchData(store.zaakItem)
 	},
 	methods: {
-		editTaak(taak) {
+		showEditTaakModal(taak) {
 			store.setTaakItem(taak)
 			store.setModal('editTaak')
 		},
