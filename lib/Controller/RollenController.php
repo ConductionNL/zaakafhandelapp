@@ -16,25 +16,131 @@ use OCP\IRequest;
 class RollenController extends Controller
 {
     const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "name" => "Github",
-            "summary" => "summary for one"
+        "095be615-a8ad-4c33-8e9c-c7612fbf6c9f" => [
+            "url" => "http://example.com",
+            "uuid" => "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
+            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
+            "betrokkene" => "http://example.com",
+            "betrokkeneType" => "medewerker",
+            "afwijkendeNaamBetrokkene" => "string",
+            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
+            "omschrijving" => "Rol omschrijving 1",
+            "omschrijvingGeneriek" => "string",
+            "roltoelichting" => "string",
+            "registratiedatum" => "2019-08-24T14:15:22Z",
+            "indicatieMachtiging" => "gemachtigde",
+            "contactpersoonRol" => [
+                "emailadres" => "user@example.com",
+                "functie" => "string",
+                "telefoonnummer" => "string",
+                "naam" => "string"
+            ],
+            "statussen" => [
+                "http://example.com/api/zrc/v1/statussen/id"
+            ],
+            "_expand" => [
+                "zaak" => [],
+                "roltype" => [],
+                "statussen" => []
+            ],
+            "betrokkeneIdentificatie" => [
+                "identificatie" => "string",
+                "achternaam" => "string",
+                "voorletters" => "string",
+                "voorvoegselAchternaam" => "string"
+            ]
         ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "name" => "Gitlab",
-            "summary" => "summary for two"
+        "d3f5a5c1-e78d-4c33-9e9c-c7612fbf6c9a" => [
+            "url" => "http://example.com",
+            "uuid" => "d3f5a5c1-e78d-4c33-9e9c-c7612fbf6c9a",
+            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
+            "betrokkene" => "http://example.com",
+            "betrokkeneType" => "medewerker",
+            "afwijkendeNaamBetrokkene" => "string",
+            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
+            "omschrijving" => "Rol omschrijving 2",
+            "omschrijvingGeneriek" => "string",
+            "roltoelichting" => "string",
+            "registratiedatum" => "2019-08-24T14:15:22Z",
+            "indicatieMachtiging" => "gemachtigde",
+            "contactpersoonRol" => [
+                "emailadres" => "user@example.com",
+                "functie" => "string",
+                "telefoonnummer" => "string",
+                "naam" => "string"
+            ],
+            "statussen" => [
+                "http://example.com/api/zrc/v1/statussen/id"
+            ],
+            "_expand" => [
+                "zaak" => [],
+                "roltype" => [],
+                "statussen" => []
+            ],
+            "betrokkeneIdentificatie" => [
+                "identificatie" => "string",
+                "achternaam" => "string",
+                "voorletters" => "string",
+                "voorvoegselAchternaam" => "string"
+            ]
         ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "name" => "Woo",
-            "summary" => "summary for two"
+        "a5c6b7d8-f9e0-4c33-8e9c-c7612fbf6c9b" => [
+            "url" => "http://example.com",
+            "uuid" => "a5c6b7d8-f9e0-4c33-8e9c-c7612fbf6c9b",
+            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
+            "betrokkene" => "http://example.com",
+            "betrokkeneType" => "medewerker",
+            "afwijkendeNaamBetrokkene" => "string",
+            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
+            "omschrijving" => "Rol omschrijving 3",
+            "omschrijvingGeneriek" => "string",
+            "roltoelichting" => "string",
+            "registratiedatum" => "2019-08-24T14:15:22Z",
+            "indicatieMachtiging" => "gemachtigde",
+            "contactpersoonRol" => [
+                "emailadres" => "user@example.com",
+                "functie" => "string",
+                "telefoonnummer" => "string",
+                "naam" => "string"
+            ],
+            "statussen" => [
+                "http://example.com/api/zrc/v1/statussen/id"
+            ],
+            "betrokkeneIdentificatie" => [
+                "identificatie" => "string",
+                "achternaam" => "string",
+                "voorletters" => "string",
+                "voorvoegselAchternaam" => "string"
+            ]
         ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "name" => "Decat",
-            "summary" => "summary for two"
+        "b8c7d6e5-f0e1-4c33-8e9c-c7612fbf6c9c" => [
+            "url" => "http://example.com",
+            "uuid" => "b8c7d6e5-f0e1-4c33-8e9c-c7612fbf6c9c",
+            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
+            "betrokkene" => "http://example.com",
+            "betrokkeneType" => "medewerker",
+            "afwijkendeNaamBetrokkene" => "string",
+            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
+            "omschrijving" => "Rol omschrijving 4",
+            "omschrijvingGeneriek" => "string",
+            "roltoelichting" => "string",
+            "registratiedatum" => "2019-08-24T14:15:22Z",
+            "indicatieMachtiging" => "gemachtigde",
+            "contactpersoonRol" => [
+                "emailadres" => "user@example.com",
+                "functie" => "string",
+                "telefoonnummer" => "string",
+                "naam" => "string"
+            ],
+            "statussen" => [
+                "http://example.com/api/zrc/v1/statussen/id"
+            ],
+            "betrokkeneIdentificatie" => [
+                "identificatie" => "string",
+                "achternaam" => "string",
+                "voorletters" => "string",
+                "voorvoegselAchternaam" => "string"
+            ]
         ]
     ];
 

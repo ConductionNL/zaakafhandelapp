@@ -11,12 +11,16 @@ export const store = reactive({
 	// The curently active item (or object) , managed trought the state to ensure that only one modal can be active at the same time
 	item: false,
 	zaakItem: false,
+	zaakId: false,
 	zaakTypeItem: false,
 	klantId: false,
 	klantItem: false,
 	taakItem: false,
 	taakId: false,
+	berichtId: false,
 	berichtItem: false,
+	rolId: false,
+	rolItem: false,
 	// Lets add some setters
 	setSelected(selected) {
 		this.selected = selected
@@ -33,6 +37,10 @@ export const store = reactive({
 	setZaakItem(zaakItem) {
 		this.zaakItem = zaakItem
 		console.log('Active zaak item set to ' + zaakItem)
+	},
+	setZaakId(zaakId) {
+		this.zaakId = zaakId
+		console.log('Active zaak id set to ' + zaakId)
 	},
 	setZaakTypeItem(zaakTypeItem) {
 		this.zaakTypeItem = zaakTypeItem
@@ -54,8 +62,20 @@ export const store = reactive({
 		this.taakId = taakId
 		console.log('Active taak id set to ' + taakId)
 	},
+	setBerichtId(berichtId) {
+		this.berichtId = berichtId
+		console.log('Active bericht ID set to ' + berichtId)
+	},
 	setBerichtItem(berichtItem) {
 		this.berichtItem = berichtItem
 		console.log('Active bericht item set to ' + berichtItem)
+	},
+	setRolId(rolId) {
+		this.rolId = rolId
+		console.log('Active rol ID set to ' + rolId)
+	},
+	setRolItem(rolItem) {
+		this.rolItem = rolItem
+		console.log('Active rol item set to ' + rolItem)
 	},
 })
