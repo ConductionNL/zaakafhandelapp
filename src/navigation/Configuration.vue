@@ -19,7 +19,9 @@
 						<li>In seperate zgw registers e.g ZRR, ZDC (recomended of medium and up organisations)</li>
 					</ul>
 
-					The default storage option (in the nextcloud database) works fine for defelopment and demo experiences but should not be brought into production.
+					The default storage option (in the nextcloud database) works fine for defelopment and demo experiences
+					but
+					should not be brought into production.
 				</p>
 			</NcAppSettingsSection>
 			<NcAppSettingsSection id="connections" name="Connections" doc-url="zaakafhandel.app">
@@ -67,9 +69,9 @@
 						<Lock :size="20" />
 					</NcTextField>
 
-					<NcSelect v-bind="configuration.klantenAuthType"
-							  v-model="configuration.klantenAuthType.value"
-							  input-label="Klanten AuthType" />
+					<NcSelect v-bind="klantenAuthTypeOptions"
+						v-model="configuration.klantenAuthType"
+						input-label="Klanten AuthType" />
 					<b>Berichten API</b>
 					<NcTextField :value.sync="configuration.berichtenLocation"
 						label="The location (url)"
@@ -146,10 +148,9 @@
 						<Lock :size="20" />
 					</NcTextField>
 
-
-					<NcSelect v-bind="configuration.drcAuthType"
-							  v-model="configuration.drcAuthType.value"
-							  input-label="DRC AuthType" />
+					<NcSelect v-bind="drcAuthTypeOptions"
+						v-model="configuration.drcAuthType"
+						input-label="DRC AuthType" />
 					<b>Besluiten Register</b>
 					<NcTextField :value.sync="configuration.brcLocation"
 						label="The location (url)"
@@ -192,8 +193,7 @@
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.organisationKVK !== ''"
 						@trailing-button-click="configuration.organisationKVK = ''" />
-					<NcTextArea
-						:value.sync="configuration.organisationPKI"
+					<NcTextArea :value.sync="configuration.organisationPKI"
 						label="A PKI for yout organisation"
 						placeholder="Your public PKI certificates here"
 						helper-text="PKI certificates are used for connections on the FCS network" />
@@ -257,7 +257,7 @@ export default {
 			configuration: {
 				drcLocation: '',
 				drcKey: '',
-				drcAuthType: {options: [{label: 'none', id: 'none'}, {label: 'API Key', id: 'apiKey'}, {label: 'Basic Auth', id: 'basic'}]},
+				drcAuthType: '',
 				orcLocation: '',
 				orcKey: '',
 				zrcLocation: '',
@@ -271,7 +271,7 @@ export default {
 				brcAuthType: '',
 				klantenLocation: '',
 				klantenKey: '',
-				klantenAuthType: {options: [{label: 'none', id: 'none'}, {label: 'API Key', id: 'apiKey'}, {label: 'Basic Auth', id: 'basic'}]},
+				klantenAuthType: '',
 				takenLocation: '',
 				takenKey: '',
 				elasticLocation: '',
@@ -284,6 +284,40 @@ export default {
 				organisationPKI: '',
 				organisationRSIN: '',
 				organisationKVK: '',
+			},
+			drcAuthTypeOptions: {
+				options: [
+					{
+						id: 'none',
+						label: 'none',
+					},
+					{
+						id: 'apiKey',
+						label: 'API Key',
+					},
+					{
+						id: 'basic',
+						label: 'Basic Auth',
+					},
+				],
+			},
+			klantenAuthTypeOptions: {
+				options: [
+					{
+
+						id: 'none',
+						label: 'none',
+					},
+					{
+						id: 'apiKey',
+						label: 'API Key',
+					},
+					{
+						id: 'basic',
+						label: 'Basic Auth',
+
+					},
+				],
 			},
 		}
 	},
@@ -310,7 +344,7 @@ export default {
 				})
 		},
 		saveConfig() {
-			 // Simple POST request with a JSON body using fetch
+			// Simple POST request with a JSON body using fetch
 			const requestOptions = {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
