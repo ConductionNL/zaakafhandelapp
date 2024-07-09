@@ -68,7 +68,7 @@
 						@trailing-button-click="configuration.klantenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="klantenAuthTypeOptions"
+					<NcSelect v-bind="klantenAuthTypeOptions.id"
 						v-model="configuration.klantenAuthType"
 						input-label="Klanten AuthType" />
 
@@ -87,9 +87,13 @@
 						@trailing-button-click="configuration.zrcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="zrcAuthTypeOptions"
-							  v-model="configuration.zrcAuthType"
-							  input-label="ZRC AuthType" />
+					<NcTextField :value.sync="configuration.zrcAuthType"
+								 label="The credential (auth key)"
+								 trailing-button-icon="close"
+								 :show-trailing-button="configuration.zrcAuthType !== ''"
+								 @trailing-button-click="configuration.zrcAuthType = ''">
+						<Lock :size="20" />
+					</NcTextField>
 
 					<b>Objecten Register</b>
 					<NcTextField :value.sync="configuration.orcLocation"
@@ -106,9 +110,13 @@
 						@trailing-button-click="configuration.orcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="orcAuthTypeOptions"
-							  v-model="configuration.orcAuthType"
-							  input-label="ORC AuthType" />
+					<NcTextField :value.sync="configuration.orcAuthType"
+								 label="The credential (auth key)"
+								 trailing-button-icon="close"
+								 :show-trailing-button="configuration.orcAuthType !== ''"
+								 @trailing-button-click="configuration.orcAuthType = ''">
+						<Lock :size="20" />
+					</NcTextField>
 
 					<b>Documenten Register</b>
 					<NcTextField :value.sync="configuration.drcLocation"
@@ -125,9 +133,13 @@
 						@trailing-button-click="configuration.drcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="drcAuthTypeOptions"
-						v-model="configuration.drcAuthType"
-						input-label="DRC AuthType" />
+					<NcTextField :value.sync="configuration.drcAuthType"
+								 label="The credential (auth key)"
+								 trailing-button-icon="close"
+								 :show-trailing-button="configuration.drcAuthType !== ''"
+								 @trailing-button-click="configuration.drcAuthType = ''">
+						<Lock :size="20" />
+					</NcTextField>
 
 					<b>Besluiten Register</b>
 					<NcTextField :value.sync="configuration.brcLocation"
@@ -144,9 +156,13 @@
 						@trailing-button-click="configuration.brcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="brcAuthTypeOptions"
-							  v-model="configuration.brcAuthType"
-							  input-label="BRC AuthType" />
+					<NcTextField :value.sync="configuration.brcAuthType"
+								 label="The credential (auth key)"
+								 trailing-button-icon="close"
+								 :show-trailing-button="configuration.brcAuthType !== ''"
+								 @trailing-button-click="configuration.brcAuthType = ''">
+						<Lock :size="20" />
+					</NcTextField>
 
 					<b>Zaaktypecatalogus</b>
 					<NcTextField :value.sync="configuration.ztcLocation"
@@ -163,9 +179,13 @@
 						@trailing-button-click="configuration.ztcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="ztcAuthTypeOptions"
-							  v-model="configuration.ztcAuthType"
-							  input-label="ZTC AuthType" />
+					<NcTextField :value.sync="configuration.ztcAuthType"
+								 label="The credential (auth key)"
+								 trailing-button-icon="close"
+								 :show-trailing-button="configuration.ztcAuthType !== ''"
+								 @trailing-button-click="configuration.ztcAuthType = ''">
+						<Lock :size="20" />
+					</NcTextField>
 				</div>
 			</NcAppSettingsSection>
 			<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
@@ -260,6 +280,7 @@ export default {
 				drcAuthType: '',
 				orcLocation: '',
 				orcKey: '',
+				orcAuthType: '',
 				zrcLocation: '',
 				zrcKey: '',
 				zrcAuthType: '',
