@@ -97,73 +97,19 @@ export default {
 		}
 	},
 	methods: {
-		fetchCatalogi() {
-			this.catalogiLoading = true
-			fetch('/index.php/apps/opencatalog/catalogi/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.catalogi = {
-							options: Object.entries(data.results).map((catalog) => ({
-								id: catalog[1]._id,
-								label: catalog[1].name,
-							})),
-
-						}
-					})
-					this.catalogiLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.catalogiLoading = false
-				})
-		},
-		fetchMetaData() {
-			this.metaDataLoading = true
-			fetch('/index.php/apps/opencatalog/metadata/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.metaData = {
-							options: Object.entries(data.results).map((metaData) => ({
-								id: metaData[1]._id,
-								label: metaData[1].name,
-							})),
-
-						}
-					})
-					this.metaDataLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.metaDataLoading = false
-				})
-		},
 		closeModal() {
 			store.modal = false
 		},
-		addTaak() {
+		addDocument() {
 			this.documentLoading = true
 			fetch(
-				'/index.php/apps/opencatalog/taken/api',
+				'/index.php/apps/zaakafhandelapp/api/taken',
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({
-						title: this.title,
-						zaak: this.zaak,
-						type: this.type,
-						status: this.status,
-						onderwerp: this.onderwerp,
-						toelichting: this.toelichting,
-						actie: this.actie,
-					}),
+					body: JSON.stringify(this.document),
 				},
 			)
 				.then((response) => {

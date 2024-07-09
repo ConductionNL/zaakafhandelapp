@@ -3,68 +3,68 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editTaak'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="store.modal === 'editDocument'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
-			<h2>Taak aanpassen</h2>
+			<h2>Document aanpassen</h2>
 
-			<div v-if="!taakLoading">
+			<div v-if="!documentLoading">
 				<div class="form-group">
-					<NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="documentLoading"
 						label="Titel"
 						maxlength="255"
-						:value.sync="taak.title"
-						:loading="taakLoading" />
+						:value.sync="document.title"
+						:loading="documentLoading" />
 
-					<NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="documentLoading"
 						label="Zaak"
 						maxlength="255"
-						:value.sync="taak.zaak"
-						:loading="taakLoading" />
+						:value.sync="document.zaak"
+						:loading="documentLoading" />
 
-					<NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="documentLoading"
 						label="Type"
 						maxlength="255"
-						:value.sync="taak.type"
-						:loading="taakLoading" />
+						:value.sync="document.type"
+						:loading="documentLoading" />
 
 					<NcSelect v-bind="statusOptions"
-						v-model="taak.status"
-						:disabled="taakLoading"
+						v-model="document.status"
+						:disabled="documentLoading"
 						input-label="Status"
 						:loading="catalogiLoading"
 						required />
 
-					<NcTextField :disabled="taakLoading"
+					<NcTextField :disabled="documentLoading"
 						label="Onderwerp"
 						maxlength="255"
-						:value.sync="taak.onderwerp"
-						:loading="taakLoading" />
+						:value.sync="document.onderwerp"
+						:loading="documentLoading" />
 
-					<NcTextArea :disabled="taakLoading"
+					<NcTextArea :disabled="documentLoading"
 						label="Toelichting"
-						:value.sync="taak.toelichting"
-						:loading="taakLoading" />
+						:value.sync="document.toelichting"
+						:loading="documentLoading" />
 				</div>
 
 				<div class="form-group">
 					<NcTextField :disabled="loading"
 						label="Actie"
 						maxlength="255"
-						:value.sync="taak.actie"
-						:loading="taakLoading" />
+						:value.sync="document.actie"
+						:loading="documentLoading" />
 				</div>
 
 				<div v-if="succesMessage" class="success">
-					Taak succesvol opgeslagen
+					Document succesvol opgeslagen
 				</div>
 			</div>
 
-			<NcLoadingIcon v-if="taakLoading"
+			<NcLoadingIcon v-if="documentLoading"
 				:size="100"
 				appearance="dark"
-				name="Edit taak model is aan het laden." />
+				name="Edit document model is aan het laden." />
 
-			<NcButton type="primary" @click="editTaak">
+			<NcButton type="primary" @click="editDocument">
 				Opslaan
 			</NcButton>
 		</div>
@@ -82,7 +82,7 @@ import {
 } from '@nextcloud/vue'
 
 export default {
-	name: 'EditTaak',
+	name: 'EditDocument',
 	components: {
 		NcModal,
 		NcTextField,
@@ -93,155 +93,57 @@ export default {
 	},
 	data() {
 		return {
-			taak: {
+			document: {
 				title: '',
-				zaak: '',
-				type: '',
-				status: '',
-				onderwerp: '',
-				toelichting: '',
-				actie: '',
-				id: '',
-			},
-			catalogi: {
-				value: [],
-				options: [],
-			},
-			metaData: {
-				value: [],
-				options: [],
 			},
 			loading: false,
 			succesMessage: false,
-			catalogiLoading: false,
-			metaDataLoading: false,
 			hasUpdated: false,
-			taakLoading: false,
-			statusOptions: {
-				options: [
-					{
-						id: 'open',
-						label: 'Open',
-					},
-					{
-						id: 'ingediend',
-						label: 'Ingediend',
-					},
-					{
-						id: 'verwerkt',
-						label: 'Verwerkt',
-					},
-					{
-						id: 'gesloten',
-						label: 'Gesloten',
-					},
-				],
-			},
+			documentLoading: false,
 		}
 	},
 	updated() {
-		if (store.modal === 'editTaak' && this.hasUpdated) {
-			if (this.taak === store.taakItem) return
+		if (store.modal === 'editDocument' && this.hasUpdated) {
+			if (this.document === store.documentItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editTaak' && !this.hasUpdated) {
-			this.fetchCatalogi()
-			this.fetchMetaData()
-			this.fetchData(store.taakId)
+		if (store.modal === 'editDocument' && !this.hasUpdated) {
+			this.fetchData(store.documentId)
 			this.hasUpdated = true
-			this.taak = store.taakItem
+			this.document = store.documentItem
 		}
 	},
 	methods: {
 		fetchData(id) {
-			this.taakLoading = true
+			this.documentLoading = true
 			fetch(
-				`/index.php/apps/opencatalog/taken/api/${id}`,
+				`/index.php/apps/zaakafhandelapp/api/taken/${id}`,
 				{
 					method: 'GET',
 				},
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.taak = data
-						this.taak.data = JSON.stringify(data.data)
-						this.catalogi.value = [data.catalogi]
-						this.metaData.value = [data.metaData]
+						this.document = data
+						this.document.data = JSON.stringify(data.data)
 					})
-					this.taakLoading = false
+					this.documentLoading = false
 				})
 				.catch((err) => {
 					console.error(err)
-					this.taakLoading = false
-				})
-		},
-		fetchCatalogi() {
-			this.catalogiLoading = true
-			fetch('/index.php/apps/opencatalog/catalogi/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.catalogi = {
-							value: this.catalogi.value,
-							inputLabel: 'Catalogi',
-							options: Object.entries(data.results).map((catalog) => ({
-								id: catalog[1]._id,
-								label: catalog[1].name,
-							})),
-
-						}
-					})
-					this.catalogiLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.catalogiLoading = false
-				})
-		},
-		fetchMetaData() {
-			this.metaDataLoading = true
-			fetch('/index.php/apps/opencatalog/metadata/api', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-
-						this.metaData = {
-							inputLabel: 'MetaData',
-							options: Object.entries(data.results).map((metaData) => ({
-								id: metaData[1]._id,
-								label: metaData[1].name,
-							})),
-
-						}
-					})
-					this.metaDataLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.metaDataLoading = false
+					this.documentLoading = false
 				})
 		},
 		closeModal() {
 			store.modal = false
 		},
-		editTaak() {
+		editDocument() {
 			this.loading = true
 			fetch(
-				`/index.php/apps/opencatalog/taken/api/${this.taak.id}`,
+				`/index.php/apps/zaakafhandelapp/api/taken/${this.document.id}`,
 				{
 					method: 'PUT',
-					body: JSON.stringify({
-						title: this.taak.title,
-						zaak: this.taak.zaak,
-						type: this.taak.type,
-						status: this.taak.status,
-						onderwerp: this.taak.onderwerp,
-						toelichting: this.taak.toelichting,
-						actie: this.taak.actie,
-					}),
+					body: JSON.stringify(this.document),
 				},
 			)
 				.then((response) => {
