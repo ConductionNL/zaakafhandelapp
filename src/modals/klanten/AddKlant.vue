@@ -107,7 +107,7 @@ import { store } from '../../store.js'
 				</div>
 			</div>
 
-			<NcButton :disabled="!title" type="primary" @click="addKlant">
+			<NcButton type="primary" @click="addKlant">
 				Starten
 			</NcButton>
 		</div>
