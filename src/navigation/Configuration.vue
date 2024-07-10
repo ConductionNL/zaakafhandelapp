@@ -6,7 +6,11 @@
 			</template>
 		</NcAppNavigationItem>
 		<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" name="Application settings">
-			<NcAppSettingsSection id="storage" name="Storage" doc-url="zaakafhandel.app">
+			<NcAppSettingsSection
+				v-if="!loading"
+				id="storage"
+				name="Storage"
+				doc-url="zaakafhandel.app">
 				<template #icon>
 					<Database :size="20" />
 				</template>
@@ -24,7 +28,11 @@
 					should not be brought into production.
 				</p>
 			</NcAppSettingsSection>
-			<NcAppSettingsSection id="connections" name="Connections" doc-url="zaakafhandel.app">
+			<NcAppSettingsSection
+				v-if="!loading"
+				id="connections"
+				name="Connections"
+				doc-url="zaakafhandel.app">
 				<template #icon>
 					<Connection :size="20" />
 				</template>
@@ -68,10 +76,15 @@
 						@trailing-button-click="configuration.klantenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcSelect v-bind="klantenAuthTypeOptions.id"
-						v-model="configuration.klantenAuthType"
-						input-label="Klanten AuthType" />
-
+					<NcTextField :value.sync="configuration.klantenAuthType"
+						label="Klanten AuthType"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.klantenAuthType !== ''"
+						@trailing-button-click="configuration.klantenAuthType = ''">
+						<Lock :size="20" />
+					</NcTextField>
+				</div>
+				<div class="wrapper">
 					<b>Zaken Register</b>
 					<NcTextField :value.sync="configuration.zrcLocation"
 						label="The location (url)"
@@ -88,13 +101,14 @@
 						<Lock :size="20" />
 					</NcTextField>
 					<NcTextField :value.sync="configuration.zrcAuthType"
-								 label="The credential (auth key)"
-								 trailing-button-icon="close"
-								 :show-trailing-button="configuration.zrcAuthType !== ''"
-								 @trailing-button-click="configuration.zrcAuthType = ''">
+						label="zrcAuthType"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.zrcAuthType !== ''"
+						@trailing-button-click="configuration.zrcAuthType = ''">
 						<Lock :size="20" />
 					</NcTextField>
-
+				</div>
+				<div class="wrapper">
 					<b>Objecten Register</b>
 					<NcTextField :value.sync="configuration.orcLocation"
 						label="The location (url)"
@@ -111,13 +125,14 @@
 						<Lock :size="20" />
 					</NcTextField>
 					<NcTextField :value.sync="configuration.orcAuthType"
-								 label="The credential (auth key)"
-								 trailing-button-icon="close"
-								 :show-trailing-button="configuration.orcAuthType !== ''"
-								 @trailing-button-click="configuration.orcAuthType = ''">
+						label="orc AuthType"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.orcAuthType !== ''"
+						@trailing-button-click="configuration.orcAuthType = ''">
 						<Lock :size="20" />
 					</NcTextField>
-
+				</div>
+				<div class="wrapper">
 					<b>Documenten Register</b>
 					<NcTextField :value.sync="configuration.drcLocation"
 						label="The location (url)"
@@ -134,13 +149,14 @@
 						<Lock :size="20" />
 					</NcTextField>
 					<NcTextField :value.sync="configuration.drcAuthType"
-								 label="The credential (auth key)"
-								 trailing-button-icon="close"
-								 :show-trailing-button="configuration.drcAuthType !== ''"
-								 @trailing-button-click="configuration.drcAuthType = ''">
+						label="drc AuthType"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.drcAuthType !== ''"
+						@trailing-button-click="configuration.drcAuthType = ''">
 						<Lock :size="20" />
 					</NcTextField>
-
+				</div>
+				<div class="wrapper">
 					<b>Besluiten Register</b>
 					<NcTextField :value.sync="configuration.brcLocation"
 						label="The location (url)"
@@ -157,13 +173,14 @@
 						<Lock :size="20" />
 					</NcTextField>
 					<NcTextField :value.sync="configuration.brcAuthType"
-								 label="The credential (auth key)"
-								 trailing-button-icon="close"
-								 :show-trailing-button="configuration.brcAuthType !== ''"
-								 @trailing-button-click="configuration.brcAuthType = ''">
+						label="brc AuthType"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.brcAuthType !== ''"
+						@trailing-button-click="configuration.brcAuthType = ''">
 						<Lock :size="20" />
 					</NcTextField>
-
+				</div>
+				<div class="wrapper">
 					<b>Zaaktypecatalogus</b>
 					<NcTextField :value.sync="configuration.ztcLocation"
 						label="The location (url)"
@@ -180,15 +197,19 @@
 						<Lock :size="20" />
 					</NcTextField>
 					<NcTextField :value.sync="configuration.ztcAuthType"
-								 label="The credential (auth key)"
-								 trailing-button-icon="close"
-								 :show-trailing-button="configuration.ztcAuthType !== ''"
-								 @trailing-button-click="configuration.ztcAuthType = ''">
+						label="ztcAuthType"
+						trailing-button-icon="close"
+						:show-trailing-button="configuration.ztcAuthType !== ''"
+						@trailing-button-click="configuration.ztcAuthType = ''">
 						<Lock :size="20" />
 					</NcTextField>
 				</div>
 			</NcAppSettingsSection>
-			<NcAppSettingsSection id="organisation" name="Organisation" doc-url="zaakafhandel.app">
+			<NcAppSettingsSection
+				v-if="!loading"
+				id="organisation"
+				name="Organisation"
+				doc-url="zaakafhandel.app">
 				<template #icon>
 					<OfficeBuildingOutline :size="20" />
 				</template>
@@ -219,7 +240,9 @@
 						helper-text="PKI certificates are used for connections on the FCS network" />
 				</div>
 			</NcAppSettingsSection>
-			<NcButton aria-label="Save"
+			<NcButton
+				v-if="!loading"
+				aria-label="Save"
 				type="primary"
 				wide
 				@click="saveConfig()">
@@ -228,6 +251,9 @@
 				</template>
 				Save
 			</NcButton>
+			<NcLoadingIcon
+				v-if="loading"
+				:size="100" />
 		</NcAppSettingsDialog>
 	</div>
 </template>
@@ -237,10 +263,10 @@ import {
 	NcAppSettingsDialog,
 	NcAppSettingsSection,
 	NcAppNavigationItem,
-	NcSelect,
 	NcTextField,
 	NcTextArea,
 	NcButton,
+	NcLoadingIcon,
 } from '@nextcloud/vue'
 
 import Database from 'vue-material-design-icons/Database.vue'
@@ -257,7 +283,7 @@ export default {
 		NcAppSettingsDialog,
 		NcAppSettingsSection,
 		NcAppNavigationItem,
-		NcSelect,
+		NcLoadingIcon,
 		NcTextField,
 		NcTextArea,
 		NcButton,
@@ -295,6 +321,7 @@ export default {
 				klantenAuthType: '',
 				takenLocation: '',
 				takenKey: '',
+				takenAuthType: '',
 				elasticLocation: '',
 				elasticKey: '',
 				mongodbLocation: '',
@@ -432,10 +459,12 @@ export default {
 				.then((response) => {
 					response.json().then((data) => {
 						this.configuration = data
+						this.loading = false
 					})
 				})
 				.catch((err) => {
 					console.error(err)
+					this.loading = false
 				})
 		},
 		saveConfig() {
@@ -445,15 +474,17 @@ export default {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(this.configuration),
 			}
-
+			this.loading = true
 			fetch('/index.php/apps/zaakafhandelapp/api/configuration', requestOptions)
 				.then((response) => {
 					response.json().then((data) => {
 						this.configuration = data
+						this.loading = false
 					})
 				})
 				.catch((err) => {
 					console.error(err)
+					this.loading = true
 				})
 		},
 	},

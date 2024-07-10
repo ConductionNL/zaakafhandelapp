@@ -32,8 +32,10 @@ class ConfigurationController extends Controller
 		// Getting the config
 			'drcLocation'=>'',
 			'drcKey'=>'',
+			'drcAuthType'=>'',
 			'orcLocation'=>'',
 			'orcKey'=>'',
+			'orcAuthType'=>'',
 			'zrcLocation'=>'',
 			'zrcKey'=>'',
 			'zrcAuthType'=>'',
