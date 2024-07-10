@@ -32,6 +32,12 @@ Je moet wel elke keer als je iets veranderd verversen
 
 \\wsl.localhost\Ubuntu-20.04\home\user\nextcloud-docker-dev\workspace\server\apps-extra
 
+## Linting en code validatie
+
+```cli 
+npm run lint
+``` 
+
 ## Upen
 
 `docker-compose up nextcloud proxy`
