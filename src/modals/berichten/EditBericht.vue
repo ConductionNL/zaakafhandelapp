@@ -6,41 +6,52 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'editBericht'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanpassen</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 
 			<div class="form-group">
-				<NcTextField label="Onderwerp"
-					:value.sync="bericht.onderwerp"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Onderwerp"
+					:value.sync="bericht.onderwerp" />
 			</div>
 			<div class="form-group">
 				<NcTextArea label="Berichttekst"
-					:value.sync="bericht.berichttekst"
-					:loading="berichtLoading" />
+					:value.sync="bericht.berichttekst" />
 			</div>
 			<div class="form-group">
-				<NcTextArea label="Inhoud (base64)"
-					:value.sync="bericht.inhoud"
-					:loading="berichtLoading" />
+				<NcTextArea
+					:disabled="loading"
+					label="Inhoud (base64)"
+					:value.sync="bericht.inhoud" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Bijlage type"
-					:value.sync="bericht.bijlageType"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Bijlage type"
+					:value.sync="bericht.bijlageType" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Soort gebruiker"
-					:value.sync="bericht.soortGebruiker"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Soort gebruiker"
+					:value.sync="bericht.soortGebruiker" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Publicatiedatum"
-					:value.sync="bericht.publicatieDatum"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Publicatiedatum"
+					:value.sync="bericht.publicatieDatum" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Aanmaak datum"
-					:value.sync="bericht.aanmaakDatum"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Aanmaak datum"
+					:value.sync="bericht.aanmaakDatum" />
 			</div>
 			<div class="form-group">
 				<NcTextField label="Bericht type"
@@ -48,34 +59,42 @@ import { store } from '../../store.js'
 					:loading="berichtLoading" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Referentie"
-					:value.sync="bericht.referentie"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Referentie"
+					:value.sync="bericht.referentie" />
 			</div>
 			<div class="form-group">
-				<NcTextField label="Bericht ID"
-					:value.sync="bericht.berichtID"
-					:loading="berichtLoading" />
+				<NcTextField
+					:disabled="loading"
+					label="Bericht ID"
+					:value.sync="bericht.berichtID" />
+
+				<NcTextField
+					:disabled="loading"
+					label="Batch ID"
+					:value.sync="bericht.batchID" />
+
+				<NcTextField
+					:disabled="loading"
+					abel="Gebruiker ID"
+					:value.sync="bericht.gebruikerID" />
+
+				<NcTextField
+					:disabled="loading"
+					label="Volgorde"
+					:value.sync="bericht.volgorde" />
 			</div>
-			<div class="form-group">
-				<NcTextField label="Batch ID"
-					:value.sync="bericht.batchID"
-					:loading="berichtLoading" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Gebruiker ID"
-					:value.sync="bericht.gebruikerID"
-					:loading="berichtLoading" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Volgorde"
-					:value.sync="bericht.volgorde"
-					:loading="berichtLoading" />
-			</div>
-			<div v-if="succesMessage" class="success">
-				Bericht succesvol opgeslagen
-			</div>
-			<NcButton :disabled="!bericht.onderwerp" type="primary" @click="editBericht">
+
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<ContentSaveOutline v-if="!loading" :size="20" />
+				</template>
 				Opslaan
 			</NcButton>
 		</div>
@@ -95,24 +114,9 @@ export default {
 	},
 	data() {
 		return {
-			bericht: {
-				batchID: '',
-				berichtID: '',
-				berichtType: '',
-				publicatieDatum: new Date().toISOString().split('T')[0],
-				onderwerp: '',
-				berichttekst: '',
-				referentie: '',
-				gebruikerID: '',
-				inhoud: '',
-				soortGebruiker: 'Burger',
-				bijlageType: 'Pdf',
-				omschrijving: '',
-				volgorde: '',
-			},
-			succesMessage: false,
-			hasUpdated: false,
-			berichtLoading: false,
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	updated() {
@@ -126,9 +130,6 @@ export default {
 		}
 	},
 	methods: {
-		closeModal() {
-			store.modal = false
-		},
 		editBericht() {
 			this.berichtLoading = true
 			fetch(

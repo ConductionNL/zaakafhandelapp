@@ -6,109 +6,99 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'addKlant'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Klant toevoegen</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 
-			<div class="formContainer">
-				<div class="form-group">
-					<NcTextField :disabled="klantLoading"
-						label="Voornaam"
-						maxlength="255"
-						:value.sync="klant.voornaam"
-						:loading="klantLoading" />
+			<div class="form-group">
+				<NcTextField :disabled="loading"
+					label="Voornaam"
+					maxlength="255"
+					:value.sync="klant.voornaam" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Tussenvoegsel"
-						maxlength="255"
-						:value.sync="klant.tussenvoegsel"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Tussenvoegsel"
+					maxlength="255"
+					:value.sync="klant.tussenvoegsel" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Achternaam"
-						maxlength="255"
-						:value.sync="klant.achternaam"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Achternaam"
+					maxlength="255"
+					:value.sync="klant.achternaam" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Telefoonnummer"
-						maxlength="255"
-						:value.sync="klant.telefoonnummer"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Telefoonnummer"
+					maxlength="255"
+					:value.sync="klant.telefoonnummer" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Email adres"
-						maxlength="255"
-						:value.sync="klant.emailadres"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Email adres"
+					maxlength="255"
+					:value.sync="klant.emailadres" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Functie"
-						maxlength="255"
-						:value.sync="klant.functie"
-						:loading="klantLoading" />
-				</div>
+				<NcTextField :disabled="loading"
+					label="Functie"
+					maxlength="255"
+					:value.sync="klant.functie" />
+				<NcTextField :disabled="loading"
+					label="Aanmaak kanaal"
+					maxlength="255"
+					:value.sync="klant.aanmaakkanaal" />
 
-				<div class="form-group">
-					<NcTextField :disabled="klantLoading"
-						label="Aanmaak kanaal"
-						maxlength="255"
-						:value.sync="klant.aanmaakkanaal"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Bron organisatie"
+					maxlength="255"
+					:value.sync="klant.bronorganisatie" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Bron organisatie"
-						maxlength="255"
-						:value.sync="klant.bronorganisatie"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Bedrijfsnaam"
+					maxlength="255"
+					:value.sync="klant.bedrijfsnaam" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Bedrijfsnaam"
-						maxlength="255"
-						:value.sync="klant.bedrijfsnaam"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Website Url"
+					maxlength="255"
+					:value.sync="klant.websiteUrl" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Website Url"
-						maxlength="255"
-						:value.sync="klant.websiteUrl"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Url"
+					maxlength="255"
+					:value.sync="klant.url" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Url"
-						maxlength="255"
-						:value.sync="klant.url"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Geverifieerd"
+					maxlength="255"
+					:value.sync="klant.geverifieerd" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Geverifieerd"
-						maxlength="255"
-						:value.sync="klant.geverifieerd"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Subject"
+					maxlength="255"
+					:value.sync="klant.subject" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Subject"
-						maxlength="255"
-						:value.sync="klant.subject"
-						:loading="klantLoading" />
+				<NcTextField :disabled="loading"
+					label="Subject Identificatie"
+					maxlength="255"
+					:value.sync="klant.subjectIdentificatie" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Subject Identificatie"
-						maxlength="255"
-						:value.sync="klant.subjectIdentificatie"
-						:loading="klantLoading" />
-
-					<NcTextField :disabled="klantLoading"
-						label="Subject Type"
-						maxlength="255"
-						:value.sync="klant.subjectType"
-						:loading="klantLoading" />
-				</div>
-
-				<div v-if="succesMessage" class="success">
-					Klant succesvol opgeslagen
-				</div>
+				<NcTextField :disabled="loading"
+					label="Subject Type"
+					maxlength="255"
+					:value.sync="klant.subjectType" />
 			</div>
 
-			<NcButton type="primary" @click="addKlant">
-				Starten
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<Plus v-if="!loading" :size="20" />
+				</template>
+				Toevoegen
 			</NcButton>
 		</div>
 	</NcModal>
@@ -130,29 +120,9 @@ export default {
 	},
 	data() {
 		return {
-			klant: {
-				voornaam: '',
-				tussenvoegsel: '',
-				achternaam: '',
-				telefoonnummer: '',
-				emailadres: '',
-				adres: '',
-				aanmaakkanaal: '',
-				functie: '',
-				bronorganisatie: '',
-				bedrijfsnaam: '',
-				websiteUrl: '',
-				url: '',
-				geverifieerd: '',
-				subject: '',
-				subjectIdentificatie: '',
-				subjectType: '',
-			},
-			succesMessage: false,
-			catalogiLoading: false,
-			metaDataLoading: false,
-			klantLoading: false,
-			hasUpdated: false,
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	updated() {
@@ -161,9 +131,6 @@ export default {
 		}
 	},
 	methods: {
-		closeModal() {
-			store.modal = false
-		},
 		addKlant() {
 			this.klantLoading = true
 			fetch(

@@ -6,15 +6,33 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'addRol'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Rol aanmaken</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 			<div class="form-group">
-				<NcTextField label="Omschrijving" required="true" :value.sync="omschrijving" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="omschrijving"
+					label="Omschrijving"
+					required="true" />
 			</div>
 			<div v-if="succesMessage" class="success">
 				Rol succesvol aangemaakt
 			</div>
 
-			<NcButton :disabled="!omschrijving" type="primary" @click="addRol">
-				Aanmaken
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<Plus v-if="!loading" :size="20" />
+				</template>
+				Toevoegen
 			</NcButton>
 		</div>
 	</NcModal>
@@ -32,13 +50,12 @@ export default {
 	},
 	data() {
 		return {
-			omschrijving: '',
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	methods: {
-		closeModal() {
-			store.modal = false
-		},
 		addRol() {
 			this.$emit('rol', this.onderwerp)
 			fetch(

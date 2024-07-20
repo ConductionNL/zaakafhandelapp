@@ -6,51 +6,89 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'addBericht'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanmaken</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 			<div class="form-group">
-				<NcTextField label="Onderwerp" :value.sync="onderwerp" />
-			</div>
-			<div class="form-group">
-				<NcTextArea label="Berichttekst" :value.sync="berichttekst" />
-			</div>
-			<div class="form-group">
-				<NcTextArea label="Inhoud (base64)" :value.sync="inhoud" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Bijlage type" :value.sync="bijlageType" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Soort gebruiker" :value.sync="soortGebruiker" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Publicatiedatum" :value.sync="publicatieDatum" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Aanmaak datum" :value.sync="aanmaakDatum" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Bericht type" :value.sync="berichtType" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Referentie" :value.sync="referentie" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Bericht ID" :value.sync="berichtID" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Batch ID" :value.sync="batchID" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Gebruiker ID" :value.sync="gebruikerID" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Volgorde" :value.sync="volgorde" />
-			</div>
-			<div v-if="succesMessage" class="success">
-				Bericht succesvol aangemaakt
+				<NcTextField
+					:disabled="loading"
+					:value.sync="onderwerp"
+					label="Onderwerp" />
+
+				<NcTextArea
+					:disabled="loading"
+					:value.sync="berichttekst"
+					label="Berichttekst" />
+
+				<NcTextArea
+					:disabled="loading"
+					:value.sync="inhoud"
+					label="Inhoud (base64)" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="bijlageType"
+					label="Bijlage type" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="soortGebruiker"
+					label="Soort gebruiker" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="publicatieDatum"
+					label="Publicatiedatum" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="aanmaakDatum"
+					label="Aanmaak datum" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="berichtType"
+					label="Bericht type" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="referentie"
+					label="Referentie" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="berichtID"
+					label="Bericht ID" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="batchID"
+					label="Batch ID" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="gebruikerID"
+					label="Gebruiker ID" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="volgorde"
+					label="Volgorde" />
 			</div>
 
-			<NcButton :disabled="!onderwerp" type="primary" @click="addBericht">
-				Aanmaken
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<Plus v-if="!loading" :size="20" />
+				</template>
+				Toevoegen
 			</NcButton>
 		</div>
 	</NcModal>
@@ -69,26 +107,12 @@ export default {
 	},
 	data() {
 		return {
-			batchID: '',
-			berichtID: '',
-			berichtType: '',
-			publicatieDatum: new Date().toISOString().split('T')[0],
-			onderwerp: '',
-			berichttekst: '',
-			referentie: '',
-			gebruikerID: '',
-			inhoud: '',
-			soortGebruiker: 'Burger',
-			bijlageType: 'Pdf',
-			omschrijving: '',
-			volgorde: '',
-			succesMessage: false,
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	methods: {
-		closeModal() {
-			store.modal = false
-		},
 		addBericht() {
 			this.$emit('bericht', this.onderwerp)
 			fetch(

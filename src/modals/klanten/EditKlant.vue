@@ -6,113 +6,114 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'editKlant'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modal__content">
 			<h2>Klant aanpassen</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 
-			<div v-if="!klantLoading">
-				<div class="form-group">
-					<NcTextField :disabled="klantLoading"
-						label="Voornaam"
-						maxlength="255"
-						:value.sync="klant.voornaam"
-						:loading="klantLoading" />
+			<div class="form-group">
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.voornaam"
+					label="Voornaam"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Tussenvoegsels"
-						maxlength="255"
-						:value.sync="klant.voorvoegsel"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.voorvoegsel"
+					label="Tussenvoegsels"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Achternaam"
-						maxlength="255"
-						:value.sync="klant.achternaam"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.achternaam"
+					label="Achternaam"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Telefoonnummer"
-						maxlength="255"
-						:value.sync="klant.telefoonnummer"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.telefoonnummer"
+					label="Telefoonnummer"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Email adres"
-						maxlength="255"
-						:value.sync="klant.emailadres"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.emailadres"
+					label="Email adres"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Functie"
-						maxlength="255"
-						:value.sync="klant.functie"
-						:loading="klantLoading" />
-				</div>
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.functie"
+					label="Functie"
+					maxlength="255" />
 
-				<div class="form-group">
-					<NcTextField :disabled="klantLoading"
-						label="Aanmaak kanaal"
-						maxlength="255"
-						:value.sync="klant.aanmaakkanaal"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.aanmaakkanaal"
+					label="Aanmaak kanaal"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Bron organisatie"
-						maxlength="255"
-						:value.sync="klant.bronorganisatie"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.bronorganisatie"
+					label="Bron organisatie"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Bedrijfsnaam"
-						maxlength="255"
-						:value.sync="klant.bedrijfsnaam"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.bedrijfsnaam"
+					label="Bedrijfsnaam"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Website Url"
-						maxlength="255"
-						:value.sync="klant.websiteUrl"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.websiteUrl"
+					label="Website Url"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Url"
-						maxlength="255"
-						:value.sync="klant.url"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.url"
+					label="Url"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Geverifieerd"
-						maxlength="255"
-						:value.sync="klant.geverifieerd"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.geverifieerd"
+					label="Geverifieerd"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Subject"
-						maxlength="255"
-						:value.sync="klant.subject"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.subject"
+					label="Subject"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Subject Identificatie"
-						maxlength="255"
-						:value.sync="klant.subjectIdentificatie"
-						:loading="klantLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.subjectIdentificatie"
+					label="Subject Identificatie"
+					maxlength="255" />
 
-					<NcTextField :disabled="klantLoading"
-						label="Subject Type"
-						maxlength="255"
-						:value.sync="klant.subjectType"
-						:loading="klantLoading" />
-				</div>
-
-				<div v-if="succesMessage" class="success">
-					Klant succesvol opgeslagen
-				</div>
+				<NcTextField
+					:disabled="loading"
+					:value.sync="klant.subjectType"
+					label="Subject Type"
+					maxlength="255" />
 			</div>
 
-			<NcLoadingIcon v-if="klantLoading"
-				:size="100"
-				appearance="dark"
-				name="Edit klant model is aan het laden." />
-
-			<NcButton type="primary" @click="editKlant">
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<ContentSaveOutline v-if="!loading" :size="20" />
+				</template>
 				Opslaan
 			</NcButton>
 		</div>
@@ -137,31 +138,9 @@ export default {
 	},
 	data() {
 		return {
-			klant: {
-				voornaam: '',
-				voorvoegsel: '',
-				achternaam: '',
-				telefoonnummer: '',
-				emailadres: '',
-				adres: '',
-				aanmaakkanaal: '',
-				functie: '',
-				bronorganisatie: '',
-				bedrijfsnaam: '',
-				websiteUrl: '',
-				url: '',
-				geverifieerd: '',
-				subject: '',
-				subjectIdentificatie: '',
-				subjectType: '',
-				id: '',
-			},
+			succes: false,
 			loading: false,
-			succesMessage: false,
-			catalogiLoading: false,
-			metaDataLoading: false,
-			hasUpdated: false,
-			klantLoading: false,
+			error: false,
 		}
 	},
 	updated() {

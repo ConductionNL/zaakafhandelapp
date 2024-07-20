@@ -6,56 +6,84 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'addZaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaak starten</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
+
 			<div class="form-group">
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					:disabled="loading"
+					:value.sync="identificatie"
 					label="Identificatie"
 					maxlength="255"
-					:value.sync="identificatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="omschrijving"
 					label="Omschrijving"
-					maxlength="255"
-					:value.sync="omschrijving" />
-				<NcTextField :disabled="zaakLoading"
+					maxlength="255" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="bronorganisatie"
 					label="Bronorganisatie"
 					maxlength="9"
-					:value.sync="bronorganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="verantwoordelijkeOrganisatie"
 					label="VerantwoordelijkeOrganisatie"
 					maxlength="9"
-					:value.sync="verantwoordelijkeOrganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="startdatum"
 					label="Startdatum"
 					maxlength="9"
-					:value.sync="startdatum"
 					required />
-				<NcSelect v-bind="zaaktype"
+
+				<NcSelect
+					v-bind="zaaktype"
 					v-model="zaaktype.value"
+					:disabled="loading || zaakTypeLoading"
 					input-label="Zaaktype"
-					:loading="zaakTypeLoading"
-					:disabled="zaakLoading || zaakTypeLoading"
 					required />
-				<NcSelect v-bind="archiefstatus"
+
+				<NcSelect
+					v-bind="archiefstatus"
 					v-model="archiefstatus.value"
 					input-label="Archiefstatus"
-					:disabled="zaakLoading"
+					:disabled="loading"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="registratiedatum"
 					label="Registratiedatum"
-					maxlength="255"
-					:value.sync="registratiedatum" />
-				<NcTextArea :disabled="zaakLoading"
-					label="Toelichting"
-					:value.sync="toelichting" />
-			</div>
-			<div v-if="succesMessage" class="success">
-				Zaak succesvol gestart
+					maxlength="255" />
+
+				<NcTextArea
+					:disabled="zaaloadingkLoading"
+					:value.sync="toelichting"
+					label="Toelichting" />
 			</div>
 
-			<NcButton :disabled="!identificatie || !zaaktype.value || !bronorganisatie || !verantwoordelijkeOrganisatie || !startdatum" type="primary" @click="addZaak">
-				Starten
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<Plus v-if="!loading" :size="20" />
+				</template>
+				Toevoegen
 			</NcButton>
 		</div>
 	</NcModal>
@@ -75,38 +103,9 @@ export default {
 	},
 	data() {
 		return {
-			identificatie: '',
-			omschrijving: '',
-			zaaktype: {},
-			registratiedatum: '',
-			toelichting: '',
-			bronorganisatie: '',
-			verantwoordelijkeOrganisatie: '',
-			startdatum: '',
-			zaakLoading: false,
-			succesMessage: false,
-			hasUpdated: false,
-			zaakTypeLoading: false,
-			archiefstatus: {
-				options: [
-					{
-						id: 'nog_te_archiveren',
-						label: 'Nog te archiveren',
-					},
-					{
-						id: 'gearchiveerd',
-						label: 'Gearchiveerd',
-					},
-					{
-						id: 'gearchiveerd_procestermijn_onbekend',
-						label: 'Gearchiveerd procestermijn onbekend',
-					},
-					{
-						id: 'overgedragen',
-						label: 'Overgedragen',
-					},
-				],
-			},
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	updated() {
@@ -116,9 +115,6 @@ export default {
 		}
 	},
 	methods: {
-		closeModal() {
-			store.modal = false
-		},
 		addZaak() {
 			this.zaakLoading = true
 			fetch(

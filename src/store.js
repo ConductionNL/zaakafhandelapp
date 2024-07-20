@@ -9,76 +9,52 @@ export const store = reactive({
 	modal: false,
 	modalData: [], // optional data to pass to the modal
 	// The curently active item (or object) , managed trought the state to ensure that only one modal can be active at the same time
-	item: false,
 	zaakItem: false,
-	zaakId: false,
 	zaakTypeItem: false,
-	klantId: false,
 	klantItem: false,
 	taakItem: false,
-	taakId: false,
 	taakZaakId: false,
-	berichtId: false,
 	berichtItem: false,
-	rolId: false,
 	rolItem: false,
 	// Lets add some setters
-	setSelected(selected) {
+	setSelected(selected) { // The general state for menu tiemts
 		this.selected = selected
 		console.log('Active menu item set to ' + selected)
 	},
-	setModal(modal) {
+	setModal(modal) { // The general state for modals
 		this.modal = modal
 		console.log('Active modal item set to ' + modal)
 	},
-	setItem(item) {
-		this.item = item
-		console.log('Active object item set to ' + item)
+	setDialog(modal) { // The general state for dialogs
+		this.modal = modal
+		console.log('Active modal item set to ' + modal)
 	},
+	// The Bussens logic for zaken
 	setZaakItem(zaakItem) {
 		this.zaakItem = zaakItem
 		console.log('Active zaak item set to ' + zaakItem)
 	},
-	setZaakId(zaakId) {
-		this.zaakId = zaakId
-		console.log('Active zaak id set to ' + zaakId)
-	},
-	setTaakZaakId(taakZaakId) {
-		this.taakZaakId = taakZaakId
-		console.log('Taak Zaak id set to ' + taakZaakId)
-	},
+	// The Bussens logic for zaaktypen
 	setZaakTypeItem(zaakTypeItem) {
 		this.zaakTypeItem = zaakTypeItem
 		console.log('Active zaak type item set to ' + zaakTypeItem)
 	},
-	setKlantId(klantId) {
-		this.klantId = klantId
-		console.log('Active klant id set to ' + klantId)
-	},
+	// The Bussens logic for klanten
 	setKlantItem(klantItem) {
 		this.klantItem = klantItem
 		console.log('Active klant item set to ' + klantItem)
 	},
+	// The Bussens logic for taken
 	setTaakItem(taakItem) {
 		this.taakItem = taakItem
 		console.log('Active taak item set to ' + taakItem)
 	},
-	setTaakId(taakId) {
-		this.taakId = taakId
-		console.log('Active taak id set to ' + taakId)
-	},
-	setBerichtId(berichtId) {
-		this.berichtId = berichtId
-		console.log('Active bericht ID set to ' + berichtId)
-	},
+	// The Bussens logic for berichten
 	setBerichtItem(berichtItem) {
 		this.berichtItem = berichtItem
 		console.log('Active bericht item set to ' + berichtItem)
 	},
-	setRolId(rolId) {
-		this.rolId = rolId
-		console.log('Active rol ID set to ' + rolId)
-	},
+	// The Bussens logic for rollen
 	setRolItem(rolItem) {
 		this.rolItem = rolItem
 		console.log('Active rol item set to ' + rolItem)

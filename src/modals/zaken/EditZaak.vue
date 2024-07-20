@@ -6,54 +6,81 @@ import { store } from '../../store.js'
 	<NcModal v-if="store.modal === 'editZaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaak aanpassen</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 			<div class="form-group">
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.zaakItem.identificatie"
 					label="Identificatie"
 					maxlength="255"
-					:value.sync="zaak.identificatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.zaakItem.omschrijving"
 					label="Omschrijving"
-					maxlength="255"
-					:value.sync="zaak.omschrijving" />
-				<NcTextField :disabled="zaakLoading"
+					maxlength="255" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.zaakItem.bronorganisatie"
 					label="Bronorganisatie"
 					maxlength="9"
-					:value.sync="zaak.bronorganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.zaakItem.verantwoordelijkeOrganisatie"
 					label="VerantwoordelijkeOrganisatie"
 					maxlength="9"
-					:value.sync="zaak.verantwoordelijkeOrganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.zaakItem.startdatum"
 					label="Startdatum"
 					maxlength="9"
-					:value.sync="zaak.startdatum"
 					required />
-				<NcSelect v-bind="zaaktype"
+
+				<NcSelect
+					v-bind="store.zaakItem.zaaktype"
 					v-model="zaaktype.value"
+					:disabled="loading"
 					input-label="Zaaktype"
-					:loading="zaakTypeLoading"
-					disabled
 					required />
-				<NcSelect v-bind="archiefstatus"
+
+				<NcSelect
+					v-bind="store.zaakItem.archiefstatus"
 					v-model="archiefstatus.value"
+					:disabled="loading"
 					input-label="Archiefstatus"
-					:disabled="zaakLoading"
 					required />
-				<NcTextField :disabled="zaakLoading"
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaak.registratiedatum"
 					label="Registratiedatum"
-					maxlength="255"
-					:value.sync="zaak.registratiedatum" />
-				<NcTextArea :disabled="zaakLoading"
-					label="Toelichting"
-					:value.sync="zaak.toelichting" />
+					maxlength="255" />
+
+				<NcTextArea
+					:disabled="loading"
+					:value.sync="store.zaakItem.toelichting"
+					label="Toelichting" />
 			</div>
-			<div v-if="succesMessage" class="success">
-				Zaak succesvol opgeslagen
-			</div>
-			<NcButton :disabled="!zaak.identificatie || !zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum" type="primary" @click="editZaak">
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.zaakItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<ContentSaveOutline v-if="!loading" :size="20" />
+				</template>
 				Opslaan
 			</NcButton>
 		</div>
@@ -74,25 +101,9 @@ export default {
 	},
 	data() {
 		return {
-			zaak: {
-				identificatie: '',
-				omschrijving: '',
-				zaaktype: {},
-				registratiedatum: '',
-				toelichting: '',
-				bronorganisatie: '',
-				verantwoordelijkeOrganisatie: '',
-				startdatum: '',
-				archiefstatus: '',
-			},
-			zaaktype: {},
-			zaakLoading: false,
-			succesMessage: false,
-			hasUpdated: false,
-			zaakTypeLoading: false,
-			archiefstatus: {
-
-			},
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	updated() {
@@ -108,9 +119,6 @@ export default {
 		}
 	},
 	methods: {
-		closeModal() {
-			store.modal = false
-		},
 		editZaak() {
 			this.zaakLoading = true
 			fetch(

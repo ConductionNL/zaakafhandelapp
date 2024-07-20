@@ -3,64 +3,71 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="closeModal">
+	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
 			<h2>Taak toevoegen</h2>
+			<NcNoteCard v-if="succes" type="success">
+				<p>Bijlage succesvol toegevoegd</p>
+			</NcNoteCard>
+			<NcNoteCard v-if="error" type="error">
+				<p>{{ error }}</p>
+			</NcNoteCard>
 
-			<div class="formContainer">
-				<div class="form-group">
-					<NcTextField :disabled="taakLoading"
-						label="Titel"
-						maxlength="255"
-						:value.sync="title"
-						:loading="taakLoading" />
+			<div class="form-group">
+				<NcTextField
+					:disabled="loading"
+					:value.sync="title"
+					label="Titel"
+					maxlength="255" />
 
-					<NcSelect v-bind="zaak"
-						v-model="zaak.value"
-						input-label="Zaak"
-						:loading="zaakLoading"
-						:disabled="taakLoading || zaakLoading || store.taakZaakId !== false "
-						required />
+				<NcSelect
+					v-bind="zaak"
+					v-model="zaak.value"
+					:disabled="loading || zaakLoading || store.taakZaakId !== false "
+					input-label="Zaak"
+					required />
 
-					<NcTextField :disabled="taakLoading"
-						label="Type"
-						maxlength="255"
-						:value.sync="type"
-						:loading="taakLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="type"
+					label="Type"
+					maxlength="255" />
 
-					<NcSelect v-bind="statusOptions"
-						v-model="status"
-						:disabled="taakLoading"
-						input-label="Status"
-						required />
+				<NcSelect
+					v-bind="statusOptions"
+					v-model="status"
+					:disabled="loading"
+					input-label="Status"
+					required />
 
-					<NcTextField :disabled="taakLoading"
-						label="Onderwerp"
-						maxlength="255"
-						:value.sync="onderwerp"
-						:loading="taakLoading" />
+				<NcTextField
+					:disabled="loading"
+					:value.sync="onderwerp"
+					label="Onderwerp"
+					maxlength="255" />
 
-					<NcTextArea :disabled="taakLoading"
-						label="Toelichting"
-						:value.sync="toelichting"
-						:loading="taakLoading" />
-				</div>
+				<NcTextArea
+					:disabled="loading"
+					:value.sync="toelichting"
+					label="Toelichting" />
 
-				<div class="form-group">
-					<NcTextField :disabled="taakLoading"
-						label="Actie"
-						maxlength="255"
-						:value.sync="actie"
-						:loading="taakLoading" />
-				</div>
-
-				<div v-if="succesMessage" class="success">
-					Taak succesvol opgeslagen
-				</div>
+				<NcTextField
+					:disabled="loading"
+					:value.sync="actie"
+					label="Actie"
+					maxlength="255" />
 			</div>
 
-			<NcButton :disabled="!title" type="primary" @click="addTaak">
-				Starten
+			<NcButton
+				v-if="!succes"
+				:disabled="!store.attachmentItem.title || loading"
+				type="primary"
+				@click="addAttachment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<Plus v-if="!loading" :size="20" />
+				</template>
+				Toevoegen
 			</NcButton>
 		</div>
 	</NcModal>
@@ -86,37 +93,9 @@ export default {
 	},
 	data() {
 		return {
-			title: '',
-			zaak: {},
-			type: '',
-			status: '',
-			onderwerp: '',
-			toelichting: '',
-			actie: '',
-			succesMessage: false,
-			taakLoading: false,
-			zaakLoading: false,
-			hasUpdated: false,
-			statusOptions: {
-				options: [
-					{
-						id: 'open',
-						label: 'Open',
-					},
-					{
-						id: 'ingediend',
-						label: 'Ingediend',
-					},
-					{
-						id: 'verwerkt',
-						label: 'Verwerkt',
-					},
-					{
-						id: 'gesloten',
-						label: 'Gesloten',
-					},
-				],
-			},
+			succes: false,
+			loading: false,
+			error: false,
 		}
 	},
 	updated() {
@@ -126,12 +105,6 @@ export default {
 		}
 	},
 	methods: {
-		closeModal() {
-			this.hasUpdated = false
-			store.setModal(false)
-			store.setTaakZaakId(false)
-
-		},
 		addTaak() {
 			this.taakLoading = true
 			fetch(
