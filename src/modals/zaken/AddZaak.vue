@@ -90,7 +90,8 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField, NcSelect, NcTextArea } from '@nextcloud/vue'
+import { NcButton, NcModal, NcTextField, NcSelect, NcTextArea, NcLoadingIcon } from '@nextcloud/vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'AddZaak',
@@ -100,6 +101,9 @@ export default {
 		NcButton,
 		NcSelect,
 		NcTextArea,
+		NcLoadingIcon,
+		// Icons
+		Plus,
 	},
 	data() {
 		return {

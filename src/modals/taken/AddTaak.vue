@@ -80,7 +80,9 @@ import {
 	NcTextField,
 	NcTextArea,
 	NcSelect,
+	NcLoadingIcon,
 } from '@nextcloud/vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'AddTaak',
@@ -90,6 +92,9 @@ export default {
 		NcTextArea,
 		NcButton,
 		NcSelect,
+		NcLoadingIcon,
+		// Icons
+		Plus,
 	},
 	data() {
 		return {

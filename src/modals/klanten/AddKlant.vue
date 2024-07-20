@@ -109,7 +109,9 @@ import {
 	NcButton,
 	NcModal,
 	NcTextField,
+	NcLoadingIcon,
 } from '@nextcloud/vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'AddKlant',
@@ -117,6 +119,9 @@ export default {
 		NcModal,
 		NcTextField,
 		NcButton,
+		NcLoadingIcon,
+		// Icons
+		Plus,
 	},
 	data() {
 		return {

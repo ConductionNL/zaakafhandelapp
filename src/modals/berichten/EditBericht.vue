@@ -102,7 +102,8 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField, NcTextArea } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcModal, NcTextField, NcTextArea } from '@nextcloud/vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
 	name: 'EditBericht',
@@ -111,6 +112,9 @@ export default {
 		NcTextField,
 		NcTextArea,
 		NcButton,
+		NcLoadingIcon,
+		// Icons
+		ContentSaveOutline,
 	},
 	data() {
 		return {

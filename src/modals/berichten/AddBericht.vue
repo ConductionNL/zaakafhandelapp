@@ -95,7 +95,8 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField, NcTextArea } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcModal, NcTextField, NcTextArea } from '@nextcloud/vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'AddBericht',
@@ -104,6 +105,9 @@ export default {
 		NcTextField,
 		NcTextArea,
 		NcButton,
+		NcLoadingIcon,
+		// Icons
+		Plus,
 	},
 	data() {
 		return {

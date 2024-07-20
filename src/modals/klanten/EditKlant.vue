@@ -127,6 +127,7 @@ import {
 	NcTextField,
 	NcLoadingIcon,
 } from '@nextcloud/vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
 	name: 'EditKlant',
@@ -135,6 +136,8 @@ export default {
 		NcTextField,
 		NcButton,
 		NcLoadingIcon,
+		// Icons
+		ContentSaveOutline,
 	},
 	data() {
 		return {

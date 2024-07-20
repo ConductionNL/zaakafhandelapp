@@ -37,7 +37,8 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcModal, NcTextField } from '@nextcloud/vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
 	name: 'EditRol',
@@ -45,6 +46,9 @@ export default {
 		NcModal,
 		NcTextField,
 		NcButton,
+		NcLoadingIcon,
+		// Icons
+		ContentSaveOutline,
 	},
 	data() {
 		return {

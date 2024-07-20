@@ -82,6 +82,7 @@ import {
 	NcSelect,
 	NcLoadingIcon,
 } from '@nextcloud/vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
 	name: 'EditTaak',
@@ -92,6 +93,8 @@ export default {
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
+		// Icons
+		ContentSaveOutline,
 	},
 	data() {
 		return {

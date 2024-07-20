@@ -39,7 +39,8 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcModal, NcTextField } from '@nextcloud/vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'AddRol',
@@ -47,6 +48,9 @@ export default {
 		NcModal,
 		NcTextField,
 		NcButton,
+		NcLoadingIcon,
+		// Icons
+		Plus,
 	},
 	data() {
 		return {
