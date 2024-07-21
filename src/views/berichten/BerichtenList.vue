@@ -48,13 +48,13 @@ import { store } from '../../store.js'
 						{{ bericht?.berichttekst }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="editBericht(bericht)">
+						<NcActionButton @click="store.setBerichtItem(bericht); store.setModal('editBericht')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton disabled>
+						<NcActionButton @click="store.setBerichtItem(bericht); store.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>

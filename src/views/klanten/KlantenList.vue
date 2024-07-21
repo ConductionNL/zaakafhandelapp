@@ -48,13 +48,13 @@ import { store } from '../../store.js'
 						{{ klant?.subject }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="editKlant(klant)">
+						<NcActionButton @click="store.setKlantItem(taak); store.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton disabled>
+						<NcActionButton @click="store.setKlantItem(taak); store.setDialog('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>

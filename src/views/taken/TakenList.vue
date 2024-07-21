@@ -48,13 +48,13 @@ import { store } from '../../store.js'
 						{{ taak?.onderwerp }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="editTaak(taak)">
+						<NcActionButton @click="store.setTaakItem(taak); store.setModal('editTaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton disabled>
+						<NcActionButton @click="store.setTaakItem(taak); store.setDialog('deleteTaak')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
