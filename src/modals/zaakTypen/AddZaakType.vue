@@ -223,10 +223,16 @@ export default {
 				.then((response) => {
 					this.succes = true
 					this.loading = false
-					setTimeout(() => (this.succes = false), 2500)
+					// Wait for the user to read the feedback then close the model
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
 					this.loading = false
+					this.error = err
 					console.error(err)
 				})
 		},

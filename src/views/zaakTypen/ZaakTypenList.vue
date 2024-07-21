@@ -26,7 +26,7 @@ import { store } from '../../store.js'
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Zaaktype toeveogen
+						Zaaktype toevoegen
 					</NcActionButton>
 				</NcActions>
 			</div>

@@ -15,6 +15,20 @@ import { store } from '../../store.js'
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="fetchData">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+					<NcActionButton @click="store.setModal('addDocument')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Bericht toevoegen
+					</NcActionButton>
+				</NcActions>
 			</div>
 			<div v-if="!loading">
 				<NcListItem v-for="(zaken, i) in zakenList.results"

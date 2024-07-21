@@ -17,7 +17,7 @@ import { store } from '../../store.js'
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="store.setModal('addZaakType')">
-						Zaaktype toeveogen
+						Zaaktype toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
