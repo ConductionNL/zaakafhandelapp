@@ -16,51 +16,38 @@ import { store } from '../../store.js'
 			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="taak.title"
+					:value.sync="store.taakItem.title"
 					label="Titel"
 					maxlength="255" />
 
-				<NcSelect
-					v-bind="zaak"
-					v-model="zaak.value"
-					:disabled="loading"
-					input-label="Zaak"
-					required />
-
 				<NcTextField
 					:disabled="loading"
-					:value.sync="taak.type"
+					:value.sync="store.taakItem.type"
 					label="Type"
 					maxlength="255" />
 
 				<NcSelect
 					v-bind="statusOptions"
-					v-model="statusOptions.value"
+					v-model="store.taakItem.status"
 					:disabled="loading"
 					input-label="Status"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="taak.onderwerp"
+					:value.sync="store.taakItem.onderwerp"
 					label="Onderwerp"
 					maxlength="255" />
 
 				<NcTextArea
 					:disabled="loading"
-					:value.sync="taak.toelichting"
+					:value.sync="store.taakItem.toelichting"
 					label="Toelichting" />
-
-				<NcTextField
-					:disabled="loading"
-					:value.sync="taak.actie"
-					label="Actie"
-					maxlength="255" />
 			</div>
 
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.attachmentItem.title || loading"
+				:disabled="loading"
 				type="primary"
 				@click="addAttachment()">
 				<template #icon>

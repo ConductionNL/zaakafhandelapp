@@ -16,11 +16,35 @@ import { store } from '../../store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="editKlant(klant)">
+						<NcActionButton @click="store.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
+						</NcActionButton>
+						<NcActionButton @click="store.setModal('addTaak')">
+							<template #icon>
+								<CalendarMonthOutline :size="20" />
+							</template>
+							Taak geven
+						</NcActionButton>
+						<NcActionButton @click="store.setModal('addBericht')">
+							<template #icon>
+								<ChatOutline :size="20" />
+							</template>
+							Bericht versturen
+						</NcActionButton>
+						<NcActionButton @click="store.setModal('addZaak')">
+							<template #icon>
+								<BriefcaseAccountOutline :size="20" />
+							</template>
+							Zaak starten
+						</NcActionButton>
+						<NcActionButton @click="store.setDialog('deleteKlant')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -81,29 +105,51 @@ import { store } from '../../store.js'
 						<p>{{ store.klantItem.subjectType }}</p>
 					</div>
 				</div>
+				<div class="tabContainer">
+					<BTabs content-class="mt-3" justified>
+						<BTab title="Zaken">
+							asdads
+						</BTab>
+						<BTab title="Taken">
+							asda
+						</BTab>
+						<BTab title="Berichten">
+							asdsa
+						</BTab>
+					</BTabs>
+				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="!store.klantItem"
-			:size="100"
-			appearance="dark"
-			name="Klant details aan het laden" />
 	</div>
 </template>
 
 <script>
 // Components
-import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+import { BTabs, BTab } from 'bootstrap-vue'
+import { NcActions, NcActionButton } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'KlantDetails',
 	components: {
-		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
+		BTabs,
+		BTab,
+		// Icons
+		DotsHorizontal,
+		Pencil,
+		ChatOutline,
+		CalendarMonthOutline,
+		BriefcaseAccountOutline,
+		TrashCanOutline,
 	},
 }
 </script>

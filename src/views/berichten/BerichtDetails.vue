@@ -16,11 +16,17 @@ import { store } from '../../store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="editBericht(bericht)">
+						<NcActionButton @click="store.setModal('editBericht')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
+						</NcActionButton>
+						<NcActionButton @click="store.setDialog('deleteBericht')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -77,22 +83,23 @@ import { store } from '../../store.js'
 
 <script>
 // Components
-import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'BerichtDetails',
 	components: {
 		// Components
-		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
 		// Icons
 		Pencil,
 		DotsHorizontal,
+		TrashCanOutline,
 	},
 }
 </script>

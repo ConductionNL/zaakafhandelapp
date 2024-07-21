@@ -14,7 +14,6 @@ import { store } from '../../store.js'
 			</NcNoteCard>
 
 			<div v-if="!succes" class="form-group">
-				
 				<NcTextField
 					:disabled="loading"
 					:value.sync="store.berichtItem.title"
