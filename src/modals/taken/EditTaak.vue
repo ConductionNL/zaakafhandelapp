@@ -49,7 +49,7 @@ import { store } from '../../store.js'
 				v-if="!succes"
 				:disabled="loading"
 				type="primary"
-				@click="addAttachment()">
+				@click="editTaak()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-if="!loading" :size="20" />
@@ -106,9 +106,12 @@ export default {
 		editTaak() {
 			this.loading = true
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/taken/${this.taak.id}`,
+				`/index.php/apps/zaakafhandelapp/api/taken/${store.taakItem.id}`,
 				{
 					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 					body: JSON.stringify(store.taakItem),
 				},
 			)
@@ -128,65 +131,8 @@ export default {
 				})
 				.catch((err) => {
 					this.loading = false
+					this.error = err
 					console.error(err)
-				})
-		},
-		setStatusOptions() {
-			const statusOptions = [
-				{
-					id: 'open',
-					label: 'Open',
-				},
-				{
-					id: 'ingediend',
-					label: 'Ingediend',
-				},
-				{
-					id: 'verwerkt',
-					label: 'Verwerkt',
-				},
-				{
-					id: 'gesloten',
-					label: 'Gesloten',
-				},
-			]
-
-			const selectedStatusOption = statusOptions.find((options) => options.id === this.taak.status)
-
-			this.statusOptions = {
-				options: statusOptions,
-				value: {
-					id: selectedStatusOption.id ?? '',
-					label: selectedStatusOption.label ?? '',
-				},
-			}
-		},
-		fetchZaken() {
-			this.zaakLoading = true
-			fetch('/index.php/apps/zaakafhandelapp/api/zrc/zaken', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-						const selectedZaak = Object.entries(data.results).find((zaak) => zaak[1].uuid === this.taak.zaak)
-
-						this.zaak = {
-							options: Object.entries(data.results).map((zaak) => ({
-								id: zaak[1].uuid,
-								label: zaak[1].identificatie,
-							})),
-							value: {
-								id: selectedZaak[1].uuid ?? '',
-								label: selectedZaak[1].identificatie ?? '',
-							},
-
-						}
-					})
-					this.zaakLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.zaakLoading = false
 				})
 		},
 	},

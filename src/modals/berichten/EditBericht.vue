@@ -89,7 +89,7 @@ import { store } from '../../store.js'
 				v-if="!succes"
 				:disabled="loading"
 				type="primary"
-				@click="addAttachment()">
+				@click="editBericht()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-if="!loading" :size="20" />
@@ -134,33 +134,35 @@ export default {
 	},
 	methods: {
 		editBericht() {
-			this.berichtLoading = true
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/berichten/${store.berichtId}`,
+				`/index.php/apps/zaakafhandelapp/api/berichten/${store.berichtItem.id}`,
 				{
 					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(this.bericht),
+					body: JSON.stringify(store.berichtItem),
 				},
-			).then((response) => {
-				this.loading = false
-				this.succes = true
-				store.getBerichtenList()
-				response.json().then((data) => {
-					store.setBerichtItem(data)
+			)
+				.then((response) => {
+					this.succes = true
+					this.loading = false
+					store.getBerichtenList()
+					response.json().then((data) => {
+						store.setBerichtItem(data)
+					})
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
-				// Get the modal to self close
-				const self = this
-				setTimeout(function() {
-					self.succes = false
-					store.setModal(false)
-				}, 2000)
-			}).catch((err) => {
-				this.berichtLoading = false
-				console.error(err)
-			})
+				.catch((err) => {
+					this.loading = false
+					this.error = err
+					console.error(err)
+				})
 		},
 	},
 }
