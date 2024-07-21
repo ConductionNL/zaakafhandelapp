@@ -4,46 +4,61 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
-				<NcTextField class="searchField"
-					disabled
-					:value.sync="search"
+				<NcTextField
+					:value.sync="store.search"
+					:show-trailing-button="search !== ''"
 					label="Search"
 					trailing-button-icon="close"
-					:show-trailing-button="search !== ''"
+					class="searchField"
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="fetchData()">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+					<NcActionButton @click="store.setModal('addZaakType')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Zaaktype toeveogen
+					</NcActionButton>
+				</NcActions>
 			</div>
-
-			<NcListItem v-for="(zaaktypen, i) in zaakTypenList.results"
-				:key="`${zaaktypen}${i}`"
-				:name="zaaktypen?.name"
-				:active="store.zaakTypeItem === zaaktypen?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="store.setZaakTypeItem(zaaktypen.id)">
-				<template #icon>
-					<AlphaTBoxOutline :class="store.zaakTypenItem === zaaktypen.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ zaaktypen?.summary }}
-				</template>
-				<template #actions>
-					<NcActionButton>
-						Button one
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(zaaktypen, i) in zaakTypenList.results"
+					:key="`${zaaktypen}${i}`"
+					:name="zaaktypen?.name"
+					:active="store.zaakTypeItem === zaaktypen?.id"
+					:details="'1h'"
+					:counter-number="44"
+					@click="store.setZaakTypeItem(zaaktypen.id)">
+					<template #icon>
+						<AlphaTBoxOutline :class="store.zaakTypenItem === zaaktypen.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ zaaktypen?.summary }}
+					</template>
+					<template #actions>
+						<NcActionButton>
+							Button one
+						</NcActionButton>
+						<NcActionButton>
+							Button two
+						</NcActionButton>
+						<NcActionButton>
+							Button three
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"
@@ -54,22 +69,27 @@ import { store } from '../../store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
 
 export default {
 	name: 'ZaakTypenList',
 	components: {
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		AlphaTBoxOutline,
 		Magnify,
-		NcLoadingIcon,
+		Plus,
+		Refresh,
 	},
 	data() {
 		return {

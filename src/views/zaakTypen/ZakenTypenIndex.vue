@@ -8,7 +8,7 @@ import { store } from '../../store.js'
 			<ZaakTypeList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.zaakTypeItem || store.selected != 'zaakTypen' "
+			<NcEmptyContent v-if="!store.zaakTypeItem || !store.zaakTypeItem.id || store.selected != 'zaakTypen' "
 				class="detailContainer"
 				name="Geen Zaaktype"
 				description="Nog geen zaaktype geselecteerd">
@@ -16,12 +16,12 @@ import { store } from '../../store.js'
 					<AlphaTBoxOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('zaakTypeAdd')">
+					<NcButton type="primary" @click="store.setModal('addZaakType')">
 						Zaaktype toeveogen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZaakTypeDetails v-if="store.zaakTypeItem && store.selected === 'zaakTypen'" :zaaktype-id="store.zaakTypeItem" />
+			<ZaakTypeDetails v-if="store.zaakTypeItem && store.zaakTypeItem.id && store.selected === 'zaakTypen'" :zaaktype-id="store.zaakTypeItem" />
 		</template>
 	</NcAppContent>
 </template>

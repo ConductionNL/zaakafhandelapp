@@ -5,6 +5,7 @@ import { reactive } from 'vue'
 export const store = reactive({
 	// The curently active menu item, defaults to '' wich triggers the dashboard
 	selected: 'dashboard',
+	search: '',
 	// The currently active modal, managed trought the state to ensure that only one modal can be active at the same time
 	modal: false,
 	modalData: [], // optional data to pass to the modal
@@ -31,12 +32,58 @@ export const store = reactive({
 	},
 	// The Bussens logic for zaken
 	setZaakItem(zaakItem) {
-		this.zaakItem = zaakItem
+		const zaakDefault = {
+			identificatie: '',
+			omschrijving: '',
+			bronorganisatie: '',
+			verantwoordelijkeOrganisatie: '',
+			startdatum: '',
+			archiefstatus: '',
+			registratiedatum: '',
+			toelichting: '',
+		}
+		this.zaakItem = { ...zaakDefault, ...zaakItem }
 		console.log('Active zaak item set to ' + zaakItem)
 	},
 	// The Bussens logic for zaaktypen
 	setZaakTypeItem(zaakTypeItem) {
-		this.zaakTypeItem = zaakTypeItem
+		const zaakTypeItemDefault = {
+			identificatie: '',
+			omschrijving: '',
+			omschrijvingGeneriek: '',
+			vertrouwelijkheidaanduiding: '',
+			doel: '',
+			aanleiding: '',
+			toelichting: '',
+			indicatieInternOfExtern: '',
+			handelingInitiator: '',
+			onderwerp: '',
+			handelingBehandelaar: '',
+			doorlooptijd: '',
+			servicenorm: '',
+			opschortingEnAanhoudingMogelijk: '',
+			verlengingMogelijk: '',
+			verlengingstermijn: '',
+			trefwoorden: [],
+			publicatieIndicatie: '',
+			publicatietekst: '',
+			verantwoordingsrelatie: '',
+			productenOfDiensten: '',
+			selectielijstProcestype: '',
+			referentieproces: '',
+			verantwoordelijke: '',
+			broncatalogus: '',
+			catalogus: '',
+			besluittypen: '',
+			deelzaaktypen: '',
+			gerelateerdeZaaktypen: '',
+			beginGeldigheid: '',
+			eindeGeldigheid: '',
+			beginObject: '',
+			eindeObject: '',
+			versiedatum: '',
+		}
+		this.zaakTypeItem = { ...zaakTypeItemDefault, ...zaakTypeItem }
 		console.log('Active zaak type item set to ' + zaakTypeItem)
 	},
 	// The Bussens logic for klanten

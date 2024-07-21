@@ -6,12 +6,12 @@ import { store } from '../../store.js'
 	<NcAppContentList>
 		<ul>
 			<div class="listHeader">
-				<NcTextField class="searchField"
-					disabled
-					:value.sync="search"
-					label="Search"
-					trailing-button-icon="close"
+				<NcTextField
+					:value.sync="store.search"
 					:show-trailing-button="search !== ''"
+					label="Search"
+					class="searchField"
+					trailing-button-icon="close"
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>

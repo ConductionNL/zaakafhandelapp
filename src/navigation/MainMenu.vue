@@ -5,13 +5,11 @@ import { store } from '../store.js'
 <template>
 	<NcAppNavigation>
 		<NcAppNavigationList>
-			<NcAppNavigationNewItem
-				name="Zaak Starten"
-				@new-item="store.modal = 'zaakAdd'">
+			<NcAppNavigationNew text="Zaak Starten" @click="store.setModal('addZaak')">
 				<template #icon>
 					<Plus :size="20" />
 				</template>
-			</NcAppNavigationNewItem>
+			</NcAppNavigationNew>
 			<NcAppNavigationItem
 				:active="store.selected === 'dashboard'"
 				name="Dashboard"
@@ -81,7 +79,7 @@ import {
 	NcAppNavigation,
 	NcAppNavigationList,
 	NcAppNavigationItem,
-	NcAppNavigationNewItem,
+	NcAppNavigationNew,
 	NcAppNavigationSettings,
 } from '@nextcloud/vue'
 
@@ -104,7 +102,7 @@ export default {
 		NcAppNavigation,
 		NcAppNavigationList,
 		NcAppNavigationItem,
-		NcAppNavigationNewItem,
+		NcAppNavigationNew,
 		NcAppNavigationSettings,
 		Finance,
 		AlphaTBoxOutline,

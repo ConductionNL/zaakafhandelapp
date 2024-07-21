@@ -21,19 +21,19 @@ import { store } from '../../store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="store.setModal('addDocument')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addRol')">
+						<NcActionButton @click="store.setModal('addRoll')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="addTaakToZaak">
+						<NcActionButton @click="store.setModal('addTaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
@@ -45,7 +45,13 @@ import { store } from '../../store.js'
 							</template>
 							Bericht toevoegen
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="store.setModal('addBesluit')">
+							<template #icon>
+								<MessagePlus :size="20" />
+							</template>
+							Besluit toevoegen
+						</NcActionButton>
+						<NcActionButton @click="store.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
 							</template>
@@ -55,48 +61,36 @@ import { store } from '../../store.js'
 				</div>
 				<div class="detailGrid">
 					<div>
-						<h4>Omschrijving:</h4>
+						<b>Omschrijving:</b>
 						<span>{{ zaak.omschrijving }}</span>
 					</div>
 					<div>
-						<h4>
-							Zaaktype:
-						</h4>
+						<b>Zaaktype:</b>
 						<span>{{ zaak.zaaktype }}</span>
 					</div>
 					<div>
-						<div>
-							<h4>Archiefstatus:</h4>
-							<p>
-								{{ zaak.archiefstatus }}
-							</p>
-						</div>
-						<h4>Registratiedatum:</h4>
+						<b>Archiefstatus:</b>
+						<span>{{ zaak.archiefstatus }}</span>
+					</div>
+					<div>
+						<b>Registratiedatum:</b>
 						<span>{{ zaak.registratiedatum }}</span>
 					</div>
 					<div>
-						<h4>Bronorganisatie:</h4>
-						<p>
-							{{ zaak.bronorganisatie }}
-						</p>
+						<b>Bronorganisatie:</b>
+						<span>{{ zaak.bronorganisatie }}</span>
 					</div>
 					<div>
-						<h4>VerantwoordelijkeOrganisatie:</h4>
-						<p>
-							{{ zaak.verantwoordelijkeOrganisatie }}
-						</p>
+						<b>VerantwoordelijkeOrganisatie:</b>
+						<span>{{ zaak.verantwoordelijkeOrganisatie }}</span>
 					</div>
 					<div>
-						<h4>Startdatum:</h4>
-						<p>
-							{{ zaak.startdatum }}
-						</p>
+						<b>Startdatum:</b>
+						<span>{{ zaak.startdatum }}</span>
 					</div>
 					<div>
-						<h4>Toelichting:</h4>
-						<p>
-							{{ zaak.toelichting }}
-						</p>
+						<b>Toelichting:</b><span>{{ zaak.toelichting }}
+						</span>
 					</div>
 				</div>
 				<div class="tabContainer">

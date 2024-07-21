@@ -58,11 +58,10 @@ Wacht totdat de app zichtbaar is in de navigatie balk en klik op de app.
 
 ![navigationBarZaa](img/navigationBarZaa.png)
 
-
+## API
+- https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1#tag/zaaktypen/operation/zaaktype_create
 
 ## Documentatie
-[Icons](https://pictogrammers.com/library/mdi/)
-
-[Layout](https://docs.nextcloud.com/server/latest/developer_manual/design/layout.html)
-
-[Componenten](https://nextcloud-vue-components.netlify.app/)
+- [Icons](https://pictogrammers.com/library/mdi/)
+- [Layout](https://docs.nextcloud.com/server/latest/developer_manual/design/layout.html)-
+- [Componenten](https://nextcloud-vue-components.netlify.app/)

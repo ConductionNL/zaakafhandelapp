@@ -4,7 +4,7 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -16,34 +16,35 @@ import { store } from '../../store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 			</div>
-
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="store.setMetadataItem(zaken.id)">
-				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ zaken?.summary }}
-				</template>
-				<template #actions>
-					<NcActionButton>
-						Button one
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(zaken, i) in zakenList.results"
+					:key="`${zaken}${i}`"
+					:name="zaken?.name"
+					:active="store.zakenItem === zaken?.id"
+					:details="'1h'"
+					:counter-number="44"
+					@click="store.setMetadataItem(zaken.id)">
+					<template #icon>
+						<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ zaken?.summary }}
+					</template>
+					<template #actions>
+						<NcActionButton>
+							Button one
+						</NcActionButton>
+						<NcActionButton>
+							Button two
+						</NcActionButton>
+						<NcActionButton>
+							Button three
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"

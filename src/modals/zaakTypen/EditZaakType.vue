@@ -3,16 +3,15 @@ import { store } from '../../store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addZaak'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="store.modal === 'editZaakType'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
-			<h2>Zaak starten</h2>
+			<h2>Zaak aanpassen</h2>
 			<NcNoteCard v-if="succes" type="success">
 				<p>Bijlage succesvol toegevoegd</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
-
 			<div class="form-group">
 				<NcTextField
 					:disabled="loading"
@@ -30,14 +29,14 @@ import { store } from '../../store.js'
 				<NcTextField
 					:disabled="loading"
 					:value.sync="store.zaakItem.bronorganisatie"
-					label="Bron organisatie"
+					label="Bronorganisatie"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="store.zaakItem.verantwoordelijkeOrganisatie"
-					label="Verantwoordelijke Organisatie"
+					label="VerantwoordelijkeOrganisatie"
 					maxlength="9"
 					required />
 
@@ -56,14 +55,15 @@ import { store } from '../../store.js'
 					required />
 
 				<NcSelect
+					v-bind="store.zaakItem.archiefstatus"
+					v-model="archiefstatus.value"
 					:disabled="loading"
-					:value.sync="store.zaakItem.Archiefstatus"
 					input-label="Archiefstatus"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.registratiedatum"
+					:value.sync="zaak.registratiedatum"
 					label="Registratiedatum"
 					maxlength="255" />
 
@@ -72,17 +72,16 @@ import { store } from '../../store.js'
 					:value.sync="store.zaakItem.toelichting"
 					label="Toelichting" />
 			</div>
-
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.zaakItem.zaaktype || loading"
+				:disabled="!store.zaakItem.title || loading"
 				type="primary"
-				@click="addZaak()">
+				@click="addAttachment()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<Plus v-if="!loading" :size="20" />
+					<ContentSaveOutline v-if="!loading" :size="20" />
 				</template>
-				Toevoegen
+				Opslaan
 			</NcButton>
 		</div>
 	</NcModal>
@@ -90,10 +89,10 @@ import { store } from '../../store.js'
 
 <script>
 import { NcButton, NcModal, NcTextField, NcSelect, NcTextArea, NcLoadingIcon } from '@nextcloud/vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
-	name: 'AddZaak',
+	name: 'EditZaakType',
 	components: {
 		NcModal,
 		NcTextField,
@@ -102,46 +101,89 @@ export default {
 		NcTextArea,
 		NcLoadingIcon,
 		// Icons
-		Plus,
+		ContentSaveOutline,
 	},
 	data() {
 		return {
 			succes: false,
 			loading: false,
 			error: false,
-			// Select options
-			zaakTypeLoading: false,
-			zaaktype: false,
 		}
 	},
-	mounted() {
-		// Lets create an empty zaak item
-		store.setZaakItem([])
-		// Get a zaaktype lisy  @todo should be part of a service
-		this.fetchZaakType()
+	updated() {
+		if (store.modal === 'editZaak' && this.hasUpdated) {
+			if (this.zaak === store.zaakItem) return
+			this.hasUpdated = false
+		}
+		if (store.modal === 'editZaak' && !this.hasUpdated) {
+			this.zaak = store.zaakItem
+			this.setArchiefStatusOptions()
+			this.fetchZaakType()
+			this.hasUpdated = true
+		}
 	},
 	methods: {
-		addZaak() {
-			this.loading = true
+		editZaak() {
+			this.zaakLoading = true
 			fetch(
-				'index.php/apps/zaakafhandelapp/api/zrc/zaken',
+				`index.php/apps/zaakafhandelapp/api/zrc/zaken/${this.zaak.uuid}`,
 				{
-					method: 'POST',
+					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(store.zaakItem),
+					body: JSON.stringify({
+						identificatie: this.identificatie,
+						omschrijving: this.omschrijving,
+						bronorganisatie: this.bronorganisatie,
+						verantwoordelijkeOrganisatie: this.verantwoordelijkeOrganisatie,
+						startdatum: this.startdatum,
+						zaaktype: this.zaaktype.value,
+						archiefstatus: this.archiefstatus.value,
+						registratiedatum: this.registratiedatum,
+						toelichting: this.toelichting,
+					}),
 				},
 			)
 				.then((response) => {
-					this.succes = true
-					this.loading = false
+					this.succesMessage = true
+					this.zaakLoading = false
 					setTimeout(() => (this.succesMessage = false), 2500)
 				})
 				.catch((err) => {
-					this.loading = false
+					this.zaakLoading = false
 					console.error(err)
 				})
+		},
+		setArchiefStatusOptions() {
+			const archiefStatusOptions = [
+				{
+					id: 'nog_te_archiveren',
+					label: 'Nog te archiveren',
+				},
+				{
+					id: 'gearchiveerd',
+					label: 'Gearchiveerd',
+				},
+				{
+					id: 'gearchiveerd_procestermijn_onbekend',
+					label: 'Gearchiveerd procestermijn onbekend',
+				},
+				{
+					id: 'overgedragen',
+					label: 'Overgedragen',
+				},
+			]
+
+			const selectedArchiefStatusOption = archiefStatusOptions.find((options) => options.id === this.zaak.archiefstatus)
+
+			this.archiefstatus = {
+				options: archiefStatusOptions,
+				value: {
+					id: selectedArchiefStatusOption.id ?? '',
+					label: selectedArchiefStatusOption.label ?? '',
+				},
+			}
 		},
 		fetchZaakType() {
 			this.zaakTypeLoading = true
@@ -150,13 +192,17 @@ export default {
 			})
 				.then((response) => {
 					response.json().then((data) => {
+						const selectedZaakType = Object.entries(data.results).find((zaaktype) => zaaktype[1].id === this.zaak.zaaktype)
 
 						this.zaaktype = {
 							options: Object.entries(data.results).map((zaaktype) => ({
 								id: zaaktype[1].id,
 								label: zaaktype[1].name,
 							})),
-
+							value: {
+								id: selectedZaakType[1].id ?? '',
+								label: selectedZaakType[1].name ?? '',
+							},
 						}
 					})
 					this.zaakTypeLoading = false
@@ -169,11 +215,3 @@ export default {
 	},
 }
 </script>
-
-<style>
-.modalContent {
-    margin: var(--zaa-margin-50);
-    text-align: center;
-}
-
-</style>

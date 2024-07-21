@@ -4,43 +4,44 @@ import { store } from '../../store.js'
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
-				<NcTextField class="searchField"
-					disabled
-					:value.sync="search"
-					label="Search"
-					trailing-button-icon="close"
+				<NcTextField
+					:value.sync="store.search"
 					:show-trailing-button="search !== ''"
+					label="Search"
+					class="searchField"
+					trailing-button-icon="close"
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
 			</div>
-
-			<NcListItem v-for="(rollen, i) in rollenList.results"
-				:key="`${rollen}${i}`"
-				:name="rollen?.name"
-				:active="store.rolId === rollen?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="store.setRolItem(rollen)">
-				<template #icon>
-					<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ rollen?.summary }}
-				</template>
-				<template #actions>
-					<NcActionButton @click="editRol(rol)">
-						Bewerken
-					</NcActionButton>
-					<NcActionButton>
-						Verwijderen
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!loading">
+				<NcListItem v-for="(rollen, i) in rollenList.results"
+					:key="`${rollen}${i}`"
+					:name="rollen?.name"
+					:active="store.rolId === rollen?.id"
+					:details="'1h'"
+					:counter-number="44"
+					@click="store.setRolItem(rollen)">
+					<template #icon>
+						<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ rollen?.summary }}
+					</template>
+					<template #actions>
+						<NcActionButton @click="editRol(rol)">
+							Bewerken
+						</NcActionButton>
+						<NcActionButton>
+							Verwijderen
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
 
 		<NcLoadingIcon v-if="loading"
