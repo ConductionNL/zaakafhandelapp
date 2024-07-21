@@ -13,7 +13,7 @@ import { store } from '../../store.js'
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
 					:value.sync="taak.title"
@@ -122,21 +122,22 @@ export default {
 				`/index.php/apps/zaakafhandelapp/api/taken/${this.taak.id}`,
 				{
 					method: 'PUT',
-					body: JSON.stringify({
-						title: this.taak.title,
-						zaak: this.taak.zaak,
-						type: this.taak.type,
-						status: this.taak.status,
-						onderwerp: this.taak.onderwerp,
-						toelichting: this.taak.toelichting,
-						actie: this.taak.actie,
-					}),
+					body: JSON.stringify(store.taakItem),
 				},
 			)
 				.then((response) => {
-					this.succesMessage = true
+					this.succes = true
 					this.loading = false
-					setTimeout(() => (this.succesMessage = false), 2500)
+					store.getTakenList()
+					response.json().then((data) => {
+						store.setTaakItem(data)
+					})
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
 					this.loading = false

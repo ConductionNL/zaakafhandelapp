@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BerichDetails v-if="store.berichtItem && store.berichtItem.id && store.selected === 'berichten'" :bericht-id="store.berichtId" />
+			<BerichDetails v-if="store.berichtItem && store.berichtItem.id && store.selected === 'berichten'" />
 		</template>
 	</NcAppContent>
 </template>
@@ -42,11 +42,6 @@ export default {
 		BerichtenList,
 		BerichDetails,
 		ChatOutline,
-	},
-	data() {
-		return {
-			berichtId: undefined,
-		}
 	},
 }
 </script>

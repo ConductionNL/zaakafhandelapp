@@ -16,7 +16,7 @@ import { store } from '../../store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="store.getKlantenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -30,15 +30,15 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(klant, i) in klantenList.results"
+			<div v-if="store.klantenList">
+				<NcListItem v-for="(klant, i) in store.klantenList.results"
 					:key="`${klant}${i}`"
 					:name="fullName(klant)"
 					:active="store.klantId === klant?.id"
 					:force-display-actions="true"
 					:details="'1h'"
 					:counter-number="44"
-					@click="toggleKlantDetailView(klant?.id)">
+					@click="store.setKlantItem(klant)">
 					<template #icon>
 						<AccountOutline :class="store.klantItem === klant.id && 'selectedZaakIcon'"
 							disable-menu
@@ -48,13 +48,13 @@ import { store } from '../../store.js'
 						{{ klant?.subject }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setKlantItem(taak); store.setModal('editKlant')">
+						<NcActionButton @click="store.setKlantItem(klant); store.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setKlantItem(taak); store.setDialog('deleteKlant')">
+						<NcActionButton @click="store.setKlantItem(klant); store.setDialog('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -65,7 +65,7 @@ import { store } from '../../store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!store.klantenList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -107,38 +107,11 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchData()
+		store.getKlantenList()
 	},
 	methods: {
 		fullName(klant) {
 			return klant.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant.achternaam
-		},
-		toggleKlantDetailView(klantId) {
-			if (store.klantId === klantId) store.setKlantId(false)
-			else store.setKlantId(klantId)
-		},
-		editKlant(klant) {
-			store.setKlantItem(klant)
-			store.setModal('editKlant')
-		},
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/klanten',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.klantenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
 		},
 		clearText() {
 			this.search = ''

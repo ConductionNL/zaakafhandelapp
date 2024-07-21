@@ -12,49 +12,6 @@ use OCP\IRequest;
 
 class TakenController extends Controller
 {
-    const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "title" => "Onderzoek naar Markttrends",
-            "zaak" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "type" => "Onderzoek",
-            "status" => "open",
-            "onderwerp" => "Analyse van de huidige markttrends en voorspellingen voor het komende jaar.",
-            "toelichting" => "Dit onderzoek richt zich op het analyseren van de huidige markttrends in de technologie-sector. Het bevat gedetailleerde gegevens en grafieken die de groei en dalingen in verschillende sub-sectoren weergeven, evenals voorspellingen voor de komende 12 maanden.",
-            "actie" => "Verzamelen van gegevens, opstellen van rapporten, presenteren aan het management."
-        ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "title" => "Ontwikkeling van Nieuw Product",
-            "zaak" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "type" => "Ontwikkeling",
-            "status" => "ingediend",
-            "onderwerp" => "Concept en ontwikkeling van een nieuw innovatief product voor de consumentenmarkt.",
-            "toelichting" => "Dit project omvat de conceptfase en de vroege ontwikkeling van een nieuw product dat gericht is op het verbeteren van de consumentenervaring in de smart home sector. Het omvat marktonderzoek, productontwerp en het ontwikkelen van een prototype.",
-            "actie" => "Uitvoeren van marktonderzoek, samenwerken met het designteam, ontwikkelen van een prototype, testen van het product."
-        ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "title" => "Interne Audit",
-            "zaak" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "type" => "Audit",
-            "status" => "verwerkt",
-            "onderwerp" => "Uitvoering van een interne audit om de naleving van kwaliteitsnormen te controleren.",
-            "toelichting" => "Deze taak omvat het uitvoeren van een gedetailleerde interne audit van de bedrijfsprocessen om te controleren of alle afdelingen voldoen aan de vastgestelde kwaliteitsnormen. De bevindingen worden gedocumenteerd en er worden aanbevelingen gedaan voor verbeteringen.",
-            "actie" => "Voorbereiden van auditchecklist, uitvoeren van audits, rapporteren van bevindingen, aanbevelen van verbeteringen."
-        ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "title" => "Marketingcampagne voor Nieuwe Productlijn",
-            "zaak" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "type" => "Campagne",
-            "status" => "gesloten",
-            "onderwerp" => "Ontwikkeling en lancering van een marketingcampagne voor een nieuwe productlijn.",
-            "toelichting" => "Deze taak omvat het plannen en uitvoeren van een marketingcampagne voor de lancering van een nieuwe productlijn. Het omvat het bepalen van de doelgroep, het ontwikkelen van marketingmateriaal, het inzetten van verschillende marketingkanalen en het monitoren van de resultaten.",
-            "actie" => "Bepalen van doelgroep, ontwikkelen van marketingmateriaal, uitvoeren van campagne, analyseren van resultaten."
-        ]
-    ];
-
     public function __construct(
         $appName,
         IRequest $request,
@@ -129,10 +86,18 @@ class TakenController extends Controller
 	{
 		// get post from requests
 		$body = $this->request->getParams();
+		$body['id'] = $this->get_guid(); //@todo remove this hotfic (or actually horror fix)
+		$body['data'] = [];
 		$results = $callService->create(source: 'klanten', endpoint: 'taken', data: $body);
 		return new JSONResponse($results);
 	}
 
+	function get_guid() {
+		$data = PHP_MAJOR_VERSION < 7 ? openssl_random_pseudo_bytes(16) : random_bytes(16);
+		$data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // Set version to 0100
+		$data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+	}
 	/**
 	 * Update an object
 	 *

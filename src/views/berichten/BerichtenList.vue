@@ -16,7 +16,7 @@ import { store } from '../../store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="store.getBerichtenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -30,15 +30,15 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(bericht, i) in berichtenList.results"
+			<div v-if="store.berichtenList">
+				<NcListItem v-for="(bericht, i) in store.berichtenList.results"
 					:key="`${bericht}${i}`"
 					:name="bericht?.onderwerp"
 					:active="store.berichtId === bericht?.id"
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
-					@click="storeBericht(bericht)">
+					@click="store.setBerichtItem(bericht)">
 					<template #icon>
 						<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
 							disable-menu
@@ -65,7 +65,7 @@ import { store } from '../../store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!store.berichtenList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -110,37 +110,9 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchData()
+		store.getBerichtenList()
 	},
 	methods: {
-		editBericht(bericht) {
-			store.setBerichtItem(bericht)
-			store.setBerichtId(bericht.id)
-			store.setModal('editBericht')
-		},
-		storeBericht(bericht) {
-			store.setBerichtId(bericht.id)
-			store.setBerichtItem(bericht)
-		},
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.berichtenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
 		},

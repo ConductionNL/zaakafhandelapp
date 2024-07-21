@@ -12,7 +12,7 @@ import { store } from '../../store.js'
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
 					:value.sync="omschrijving"
@@ -76,7 +76,12 @@ export default {
 			)
 				.then((response) => {
 					this.succesMessage = true
-					setTimeout(() => (this.succesMessage = false), 2500)
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
 					console.error(err)

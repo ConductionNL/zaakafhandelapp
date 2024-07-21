@@ -21,7 +21,7 @@ import { store } from '../../store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<TaakDetails v-if="store.taakItem && store.taakItem.id && store.selected === 'taken'" :taak-id="store.taakId" />
+			<TaakDetails v-if="store.taakItem && store.taakItem.id && store.selected === 'taken'" />
 		</template>
 	</NcAppContent>
 </template>
@@ -42,11 +42,6 @@ export default {
 		TakenList,
 		TaakDetails,
 		CalendarMonthOutline,
-	},
-	data() {
-		return {
-			takenId: undefined,
-		}
 	},
 }
 </script>

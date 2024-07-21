@@ -4,12 +4,12 @@ import { store } from '../../store.js'
 
 <template>
 	<div class="detailContainer">
-		<div v-if="!loading" id="app-content">
+		<div v-if="store.klantItem" id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ klant.voornaam }} {{ klant.voorvoegsel }} {{ klant.achternaam }}
+						{{ store.klantItem.voornaam }} {{ store.klantItem.voorvoegsel }} {{ store.klantItem.achternaam }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -24,66 +24,66 @@ import { store } from '../../store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
-				<span> {{ klant.subject }} </span>
+				<span> {{ store.klantItem.subject }} </span>
 
 				<div class="detailGrid">
 					<div class="gridContent gridFullWidth">
-						<h5>Klantnummer:</h5>
-						<p>{{ klant.klantnummer }}</p>
+						<b>Klantnummer:</b>
+						<p>{{ store.klantItem.klantnummer }}</p>
 					</div>
 
 					<div class="gridContent">
-						<h5>Telefoonnummer:</h5>
-						<p>{{ klant.telefoonnummer }}</p>
+						<b>Telefoonnummer:</b>
+						<p>{{ store.klantItem.telefoonnummer }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Email adres:</h5>
-						<p>{{ klant.emailadres }}</p>
+						<b>Email adres:</b>
+						<p>{{ store.klantItem.emailadres }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Adres:</h5>
-						<p>{{ klant.adres }}</p>
+						<b>Adres:</b>
+						<p>{{ store.klantItem.adres }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Functie:</h5>
-						<p>{{ klant.functie }}</p>
+						<b>Functie:</b>
+						<p>{{ store.klantItem.functie }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Bedrijfsnaam:</h5>
-						<p>{{ klant.bedrijfsnaam }}</p>
+						<b>Bedrijfsnaam:</b>
+						<p>{{ store.klantItem.bedrijfsnaam }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Website url:</h5>
-						<p>{{ klant.websiteUrl }}</p>
+						<b>Website url:</b>
+						<p>{{ store.klantItem.websiteUrl }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>url:</h5>
-						<p>{{ klant.url }}</p>
+						<b>url:</b>
+						<p>{{ store.klantItem.url }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Bron organisatie:</h5>
-						<p>{{ klant.bronorganisatie }}</p>
+						<b>Bron organisatie:</b>
+						<p>{{ store.klantItem.bronorganisatie }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Aanmaakkanaal:</h5>
-						<p>{{ klant.aanmaakkanaal }}</p>
+						<b>Aanmaakkanaal:</b>
+						<p>{{ store.klantItem.aanmaakkanaal }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Geverifieerd:</h5>
-						<p>{{ klant.geverifieerd }}</p>
+						<b>Geverifieerd:</b>
+						<p>{{ store.klantItem.geverifieerd }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Subject Identificatie:</h5>
-						<p>{{ klant.subjectIdentificatie }}</p>
+						<b>Subject Identificatie:</b>
+						<p>{{ store.klantItem.subjectIdentificatie }}</p>
 					</div>
 					<div class="gridContent">
-						<h5>Subject Type:</h5>
-						<p>{{ klant.subjectType }}</p>
+						<b>Subject Type:</b>
+						<p>{{ store.klantItem.subjectType }}</p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!store.klantItem"
 			:size="100"
 			appearance="dark"
 			name="Klant details aan het laden" />
@@ -104,54 +104,6 @@ export default {
 		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
-	},
-	props: {
-		klantId: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			klant: [],
-			loading: false,
-		}
-	},
-	watch: {
-		klantId: {
-			handler(klantId) {
-				this.fetchData(klantId)
-			},
-			deep: true,
-		},
-	},
-	mounted() {
-		this.fetchData(store.klantId)
-	},
-	methods: {
-		editKlant(klant) {
-			store.setKlantItem(klant)
-			store.setModal('editKlant')
-		},
-		fetchData(klantId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/klanten/' + klantId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.klant = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 	},
 }
 </script>

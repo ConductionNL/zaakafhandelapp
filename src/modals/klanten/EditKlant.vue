@@ -13,7 +13,7 @@ import { store } from '../../store.js'
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
 					:value.sync="klant.voornaam"
@@ -164,21 +164,31 @@ export default {
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/klanten/${id}`,
 				{
-					method: 'GET',
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(store.klantItem),
 				},
 			)
 				.then((response) => {
+					this.succes = true
+					this.loading = false
+					store.getKlantenList()
 					response.json().then((data) => {
-						this.klant = data
-						this.klant.data = JSON.stringify(data.data)
-						this.catalogi.value = [data.catalogi]
-						this.metaData.value = [data.metaData]
+						store.setKlantItem(data)
 					})
-					this.klantLoading = false
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
+					this.loading = false
+					this.error = err
 					console.error(err)
-					this.klantLoading = false
 				})
 		},
 		closeModal() {

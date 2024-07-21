@@ -7,93 +7,94 @@ import { store } from '../../store.js'
 		<div class="modal__content">
 			<h2>Klant toevoegen</h2>
 			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
+				<p>KLant succesvol toegevoegd</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
 				<NcTextField :disabled="loading"
 					label="Voornaam"
 					maxlength="255"
-					:value.sync="klant.voornaam" />
+					:value.sync="store.klantItem.voornaam" />
 
 				<NcTextField :disabled="loading"
 					label="Tussenvoegsel"
 					maxlength="255"
-					:value.sync="klant.tussenvoegsel" />
+					:value.sync="store.klantItem.tussenvoegsel" />
 
 				<NcTextField :disabled="loading"
 					label="Achternaam"
 					maxlength="255"
-					:value.sync="klant.achternaam" />
+					:value.sync="store.klantItem.achternaam" />
 
 				<NcTextField :disabled="loading"
 					label="Telefoonnummer"
 					maxlength="255"
-					:value.sync="klant.telefoonnummer" />
+					:value.sync="store.klantItem.telefoonnummer" />
 
 				<NcTextField :disabled="loading"
 					label="Email adres"
 					maxlength="255"
-					:value.sync="klant.emailadres" />
+					:value.sync="store.klantItem.emailadres" />
 
 				<NcTextField :disabled="loading"
 					label="Functie"
 					maxlength="255"
-					:value.sync="klant.functie" />
+					:value.sync="store.klantItem.functie" />
+
 				<NcTextField :disabled="loading"
 					label="Aanmaak kanaal"
 					maxlength="255"
-					:value.sync="klant.aanmaakkanaal" />
+					:value.sync="store.klantItem.aanmaakkanaal" />
 
 				<NcTextField :disabled="loading"
 					label="Bron organisatie"
 					maxlength="255"
-					:value.sync="klant.bronorganisatie" />
+					:value.sync="store.klantItem.bronorganisatie" />
 
 				<NcTextField :disabled="loading"
 					label="Bedrijfsnaam"
 					maxlength="255"
-					:value.sync="klant.bedrijfsnaam" />
+					:value.sync="store.klantItem.bedrijfsnaam" />
 
 				<NcTextField :disabled="loading"
 					label="Website Url"
 					maxlength="255"
-					:value.sync="klant.websiteUrl" />
+					:value.sync="store.klantItem.websiteUrl" />
 
 				<NcTextField :disabled="loading"
 					label="Url"
 					maxlength="255"
-					:value.sync="klant.url" />
+					:value.sync="store.klantItem.url" />
 
 				<NcTextField :disabled="loading"
 					label="Geverifieerd"
 					maxlength="255"
-					:value.sync="klant.geverifieerd" />
+					:value.sync="store.klantItem.geverifieerd" />
 
 				<NcTextField :disabled="loading"
 					label="Subject"
 					maxlength="255"
-					:value.sync="klant.subject" />
+					:value.sync="store.klantItem.subject" />
 
 				<NcTextField :disabled="loading"
 					label="Subject Identificatie"
 					maxlength="255"
-					:value.sync="klant.subjectIdentificatie" />
+					:value.sync="store.klantItem.subjectIdentificatie" />
 
 				<NcTextField :disabled="loading"
 					label="Subject Type"
 					maxlength="255"
-					:value.sync="klant.subjectType" />
+					:value.sync="store.klantItem.subjectType" />
 			</div>
 
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.attachmentItem.title || loading"
+				:disabled="!store.klantItem.voornaam || loading"
 				type="primary"
-				@click="addAttachment()">
+				@click="addKlant()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
@@ -110,6 +111,7 @@ import {
 	NcModal,
 	NcTextField,
 	NcLoadingIcon,
+	NcNoteCard,
 } from '@nextcloud/vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 
@@ -120,6 +122,7 @@ export default {
 		NcTextField,
 		NcButton,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		Plus,
 	},
@@ -130,14 +133,13 @@ export default {
 			error: false,
 		}
 	},
-	updated() {
-		if (store.modal === 'addKlant' && !this.hasUpdated) {
-			this.hasUpdated = true
-		}
+	mounted() {
+		// Lets create an empty zaak item
+		store.setKlantItem([])
 	},
 	methods: {
 		addKlant() {
-			this.klantLoading = true
+			this.loading = true
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/klanten',
 				{
@@ -145,16 +147,26 @@ export default {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(this.klant),
+					body: JSON.stringify(store.klantItem),
 				},
 			)
 				.then((response) => {
-					this.succesMessage = true
-					this.publicationLoading = false
-					setTimeout(() => (this.succesMessage = false), 2500)
+					this.succes = true
+					this.loading = false
+					store.getKlantenList()
+					response.json().then((data) => {
+						store.setKlantItem(data)
+					})
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
-					this.publicationLoading = false
+					this.loading = false
+					this.error = err
 					console.error(err)
 				})
 		},

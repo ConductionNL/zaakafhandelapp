@@ -13,7 +13,7 @@ import { store } from '../../store.js'
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
 					:value.sync="store.zaakItem.identificatie"
@@ -136,7 +136,12 @@ export default {
 				.then((response) => {
 					this.succes = true
 					this.loading = false
-					setTimeout(() => (this.succesMessage = false), 2500)
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
 					this.loading = false

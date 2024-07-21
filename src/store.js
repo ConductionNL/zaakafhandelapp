@@ -13,9 +13,12 @@ export const store = reactive({
 	zaakItem: false,
 	zaakTypeItem: false,
 	klantItem: false,
+	klantenList: false,
 	taakItem: false,
+	takenList: false,
 	taakZaakId: false,
 	berichtItem: false,
+	berichtenList: false,
 	rolItem: false,
 	// Lets add some setters
 	setSelected(selected) { // The general state for menu tiemts
@@ -88,22 +91,120 @@ export const store = reactive({
 	},
 	// The Bussens logic for klanten
 	setKlantItem(klantItem) {
-		this.klantItem = klantItem
+		const klantItemDefault = {
+			voornaam: '',
+			tussenvoegsel: '',
+			achternaam: '',
+			telefoonnummer: '',
+			emailadres: '',
+			functie: '',
+			aanmaakkanaal: '',
+			bronorganisatie: '',
+			bedrijfsnaam: '',
+			websiteUrl: '',
+			url: '',
+			geverifieerd: '',
+			subject: '',
+			subjectIdentificatie: '',
+			subjectType: '',
+		}
+		this.klantItem = { ...klantItemDefault, ...klantItem }
 		console.log('Active klant item set to ' + klantItem)
+	},
+	getKlantenList() {
+		this.klantenList = false
+		fetch(
+			'/index.php/apps/zaakafhandelapp/api/klanten',
+			{
+				method: 'GET',
+			},
+		)
+			.then((response) => {
+				response.json().then((data) => {
+					this.klantenList = data
+				})
+			})
+			.catch((err) => {
+				console.error(err)
+			})
 	},
 	// The Bussens logic for taken
 	setTaakItem(taakItem) {
-		this.taakItem = taakItem
+		const taakItemDefault = {
+			title: '',
+			zaak: 'https://www.example.com/1',
+			type: 'https://www.example.com',
+			url: 'https://www.example.com',
+			status: '',
+			onderwerp: '',
+			toelichting: '',
+			actie: [],
+			data: [],
+		}
+		this.taakItem = { ...taakItemDefault, ...taakItem }
 		console.log('Active taak item set to ' + taakItem)
+	},
+	getTakenList() {
+		this.takenList = false
+		fetch(
+			'/index.php/apps/zaakafhandelapp/api/taken',
+			{
+				method: 'GET',
+			},
+		)
+			.then((response) => {
+				response.json().then((data) => {
+					this.takenList = data
+				})
+			})
+			.catch((err) => {
+				console.error(err)
+			})
 	},
 	// The Bussens logic for berichten
 	setBerichtItem(berichtItem) {
-		this.berichtItem = berichtItem
+		const berichtItemDefault = {
+			title: '',
+			onderwerp: '',
+			berichttekst: '',
+			inhoud: '',
+			bijlageType: '',
+			soortGebruiker: '',
+			publicatieDatum: '',
+			aanmaakDatum: '',
+			berichtType: '',
+			referentie: '',
+			berichtID: '',
+			batchID: '',
+			gebruikerID: '',
+			volgorde: '',
+		}
+		this.berichtItem = { ...berichtItemDefault, ...berichtItem }
 		console.log('Active bericht item set to ' + berichtItem)
+	},
+	getBerichtenList() {
+		this.berichtenList = false
+		fetch(
+			'/index.php/apps/zaakafhandelapp/api/berichten',
+			{
+				method: 'GET',
+			},
+		)
+			.then((response) => {
+				response.json().then((data) => {
+					this.berichtenList = data
+				})
+			})
+			.catch((err) => {
+				console.error(err)
+			})
 	},
 	// The Bussens logic for rollen
 	setRolItem(rolItem) {
-		this.rolItem = rolItem
+		const rolItemDefault = {
+			versiedatum: '',
+		}
+		this.rolItem = { ...rolItemDefault, ...rolItem }
 		console.log('Active rol item set to ' + rolItem)
 	},
 })

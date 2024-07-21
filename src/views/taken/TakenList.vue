@@ -16,7 +16,7 @@ import { store } from '../../store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="store.getTakenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -30,15 +30,15 @@ import { store } from '../../store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(taak, i) in takenList.results"
+			<div v-if="store.takenList">
+				<NcListItem v-for="(taak, i) in store.takenList.results"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
 					:force-display-actions="true"
 					:active="store.taakId === taak?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="toggleTaakDetailView(taak.id)">
+					@click="store.setTaakItem(taak)">
 					<template #icon>
 						<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
 							disable-menu
@@ -65,7 +65,7 @@ import { store } from '../../store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!store.takenList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -107,36 +107,9 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchData()
+		store.getTakenList()
 	},
 	methods: {
-		toggleTaakDetailView(taakId) {
-			if (store.taakId === taakId) store.setTaakId(false)
-			else store.setTaakId(taakId)
-		},
-		editTaak(taak) {
-			store.setTaakItem(taak)
-			store.setModal('editTaak')
-		},
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.takenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
 		},

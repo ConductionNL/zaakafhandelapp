@@ -4,12 +4,12 @@ import { store } from '../../store.js'
 
 <template>
 	<div class="detailContainer">
-		<div v-if="!loading" id="app-content">
+		<div id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ taak.title }}
+						{{ store.taakItem.title }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
@@ -25,16 +25,12 @@ import { store } from '../../store.js'
 				</div>
 				<div class="grid">
 					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
-						<span>{{ taak.onderwerp }}</span>
+						<b>Sammenvatting:</b>
+						<span>{{ store.taakItem.onderwerp }}</span>
 					</div>
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
-			:size="100"
-			appearance="dark"
-			name="Taak details aan het laden" />
 	</div>
 </template>
 
@@ -50,54 +46,6 @@ export default {
 	name: 'TaakDetails',
 	components: {
 		NcLoadingIcon,
-	},
-	props: {
-		taakId: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			taak: [],
-			loading: false,
-		}
-	},
-	watch: {
-		taakId: {
-			handler(taakId) {
-				this.fetchData(taakId)
-			},
-			deep: true,
-		},
-	},
-	mounted() {
-		this.fetchData(store.taakId)
-	},
-	methods: {
-		fetchData(taakId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken/' + taakId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.taak = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		editTaak(taak) {
-			store.setTaakItem(taak)
-			store.setModal('editTaak')
-		},
 	},
 }
 </script>

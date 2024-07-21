@@ -12,78 +12,83 @@ import { store } from '../../store.js'
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="onderwerp"
+					:value.sync="store.berichtItem.title"
+					label="Title" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.onderwerp"
 					label="Onderwerp" />
 
 				<NcTextArea
 					:disabled="loading"
-					:value.sync="berichttekst"
+					:value.sync="store.berichtItem.berichttekst"
 					label="Berichttekst" />
 
 				<NcTextArea
 					:disabled="loading"
-					:value.sync="inhoud"
+					:value.sync="store.berichtItem.inhoud"
 					label="Inhoud (base64)" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="bijlageType"
+					:value.sync="store.berichtItem.bijlageType"
 					label="Bijlage type" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="soortGebruiker"
+					:value.sync="store.berichtItem.soortGebruiker"
 					label="Soort gebruiker" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="publicatieDatum"
+					:value.sync="store.berichtItem.publicatieDatum"
 					label="Publicatiedatum" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="aanmaakDatum"
+					:value.sync="store.berichtItem.aanmaakDatum"
 					label="Aanmaak datum" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="berichtType"
+					:value.sync="store.berichtItem.berichtType"
 					label="Bericht type" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="referentie"
+					:value.sync="store.berichtItem.referentie"
 					label="Referentie" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="berichtID"
+					:value.sync="store.berichtItem.berichtID"
 					label="Bericht ID" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="batchID"
+					:value.sync="store.berichtItem.batchID"
 					label="Batch ID" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="gebruikerID"
+					:value.sync="store.berichtItem.gebruikerID"
 					label="Gebruiker ID" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="volgorde"
+					:value.sync="store.berichtItem.onderwerp"
 					label="Volgorde" />
 			</div>
 
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.attachmentItem.title || loading"
+				:disabled="loading"
 				type="primary"
-				@click="addAttachment()">
+				@click="addBericht()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
@@ -95,7 +100,7 @@ import { store } from '../../store.js'
 </template>
 
 <script>
-import { NcButton, NcLoadingIcon, NcModal, NcTextField, NcTextArea } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcModal, NcTextField, NcTextArea, NcNoteCard } from '@nextcloud/vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
@@ -106,6 +111,7 @@ export default {
 		NcTextArea,
 		NcButton,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		Plus,
 	},
@@ -116,38 +122,39 @@ export default {
 			error: false,
 		}
 	},
+	mounted() {
+		// Lets create an empty zaak item
+		store.setBerichtItem([])
+	},
 	methods: {
 		addBericht() {
-			this.$emit('bericht', this.onderwerp)
 			fetch(
-				'/index.php/apps/zaakafhandelapp/berichten/api',
+				'/index.php/apps/zaakafhandelapp/api/berichten',
 				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({
-						batchID: this.batchID,
-						berichtID: this.berichtID,
-						berichtType: this.berichtType,
-						publicatieDatum: this.publicatieDatum,
-						onderwerp: this.onderwerp,
-						berichttekst: this.berichttekst,
-						referentie: this.referentie,
-						gebruikerID: this.gebruikerID,
-						inhoud: this.inhoud,
-						soortGebruiker: this.soortGebruiker,
-						bijlageType: this.bijlageType,
-						omschrijving: this.omschrijving,
-						volgorde: this.volgorde,
-					}),
+					body: JSON.stringify(store.berichtItem),
 				},
 			)
 				.then((response) => {
-					this.succesMessage = true
-					setTimeout(() => (this.succesMessage = false), 2500)
+					this.succes = true
+					this.loading = false
+					store.getBerichtenList()
+					response.json().then((data) => {
+						store.setBerichtItem(data)
+					})
+					// Get the modal to self close
+					const self = this
+					setTimeout(function() {
+						self.succes = false
+						store.setModal(false)
+					}, 2000)
 				})
 				.catch((err) => {
+					this.loading = false
+					this.error = err
 					console.error(err)
 				})
 		},

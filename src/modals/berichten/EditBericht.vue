@@ -13,82 +13,82 @@ import { store } from '../../store.js'
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
-			<div class="form-group">
+			<div v-if="!succes" class="form-group">
+				
 				<NcTextField
 					:disabled="loading"
-					label="Onderwerp"
-					:value.sync="bericht.onderwerp" />
-			</div>
-			<div class="form-group">
-				<NcTextArea label="Berichttekst"
-					:value.sync="bericht.berichttekst" />
-			</div>
-			<div class="form-group">
+					:value.sync="store.berichtItem.title"
+					label="Title" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.onderwerp"
+					label="Onderwerp" />
+
 				<NcTextArea
 					:disabled="loading"
-					label="Inhoud (base64)"
-					:value.sync="bericht.inhoud" />
-			</div>
-			<div class="form-group">
-				<NcTextField
+					:value.sync="store.berichtItem.berichttekst"
+					label="Berichttekst" />
+
+				<NcTextArea
 					:disabled="loading"
-					label="Bijlage type"
-					:value.sync="bericht.bijlageType" />
-			</div>
-			<div class="form-group">
-				<NcTextField
-					:disabled="loading"
-					label="Soort gebruiker"
-					:value.sync="bericht.soortGebruiker" />
-			</div>
-			<div class="form-group">
-				<NcTextField
-					:disabled="loading"
-					label="Publicatiedatum"
-					:value.sync="bericht.publicatieDatum" />
-			</div>
-			<div class="form-group">
-				<NcTextField
-					:disabled="loading"
-					label="Aanmaak datum"
-					:value.sync="bericht.aanmaakDatum" />
-			</div>
-			<div class="form-group">
-				<NcTextField label="Bericht type"
-					:value.sync="bericht.berichtType"
-					:loading="berichtLoading" />
-			</div>
-			<div class="form-group">
-				<NcTextField
-					:disabled="loading"
-					label="Referentie"
-					:value.sync="bericht.referentie" />
-			</div>
-			<div class="form-group">
-				<NcTextField
-					:disabled="loading"
-					label="Bericht ID"
-					:value.sync="bericht.berichtID" />
+					:value.sync="store.berichtItem.inhoud"
+					label="Inhoud (base64)" />
 
 				<NcTextField
 					:disabled="loading"
-					label="Batch ID"
-					:value.sync="bericht.batchID" />
+					:value.sync="store.berichtItem.bijlageType"
+					label="Bijlage type" />
 
 				<NcTextField
 					:disabled="loading"
-					abel="Gebruiker ID"
-					:value.sync="bericht.gebruikerID" />
+					:value.sync="store.berichtItem.soortGebruiker"
+					label="Soort gebruiker" />
 
 				<NcTextField
 					:disabled="loading"
-					label="Volgorde"
-					:value.sync="bericht.volgorde" />
+					:value.sync="store.berichtItem.publicatieDatum"
+					label="Publicatiedatum" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.aanmaakDatum"
+					label="Aanmaak datum" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.berichtType"
+					label="Bericht type" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.referentie"
+					label="Referentie" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.berichtID"
+					label="Bericht ID" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.batchID"
+					label="Batch ID" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.gebruikerID"
+					label="Gebruiker ID" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="store.berichtItem.onderwerp"
+					label="Volgorde" />
 			</div>
 
 			<NcButton
 				v-if="!succes"
-				:disabled="!store.attachmentItem.title || loading"
+				:disabled="loading"
 				type="primary"
 				@click="addAttachment()">
 				<template #icon>
@@ -146,9 +146,18 @@ export default {
 					body: JSON.stringify(this.bericht),
 				},
 			).then((response) => {
-				this.berichtLoading = false
-				this.succesMessage = true
-				setTimeout(() => (this.succesMessage = false), 2500)
+				this.loading = false
+				this.succes = true
+				store.getBerichtenList()
+				response.json().then((data) => {
+					store.setBerichtItem(data)
+				})
+				// Get the modal to self close
+				const self = this
+				setTimeout(function() {
+					self.succes = false
+					store.setModal(false)
+				}, 2000)
 			}).catch((err) => {
 				this.berichtLoading = false
 				console.error(err)

@@ -4,12 +4,12 @@ import { store } from '../../store.js'
 
 <template>
 	<div class="detailContainer">
-		<div v-if="!loading" id="app-content">
+		<div id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ bericht.onderwerp }}
+						{{ store.berichtItem.onderwerp }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -26,60 +26,52 @@ import { store } from '../../store.js'
 				</div>
 				<div class="detailGrid">
 					<div>
-						<h4>Berichttekst:</h4>
-						<span>{{ bericht.berichttekst }}</span>
+						<b>Berichttekst:</b>
+						<p>{{ store.berichtItem.berichttekst }}</p>
 					</div>
 					<div>
-						<h4>Berichttekst:</h4>
-						<p>{{ bericht.berichttekst }}</p>
+						<b>Inhoud:</b>
+						<p>{{ store.berichtItem.inhoud }}</p>
 					</div>
 					<div>
-						<h4>Inhoud:</h4>
-						<p>{{ bericht.inhoud }}</p>
+						<b>Soort gebruiker:</b>
+						<span>{{ store.berichtItem.soortGebruiker }}</span>
 					</div>
 					<div>
-						<h4>Soort gebruiker:</h4>
-						<span>{{ bericht.soortGebruiker }}</span>
+						<b>Publicatiedatum:</b>
+						<span>{{ store.berichtItem.publicatieDatum }}</span>
 					</div>
 					<div>
-						<h4>Publicatiedatum:</h4>
-						<span>{{ bericht.publicatieDatum }}</span>
+						<b>Aanmaak datum:</b>
+						<span>{{ store.berichtItem.aanmaakDatum }}</span>
 					</div>
 					<div>
-						<h4>Aanmaak datum:</h4>
-						<span>{{ bericht.aanmaakDatum }}</span>
+						<b>Bericht type:</b>
+						<span>{{ store.berichtItem.berichtType }}</span>
 					</div>
 					<div>
-						<h4>Bericht type:</h4>
-						<span>{{ bericht.berichtType }}</span>
+						<b>Referentie:</b>
+						<span>{{ store.berichtItem.referentie }}</span>
 					</div>
 					<div>
-						<h4>Referentie:</h4>
-						<span>{{ bericht.referentie }}</span>
+						<b>Bericht ID:</b>
+						<span>{{ store.berichtItem.berichtID }}</span>
 					</div>
 					<div>
-						<h4>Bericht ID:</h4>
-						<span>{{ bericht.berichtID }}</span>
+						<b>Batch ID:</b>
+						<span>{{ store.berichtItem.batchID }}</span>
 					</div>
 					<div>
-						<h4>Batch ID:</h4>
-						<span>{{ bericht.batchID }}</span>
+						<b>Gebruiker ID:</b>
+						<span>{{ store.berichtItem.gebruikerID }}</span>
 					</div>
 					<div>
-						<h4>Gebruiker ID:</h4>
-						<span>{{ bericht.gebruikerID }}</span>
-					</div>
-					<div>
-						<h4>Volgorde:</h4>
-						<span>{{ bericht.volgorde }}</span>
+						<b>Volgorde:</b>
+						<span>{{ store.berichtItem.volgorde }}</span>
 					</div>
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
-			:size="100"
-			appearance="dark"
-			name="Bericht details aan het laden" />
 	</div>
 </template>
 
@@ -101,55 +93,6 @@ export default {
 		// Icons
 		Pencil,
 		DotsHorizontal,
-	},
-	props: {
-		berichtId: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			bericht: [],
-			loading: false,
-		}
-	},
-	watch: {
-		berichtId: {
-			handler(berichtId) {
-				this.fetchData(berichtId)
-			},
-			deep: true,
-		},
-	},
-	// First time the is no emit so lets grap it directly
-	mounted() {
-		this.fetchData(store.berichtItem.id)
-	},
-	methods: {
-		editBericht(bericht) {
-			store.setBerichtItem(bericht)
-			store.setModal('editBericht')
-		},
-		fetchData(berichtId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten/' + berichtId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.bericht = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 	},
 }
 </script>
