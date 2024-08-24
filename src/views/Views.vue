@@ -9,6 +9,7 @@ import { store } from '../store.js'
 			<BerichtenIndex v-if="store.selected === 'berichten'" />
 			<BesluitenIndex v-if="store.selected === 'besluiten'" />
 			<DashboardIndex v-if="store.selected === 'dashboard'" />
+			<SearchIndex v-if="store.selected === 'search'" />
 			<DocumentenIndex v-if="store.selected === 'documenten'" />
 			<KlantenIndex v-if="store.selected === 'klanten'" />
 			<ResultatenIndex v-if="store.selected === 'resultaten'" />
@@ -26,6 +27,7 @@ import { NcAppContent } from '@nextcloud/vue'
 import BerichtenIndex from './berichten/BerichtenIndex.vue'
 import BesluitenIndex from './besluiten/BesluitenIndex.vue'
 import DashboardIndex from './dashboard/DashboardIndex.vue'
+import SearchIndex from './search/SearchIndex.vue'
 import DocumentenIndex from './documenten/DocumentenIndex.vue'
 import KlantenIndex from './klanten/KlantenIndex.vue'
 import ResultatenIndex from './resultaten/ResultatenIndex.vue'
@@ -41,6 +43,7 @@ export default {
 		BerichtenIndex,
 		BesluitenIndex,
 		DashboardIndex,
+		SearchIndex,
 		DocumentenIndex,
 		KlantenIndex,
 		ResultatenIndex,

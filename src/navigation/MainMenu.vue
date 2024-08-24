@@ -50,6 +50,14 @@ import { store } from '../store.js'
 					<ChatOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
+			<NcAppNavigationItem
+				:active="store.selected === 'search'"
+				name="Zoeken"
+				@click="store.setSelected('search')">
+				<template #icon>
+					<Magnify :size="20" />
+				</template>
+			</NcAppNavigationItem>
 		</NcAppNavigationList>
 
 		<NcAppNavigationSettings>
@@ -95,6 +103,7 @@ import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import SortVariantLock from 'vue-material-design-icons/SortVariantLock.vue'
+import Magnify from 'vue-material-design-icons/Magnify.vue'
 
 export default {
 	name: 'MainMenu',
@@ -104,6 +113,8 @@ export default {
 		NcAppNavigationItem,
 		NcAppNavigationNew,
 		NcAppNavigationSettings,
+		// Icons
+		Magnify,
 		Finance,
 		AlphaTBoxOutline,
 		ChatOutline,
