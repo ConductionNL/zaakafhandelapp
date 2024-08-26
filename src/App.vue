@@ -4,6 +4,7 @@
 		<Views />
 		<SideBars />
 		<Modals />
+		<Dialogs />
 	</NcContent>
 </template>
 
@@ -12,6 +13,7 @@
 import { NcContent } from '@nextcloud/vue'
 import MainMenu from './navigation/MainMenu.vue'
 import Modals from './modals/Modals.vue'
+import Dialogs from './dialogs/Dialogs.vue'
 import Views from './views/Views.vue'
 import SideBars from './sidebars/SideBars.vue'
 
@@ -21,6 +23,7 @@ export default {
 		NcContent,
 		MainMenu,
 		Modals,
+		Dialogs,
 		Views,
 		SideBars,
 	},
