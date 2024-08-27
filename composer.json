@@ -1,22 +1,22 @@
 {
 	"name": "nextcloud/zaakafhandelapp",
 	"description": "This nextcloud app provid a basic zaak afhandel component for dutch governemental institutions",
-	"license": "AGPL-3.0-or-later",
+	"license": "AGPL-3.0-or-later",	
 	"authors": [
 		{
 			"name": "Conduction b.v.",
 			"email": "info@conduction.nl",
-			"homepage": ""
+			"homepage": "https://conduction.nl"
 		},
 		{
 			"name": "Remko Huisman (Conduction)",
 			"email": "remko@conduction.nl",
-			"homepage": ""
+			"homepage": "https://conduction.nl"
 		},
 		{
 			"name": "Ruben van der Linde (Conduction)",
 			"email": "ruben@conduction.nl",
-			"homepage": ""
+			"homepage": "https://conduction.nl"
 		}
 	],
 	"autoload": {
