@@ -93,5 +93,6 @@ export default {
 }
 .itemContainer{
 	overflow: auto;
+	margin-block-end: 10px;
  }
 </style>
