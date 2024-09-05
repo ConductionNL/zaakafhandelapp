@@ -16,6 +16,18 @@ webpackConfig.entry = {
 		import: path.join(__dirname, 'src', 'main.js'),
 		filename: appId + '-main.js',
 	},
+	zakenWidget: {
+		import: path.join(__dirname, 'src', 'zakenWidget.js'),
+		filename: appId + '-zakenWidget.js',
+	},
+	takenWidget: {
+		import: path.join(__dirname, 'src', 'takenWidget.js'),
+		filename: appId + '-takenWidget.js',
+	},
+	openZakenWidget: {
+		import: path.join(__dirname, 'src', 'openZakenWidget.js'),
+		filename: appId + '-openZakenWidget.js',
+	},
 }
 
 module.exports = webpackConfig
