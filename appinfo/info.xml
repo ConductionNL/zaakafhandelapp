@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-	<id>dsonextcloud</id>
+	<id>zaakafhandelapp</id>
 	<name>Zaak Afhandel App</name>
 	<summary>ZAA</summary>
 	<description>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionNL</description>
