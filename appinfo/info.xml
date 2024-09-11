@@ -4,7 +4,7 @@
 	<id>zaakafhandelapp</id>
 	<name>ZaakAfhandelapp</name>
 	<summary>ZAA</summary>
-	<description>This is a the ZAA (Zaak Afhandel App) in English Case Handling App that is made by ConductionNL</description>
+	<description>This is a the ZAA (Zaak Afhandel App) in English Case Handling App that is made by ConductionNL for the Nextcloud eco</description>
 	<version>0.0.2</version>
 	<licence>agpl/licence>
 	<category>organization</category>
