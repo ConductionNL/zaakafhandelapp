@@ -5,7 +5,7 @@
 	<name>ZaakAfhandelapp</name>
 	<summary>ZAA</summary>
 	<description>This is a the ZAA (Zaak Afhandel App) in English Case Handling App that is made by ConductionNL for the Nextcloud eco</description>
-	<version>0.0.4</version>
+	<version>0.0.5</version>
 	<licence>agpl</licence>
 	<category>organization</category>
 	<author mail="info@conduction.nl" homepage="https://conduction.nl/">Conduction</author>
