@@ -4,7 +4,7 @@ import { ZaakType } from '../../entities/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen'
 
-export const useZaakTypenStore = defineStore('zaakTypen', {
+export const useZaakTypeStore = defineStore('zaakTypen', {
 	state: () => ({
 		zaakTypeItem: false,
 		zaakTypeList: [],
