@@ -1,7 +1,7 @@
 import { Zaak } from './zaak'
 import { mockZaakData } from './zaak.mock'
 
-describe('Source Entity', () => {
+describe('Zaak Entity', () => {
 	it('should create a Zaak entity with full data', () => {
 		const zaak = new Zaak(mockZaakData()[0])
 
