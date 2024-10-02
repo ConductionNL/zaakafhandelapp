@@ -1,5 +1,5 @@
 import { SafeParseReturnType, z } from 'zod'
-import { TZaak } from './zaak.types'
+import { TZaak, zaakTypeID } from './zaak.types'
 
 export class Zaak implements TZaak {
 
@@ -9,7 +9,7 @@ export class Zaak implements TZaak {
 	public url: string
 	public bronorganisatie: string
 	public toelichting: string
-	public zaaktype: string
+	public zaaktype: zaakTypeID
 	public archiefstatus: string
 	public registratiedatum: string
 	public verantwoordelijkeOrganisatie: string

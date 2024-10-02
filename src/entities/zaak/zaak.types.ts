@@ -1,3 +1,5 @@
+export type zaakTypeID = string // create an alias for string called ZaakTypeID to make it easier for developers to understand that this is a ID from a ZaakType
+
 export type TZaak = {
     uuid: string;
     omschrijving: string;
@@ -5,7 +7,7 @@ export type TZaak = {
     url: string;
     bronorganisatie: string;
     toelichting: string;
-    zaaktype: string;
+    zaaktype: zaakTypeID;
     archiefstatus: string;
     registratiedatum: string;
     verantwoordelijkeOrganisatie: string;
