@@ -71,7 +71,7 @@ class ZakenController extends Controller
             "omschrijving" => "Zaak 3",
             "toelichting" => "string",
             "zaaktype" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "archiefstatus" => "gearchiveerd_procestermijn_onbekend",            
+            "archiefstatus" => "gearchiveerd_procestermijn_onbekend",
             "registratiedatum" => "2019-08-24",
             "verantwoordelijkeOrganisatie" => "string",
             "startdatum" => "2019-08-24",
