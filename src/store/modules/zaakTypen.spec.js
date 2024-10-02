@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useZaakTypenStore } from './zaakTypen.js'
+import { useZaakTypeStore } from './zaakTypen.js'
 import { ZaakType, mockZaakTypen } from '../../entities/index.js'
 
 describe('ZaakTypen Store', () => {
@@ -10,7 +10,7 @@ describe('ZaakTypen Store', () => {
 	})
 
 	it('sets zaakType item correctly', () => {
-		const store = useZaakTypenStore()
+		const store = useZaakTypeStore()
 
 		store.setZaakTypeItem(mockZaakTypen()[0])
 
@@ -21,7 +21,7 @@ describe('ZaakTypen Store', () => {
 	})
 
 	it('sets zaakTypen list correctly', () => {
-		const store = useZaakTypenStore()
+		const store = useZaakTypeStore()
 
 		store.setZaakTypeList(mockZaakTypen())
 
