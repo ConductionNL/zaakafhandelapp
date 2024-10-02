@@ -32,10 +32,6 @@ export const store = reactive({
 		this.item = item
 		console.log('Active object item set to ' + item)
 	},
-	setZaakTypeItem(zaakTypeItem) {
-		this.zaakTypeItem = zaakTypeItem
-		console.log('Active zaak type item set to ' + zaakTypeItem)
-	},
 	setKlantId(klantId) {
 		this.klantId = klantId
 		console.log('Active klant id set to ' + klantId)
