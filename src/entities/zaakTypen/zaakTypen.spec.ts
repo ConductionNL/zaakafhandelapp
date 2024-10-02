@@ -1,5 +1,5 @@
-import { ZaakType } from './zaakType'
-import { mockZaakTypeData } from './zaakType.mock'
+import { ZaakType } from './zaakTypen'
+import { mockZaakTypeData } from './zaakTypen.mock'
 
 describe('ZaakType Entity', () => {
 	it('should create a ZaakType entity with full data', () => {

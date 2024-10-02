@@ -1,5 +1,5 @@
-import { ZaakType } from './zaakType'
-import { TZaakType } from './zaakType.types'
+import { ZaakType } from './zaakTypen'
+import { TZaakType } from './zaakTypen.types'
 
 export const mockZaakTypeData = (): TZaakType[] => [
 	{
