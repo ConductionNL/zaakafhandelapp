@@ -8,6 +8,7 @@ import { useZaakTypeStore } from './modules/zaakType.js'
 const navigationStore = useNavigationStore(pinia)
 const zaakStore = useZaakStore(pinia)
 const zaakTypeStore = useZaakTypeStore(pinia)
+
 export {
 	// generic
 	navigationStore,
