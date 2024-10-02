@@ -1,27 +1,27 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
-import { Zaak } from '../../entities/index.js'
+import { ZaakType } from '../../entities/index.js'
 
-const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/zaken'
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen'
 
-export const useZaakStore = defineStore('zaken', {
+export const useZaakTypeStore = defineStore('zaakType', {
 	state: () => ({
-		zaakItem: false,
-		zakenList: [],
+		zaakTypeItem: false,
+		zaakTypeList: [],
 	}),
 	actions: {
-		setZaakItem(zaakItem) {
-			this.zaakItem = zaakItem && new Zaak(zaakItem)
-			console.log('Active zaak item set to ' + zaakItem)
+		setZaakTypeItem(zaakTypeItem) {
+			this.zaakTypeItem = zaakTypeItem && new ZaakType(zaakTypeItem)
+			console.log('Active zaaktype item set to ' + zaakTypeItem)
 		},
-		setZakenList(zakenList) {
-			this.zakenList = zakenList.map(
-			    (zaakItem) => new Zaak(zaakItem),
+		setZaakTypeList(zaakTypeList) {
+			this.zaakTypeList = zaakTypeList.map(
+			    (zaakTypeItem) => new ZaakType(zaakTypeItem),
 			)
-			console.log('Zaken list set to ' + zakenList.length + ' items')
+			console.log('Zaaktypen list set to ' + zaakTypeList.length + ' items')
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshZakenList(search = null) {
+		async refreshZaakTypeList(search = null) {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -38,14 +38,14 @@ export const useZaakStore = defineStore('zaken', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((zaakItem) => new Zaak(zaakItem))
+			const entities = data.map((zaakTypeItem) => new ZaakType(zaakTypeItem))
 
-			this.setZakenList(data)
+			this.setZaakTypeList(data)
 
 			return { response, data, entities }
 		},
-		// New function to get a single zaak
-		async getZaak(id) {
+		// New function to get a single zaaktype
+		async getZaakType(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			const response = await fetch(endpoint, {
@@ -58,19 +58,19 @@ export const useZaakStore = defineStore('zaken', {
 			}
 
 			const data = (await response.json()).results
-			const entity = new Zaak(data)
+			const entity = new ZaakType(data)
 
-			this.setZaakItem(data)
+			this.setZaakTypeItem(data)
 
 			return { response, data, entity }
 		},
-		// Delete a zaak
-		async deleteZaak(zaakItem) {
-			if (!zaakItem.id) {
-				throw new Error('No zaak item to delete')
+		// Delete a zaaktype
+		async deleteZaakType(zaakTypeItem) {
+			if (!zaakTypeItem.id) {
+				throw new Error('No zaaktype item to delete')
 			}
 
-			const endpoint = `${apiEndpoint}/${zaakItem.id}`
+			const endpoint = `${apiEndpoint}/${zaakTypeItem.id}`
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
@@ -83,21 +83,21 @@ export const useZaakStore = defineStore('zaken', {
 
 			const data = await response.json()
 
-			this.refreshZakenList()
+			this.refreshZaakTypeList()
 
 			return { response, data }
 		},
-		// Create or save a zaak from store
-		async saveZaak(zaakItem) {
-			if (!zaakItem) {
-				throw new Error('No zaak item to save')
+		// Create or save a zaaktype from store
+		async saveZaakType(zaakTypeItem) {
+			if (!zaakTypeItem) {
+				throw new Error('No zaaktype item to save')
 			}
 
-			const isNewZaak = !zaakItem.id
-			const endpoint = isNewZaak
+			const isNewZaakType = !zaakTypeItem.id
+			const endpoint = isNewZaakType
 				? `${apiEndpoint}`
-				: `${apiEndpoint}/${zaakItem.id}`
-			const method = isNewZaak ? 'POST' : 'PUT'
+				: `${apiEndpoint}/${zaakTypeItem.id}`
+			const method = isNewZaakType ? 'POST' : 'PUT'
 
 			const response = await fetch(
 				endpoint,
@@ -106,7 +106,7 @@ export const useZaakStore = defineStore('zaken', {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(zaakItem),
+					body: JSON.stringify(zaakTypeItem),
 				},
 			)
 
@@ -116,10 +116,10 @@ export const useZaakStore = defineStore('zaken', {
 			}
 
 			const data = (await response.json()).results
-			const entity = new Zaak(data)
+			const entity = new ZaakType(data)
 
-			this.setZaakItem(data)
-			this.refreshZakenList()
+			this.setZaakTypeItem(data)
+			this.refreshZaakTypeList()
 
 			return { response, data, entity }
 		},
