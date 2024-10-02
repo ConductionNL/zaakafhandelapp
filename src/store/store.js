@@ -5,11 +5,13 @@ import { useNavigationStore } from './modules/navigation.js'
 import { useZaakStore } from './modules/zaken.js'
 import { useZaakTypeStore } from './modules/zaakTypen.js'
 import { useKlantStore } from './modules/klanten.js'
+import { useTaakStore } from './modules/taak.js'
 
 const navigationStore = useNavigationStore(pinia)
 const zaakStore = useZaakStore(pinia)
 const zaakTypeStore = useZaakTypeStore(pinia)
 const klantStore = useKlantStore(pinia)
+const taakStore = useTaakStore(pinia)
 
 export {
 	// generic
@@ -17,4 +19,5 @@ export {
 	zaakStore,
 	zaakTypeStore,
 	klantStore,
+	taakStore,
 }
