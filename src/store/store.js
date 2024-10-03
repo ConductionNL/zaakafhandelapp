@@ -4,14 +4,17 @@ import pinia from '../pinia.js'
 import { useNavigationStore } from './modules/navigation.js'
 import { useZaakStore } from './modules/zaken.js'
 import { useZaakTypeStore } from './modules/zaakTypen.js'
+import { useKlantStore } from './modules/klanten.js'
 
 const navigationStore = useNavigationStore(pinia)
 const zaakStore = useZaakStore(pinia)
 const zaakTypeStore = useZaakTypeStore(pinia)
+const klantStore = useKlantStore(pinia)
 
 export {
 	// generic
 	navigationStore,
 	zaakStore,
 	zaakTypeStore,
+	klantStore,
 }
