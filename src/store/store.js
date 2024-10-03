@@ -3,12 +3,15 @@
 import pinia from '../pinia.js'
 import { useNavigationStore } from './modules/navigation.js'
 import { useZaakStore } from './modules/zaken.js'
+import { useZaakTypeStore } from './modules/zaakTypen.js'
 
 const navigationStore = useNavigationStore(pinia)
 const zaakStore = useZaakStore(pinia)
+const zaakTypeStore = useZaakTypeStore(pinia)
 
 export {
 	// generic
 	navigationStore,
 	zaakStore,
+	zaakTypeStore,
 }

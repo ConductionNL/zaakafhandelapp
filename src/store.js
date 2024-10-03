@@ -10,9 +10,6 @@ export const store = reactive({
 	modalData: [], // optional data to pass to the modal
 	// The curently active item (or object) , managed trought the state to ensure that only one modal can be active at the same time
 	item: false,
-	zaakItem: false,
-	zaakId: false,
-	zaakTypeItem: false,
 	klantId: false,
 	klantItem: false,
 	taakItem: false,
@@ -34,22 +31,6 @@ export const store = reactive({
 	setItem(item) {
 		this.item = item
 		console.log('Active object item set to ' + item)
-	},
-	setZaakItem(zaakItem) {
-		this.zaakItem = zaakItem
-		console.log('Active zaak item set to ' + zaakItem)
-	},
-	setZaakId(zaakId) {
-		this.zaakId = zaakId
-		console.log('Active zaak id set to ' + zaakId)
-	},
-	setTaakZaakId(taakZaakId) {
-		this.taakZaakId = taakZaakId
-		console.log('Taak Zaak id set to ' + taakZaakId)
-	},
-	setZaakTypeItem(zaakTypeItem) {
-		this.zaakTypeItem = zaakTypeItem
-		console.log('Active zaak type item set to ' + zaakTypeItem)
 	},
 	setKlantId(klantId) {
 		this.klantId = klantId
