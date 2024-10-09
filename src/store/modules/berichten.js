@@ -57,7 +57,7 @@ export const useBerichtStore = defineStore('berichten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Bericht(data)
 
 			this.setBerichtItem(data)
@@ -81,11 +81,9 @@ export const useBerichtStore = defineStore('berichten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json()
-
 			this.refreshBerichtenList()
 
-			return { response, data }
+			return { response }
 		},
 		// Create or save a bericht from store
 		async saveBericht(berichtItem) {
@@ -115,7 +113,7 @@ export const useBerichtStore = defineStore('berichten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Bericht(data)
 
 			this.setBerichtItem(data)
