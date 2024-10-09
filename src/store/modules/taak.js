@@ -57,7 +57,7 @@ export const useTaakStore = defineStore('taken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Taak(data)
 
 			this.setTaakItem(data)
@@ -81,11 +81,9 @@ export const useTaakStore = defineStore('taken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json()
-
 			this.refreshTakenList()
 
-			return { response, data }
+			return { response }
 		},
 		// Create or save a taak from store
 		async saveTaak(taakItem) {
@@ -115,7 +113,7 @@ export const useTaakStore = defineStore('taken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Taak(data)
 
 			this.setTaakItem(data)
