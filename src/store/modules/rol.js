@@ -1,27 +1,27 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
-import { Taak } from '../../entities/index.js'
+import { Rol } from '../../entities/index.js'
 
-const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/taken'
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/rollen'
 
-export const useTaakStore = defineStore('taken', {
+export const useRolStore = defineStore('rollen', {
 	state: () => ({
-		taakItem: false,
-		takenList: [],
+		rolItem: false,
+		rollenList: [],
 	}),
 	actions: {
-		setTaakItem(taakItem) {
-			this.taakItem = taakItem && new Taak(taakItem)
-			console.log('Active taak item set to ' + taakItem)
+		setRolItem(rolItem) {
+			this.rolItem = rolItem && new Rol(rolItem)
+			console.log('Active rol item set to ' + rolItem)
 		},
-		setTakenList(takenList) {
-			this.takenList = takenList.map(
-			    (taakItem) => new Taak(taakItem),
+		setRollenList(rollenList) {
+			this.rollenList = rollenList.map(
+			    (rolItem) => new Rol(rolItem),
 			)
-			console.log('Taken list set to ' + takenList.length + ' items')
+			console.log('Rollen list set to ' + rollenList.length + ' items')
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null) {
+		async refreshRollenList(search = null) {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -38,14 +38,14 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((taakItem) => new Taak(taakItem))
+			const entities = data.map((rolItem) => new Rol(rolItem))
 
-			this.setTakenList(data)
+			this.setRollenList(data)
 
 			return { response, data, entities }
 		},
-		// Function to get a single taak
-		async getTaak(id) {
+		// New function to get a single rol
+		async getRol(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			const response = await fetch(endpoint, {
@@ -58,19 +58,19 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			const data = await response.json()
-			const entity = new Taak(data)
+			const entity = new Rol(data)
 
-			this.setTaakItem(data)
+			this.setRolItem(data)
 
 			return { response, data, entity }
 		},
-		// Delete a taak
-		async deleteTaak(taakItem) {
-			if (!taakItem.id) {
-				throw new Error('No taak item to delete')
+		// Delete a rol
+		async deleteRol(rolItem) {
+			if (!rolItem.id) {
+				throw new Error('No rol item to delete')
 			}
 
-			const endpoint = `${apiEndpoint}/${taakItem.id}`
+			const endpoint = `${apiEndpoint}/${rolItem.id}`
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
@@ -81,21 +81,21 @@ export const useTaakStore = defineStore('taken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			this.refreshTakenList()
+			this.refreshRollenList()
 
 			return { response }
 		},
-		// Create or save a taak from store
-		async saveTaak(taakItem) {
-			if (!taakItem) {
-				throw new Error('No taak item to save')
+		// Create or save a rol from store
+		async saveRol(rolItem) {
+			if (!rolItem) {
+				throw new Error('No rol item to save')
 			}
 
-			const isNewTaak = !taakItem.id
-			const endpoint = isNewTaak
+			const isNewRol = !rolItem.id
+			const endpoint = isNewRol
 				? `${apiEndpoint}`
-				: `${apiEndpoint}/${taakItem.id}`
-			const method = isNewTaak ? 'POST' : 'PUT'
+				: `${apiEndpoint}/${rolItem.id}`
+			const method = isNewRol ? 'POST' : 'PUT'
 
 			const response = await fetch(
 				endpoint,
@@ -104,7 +104,7 @@ export const useTaakStore = defineStore('taken', {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(taakItem),
+					body: JSON.stringify(rolItem),
 				},
 			)
 
@@ -114,10 +114,10 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			const data = await response.json()
-			const entity = new Taak(data)
+			const entity = new Rol(data)
 
-			this.setTaakItem(data)
-			this.refreshTakenList()
+			this.setRolItem(data)
+			this.refreshRollenList()
 
 			return { response, data, entity }
 		},

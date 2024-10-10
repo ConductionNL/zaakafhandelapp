@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editKlant'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editKlant'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Klant aanpassen</h2>
 
@@ -165,11 +165,11 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'editKlant' && this.hasUpdated) {
+		if (navigationStore.modal === 'editKlant' && this.hasUpdated) {
 			if (this.klant === store.klantItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editKlant' && !this.hasUpdated) {
+		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
 			// uncomment when api works
 			// this.fetchData(store.klantId)
 			this.hasUpdated = true
@@ -200,7 +200,7 @@ export default {
 				})
 		},
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		editKlant() {
 			this.loading = true

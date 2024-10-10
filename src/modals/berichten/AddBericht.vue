@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addBericht'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addBericht'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanmaken</h2>
 			<div class="form-group">
@@ -87,7 +87,7 @@ export default {
 	},
 	methods: {
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		addBericht() {
 			this.$emit('bericht', this.onderwerp)

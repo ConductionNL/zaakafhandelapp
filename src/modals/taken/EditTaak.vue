@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editTaak'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editTaak'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
 			<h2>Taak aanpassen</h2>
 			<div v-if="!taakLoading">
@@ -113,11 +113,11 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'editTaak' && this.hasUpdated) {
+		if (navigationStore.modal === 'editTaak' && this.hasUpdated) {
 			if (this.taak === store.taakItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editTaak' && !this.hasUpdated) {
+		if (navigationStore.modal === 'editTaak' && !this.hasUpdated) {
 			this.taak = store.taakItem
 			this.fetchZaken()
 			this.setStatusOptions()
@@ -126,7 +126,7 @@ export default {
 	},
 	methods: {
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		editTaak() {
 			this.loading = true

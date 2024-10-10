@@ -6,18 +6,23 @@ import { useZaakStore } from './modules/zaken.js'
 import { useZaakTypeStore } from './modules/zaakTypen.js'
 import { useKlantStore } from './modules/klanten.js'
 import { useTaakStore } from './modules/taak.js'
+import { useBerichtStore } from './modules/berichten.js'
+import { useRolStore } from './modules/rol.js'
 
 const navigationStore = useNavigationStore(pinia)
 const zaakStore = useZaakStore(pinia)
 const zaakTypeStore = useZaakTypeStore(pinia)
 const klantStore = useKlantStore(pinia)
 const taakStore = useTaakStore(pinia)
+const berichtStore = useBerichtStore(pinia)
+const rolStore = useRolStore(pinia)
 
 export {
-	// generic
 	navigationStore,
 	zaakStore,
 	zaakTypeStore,
 	klantStore,
 	taakStore,
+	berichtStore,
+	rolStore,
 }

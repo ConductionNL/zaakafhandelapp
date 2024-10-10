@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addKlant')">
+					<NcActionButton @click="navigationStore.setModal('addKlant')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -119,7 +119,7 @@ export default {
 		},
 		editKlant(klant) {
 			store.setKlantItem(klant)
-			store.setModal('editKlant')
+			navigationStore.setModal('editKlant')
 		},
 		fetchData(newPage) {
 			this.loading = true

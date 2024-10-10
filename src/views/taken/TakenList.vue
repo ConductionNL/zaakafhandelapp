@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addTaak')">
+					<NcActionButton @click="navigationStore.setModal('addTaak')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -116,7 +116,7 @@ export default {
 		},
 		editTaak(taak) {
 			store.setTaakItem(taak)
-			store.setModal('editTaak')
+			navigationStore.setModal('editTaak')
 		},
 		fetchData(newPage) {
 			this.loading = true

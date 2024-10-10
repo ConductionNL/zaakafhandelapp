@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addBericht')">
+					<NcActionButton @click="navigationStore.setModal('addBericht')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -116,7 +116,7 @@ export default {
 		editBericht(bericht) {
 			store.setBerichtItem(bericht)
 			store.setBerichtId(bericht.id)
-			store.setModal('editBericht')
+			navigationStore.setModal('editBericht')
 		},
 		storeBericht(bericht) {
 			store.setBerichtId(bericht.id)

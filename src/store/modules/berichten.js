@@ -1,27 +1,27 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
-import { Taak } from '../../entities/index.js'
+import { Bericht } from '../../entities/index.js'
 
-const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/taken'
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/berichten'
 
-export const useTaakStore = defineStore('taken', {
+export const useBerichtStore = defineStore('berichten', {
 	state: () => ({
-		taakItem: false,
-		takenList: [],
+		berichtItem: false,
+		berichtenList: [],
 	}),
 	actions: {
-		setTaakItem(taakItem) {
-			this.taakItem = taakItem && new Taak(taakItem)
-			console.log('Active taak item set to ' + taakItem)
+		setBerichtItem(berichtItem) {
+			this.berichtItem = berichtItem && new Bericht(berichtItem)
+			console.log('Active bericht item set to ' + berichtItem)
 		},
-		setTakenList(takenList) {
-			this.takenList = takenList.map(
-			    (taakItem) => new Taak(taakItem),
+		setBerichtenList(berichtenList) {
+			this.berichtenList = berichtenList.map(
+			    (berichtItem) => new Bericht(berichtItem),
 			)
-			console.log('Taken list set to ' + takenList.length + ' items')
+			console.log('Berichten list set to ' + berichtenList.length + ' items')
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null) {
+		async refreshBerichtenList(search = null) {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -38,14 +38,14 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((taakItem) => new Taak(taakItem))
+			const entities = data.map((berichtItem) => new Bericht(berichtItem))
 
-			this.setTakenList(data)
+			this.setBerichtenList(data)
 
 			return { response, data, entities }
 		},
-		// Function to get a single taak
-		async getTaak(id) {
+		// New function to get a single bericht
+		async getBericht(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			const response = await fetch(endpoint, {
@@ -58,19 +58,19 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			const data = await response.json()
-			const entity = new Taak(data)
+			const entity = new Bericht(data)
 
-			this.setTaakItem(data)
+			this.setBerichtItem(data)
 
 			return { response, data, entity }
 		},
-		// Delete a taak
-		async deleteTaak(taakItem) {
-			if (!taakItem.id) {
-				throw new Error('No taak item to delete')
+		// Delete a bericht
+		async deleteBericht(berichtItem) {
+			if (!berichtItem.id) {
+				throw new Error('No bericht item to delete')
 			}
 
-			const endpoint = `${apiEndpoint}/${taakItem.id}`
+			const endpoint = `${apiEndpoint}/${berichtItem.id}`
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
@@ -81,21 +81,21 @@ export const useTaakStore = defineStore('taken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			this.refreshTakenList()
+			this.refreshBerichtenList()
 
 			return { response }
 		},
-		// Create or save a taak from store
-		async saveTaak(taakItem) {
-			if (!taakItem) {
-				throw new Error('No taak item to save')
+		// Create or save a bericht from store
+		async saveBericht(berichtItem) {
+			if (!berichtItem) {
+				throw new Error('No bericht item to save')
 			}
 
-			const isNewTaak = !taakItem.id
-			const endpoint = isNewTaak
+			const isNewBericht = !berichtItem.id
+			const endpoint = isNewBericht
 				? `${apiEndpoint}`
-				: `${apiEndpoint}/${taakItem.id}`
-			const method = isNewTaak ? 'POST' : 'PUT'
+				: `${apiEndpoint}/${berichtItem.id}`
+			const method = isNewBericht ? 'POST' : 'PUT'
 
 			const response = await fetch(
 				endpoint,
@@ -104,7 +104,7 @@ export const useTaakStore = defineStore('taken', {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify(taakItem),
+					body: JSON.stringify(berichtItem),
 				},
 			)
 
@@ -114,10 +114,10 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			const data = await response.json()
-			const entity = new Taak(data)
+			const entity = new Bericht(data)
 
-			this.setTaakItem(data)
-			this.refreshTakenList()
+			this.setBerichtItem(data)
+			this.refreshBerichtenList()
 
 			return { response, data, entity }
 		},
