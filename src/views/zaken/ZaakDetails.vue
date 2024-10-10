@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -206,29 +206,24 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakId)
+		this.fetchData(zaakStore.zaakId)
 	},
 	methods: {
 		addTaakToZaak() {
 			navigationStore.setModal('addTaak')
-			store.setTaakZaakId(this.zaak.uuid)
+			taakStore.setTaakZaakId(this.zaak.uuid)
 		},
 		fetchData(zaakId) {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zaak = data
-						this.loading = false
-					})
+
+			zaakStore.getZaak(zaakId)
+				.then(({ entity }) => {
+					this.zaak = { ...entity }
 				})
-				.catch((err) => {
-					console.error(err)
+				.catch((e) => {
+					console.error(e)
+				})
+				.finally(() => {
 					this.loading = false
 				})
 		},
