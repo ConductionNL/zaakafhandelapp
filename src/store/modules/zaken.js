@@ -57,7 +57,7 @@ export const useZaakStore = defineStore('zaken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Zaak(data)
 
 			this.setZaakItem(data)
@@ -81,11 +81,9 @@ export const useZaakStore = defineStore('zaken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json()
-
 			this.refreshZakenList()
 
-			return { response, data }
+			return { response }
 		},
 		// Create or save a zaak from store
 		async saveZaak(zaakItem) {
@@ -115,7 +113,7 @@ export const useZaakStore = defineStore('zaken', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Zaak(data)
 
 			this.setZaakItem(data)

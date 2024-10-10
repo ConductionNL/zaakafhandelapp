@@ -57,7 +57,7 @@ export const useKlantStore = defineStore('klanten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Klant(data)
 
 			this.setKlantItem(data)
@@ -81,11 +81,9 @@ export const useKlantStore = defineStore('klanten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json()
-
 			this.refreshKlantenList()
 
-			return { response, data }
+			return { response }
 		},
 		// Create or save a klant from store
 		async saveKlant(klantItem) {
@@ -115,7 +113,7 @@ export const useKlantStore = defineStore('klanten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new Klant(data)
 
 			this.setKlantItem(data)
