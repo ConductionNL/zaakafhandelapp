@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editZaak'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editZaak'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaak aanpassen</h2>
 			<div class="form-group">
@@ -96,11 +96,11 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'editZaak' && this.hasUpdated) {
+		if (navigationStore.modal === 'editZaak' && this.hasUpdated) {
 			if (this.zaak === store.zaakItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editZaak' && !this.hasUpdated) {
+		if (navigationStore.modal === 'editZaak' && !this.hasUpdated) {
 			this.zaak = store.zaakItem
 			this.setArchiefStatusOptions()
 			this.fetchZaakType()
@@ -109,7 +109,7 @@ export default {
 	},
 	methods: {
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		editZaak() {
 			this.zaakLoading = true
