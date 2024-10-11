@@ -1,22 +1,22 @@
 <script setup>
-import { store } from '../store.js'
+import { navigationStore } from '../store/store.js'
 </script>
 
 <template>
 	<!-- Placeholder div for all of the vieuws-->
 	<NcAppContent>
 		<template #default>
-			<BerichtenIndex v-if="store.selected === 'berichten'" />
-			<BesluitenIndex v-if="store.selected === 'besluiten'" />
-			<DashboardIndex v-if="store.selected === 'dashboard'" />
-			<DocumentenIndex v-if="store.selected === 'documenten'" />
-			<KlantenIndex v-if="store.selected === 'klanten'" />
-			<ResultatenIndex v-if="store.selected === 'resultaten'" />
-			<RollenIndex v-if="store.selected === 'rollen'" />
-			<StatusssenIndex v-if="store.selected === 'statusssen'" />
-			<TakenIndex v-if="store.selected === 'taken'" />
-			<ZaakTypenIndex v-if="store.selected === 'zaakTypen'" />
-			<ZakenIndex v-if="store.selected === 'zaken'" />
+			<BerichtenIndex v-if="navigationStore.selected === 'berichten'" />
+			<BesluitenIndex v-if="navigationStore.selected === 'besluiten'" />
+			<DashboardIndex v-if="navigationStore.selected === 'dashboard'" />
+			<DocumentenIndex v-if="navigationStore.selected === 'documenten'" />
+			<KlantenIndex v-if="navigationStore.selected === 'klanten'" />
+			<ResultatenIndex v-if="navigationStore.selected === 'resultaten'" />
+			<RollenIndex v-if="navigationStore.selected === 'rollen'" />
+			<StatusssenIndex v-if="navigationStore.selected === 'statusssen'" />
+			<TakenIndex v-if="navigationStore.selected === 'taken'" />
+			<ZaakTypenIndex v-if="navigationStore.selected === 'zaakTypen'" />
+			<ZakenIndex v-if="navigationStore.selected === 'zaken'" />
 		</template>
 	</NcAppContent>
 </template>

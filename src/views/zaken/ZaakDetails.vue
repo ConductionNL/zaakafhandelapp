@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -15,7 +15,7 @@ import { store } from '../../store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setModal('editZaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -27,7 +27,7 @@ import { store } from '../../store.js'
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addRol')">
+						<NcActionButton @click="navigationStore.setModal('addRol')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
@@ -39,7 +39,7 @@ import { store } from '../../store.js'
 							</template>
 							Taak toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addBericht')">
+						<NcActionButton @click="navigationStore.setModal('addBericht')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
@@ -210,7 +210,7 @@ export default {
 	},
 	methods: {
 		addTaakToZaak() {
-			store.setModal('addTaak')
+			navigationStore.setModal('addTaak')
 			store.setTaakZaakId(this.zaak.uuid)
 		},
 		fetchData(zaakId) {

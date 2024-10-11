@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -131,7 +131,7 @@ export default {
 	methods: {
 		editKlant(klant) {
 			store.setKlantItem(klant)
-			store.setModal('editKlant')
+			navigationStore.setModal('editKlant')
 		},
 		fetchData(klantId) {
 			this.loading = true

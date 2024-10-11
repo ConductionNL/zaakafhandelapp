@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../store.js'
+import { navigationStore } from '../store/store.js'
 </script>
 
 <template>
@@ -7,47 +7,47 @@ import { store } from '../store.js'
 		<NcAppNavigationList>
 			<NcAppNavigationNewItem
 				name="Zaak Starten"
-				@new-item="store.modal = 'zaakAdd'">
+				@new-item="navigationStore.modal = 'zaakAdd'">
 				<template #icon>
 					<Plus :size="20" />
 				</template>
 			</NcAppNavigationNewItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'dashboard'"
+				:active="navigationStore.selected === 'dashboard'"
 				name="Dashboard"
-				@click="store.setSelected('dashboard')">
+				@click="navigationStore.setSelected('dashboard')">
 				<template #icon>
 					<Finance :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'zaken'"
+				:active="navigationStore.selected === 'zaken'"
 				name="Zaken"
-				@click="store.setSelected('zaken')">
+				@click="navigationStore.setSelected('zaken')">
 				<template #icon>
 					<BriefcaseAccountOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'taken'"
+				:active="navigationStore.selected === 'taken'"
 				name="Taken"
-				@click="store.setSelected('taken')">
+				@click="navigationStore.setSelected('taken')">
 				<template #icon>
 					<CalendarMonthOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'klanten'"
+				:active="navigationStore.selected === 'klanten'"
 				name="Klanten"
-				@click="store.setSelected('klanten')">
+				@click="navigationStore.setSelected('klanten')">
 				<template #icon>
 					<AccountGroupOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'berichten'"
+				:active="navigationStore.selected === 'berichten'"
 				name="Berichten"
-				@click="store.setSelected('berichten')">
+				@click="navigationStore.setSelected('berichten')">
 				<template #icon>
 					<ChatOutline :size="20" />
 				</template>
@@ -56,17 +56,17 @@ import { store } from '../store.js'
 
 		<NcAppNavigationSettings>
 			<NcAppNavigationItem
-				:active="store.selected === 'zaakTypen'"
+				:active="navigationStore.selected === 'zaakTypen'"
 				name="Zaak Typen"
-				@click="store.setSelected('zaakTypen')">
+				@click="navigationStore.setSelected('zaakTypen')">
 				<template #icon>
 					<AlphaTBoxOutline :size="20" />
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'auditTrail'"
+				:active="navigationStore.selected === 'auditTrail'"
 				name="Audit trail"
-				@click="store.setSelected('auditTrail')">
+				@click="navigationStore.setSelected('auditTrail')">
 				<template #icon>
 					<SortVariantLock :size="20" />
 				</template>

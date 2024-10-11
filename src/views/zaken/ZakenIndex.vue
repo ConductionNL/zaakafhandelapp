@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { store } from '../../store.js'
 			<ZakenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.zaakId || store.selected != 'zaken' "
+			<NcEmptyContent v-if="!store.zaakId || navigationStore.selected != 'zaken' "
 				class="detailContainer"
 				name="Geen Zaak"
 				description="Nog geen zaak geselecteerd">
@@ -16,12 +16,12 @@ import { store } from '../../store.js'
 					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addZaak')">
+					<NcButton type="primary" @click="navigationStore.setModal('addZaak')">
 						Zaak starten
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZaakDetails v-if="store.zaakId && store.selected === 'zaken'" :zaak-id="store.zaakId" />
+			<ZaakDetails v-if="store.zaakId && navigationStore.selected === 'zaken'" :zaak-id="store.zaakId" />
 		</template>
 	</NcAppContent>
 </template>

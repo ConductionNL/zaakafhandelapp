@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -96,7 +96,7 @@ export default {
 		},
 		editTaak(taak) {
 			store.setTaakItem(taak)
-			store.setModal('editTaak')
+			navigationStore.setModal('editTaak')
 		},
 	},
 }

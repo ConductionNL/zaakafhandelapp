@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { store } from '../../store.js'
 			<RollenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.rolItem || store.selected != 'rollen' "
+			<NcEmptyContent v-if="!store.rolItem || navigationStore.selected != 'rollen' "
 				class="detailContainer"
 				name="Geen rol"
 				description="Nog geen rol geselecteerd">
@@ -16,12 +16,12 @@ import { store } from '../../store.js'
 					<ChatOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('rolAdd')">
+					<NcButton type="primary" @click="navigationStore.setModal('rolAdd')">
 						Rol aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<RolDetails v-if="store.rolItem && store.selected === 'rollen'" :rol-id="store.rolId" />
+			<RolDetails v-if="store.rolItem && navigationStore.selected === 'rollen'" :rol-id="store.rolId" />
 		</template>
 	</NcAppContent>
 </template>

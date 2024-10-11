@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -81,7 +81,7 @@ export default {
 		editRol(rol) {
 			store.setRolItem(rol)
 			store.setRolId(rol.id)
-			store.setModal('editRol')
+			navigationStore.setModal('editRol')
 		},
 		fetchData(zaakId) {
 			this.loading = true
