@@ -57,7 +57,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new ZaakType(data)
 
 			this.setZaakTypeItem(data)
@@ -81,11 +81,9 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json()
-
 			this.refreshZaakTypeList()
 
-			return { response, data }
+			return { response }
 		},
 		// Create or save a zaaktype from store
 		async saveZaakType(zaakTypeItem) {
@@ -115,7 +113,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = (await response.json()).results
+			const data = await response.json()
 			const entity = new ZaakType(data)
 
 			this.setZaakTypeItem(data)

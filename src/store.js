@@ -3,19 +3,8 @@
 import { reactive } from 'vue'
 
 export const store = reactive({
-	taakZaakId: false,
-	berichtId: false,
-	berichtItem: false,
 	rolId: false,
 	rolItem: false,
-	setBerichtId(berichtId) {
-		this.berichtId = berichtId
-		console.log('Active bericht ID set to ' + berichtId)
-	},
-	setBerichtItem(berichtItem) {
-		this.berichtItem = berichtItem
-		console.log('Active bericht item set to ' + berichtItem)
-	},
 	setRolId(rolId) {
 		this.rolId = rolId
 		console.log('Active rol ID set to ' + rolId)
