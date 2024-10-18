@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addKlant'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addKlant'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Klant toevoegen</h2>
 
@@ -156,13 +156,13 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'addKlant' && !this.hasUpdated) {
+		if (navigationStore.modal === 'addKlant' && !this.hasUpdated) {
 			this.hasUpdated = true
 		}
 	},
 	methods: {
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		addKlant() {
 			this.klantLoading = true

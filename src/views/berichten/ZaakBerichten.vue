@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -83,7 +83,7 @@ export default {
 		editBericht(bericht) {
 			store.setBerichtItem(bericht)
 			store.setBerichtId(bericht.id)
-			store.setModal('editBericht')
+			navigationStore.setModal('editBericht')
 		},
 		fetchData(zaakId) {
 			this.loading = true

@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editBericht'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editBericht'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanpassen</h2>
 
@@ -116,18 +116,18 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'editBericht' && this.hasUpdated) {
+		if (navigationStore.modal === 'editBericht' && this.hasUpdated) {
 			if (this.bericht === store.berichtItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editBericht' && !this.hasUpdated) {
+		if (navigationStore.modal === 'editBericht' && !this.hasUpdated) {
 			this.hasUpdated = true
 			this.bericht = store.berichtItem
 		}
 	},
 	methods: {
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		editBericht() {
 			this.berichtLoading = true
