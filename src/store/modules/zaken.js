@@ -6,7 +6,7 @@ const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/zaken'
 
 export const useZaakStore = defineStore('zaken', {
 	state: () => ({
-		zaakItem: false,
+		zaakItem: null,
 		zakenList: [],
 	}),
 	actions: {
