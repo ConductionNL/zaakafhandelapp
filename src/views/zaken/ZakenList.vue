@@ -109,11 +109,11 @@ export default {
 	data() {
 		return {
 			search: '',
-			loading: true,
+			loading: false,
 			zakenList: [],
 		}
 	},
-	updated() {
+	mounted() {
 		this.loading = true
 
 		zaakStore.refreshZakenList()

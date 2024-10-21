@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { TZaak, Zaak } from '../../entities/index.js'
 
@@ -19,13 +18,13 @@ export const useZaakStore = defineStore('zaken', {
 	actions: {
 		setZaakItem(zaakItem: Zaak | TZaak) {
 			this.zaakItem = zaakItem && new Zaak(zaakItem)
-			console.log('Active zaak item set to ' + zaakItem)
+			console.info('Active zaak item set to ' + zaakItem)
 		},
 		setZakenList(zakenList: Zaak[] | TZaak[]) {
 			this.zakenList = zakenList.map(
 			    (zaakItem) => new Zaak(zaakItem),
 			)
-			console.log('Zaken list set to ' + zakenList.length + ' items')
+			console.info('Zaken list set to ' + zakenList.length + ' items')
 		},
 		/**
 		 * Refresh the list of zaken items.
@@ -41,12 +40,14 @@ export const useZaakStore = defineStore('zaken', {
 				endpoint = endpoint + '?_search=' + search
 			}
 
+			console.info('Refreshing zaken list with search: ' + search)
+
 			const response = await fetch(endpoint, {
 				method: 'GET',
 			})
 
 			if (!response.ok) {
-				console.log(response)
+				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
@@ -71,12 +72,14 @@ export const useZaakStore = defineStore('zaken', {
 		): Promise<{ response: Response, data: TZaak, entity: Zaak }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
+			console.info('Fetching zaak item with id: ' + id)
+
 			const response = await fetch(endpoint, {
 				method: 'GET',
 			})
 
 			if (!response.ok) {
-				console.log(response)
+				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
@@ -105,12 +108,14 @@ export const useZaakStore = defineStore('zaken', {
 
 			const endpoint = `${apiEndpoint}/${zaakItem.uuid}`
 
+			console.info('Deleting zaak item with id: ' + zaakItem.uuid)
+
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
 			})
 
 			if (!response.ok) {
-				console.log(response)
+				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
@@ -141,6 +146,8 @@ export const useZaakStore = defineStore('zaken', {
 				: `${apiEndpoint}/${zaakItem.uuid}`
 			const method = isNewZaak ? 'POST' : 'PUT'
 
+			console.info('Saving zaak item with id: ' + zaakItem.uuid)
+
 			const response = await fetch(
 				endpoint,
 				{
@@ -153,7 +160,7 @@ export const useZaakStore = defineStore('zaken', {
 			)
 
 			if (!response.ok) {
-				console.log(response)
+				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 

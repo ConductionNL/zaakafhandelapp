@@ -16,7 +16,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="navigationStore.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setModal('zaakForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
