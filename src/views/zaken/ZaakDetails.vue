@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,8 +9,9 @@ import { navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ zaak.identificatie }}
+						{{ zaakStore.zaakItem?.identificatie }}
 					</h1>
+
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
 							<DotsHorizontal :size="20" />
@@ -33,7 +34,7 @@ import { navigationStore } from '../../store/store.js'
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="addTaakToZaak">
+						<NcActionButton @click="navigationStore.setModal('addTaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
@@ -53,74 +54,75 @@ import { navigationStore } from '../../store/store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
+
 				<div class="detailGrid">
 					<div>
 						<h4>Omschrijving:</h4>
-						<span>{{ zaak.omschrijving }}</span>
+						<span>{{ zaakStore.zaakItem?.omschrijving }}</span>
 					</div>
 					<div>
 						<h4>
 							Zaaktype:
 						</h4>
-						<span>{{ zaak.zaaktype }}</span>
+						<span>{{ zaakStore.zaakItem?.zaaktype }}</span>
 					</div>
 					<div>
 						<div>
 							<h4>Archiefstatus:</h4>
 							<p>
-								{{ zaak.archiefstatus }}
+								{{ zaakStore.zaakItem?.archiefstatus }}
 							</p>
 						</div>
 						<h4>Registratiedatum:</h4>
-						<span>{{ zaak.registratiedatum }}</span>
+						<span>{{ zaakStore.zaakItem?.registratiedatum }}</span>
 					</div>
 					<div>
 						<h4>Bronorganisatie:</h4>
 						<p>
-							{{ zaak.bronorganisatie }}
+							{{ zaakStore.zaakItem?.bronorganisatie }}
 						</p>
 					</div>
 					<div>
 						<h4>VerantwoordelijkeOrganisatie:</h4>
 						<p>
-							{{ zaak.verantwoordelijkeOrganisatie }}
+							{{ zaakStore.zaakItem?.verantwoordelijkeOrganisatie }}
 						</p>
 					</div>
 					<div>
 						<h4>Startdatum:</h4>
 						<p>
-							{{ zaak.startdatum }}
+							{{ zaakStore.zaakItem?.startdatum }}
 						</p>
 					</div>
 					<div>
 						<h4>Toelichting:</h4>
 						<p>
-							{{ zaak.toelichting }}
+							{{ zaakStore.zaakItem?.toelichting }}
 						</p>
 					</div>
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen :zaak-id="zaak.uuid" />
+							<ZaakEigenschappen />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten :zaak-id="zaak.uuid" />
+							<ZaakDocumenten />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen :zaak-id="zaak.uuid" />
+							<ZaakRollen />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken :zaak-id="zaak.uuid" />
+							<ZaakTaken />
 						</BTab>
 						<BTab title="Besluiten">
-							<ZaakBesluiten :zaak-id="zaak.uuid" />
+							<ZaakBesluiten />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten :zaak-id="zaak.uuid" />
+							<ZaakBerichten />
 						</BTab>
 						<BTab title="Zaken">
-							<ZakenZaken :zaak-id="zaak.uuid" />
+							<ZakenZaken />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
@@ -185,50 +187,22 @@ export default {
 		VectorPolylineEdit,
 
 	},
-	props: {
-		zaakId: {
-			type: String,
-			required: true,
-		},
-	},
 	data() {
 		return {
 			zaak: [],
 			loading: true,
 		}
 	},
-	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
-		},
-	},
 	mounted() {
-		this.fetchData(store.zaakId)
+		this.fetchData()
 	},
 	methods: {
-		addTaakToZaak() {
-			navigationStore.setModal('addTaak')
-			store.setTaakZaakId(this.zaak.uuid)
-		},
-		fetchData(zaakId) {
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zaak = data
-						this.loading = false
-					})
-				})
-				.catch((err) => {
-					console.error(err)
+
+			// get current zaak once
+			zaakStore.getZaak(zaakStore.zaakItem.uuid, { setZaakItem: true })
+				.then(() => {
 					this.loading = false
 				})
 		},

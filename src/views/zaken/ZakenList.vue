@@ -66,15 +66,15 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			</div>
 		</ul>
 
+		<div v-if="!zaakStore.zakenList.length">
+			No zaken have been defined yet.
+		</div>
+
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Zaken aan het laden" />
-
-		<div v-if="!registerStore.registerList.length">
-			No registers have been defined yet.
-		</div>
 	</NcAppContentList>
 </template>
 <script>
@@ -114,7 +114,7 @@ export default {
 		}
 	},
 	updated() {
-		if (!zaakStore.zakenList.length) this.loading = true
+		this.loading = true
 
 		zaakStore.refreshZakenList()
 			.then(() => {
@@ -128,8 +128,8 @@ export default {
 	},
 }
 </script>
-<style>
 
+<style>
 .searchField {
     padding-inline-start: 65px;
     padding-inline-end: 20px;
