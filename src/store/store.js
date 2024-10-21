@@ -2,7 +2,7 @@
 import pinia from '../pinia.js'
 import { useNavigationStore } from './modules/navigation.js'
 import { useZaakStore } from './modules/zaken.ts'
-import { useZaakTypeStore } from './modules/zaakTypen.js'
+import { useZaakTypeStore } from './modules/zaakTypen.ts'
 import { useKlantStore } from './modules/klanten.js'
 import { useTaakStore } from './modules/taak.js'
 import { useBerichtStore } from './modules/berichten.js'

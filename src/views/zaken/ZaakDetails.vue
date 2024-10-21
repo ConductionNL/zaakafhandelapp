@@ -201,7 +201,7 @@ export default {
 			this.loading = true
 
 			// get current zaak once
-			zaakStore.getZaak(zaakStore.zaakItem.uuid, { setZaakItem: true })
+			zaakStore.getZaak(zaakStore.zaakItem.uuid, { setItem: true })
 				.then(() => {
 					this.loading = false
 				})
