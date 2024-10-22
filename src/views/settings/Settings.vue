@@ -49,7 +49,7 @@
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister'"
-							v-bind="availableRegisters"
+							v-bind="availableRegistersOptions"
 							v-model="getDataProperty(objectType.id).selectedRegister"
 							input-label="Register"
 							:loading="getDataProperty(objectType.id).loading"
@@ -64,7 +64,7 @@
 
 						<NcButton
 							type="primary"
-							:disabled="loading || saving || objectTypes[objectType.id].loading || !objectTypes[objectType.id].selectedSource?.value || objectTypes[objectType.id].selectedSource?.value === 'openregister' && (!objectTypes[objectType.id].selectedRegister?.value || !objectTypes[objectType.id].selectedSchema?.value)"
+							:disabled="loading || saving || getDataProperty(objectType.id).loading || !getDataProperty(objectType.id).selectedSource?.value || getDataProperty(objectType.id).selectedSource?.value === 'openregister' && (!getDataProperty(objectType.id).selectedRegister?.value || !getDataProperty(objectType.id).selectedSchema?.value)"
 							@click="saveConfig(objectType.id)">
 							<template #icon>
 								<NcLoadingIcon v-if="loading || getDataProperty(objectType.id).loading" :size="20" />
@@ -74,6 +74,16 @@
 						</NcButton>
 					</div>
 				</div>
+				<NcButton
+					type="primary"
+					:disabled="saving"
+					@click="saveAll()">
+					<template #icon>
+						<NcLoadingIcon v-if="saving" :size="20" />
+						<Plus v-if="!saving" :size="20" />
+					</template>
+					Alles opslaan
+				</NcButton>
 			</div>
 			<NcLoadingIcon v-if="loading"
 				class="loadingIcon"
@@ -109,6 +119,7 @@ export default {
 			saving: false,
 			settingsData: {},
 			availableRegisters: [],
+			availableRegistersOptions: [],
 			objectTypes: [],
 			berichten: {
 				selectedSource: '',
@@ -201,7 +212,220 @@ export default {
 		}
 	},
 
-	watch: {},
+	watch: {
+
+		'berichten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.berichten.selectedRegister = ''
+					this.berichten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'berichten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'berichten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.berichten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'besluiten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.besluiten.selectedRegister = ''
+					this.besluiten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'besluiten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'besluiten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.besluiten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'documenten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.documenten.selectedRegister = ''
+					this.documenten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'documenten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'documenten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.documenten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'klanten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.klanten.selectedRegister = ''
+					this.klanten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'klanten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'klanten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.klanten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'resultaten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.resultaten.selectedRegister = ''
+					this.resultaten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'resultaten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'resultaten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.resultaten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'taken.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.taken.selectedRegister = ''
+					this.taken.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'taken.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'taken')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.taken.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'informatieobjecten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.informatieobjecten.selectedRegister = ''
+					this.informatieobjecten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'informatieobjecten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'informatieobjecten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.informatieobjecten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'organisaties.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.organisaties.selectedRegister = ''
+					this.organisaties.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'organisaties.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'organisaties')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.organisaties.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'personen.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.personen.selectedRegister = ''
+					this.personen.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'personen.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'personen')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.personen.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'themas.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.themas.selectedRegister = ''
+					this.themas.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'themas.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'themas')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.themas.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+
+	},
 	mounted() {
 		this.fetchAll()
 	},
@@ -211,9 +435,9 @@ export default {
 
 		},
 		setRegisterSchemaOptions(registerId, property) {
-			const selectedRegister = this.settingsData.availableRegisters.find((register) => register.id.toString() === registerId)
+			const selectedRegister = this.availableRegisters.find((register) => register.id.toString() === registerId)
 
-			this.objectTypes[property].availableSchemas = {
+			this[property].availableSchemas = {
 				options: selectedRegister?.schemas?.map((schema) => ({
 					value: schema.id.toString(),
 					label: schema.title,
@@ -236,23 +460,23 @@ export default {
 						this.availableRegisters = data.availableRegisters
 						this.objectTypes = data.objectTypes
 
-						this.availableRegisters = {
+						this.availableRegistersOptions = {
 							options: data.availableRegisters.map((register) => ({
 								value: register.id.toString(),
 								label: register.title,
 							})),
 						}
 
-						this.objectTypesList.forEach((objectType) => {
-							if (data[objectType.id + '_register']) {
-								this.setRegisterSchemaOptions(data[objectType.id + '_register'], objectType.id)
+						data.objectTypes.forEach((objectType) => {
+
+							if (data[objectType + '_register']) {
+								this.setRegisterSchemaOptions(data[objectType + '_register'], objectType)
 							}
-							this.objectTypes[objectType.id] = {
-								selectedSource: this.labelOptions.options.find((option) => option.value === data[objectType.id + '_source'] ?? data[objectType.id + '_source']),
-								selectedRegister: this.availableRegisters.options.find((option) => option.value === data[objectType.id + '_register']),
-								selectedSchema: this.objectTypes[objectType.id]?.availableSchemas?.options?.find((option) => option.value === data[objectType.id + '_schema']),
-								loading: false,
-								availableSchemas: [],
+
+							this[objectType] = {
+								selectedSource: this.labelOptions.options.find((option) => option.value === data[objectType + '_source'] ?? data[objectType + '_source']),
+								selectedRegister: this.availableRegistersOptions.options.find((option) => option.value === data[objectType + '_register']),
+								selectedSchema: this[objectType]?.availableSchemas?.options?.find((option) => option.value === data[objectType + '_schema']),
 							}
 						})
 
@@ -312,6 +536,114 @@ export default {
 					return err
 				})
 		},
+
+		saveAll() {
+			this.saving = true
+			this.objectTypes.forEach((objectType) => {
+				this[objectType].loading = true
+			})
+
+			console.info('Saving all config')
+
+			const settingsDataCopy = this.settingsData
+
+			delete settingsDataCopy.objectTypes
+			delete settingsDataCopy.openRegisters
+			delete settingsDataCopy.availableRegisters
+
+			fetch('/index.php/apps/zaakafhandelapp/settings',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						...settingsDataCopy,
+						berichten_register: this.berichten.selectedRegister?.value ?? '',
+						berichten_schema: this.berichten.selectedSchema?.value ?? '',
+						berichten_source: this.berichten.selectedSource?.value ?? 'internal',
+						besluiten_register: this.besluiten.selectedRegister?.value ?? '',
+						besluiten_schema: this.besluiten.selectedSchema?.value ?? '',
+						besluiten_source: this.besluiten.selectedSource?.value ?? 'internal',
+						documenten_register: this.documenten.selectedRegister?.value ?? '',
+						documenten_schema: this.documenten.selectedSchema?.value ?? '',
+						documenten_source: this.documenten.selectedSource?.value ?? 'internal',
+						klanten_register: this.klanten.selectedRegister?.value ?? '',
+						klanten_schema: this.klanten.selectedSchema?.value ?? '',
+						klanten_source: this.klanten.selectedSource?.value ?? 'internal',
+						resultaten_register: this.resultaten.selectedRegister?.value ?? '',
+						resultaten_schema: this.resultaten.selectedSchema?.value ?? '',
+						resultaten_source: this.resultaten.selectedSource?.value ?? 'internal',
+						taken_register: this.taken.selectedRegister?.value ?? '',
+						taken_schema: this.taken.selectedSchema?.value ?? '',
+						taken_source: this.taken.selectedSource?.value ?? 'internal',
+						informatieobjecten_register: this.informatieobjecten.selectedRegister?.value ?? '',
+						informatieobjecten_schema: this.informatieobjecten.selectedSchema?.value ?? '',
+						informatieobjecten_source: this.informatieobjecten.selectedSource?.value ?? 'internal',
+						organisaties_register: this.organisaties.selectedRegister?.value ?? '',
+						organisaties_schema: this.organisaties.selectedSchema?.value ?? '',
+						organisaties_source: this.organisaties.selectedSource?.value ?? 'internal',
+						personen_register: this.personen.selectedRegister?.value ?? '',
+						personen_schema: this.personen.selectedSchema?.value ?? '',
+						personen_source: this.personen.selectedSource?.value ?? 'internal',
+						themas_register: this.themas.selectedRegister?.value ?? '',
+						themas_schema: this.themas.selectedSchema?.value ?? '',
+						themas_source: this.themas.selectedSource?.value ?? 'internal',
+					}),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.saving = false
+						this.objectTypes.forEach((objectType) => {
+							this[objectType].loading = false
+						})
+						this.settingsData = {
+							...this.settingsData,
+							berichten_register: data.berichten_register,
+							berichten_schema: data.berichten_schema,
+							berichten_source: data.berichten_source,
+							besluiten_register: data.besluiten_register,
+							besluiten_schema: data.besluiten_schema,
+							besluiten_source: data.besluiten_source,
+							documenten_register: data.documenten_register,
+							documenten_schema: data.documenten_schema,
+							documenten_source: data.documenten_source,
+							klanten_register: data.klanten_register,
+							klanten_schema: data.klanten_schema,
+							klanten_source: data.klanten_source,
+							resultaten_register: data.resultaten_register,
+							resultaten_schema: data.resultaten_schema,
+							resultaten_source: data.resultaten_source,
+							taken_register: data.taken_register,
+							taken_schema: data.taken_schema,
+							taken_source: data.taken_source,
+							informatieobjecten_register: data.informatieobjecten_register,
+							informatieobjecten_schema: data.informatieobjecten_schema,
+							informatieobjecten_source: data.informatieobjecten_source,
+							organisaties_register: data.organisaties_register,
+							organisaties_schema: data.organisaties_schema,
+							organisaties_source: data.organisaties_source,
+							personen_register: data.personen_register,
+							personen_schema: data.personen_schema,
+							personen_source: data.personen_source,
+							themas_register: data.themas_register,
+							themas_schema: data.themas_schema,
+							themas_source: data.themas_source,
+						}
+
+					})
+				})
+				.catch((err) => {
+					console.error(err)
+					this.saving = false
+					this.objectTypes.forEach((objectType) => {
+						this[objectType].loading = false
+					})
+					return err
+				})
+		},
+
 		resetConfig() {
 			this.saving = true
 
@@ -321,19 +653,41 @@ export default {
 			delete settingsDataCopy.openRegisters
 			delete settingsDataCopy.availableRegisters
 
-			const resetData = this.objectTypesList.reduce((acc, objectType) => {
-				acc[objectType.id + '_source'] = 'internal'
-				acc[objectType.id + '_schema'] = ''
-				acc[objectType.id + '_register'] = ''
-				return acc
-			}, {})
-
-			fetch('/index.php/apps/zaakafhandelapp/settings',
+			fetch('/index.php/apps/opencatalogi/settings',
 				{
 					method: 'POST',
 					body: JSON.stringify({
 						...settingsDataCopy,
-						...resetData,
+						berichten_register: '',
+						berichten_schema: '',
+						berichten_source: 'internal',
+						besluiten_register: '',
+						besluiten_schema: '',
+						besluiten_source: 'internal',
+						documenten_register: '',
+						documenten_schema: '',
+						documenten_source: 'internal',
+						klanten_register: '',
+						klanten_schema: '',
+						klanten_source: 'internal',
+						resultaten_register: '',
+						resultaten_schema: '',
+						resultaten_source: 'internal',
+						taken_register: '',
+						taken_schema: '',
+						taken_source: 'internal',
+						informatieobjecten_register: '',
+						informatieobjecten_schema: '',
+						informatieobjecten_source: 'internal',
+						organisaties_register: '',
+						organisaties_schema: '',
+						organisaties_source: 'internal',
+						personen_register: '',
+						personen_schema: '',
+						personen_source: 'internal',
+						themas_register: '',
+						themas_schema: '',
+						themas_source: 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
