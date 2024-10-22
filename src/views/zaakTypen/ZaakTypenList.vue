@@ -1,10 +1,10 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcAppContentList>
-		<ul v-if="!loading">
+		<ul>
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
@@ -15,98 +15,105 @@ import { navigationStore } from '../../store/store.js'
 					@trailing-button-click="clearText">
 					<Magnify :size="20" />
 				</NcTextField>
+				<NcActions>
+					<NcActionButton @click="zaakTypeStore.refreshZaakTypenList()">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						Ververs
+					</NcActionButton>
+				</NcActions>
 			</div>
 
-			<NcListItem v-for="(zaaktypen, i) in zaakTypenList.results"
-				:key="`${zaaktypen}${i}`"
-				:name="zaaktypen?.name"
-				:active="store.zaakTypeItem === zaaktypen?.id"
-				:details="'1h'"
-				:counter-number="44"
-				@click="store.setZaakTypeItem(zaaktypen.id)">
-				<template #icon>
-					<AlphaTBoxOutline :class="store.zaakTypenItem === zaaktypen.id && 'selectedZaakIcon'"
-						disable-menu
-						:size="44" />
-				</template>
-				<template #subname>
-					{{ zaaktypen?.summary }}
-				</template>
-				<template #actions>
-					<NcActionButton>
-						Button one
-					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
-					</NcActionButton>
-				</template>
-			</NcListItem>
+			<div v-if="!!zaakTypeStore.zaakTypenList?.length">
+				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypenList"
+					:key="`${zaaktype}${i}`"
+					:name="zaaktype?.name"
+					:force-display-actions="true"
+					:active="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id"
+					:details="'1h'"
+					:counter-number="44"
+					@click="zaakTypeStore.setZaakTypeItem(zaaktype)">
+					<template #icon>
+						<AlphaTBoxOutline :class="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id && 'selectedZaakIcon'"
+							disable-menu
+							:size="44" />
+					</template>
+					<template #subname>
+						{{ zaaktype?.summary }}
+					</template>
+					<template #actions>
+						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('zaakTypeForm')">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+					</template>
+				</NcListItem>
+			</div>
 		</ul>
+
+		<div v-if="!zaakTypeStore.zaakTypenList.length">
+			No zaaktypen have been defined yet.
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			name="Zaaktypen aan het laden" />
 	</NcAppContentList>
 </template>
+
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 export default {
 	name: 'ZaakTypenList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
+		NcLoadingIcon,
+		// Icons
 		AlphaTBoxOutline,
 		Magnify,
-		NcLoadingIcon,
+		Refresh,
+		Pencil,
 	},
 	data() {
 		return {
 			search: '',
-			loading: true,
-			zaakTypenList: [],
+			loading: false,
 		}
 	},
 	mounted() {
-		this.fetchData()
+		this.loading = true
+
+		zaakTypeStore.refreshZaakTypenList()
+			.then(() => {
+				this.loading = false
+			})
 	},
 	methods: {
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zaakTypenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
 		},
 	},
 }
 </script>
+
 <style>
 .listHeader {
     position: sticky;
