@@ -9,5 +9,7 @@
 /tests/.phpunit.cache
 
 /node_modules/
+/custom_apps/
+/custom-apps/
 /js/
 Zone.Identifier
