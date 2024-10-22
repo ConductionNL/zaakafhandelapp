@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { zaakTypeStore, navigationStore } from '../../store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addZaakType'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addZaakType'" ref="modalRef" @close="store.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaaktype toevoegen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -16,148 +16,148 @@ import { store } from '../../store.js'
 			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.identificatie"
+					:value.sync="zaakTypeStore.zaakTypeItem.identificatie"
 					label="Identificatie"
 					maxlength="255"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.omschrijving"
+					:value.sync="zaakTypeStore.zaakTypeItem.omschrijving"
 					label="Omschrijving"
 					maxlength="255" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.omschrijvingGeneriek"
+					:value.sync="zaakTypeStore.zaakTypeItem.omschrijvingGeneriek"
 					label="omschrijvingGeneriek"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.vertrouwelijkheidaanduiding"
+					:value.sync="zaakTypeStore.zaakTypeItem.vertrouwelijkheidaanduiding"
 					label="vertrouwelijkheidaanduiding"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.doel"
+					:value.sync="zaakTypeStore.zaakTypeItem.doel"
 					label="doel"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.aanleiding"
+					:value.sync="zaakTypeStore.zaakTypeItem.aanleiding"
 					label="aanleiding"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.toelichting"
+					:value.sync="zaakTypeStore.zaakTypeItem.toelichting"
 					label="toelichting"
 					maxlength="255" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.indicatieInternOfExtern"
+					:value.sync="zaakTypeStore.zaakTypeItem.indicatieInternOfExtern"
 					label="indicatieInternOfExtern" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.handelingInitiator"
+					:value.sync="zaakTypeStore.zaakTypeItem.handelingInitiator"
 					label="handelingInitiator" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.onderwerp"
+					:value.sync="zaakTypeStore.zaakTypeItem.onderwerp"
 					label="onderwerp" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.handelingBehandelaar"
+					:value.sync="zaakTypeStore.zaakTypeItem.handelingBehandelaar"
 					label="handelingBehandelaar" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.doorlooptijd"
+					:value.sync="zaakTypeStore.zaakTypeItem.doorlooptijd"
 					label="doorlooptijd" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.servicenorm"
+					:value.sync="zaakTypeStore.zaakTypeItem.servicenorm"
 					label="servicenorm" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.opschortingEnAanhoudingMogelijk"
+					:value.sync="zaakTypeStore.zaakTypeItem.opschortingEnAanhoudingMogelijk"
 					label="opschortingEnAanhoudingMogelijk" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.verlengingMogelijk"
+					:value.sync="zaakTypeStore.zaakTypeItem.verlengingMogelijk"
 					label="verlengingMogelijk" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.verlengingstermijn"
+					:value.sync="zaakTypeStore.zaakTypeItem.verlengingstermijn"
 					label="trefwoorden" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.publicatieIndicatie"
+					:value.sync="zaakTypeStore.zaakTypeItem.publicatieIndicatie"
 					label="publicatieIndicatie" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.publicatietekst"
+					:value.sync="zaakTypeStore.zaakTypeItem.publicatietekst"
 					label="publicatietekst" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.productenOfDiensten"
+					:value.sync="zaakTypeStore.zaakTypeItem.productenOfDiensten"
 					label="productenOfDiensten" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.selectielijstProcestype"
+					:value.sync="zaakTypeStore.zaakTypeItem.selectielijstProcestype"
 					label="selectielijstProcestype" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.referentieproces"
+					:value.sync="zaakTypeStore.zaakTypeItem.referentieproces"
 					label="Referentieprocesnaam" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.catalogus"
+					:value.sync="zaakTypeStore.zaakTypeItem.catalogus"
 					label="catalogus" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.beginGeldigheid"
+					:value.sync="zaakTypeStore.zaakTypeItem.beginGeldigheid"
 					label="beginGeldigheid" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.eindeGeldigheid"
+					:value.sync="zaakTypeStore.zaakTypeItem.eindeGeldigheid"
 					label="eindeGeldigheid" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.beginObject"
+					:value.sync="zaakTypeStore.zaakTypeItem.beginObject"
 					label="beginObject" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.eindeObject"
+					:value.sync="zaakTypeStore.zaakTypeItem.eindeObject"
 					label="eindeObject" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakTypeItem.versiedatum"
+					:value.sync="zaakTypeStore.zaakTypeItem.versiedatum"
 					label="versiedatum" />
 			</div>
 

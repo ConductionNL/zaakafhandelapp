@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import { navigationStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
@@ -22,7 +22,7 @@ import { navigationStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addDocument')">
+					<NcActionButton @click="navigationStore.setModal('addDocument')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -31,7 +31,7 @@ import { navigationStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 			<div v-if="!loading">
-				<NcListItem v-for="(zaken, i) in zakenList.results"
+				<NcListItem v-for="(zaken, i) in berichtStore.berichtenList"
 					:key="`${zaken}${i}`"
 					:name="zaken?.name"
 					:active="store.zakenItem === zaken?.id"

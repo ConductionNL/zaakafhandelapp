@@ -7,7 +7,7 @@ import { navigationStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"

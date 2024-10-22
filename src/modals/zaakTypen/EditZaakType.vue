@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editZaakType'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editZaakType'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaak aanpassen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -15,62 +15,149 @@ import { store } from '../../store.js'
 			<div v-if="!succes" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.identificatie"
+					:value.sync="zaakTypeStore.zaakTypeItem.identificatie"
 					label="Identificatie"
 					maxlength="255"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.omschrijving"
+					:value.sync="zaakTypeStore.zaakTypeItem.omschrijving"
 					label="Omschrijving"
 					maxlength="255" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.bronorganisatie"
-					label="Bronorganisatie"
+					:value.sync="zaakTypeStore.zaakTypeItem.omschrijvingGeneriek"
+					label="omschrijvingGeneriek"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.verantwoordelijkeOrganisatie"
-					label="VerantwoordelijkeOrganisatie"
+					:value.sync="zaakTypeStore.zaakTypeItem.vertrouwelijkheidaanduiding"
+					label="vertrouwelijkheidaanduiding"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.startdatum"
-					label="Startdatum"
+					:value.sync="zaakTypeStore.zaakTypeItem.doel"
+					label="doel"
 					maxlength="9"
-					required />
-
-				<NcSelect
-					v-bind="store.zaakItem.zaaktype"
-					v-model="zaaktype.value"
-					:disabled="loading"
-					input-label="Zaaktype"
-					required />
-
-				<NcSelect
-					v-bind="store.zaakItem.archiefstatus"
-					v-model="archiefstatus.value"
-					:disabled="loading"
-					input-label="Archiefstatus"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaak.registratiedatum"
-					label="Registratiedatum"
+					:value.sync="zaakTypeStore.zaakTypeItem.aanleiding"
+					label="aanleiding"
+					required />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.toelichting"
+					label="toelichting"
 					maxlength="255" />
 
-				<NcTextArea
+				<NcTextField
 					:disabled="loading"
-					:value.sync="store.zaakItem.toelichting"
-					label="Toelichting" />
+					:value.sync="zaakTypeStore.zaakTypeItem.indicatieInternOfExtern"
+					label="indicatieInternOfExtern" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.handelingInitiator"
+					label="handelingInitiator" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.onderwerp"
+					label="onderwerp" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.handelingBehandelaar"
+					label="handelingBehandelaar" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.doorlooptijd"
+					label="doorlooptijd" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.servicenorm"
+					label="servicenorm" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.opschortingEnAanhoudingMogelijk"
+					label="opschortingEnAanhoudingMogelijk" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.verlengingMogelijk"
+					label="verlengingMogelijk" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.verlengingstermijn"
+					label="trefwoorden" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.publicatieIndicatie"
+					label="publicatieIndicatie" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.publicatietekst"
+					label="publicatietekst" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.productenOfDiensten"
+					label="productenOfDiensten" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.selectielijstProcestype"
+					label="selectielijstProcestype" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.referentieproces"
+					label="Referentieprocesnaam" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.catalogus"
+					label="catalogus" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.beginGeldigheid"
+					label="beginGeldigheid" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.eindeGeldigheid"
+					label="eindeGeldigheid" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.beginObject"
+					label="beginObject" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.eindeObject"
+					label="eindeObject" />
+
+				<NcTextField
+					:disabled="loading"
+					:value.sync="zaakTypeStore.zaakTypeItem.versiedatum"
+					label="versiedatum" />
 			</div>
 			<NcButton
 				v-if="!succes"

@@ -19,7 +19,7 @@
 					</NcButton>
 				</div>
 
-				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.themas_source === 'openregister')">
+				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister')">
 					<NcNoteCard type="warning">
 						Het lijkt erop dat je een open register hebt geselecteerd maar dat deze nog niet geïnstalleerd is. Dit kan problemen geven. Wil je de instelling resetten?
 					</NcNoteCard>
@@ -184,7 +184,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
-			themas: {
+			zaken: {
 				selectedSource: '',
 				selectedRegister: '',
 				selectedSchema: '',
@@ -207,7 +207,7 @@ export default {
 				{ id: 'informatieobjecten', title: 'Informatieobjecten', description: 'Configureer de opslag voor informatieobjecten', helpLink: 'https://example.com/help/informatieobjecten' },
 				{ id: 'organisaties', title: 'Organisaties', description: 'Configureer de opslag voor organisatiegegevens', helpLink: 'https://example.com/help/organisaties' },
 				{ id: 'personen', title: 'Personen', description: 'Configureer de opslag voor persoonsgegevens', helpLink: 'https://example.com/help/personen' },
-				{ id: 'themas', title: 'Thema\'s', description: 'Configureer de opslag voor thema\'s', helpLink: 'https://example.com/help/themas' },
+				{ id: 'zaken', title: 'Zaken', description: 'Configureer de opslag voor zaken', helpLink: 'https://example.com/help/zaken' },
 			],
 		}
 	},
@@ -403,23 +403,23 @@ export default {
 			},
 			deep: true,
 		},
-		'themas.selectedSource': {
+		'zaken.selectedSource': {
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
-					this.themas.selectedRegister = ''
-					this.themas.selectedSchema = ''
+					this.zaken.selectedRegister = ''
+					this.zaken.selectedSchema = ''
 				}
 			},
 			deep: true,
 		},
-		'themas.selectedRegister': {
+		'zaken.selectedRegister': {
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
 				if (newValue) {
-					this.setRegisterSchemaOptions(newValue?.value, 'themas')
-					oldValue !== '' && newValue?.value !== oldValue.value && (this.themas.selectedSchema = '')
+					this.setRegisterSchemaOptions(newValue?.value, 'zaken')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.zaken.selectedSchema = '')
 				}
 			},
 			deep: true,
@@ -583,9 +583,9 @@ export default {
 						personen_register: this.personen.selectedRegister?.value ?? '',
 						personen_schema: this.personen.selectedSchema?.value ?? '',
 						personen_source: this.personen.selectedSource?.value ?? 'internal',
-						themas_register: this.themas.selectedRegister?.value ?? '',
-						themas_schema: this.themas.selectedSchema?.value ?? '',
-						themas_source: this.themas.selectedSource?.value ?? 'internal',
+						zaken_register: this.zaken.selectedRegister?.value ?? '',
+						zaken_schema: this.zaken.selectedSchema?.value ?? '',
+						zaken_source: this.zaken.selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -627,9 +627,9 @@ export default {
 							personen_register: data.personen_register,
 							personen_schema: data.personen_schema,
 							personen_source: data.personen_source,
-							themas_register: data.themas_register,
-							themas_schema: data.themas_schema,
-							themas_source: data.themas_source,
+							zaken_register: data.zaken_register,
+							zaken_schema: data.zaken_schema,
+							zaken_source: data.zaken_source,
 						}
 
 					})
@@ -685,9 +685,9 @@ export default {
 						personen_register: '',
 						personen_schema: '',
 						personen_source: 'internal',
-						themas_register: '',
-						themas_schema: '',
-						themas_source: 'internal',
+						zaken_register: '',
+						zaken_schema: '',
+						zaken_source: 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',

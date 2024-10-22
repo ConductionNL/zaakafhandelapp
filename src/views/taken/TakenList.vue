@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import { navigationStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
@@ -16,7 +16,7 @@ import { navigationStore } from '../../store/store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="store.getTakenList()">
+					<NcActionButton @click="taakStore.refreshTakenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -30,17 +30,17 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="store.takenList">
-				<NcListItem v-for="(taak, i) in store.takenList.results"
+			<div v-if="taakStore.takenList">
+				<NcListItem v-for="(taak, i) in taakStore.takenList.results"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
 					:force-display-actions="true"
-					:active="store.taakId === taak?.id"
+					:active="taakStore.taakItem?.id === taak?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="store.setTaakItem(taak)">
+					@click="navigationStore.setTaakItem(taak)">
 					<template #icon>
-						<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
+						<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,13 +48,13 @@ import { navigationStore } from '../../store/store.js'
 						{{ taak?.onderwerp }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setTaakItem(taak); store.setModal('editTaak')">
+						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setTaakItem(taak); store.setDialog('deleteTaak')">
+						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setDialog('deleteTaak')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -65,7 +65,7 @@ import { navigationStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!store.takenList"
+		<NcLoadingIcon v-if="!taakStore.takenList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -107,17 +107,9 @@ export default {
 		}
 	},
 	mounted() {
-		store.getTakenList()
+		taakStore.refreshTakenList()
 	},
 	methods: {
-		toggleTaakDetailView(taakId) {
-			if (store.taakId === taakId) store.setTaakId(false)
-			else store.setTaakId(taakId)
-		},
-		editTaak(taak) {
-			store.setTaakItem(taak)
-			navigationStore.setModal('editTaak')
-		},
 		fetchData(newPage) {
 			this.loading = true
 			fetch(

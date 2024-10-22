@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -16,7 +16,7 @@ import { navigationStore } from '../../store/store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="store.getBerichtenList()">
+					<NcActionButton @click="berichtStore.refreshBerichtenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -30,17 +30,17 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="store.berichtenList">
-				<NcListItem v-for="(bericht, i) in store.berichtenList.results"
+			<div v-if="berichtStore.berichtenList">
+				<NcListItem v-for="(bericht, i) in berichtStore.berichtenList"
 					:key="`${bericht}${i}`"
 					:name="bericht?.onderwerp"
-					:active="store.berichtId === bericht?.id"
+					:active="berichtStore.berichtItem?.id === bericht?.id"
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
-					@click="store.setBerichtItem(bericht)">
+					@click="navigationStore.setBerichtItem(bericht)">
 					<template #icon>
-						<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
+						<ChatOutline :class="berichtStore.berichtItem?.id === bericht.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,13 +48,13 @@ import { navigationStore } from '../../store/store.js'
 						{{ bericht?.berichttekst }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setBerichtItem(bericht); store.setModal('editBericht')">
+						<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('editBericht')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setBerichtItem(bericht); store.setDialog('deleteBericht')">
+						<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -65,11 +65,11 @@ import { navigationStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!store.berichtenList"
+		<NcLoadingIcon v-if="!berichtStore.berichtenList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="berichten aan het laden" />
+			name="Klanten aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -110,17 +110,15 @@ export default {
 		}
 	},
 	mounted() {
-		store.getBerichtenList()
+		berichtStore.refreshBerichtenList()
 	},
 	methods: {
 		editBericht(bericht) {
-			store.setBerichtItem(bericht)
-			store.setBerichtId(bericht.id)
+			berichtStore.setBerichtItem(bericht)
 			navigationStore.setModal('editBericht')
 		},
 		storeBericht(bericht) {
-			store.setBerichtId(bericht.id)
-			store.setBerichtItem(bericht)
+			berichtStore.setBerichtItem(bericht)
 		},
 		fetchData(newPage) {
 			this.loading = true

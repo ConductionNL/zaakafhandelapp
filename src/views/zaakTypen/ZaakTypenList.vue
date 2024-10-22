@@ -7,7 +7,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					trailing-button-icon="close"
@@ -25,7 +25,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 
-			<div v-if="!!zaakTypeStore.zaakTypenList?.length">
+			<div v-if="!zaakTypeStore.zaakTypenList?.length">
 				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypenList"
 					:key="`${zaaktype}${i}`"
 					:name="zaaktype?.name"

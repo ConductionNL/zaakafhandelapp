@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import { navigationStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="store.search"
+					:value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
@@ -16,7 +16,7 @@ import { navigationStore } from '../../store/store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="store.getKlantenList()">
+					<NcActionButton @click="klantStore.refreshKlantenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
@@ -30,8 +30,8 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="store.klantenList">
-				<NcListItem v-for="(klant, i) in store.klantenList.results"
+			<div v-if="klantStore.klantenList">
+				<NcListItem v-for="(klant, i) in klantStore.klantenList.results"
 					:key="`${klant}${i}`"
 					:name="fullName(klant)"
 					:active="store.klantId === klant?.id"
@@ -40,7 +40,7 @@ import { navigationStore } from '../../store/store.js'
 					:counter-number="44"
 					@click="store.setKlantItem(klant)">
 					<template #icon>
-						<AccountOutline :class="store.klantItem === klant.id && 'selectedZaakIcon'"
+						<AccountOutline :class="klantStore.klantItem === klant.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,13 +48,13 @@ import { navigationStore } from '../../store/store.js'
 						{{ klant?.subject }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="store.setKlantItem(klant); store.setModal('editKlant')">
+						<NcActionButton @click="klantStore.setKlantItem(klant); store.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setKlantItem(klant); store.setDialog('deleteKlant')">
+						<NcActionButton @click="klantStore.setKlantItem(klant); store.setDialog('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -65,7 +65,7 @@ import { navigationStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!store.klantenList"
+		<NcLoadingIcon v-if="!klantStore.klantenList"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -107,19 +107,11 @@ export default {
 		}
 	},
 	mounted() {
-		store.getKlantenList()
+		klantStore.refreshKlantenList()
 	},
 	methods: {
 		fullName(klant) {
 			return klant.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant.achternaam
-		},
-		toggleKlantDetailView(klantId) {
-			if (store.klantId === klantId) store.setKlantId(false)
-			else store.setKlantId(klantId)
-		},
-		editKlant(klant) {
-			store.setKlantItem(klant)
-			navigationStore.setModal('editKlant')
 		},
 		fetchData(newPage) {
 			this.loading = true

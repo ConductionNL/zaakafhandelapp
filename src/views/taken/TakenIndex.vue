@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { navigationStore } from '../../store/store.js'
 			<TakenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.taakId || navigationStore.selected != 'taken' "
+			<NcEmptyContent v-if="!taakStore.taakItem?.id || navigationStore.selected != 'taken' "
 				class="detailContainer"
 				name="Geen taak"
 				description="Nog geen taak geselecteerd">
@@ -21,7 +21,7 @@ import { navigationStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<TaakDetails v-if="store.taakId && navigationStore.selected === 'taken'" :taak-id="store.taakId" />
+			<TaakDetails v-if="taakStore.taakItem?.id && navigationStore.selected === 'taken'" :taak-id="taakStore.taakItem?.id" />
 		</template>
 	</NcAppContent>
 </template>

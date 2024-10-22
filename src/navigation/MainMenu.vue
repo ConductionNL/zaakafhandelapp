@@ -6,7 +6,7 @@ import { navigationStore } from '../store/store.js'
 	<NcAppNavigation>
 		<NcAppNavigationList>
 			<NcAppNavigationNew
-				name="Zaak Starten"
+				text="Zaak Starten"
 				@new-item="navigationStore.modal = 'zaakAdd'">
 				<template #icon>
 					<Plus :size="20" />
@@ -53,9 +53,9 @@ import { navigationStore } from '../store/store.js'
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
-				:active="store.selected === 'search'"
+				:active="navigationStore.selected === 'search'"
 				name="Zoeken"
-				@click="store.setSelected('search')">
+				@click="navigationStore.setSelected('search')">
 				<template #icon>
 					<Magnify :size="20" />
 				</template>

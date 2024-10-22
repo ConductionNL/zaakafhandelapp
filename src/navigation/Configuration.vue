@@ -271,6 +271,7 @@ import {
 	NcTextArea,
 	NcButton,
 	NcLoadingIcon,
+	NcCheckboxRadioSwitch,
 } from '@nextcloud/vue'
 
 import Database from 'vue-material-design-icons/Database.vue'
@@ -291,6 +292,8 @@ export default {
 		NcTextField,
 		NcTextArea,
 		NcButton,
+		NcCheckboxRadioSwitch,
+		// Icons
 		CogOutline,
 		Connection,
 		Database,
