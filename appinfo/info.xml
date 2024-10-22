@@ -46,4 +46,9 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
 			<route>zaakafhandelapp.dashboard.page</route>
 		</navigation>
 	</navigations>
+
+	<settings>
+		<admin>OCA\ZaakAfhandelApp\Settings\ZaakAfhandelAppAdmin</admin>
+		<admin-section>OCA\ZaakAfhandelApp\Sections\ZaakAfhandelAppAdmin</admin-section>
+	</settings>
 </info>
