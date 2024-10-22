@@ -22,7 +22,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="navigationStore.setModal('addBericht')">
+					<NcActionButton @click="berichtStore.setBerichtItem(null); navigationStore.setModal('editBericht')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -38,7 +38,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
-					@click="navigationStore.setBerichtItem(bericht)">
+					@click="berichtStore.setBerichtItem(bericht)">
 					<template #icon>
 						<ChatOutline :class="berichtStore.berichtItem?.id === bericht.id && 'selectedZaakIcon'"
 							disable-menu

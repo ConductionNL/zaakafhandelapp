@@ -22,7 +22,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="navigationStore.setModal('addTaak')">
+					<NcActionButton @click="taakStore.setTaakItem(null); navigationStore.setModal('editTaak')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>

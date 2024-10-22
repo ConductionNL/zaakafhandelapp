@@ -1,80 +1,97 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { taakStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'editTaak'" ref="modalRef" @close="navigationStore.setModal(false)">
-		<div class="modalContent">
-			<h2>Taak aanpassen</h2>
-			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
-			</NcNoteCard>
-			<NcNoteCard v-if="error" type="error">
-				<p>{{ error }}</p>
-			</NcNoteCard>
+	<NcDialog v-if="navigationStore.modal === 'editTaak'"
+		name="Taak"
+		size="normal"
+		:can-close="false">
+		<NcNoteCard v-if="success" type="success">
+			<p>Taak succesvol aangepast</p>
+		</NcNoteCard>
+		<NcNoteCard v-if="error" type="error">
+			<p>{{ error }}</p>
+		</NcNoteCard>
 
-			<div v-if="!succes" class="form-group">
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.title"
-					label="Titel"
-					maxlength="255" />
+		<div v-if="!success" class="form-group">
+			<NcTextField
+				:disabled="loading"
+				:value.sync="taakItem.title"
+				label="Titel"
+				maxlength="255" />
 
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.type"
-					label="Type"
-					maxlength="255" />
+			<NcTextField
+				:disabled="loading"
+				:value.sync="taakItem.type"
+				label="Type"
+				maxlength="255" />
 
-				<NcSelect
-					v-bind="statusOptions"
-					v-model="store.taakItem.status"
-					:disabled="loading"
-					input-label="Status"
-					required />
+			<NcSelect
+				v-bind="statusOptions"
+				v-model="taakItem.status"
+				:disabled="loading"
+				input-label="Status"
+				required />
 
-				<NcTextField
-					:disabled="loading"
-					:value.sync="store.taakItem.onderwerp"
-					label="Onderwerp"
-					maxlength="255" />
+			<NcTextField
+				:disabled="loading"
+				:value.sync="taakItem.onderwerp"
+				label="Onderwerp"
+				maxlength="255" />
 
-				<NcTextArea
-					:disabled="loading"
-					:value.sync="store.taakItem.toelichting"
-					label="Toelichting" />
-			</div>
+			<NcTextArea
+				:disabled="loading"
+				:value.sync="taakItem.toelichting"
+				label="Toelichting" />
+		</div>
 
-			<NcButton
-				v-if="!succes"
+		<template #actions>
+			<NcButton @click="closeModal">
+				<template #icon>
+					<Cancel :size="20" />
+				</template>
+				{{ success ? 'Sluiten' : 'Annuleer' }}
+			</NcButton>
+			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+				<template #icon>
+					<Help :size="20" />
+				</template>
+				Help
+			</NcButton>
+			<NcButton v-if="!success"
 				:disabled="loading"
 				type="primary"
 				@click="editTaak()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<ContentSaveOutline v-if="!loading && taakStore.taakItem?.id" :size="20" />
+					<Plus v-if="!loading && !taakStore.taakItem?.id" :size="20" />
 				</template>
-				Opslaan
+				{{ taakStore.taakItem?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
-		</div>
-	</NcModal>
+		</template>
+	</NcDialog>
 </template>
 
 <script>
 import {
 	NcButton,
-	NcModal,
+	NcDialog,
 	NcTextField,
 	NcTextArea,
 	NcSelect,
 	NcLoadingIcon,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Help from 'vue-material-design-icons/Help.vue'
 
 export default {
 	name: 'EditTaak',
 	components: {
-		NcModal,
+		NcDialog,
 		NcTextField,
 		NcTextArea,
 		NcButton,
@@ -82,61 +99,72 @@ export default {
 		NcLoadingIcon,
 		// Icons
 		ContentSaveOutline,
+		Cancel,
+		Plus,
+		Help,
 	},
 	data() {
 		return {
-			succes: false,
+			success: false,
 			loading: false,
 			error: false,
+			hasUpdated: false,
+			taakItem: {
+				title: '',
+				type: '',
+				status: '',
+				onderwerp: '',
+				toelichting: '',
+			},
 		}
 	},
 	updated() {
-		if (navigationStore.modal === 'editTaak' && this.hasUpdated) {
-			if (this.taak === store.taakItem) return
-			this.hasUpdated = false
-		}
 		if (navigationStore.modal === 'editTaak' && !this.hasUpdated) {
-			this.taak = store.taakItem
-			this.fetchZaken()
-			this.setStatusOptions()
+			if (taakStore.taakItem?.id) {
+				this.taakItem = {
+					...taakStore.taakItem,
+					title: taakStore.taakItem.title || '',
+					type: taakStore.taakItem.type || '',
+					status: taakStore.taakItem.status || '',
+					onderwerp: taakStore.taakItem.onderwerp || '',
+					toelichting: taakStore.taakItem.toelichting || '',
+				}
+			}
 			this.hasUpdated = true
 		}
 	},
 	methods: {
 		closeModal() {
-			navigationStore.modal = false
+			navigationStore.setModal(false)
+			this.success = false
+			this.loading = false
+			this.error = false
+			this.hasUpdated = false
+			this.taakItem ={
+				title: '',
+				type: '',
+				status: '',
+				onderwerp: '',
+				toelichting: '',
+			}
 		},
-		editTaak() {
+		async editTaak() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/taken/${store.taakItem.id}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(store.taakItem),
-				},
-			)
-				.then((response) => {
-					this.succes = true
-					this.loading = false
-					store.getTakenList()
-					response.json().then((data) => {
-						store.setTaakItem(data)
-					})
-					// Get the modal to self close
-					const self = this
-					setTimeout(function() {
-						self.succes = false
-						store.setModal(false)
-					}, 2000)
+			try {
+				await taakStore.saveTaak({
+					...this.taakItem,
 				})
-				.catch((err) => {
-					this.loading = false
-					this.error = err
-					console.error(err)
-				})
+				this.success = true
+				this.loading = false
+				setTimeout(this.closeModal, 2000)
+			} catch (error) {
+				this.loading = false
+				this.success = false
+				this.error = error.message || 'An error occurred while saving the taak'
+			}
+		},
+		openLink(url, target) {
+			window.open(url, target)
 		},
 	},
 }

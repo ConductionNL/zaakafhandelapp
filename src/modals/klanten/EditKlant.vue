@@ -1,205 +1,241 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="navigationStore.modal === 'editKlant'" ref="modalRef" @close="navigationStore.setModal(false)">
-		<div class="modal__content">
-			<h2>Klant aanpassen</h2>
-			<NcNoteCard v-if="succes" type="success">
-				<p>Bijlage succesvol toegevoegd</p>
-			</NcNoteCard>
-			<NcNoteCard v-if="error" type="error">
-				<p>{{ error }}</p>
-			</NcNoteCard>
+	<NcDialog v-if="navigationStore.modal === 'editKlant'"
+		name="Klant"
+		size="normal"
+		:can-close="false">
+		<NcNoteCard v-if="success" type="success">
+			<p>Klant succesvol aangepast</p>
+		</NcNoteCard>
+		<NcNoteCard v-if="error" type="error">
+			<p>{{ error }}</p>
+		</NcNoteCard>
 
-			<div v-if="!succes" class="form-group">
-				<NcTextField :disabled="loading"
-					label="Voornaam"
-					maxlength="255"
-					:value.sync="store.klantItem.voornaam" />
+		<div v-if="!success" class="form-group">
+			<NcTextField :disabled="loading"
+				label="Voornaam"
+				maxlength="255"
+				:value.sync="klantItem.voornaam" />
 
-				<NcTextField :disabled="loading"
-					label="Tussenvoegsel"
-					maxlength="255"
-					:value.sync="store.klantItem.tussenvoegsel" />
+			<NcTextField :disabled="loading"
+				label="Tussenvoegsel"
+				maxlength="255"
+				:value.sync="klantItem.tussenvoegsel" />
 
-				<NcTextField :disabled="loading"
-					label="Achternaam"
-					maxlength="255"
-					:value.sync="store.klantItem.achternaam" />
+			<NcTextField :disabled="loading"
+				label="Achternaam"
+				maxlength="255"
+				:value.sync="klantItem.achternaam" />
 
-				<NcTextField :disabled="loading"
-					label="Telefoonnummer"
-					maxlength="255"
-					:value.sync="store.klantItem.telefoonnummer" />
+			<NcTextField :disabled="loading"
+				label="Telefoonnummer"
+				maxlength="255"
+				:value.sync="klantItem.telefoonnummer" />
 
-				<NcTextField :disabled="loading"
-					label="Email adres"
-					maxlength="255"
-					:value.sync="store.klantItem.emailadres" />
+			<NcTextField :disabled="loading"
+				label="Email adres"
+				maxlength="255"
+				:value.sync="klantItem.emailadres" />
 
-				<NcTextField :disabled="loading"
-					label="Functie"
-					maxlength="255"
-					:value.sync="store.klantItem.functie" />
+			<NcTextField :disabled="loading"
+				label="Functie"
+				maxlength="255"
+				:value.sync="klantItem.functie" />
 
-				<NcTextField :disabled="loading"
-					label="Aanmaak kanaal"
-					maxlength="255"
-					:value.sync="store.klantItem.aanmaakkanaal" />
+			<NcTextField :disabled="loading"
+				label="Aanmaak kanaal"
+				maxlength="255"
+				:value.sync="klantItem.aanmaakkanaal" />
 
-				<NcTextField :disabled="loading"
-					label="Bron organisatie"
-					maxlength="255"
-					:value.sync="store.klantItem.bronorganisatie" />
+			<NcTextField :disabled="loading"
+				label="Bron organisatie"
+				maxlength="255"
+				:value.sync="klantItem.bronorganisatie" />
 
-				<NcTextField :disabled="loading"
-					label="Bedrijfsnaam"
-					maxlength="255"
-					:value.sync="store.klantItem.bedrijfsnaam" />
+			<NcTextField :disabled="loading"
+				label="Bedrijfsnaam"
+				maxlength="255"
+				:value.sync="klantItem.bedrijfsnaam" />
 
-				<NcTextField :disabled="loading"
-					label="Website Url"
-					maxlength="255"
-					:value.sync="store.klantItem.websiteUrl" />
+			<NcTextField :disabled="loading"
+				label="Website Url"
+				maxlength="255"
+				:value.sync="klantItem.websiteUrl" />
 
-				<NcTextField :disabled="loading"
-					label="Url"
-					maxlength="255"
-					:value.sync="store.klantItem.url" />
+			<NcTextField :disabled="loading"
+				label="Url"
+				maxlength="255"
+				:value.sync="klantItem.url" />
 
-				<NcTextField :disabled="loading"
-					label="Geverifieerd"
-					maxlength="255"
-					:value.sync="store.klantItem.geverifieerd" />
+			<NcTextField :disabled="loading"
+				label="Geverifieerd"
+				maxlength="255"
+				:value.sync="klantItem.geverifieerd" />
 
-				<NcTextField :disabled="loading"
-					label="Subject"
-					maxlength="255"
-					:value.sync="store.klantItem.subject" />
+			<NcTextField :disabled="loading"
+				label="Subject"
+				maxlength="255"
+				:value.sync="klantItem.subject" />
 
-				<NcTextField :disabled="loading"
-					label="Subject Identificatie"
-					maxlength="255"
-					:value.sync="store.klantItem.subjectIdentificatie" />
+			<NcTextField :disabled="loading"
+				label="Subject Identificatie"
+				maxlength="255"
+				:value.sync="klantItem.subjectIdentificatie" />
 
-				<NcTextField :disabled="loading"
-					label="Subject Type"
-					maxlength="255"
-					:value.sync="store.klantItem.subjectType" />
-			</div>
+			<NcTextField :disabled="loading"
+				label="Subject Type"
+				maxlength="255"
+				:value.sync="klantItem.subjectType" />
+		</div>
 
-			<NcButton
-				v-if="!succes"
+		<template #actions>
+			<NcButton @click="closeModal">
+				<template #icon>
+					<Cancel :size="20" />
+				</template>
+				{{ success ? 'Sluiten' : 'Annuleer' }}
+			</NcButton>
+			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+				<template #icon>
+					<Help :size="20" />
+				</template>
+				Help
+			</NcButton>
+			<NcButton v-if="!success"
 				:disabled="loading"
 				type="primary"
 				@click="editKlant()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<ContentSaveOutline v-if="!loading && klantStore.klantItem?.id" :size="20" />
+					<Plus v-if="!loading && !klantStore.klantItem?.id" :size="20" />
 				</template>
-				Opslaan
+				{{ klantStore.klantItem?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
-		</div>
-	</NcModal>
+		</template>
+	</NcDialog>
 </template>
 
 <script>
 import {
 	NcButton,
-	NcModal,
+	NcDialog,
 	NcTextField,
 	NcLoadingIcon,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Help from 'vue-material-design-icons/Help.vue'
 
 export default {
 	name: 'EditKlant',
 	components: {
-		NcModal,
+		NcDialog,
 		NcTextField,
 		NcButton,
 		NcLoadingIcon,
 		// Icons
 		ContentSaveOutline,
+		Cancel,
+		Plus,
+		Help,
 	},
 	data() {
 		return {
-			succes: false,
+			success: false,
 			loading: false,
 			error: false,
+			hasUpdated: false,
+			klantItem: {
+				voornaam: '',
+				tussenvoegsel: '',
+				achternaam: '',
+				telefoonnummer: '',
+				emailadres: '',
+				functie: '',
+				aanmaakkanaal: '',
+				bronorganisatie: '',
+				bedrijfsnaam: '',
+				websiteUrl: '',
+				url: '',
+				geverifieerd: '',
+				subject: '',
+				subjectIdentificatie: '',
+				subjectType: '',
+			},
 		}
 	},
 	updated() {
-		if (navigationStore.modal === 'editKlant' && this.hasUpdated) {
-			if (this.klant === store.klantItem) return
-			this.hasUpdated = false
-		}
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
-			// uncomment when api works
-			// this.fetchData(store.klantId)
+			if (klantStore.klantItem?.id) {
+				this.klantItem = {
+					...klantStore.klantItem,
+					voornaam: klantStore.klantItem.voornaam || '',
+					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
+					achternaam: klantStore.klantItem.achternaam || '',
+					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
+					emailadres: klantStore.klantItem.emailadres || '',
+					functie: klantStore.klantItem.functie || '',
+					aanmaakkanaal: klantStore.klantItem.aanmaakkanaal || '',
+					bronorganisatie: klantStore.klantItem.bronorganisatie || '',
+					bedrijfsnaam: klantStore.klantItem.bedrijfsnaam || '',
+					websiteUrl: klantStore.klantItem.websiteUrl || '',
+					url: klantStore.klantItem.url || '',
+					geverifieerd: klantStore.klantItem.geverifieerd || '',
+					subject: klantStore.klantItem.subject || '',
+					subjectIdentificatie: klantStore.klantItem.subjectIdentificatie || '',
+					subjectType: klantStore.klantItem.subjectType || '',
+				}
+			}
 			this.hasUpdated = true
-			this.klant = store.klantItem
 		}
 	},
 	methods: {
-		fetchData(id) {
-			this.klantLoading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/klanten/${id}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.klant = data
-						this.klant.data = JSON.stringify(data.data)
-						this.catalogi.value = [data.catalogi]
-						this.metaData.value = [data.metaData]
-					})
-					this.klantLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.klantLoading = false
-				})
-		},
 		closeModal() {
-			navigationStore.modal = false
+			navigationStore.setModal(false)
+			this.success = false
+			this.loading = false
+			this.error = false
+			this.hasUpdated = false
+			this.klantItem = {
+				voornaam: '',
+				tussenvoegsel: '',
+				achternaam: '',
+				telefoonnummer: '',
+				emailadres: '',
+				functie: '',
+				aanmaakkanaal: '',
+				bronorganisatie: '',
+				bedrijfsnaam: '',
+				websiteUrl: '',
+				url: '',
+				geverifieerd: '',
+				subject: '',
+				subjectIdentificatie: '',
+				subjectType: '',
+			}
 		},
-		editKlant() {
+		async editKlant() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/klanten/${store.klantItem.id}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(store.klantItem),
-				},
-			)
-				.then((response) => {
-					this.succes = true
-					this.loading = false
-					store.getKlantenList()
-					response.json().then((data) => {
-						store.setKlantItem(data)
-					})
-					// Get the modal to self close
-					const self = this
-					setTimeout(function() {
-						self.succes = false
-						store.setModal(false)
-					}, 2000)
+			try {
+				await klantStore.saveKlant({
+					...this.klantItem,
 				})
-				.catch((err) => {
-					this.loading = false
-					this.error = err
-					console.error(err)
-				})
+				this.success = true
+				this.loading = false
+				setTimeout(this.closeModal, 2000)
+			} catch (error) {
+				this.loading = false
+				this.success = false
+				this.error = error.message || 'An error occurred while saving the klant'
+			}
+		},
+		openLink(url, target) {
+			window.open(url, target)
 		},
 	},
 }

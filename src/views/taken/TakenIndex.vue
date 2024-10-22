@@ -16,7 +16,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					<CalendarMonthOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('addTaak')">
+					<NcButton type="primary" @click="navigationStore.setModal('editTaak')">
 						Taak toevoegen
 					</NcButton>
 				</template>

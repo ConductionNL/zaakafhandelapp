@@ -10,6 +10,7 @@ import { navigationStore } from '../store/store.js'
 		<EditBericht />
 		<EditTaak />
 		<EditRol />
+		<EditZaak />
 	</div>
 </template>
 
@@ -19,6 +20,7 @@ import EditKlant from './klanten/EditKlant.vue'
 import EditBericht from './berichten/EditBericht.vue'
 import EditTaak from './taken/EditTaak.vue'
 import EditRol from './rollen/EditRol.vue'
+import EditZaak from './zaken/EditZaak.vue'
 
 export default {
 	name: 'Modals',
@@ -28,6 +30,7 @@ export default {
 		EditBericht,
 		EditTaak,
 		EditRol,
+		EditZaak
 	},
 }
 </script>

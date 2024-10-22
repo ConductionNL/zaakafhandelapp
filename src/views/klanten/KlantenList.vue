@@ -22,7 +22,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="navigationStore.setModal('addKlant')">
+					<NcActionButton @click="klantStore.setKlantItem(null); navigationStore.setModal('editKlant')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>

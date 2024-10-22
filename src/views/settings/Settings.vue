@@ -191,6 +191,13 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+			zaaktypen: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
@@ -208,6 +215,7 @@ export default {
 				{ id: 'organisaties', title: 'Organisaties', description: 'Configureer de opslag voor organisatiegegevens', helpLink: 'https://example.com/help/organisaties' },
 				{ id: 'personen', title: 'Personen', description: 'Configureer de opslag voor persoonsgegevens', helpLink: 'https://example.com/help/personen' },
 				{ id: 'zaken', title: 'Zaken', description: 'Configureer de opslag voor zaken', helpLink: 'https://example.com/help/zaken' },
+				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
 			],
 		}
 	},

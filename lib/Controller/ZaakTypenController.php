@@ -2,12 +2,9 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
-use OCA\ZaakAfhandelApp\Service\CallService;
-use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\Http\JSONResponse;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 
 class ZaakTypenController extends Controller
@@ -30,7 +27,7 @@ class ZaakTypenController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function index(CallService $callService): JSONResponse
+	public function index(): JSONResponse
 	{
 		 // Retrieve all request parameters
 		 $requestParams = $this->request->getParams();
@@ -50,7 +47,7 @@ class ZaakTypenController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function show(string $id, CallService $callService): JSONResponse
+	public function show(string $id): JSONResponse
 	{
         // Fetch the catalog object by its ID
         $object = $this->objectService->getObject('zaaktypen', $id);
@@ -68,7 +65,7 @@ class ZaakTypenController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function create(CallService $callService): JSONResponse
+	public function create(): JSONResponse
 	{
         // Get all parameters from the request
         $data = $this->request->getParams();
@@ -91,7 +88,7 @@ class ZaakTypenController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function update(string $id, CallService $callService): JSONResponse
+	public function update(string $id): JSONResponse
 	{
         // Get all parameters from the request
         $data = $this->request->getParams();
@@ -114,7 +111,7 @@ class ZaakTypenController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function destroy(string $id, CallService $callService): JSONResponse
+	public function destroy(string $id): JSONResponse
 	{
         // Delete the catalog object
         $result = $this->objectService->deleteObject('zaaktypen', $id);

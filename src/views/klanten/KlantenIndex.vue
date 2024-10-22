@@ -16,7 +16,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					<AccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('addKlant')">
+					<NcButton type="primary" @click="navigationStore.setModal('editKlant')">
 						Klant toevoegen
 					</NcButton>
 				</template>

@@ -6,13 +6,13 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 	<NcModal v-if="navigationStore.modal === 'editZaakType'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modalContent">
 			<h2>Zaak aanpassen</h2>
-			<NcNoteCard v-if="succes" type="success">
+			<NcNoteCard v-if="success" type="success">
 				<p>Bijlage succesvol toegevoegd</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
-			<div v-if="!succes" class="form-group">
+			<div v-if="!success" class="form-group">
 				<NcTextField
 					:disabled="loading"
 					:value.sync="zaakTypeStore.zaakTypeItem.identificatie"
@@ -198,14 +198,12 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'editZaak' && this.hasUpdated) {
-			if (this.zaak === store.zaakItem) return
+		if (navigationStore.modal === 'editZaakType' && this.hasUpdated) {
+			if (this.zaakType === zaakTypeStore.zaakTypeItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editZaak' && !this.hasUpdated) {
-			this.zaak = store.zaakItem
-			this.setArchiefStatusOptions()
-			this.fetchZaakType()
+		if (navigationStore.modal === 'editZaakType' && !this.hasUpdated) {
+			this.zaakType = zaakTypeStore.zaakTypeItem
 			this.hasUpdated = true
 		}
 	},

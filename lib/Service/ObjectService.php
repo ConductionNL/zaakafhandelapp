@@ -36,7 +36,7 @@ class ObjectService
 		private readonly IAppManager $appManager,
 		private readonly IAppConfig $config,
 	) {
-		$this->appName = 'opencatalogi';
+		$this->appName = 'zaakafhandelapp';
 	}
 
 	/**

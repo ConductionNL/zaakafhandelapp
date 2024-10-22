@@ -16,7 +16,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="zaakStore.setZaakItem(null); navigationStore.setModal('zaakForm')">
+					<NcButton type="primary" @click="zaakStore.setZaakItem(null); navigationStore.setModal('editZaak')">
 						Zaak starten
 					</NcButton>
 				</template>
