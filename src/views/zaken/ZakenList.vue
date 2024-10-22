@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -16,13 +16,13 @@ import { navigationStore } from '../../store/store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="zaakStore.refreshZakenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="navigationStore.setModal('addZaak')">
+					<NcActionButton @click="zaakStore.setZaakItem(null); navigationStore.setModal('zaakForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -30,17 +30,18 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(zaak, i) in zakenList.results"
+
+			<div v-if="!!zaakStore.zakenList?.length">
+				<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
 					:key="`${zaak}${i}`"
 					:name="zaak?.identificatie"
 					:force-display-actions="true"
-					:active="store.zaakId === zaak?.uuid"
+					:active="zaakStore.zaakItem?.uuid === zaak?.uuid"
 					:details="'1h'"
 					:counter-number="44"
-					@click="storeZaak(zaak)">
+					@click="zaakStore.setZaakItem(zaak)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="store.zaakId === zaak.uuid && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.uuid === zaak?.uuid && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -48,7 +49,7 @@ import { navigationStore } from '../../store/store.js'
 						{{ zaak?.zaaktype }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="editZaak(zaak)">
+						<NcActionButton @click="zaakStore.setZaakItem(zaak); navigationStore.setModal('zaakForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -64,6 +65,10 @@ import { navigationStore } from '../../store/store.js'
 				</NcListItem>
 			</div>
 		</ul>
+
+		<div v-if="!zaakStore.zakenList.length">
+			No zaken have been defined yet.
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
@@ -104,77 +109,27 @@ export default {
 	data() {
 		return {
 			search: '',
-			loading: true,
+			loading: false,
 			zakenList: [],
 		}
 	},
-	watch: {
-		search: {
-			handler(search) {
-				this.fetchDataWithSearch(search)
-			},
-			deep: true,
-		},
-	},
 	mounted() {
-		this.fetchData()
+		this.loading = true
+
+		zaakStore.refreshZakenList()
+			.then(() => {
+				this.loading = false
+			})
 	},
 	methods: {
-		fetchData() {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		fetchDataWithSearch(search) {
-			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/zrc/zaken?${search}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		editZaak(zaak) {
-			store.setZaakItem(zaak)
-			store.setZaakId(zaak.uuid)
-			navigationStore.setModal('editZaak')
-		},
-		storeZaak(zaak) {
-			store.setZaakItem(zaak)
-			store.setZaakId(zaak.uuid)
-		},
 		clearText() {
 			this.search = ''
 		},
 	},
 }
 </script>
-<style>
 
+<style>
 .searchField {
     padding-inline-start: 65px;
     padding-inline-end: 20px;

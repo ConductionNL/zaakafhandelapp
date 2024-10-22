@@ -1,8 +1,11 @@
+<script setup>
+import { navigationStore } from '../store/store.js'
+</script>
+
 <template>
 	<!-- Placeholder -->
 	<div>
-		<AddZaak />
-		<EditZaak />
+		<ZaakForm v-if="navigationStore.modal === 'zaakForm'" />
 		<AddKlant />
 		<EditKlant />
 		<AddBericht />
@@ -15,8 +18,7 @@
 </template>
 
 <script>
-import AddZaak from './zaken/AddZaak.vue'
-import EditZaak from './zaken/EditZaak.vue'
+import ZaakForm from './zaken/ZaakForm.vue'
 import AddKlant from './klanten/AddKlant.vue'
 import EditKlant from './klanten/EditKlant.vue'
 import AddBericht from './berichten/AddBericht.vue'
@@ -29,8 +31,7 @@ import EditRol from './rollen/EditRol.vue'
 export default {
 	name: 'Modals',
 	components: {
-		AddZaak,
-		EditZaak,
+		ZaakForm,
 		AddKlant,
 		EditKlant,
 		AddBericht,

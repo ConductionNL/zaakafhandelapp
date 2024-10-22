@@ -1,20 +1,20 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcAppContentList>
 		<ul v-if="!loading">
-			<NcListItem v-for="(zaak, i) in zakenList.results"
+			<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
 				:key="`${zaak}${i}`"
 				:name="zaak?.omschrijving"
-				:active="store.zaakId === zaak?.uuid"
+				:active="zaakStore.zaakItem?.uuid === zaak?.uuid"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setZaakId(zaak.uuid)">
+				@click="zaakStore.setZaakItem(zaak)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zaakId === zaak.uuid && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="zaakStore.zaakItem?.uuid === zaak?.uuid && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -56,12 +56,6 @@ export default {
 		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
-	props: {
-		zaakId: {
-			type: String,
-			required: true,
-		},
-	},
 	data() {
 		return {
 			search: '',
@@ -69,37 +63,15 @@ export default {
 			zakenList: [],
 		}
 	},
-	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
-		},
-	},
-	mounted() {
-		this.fetchData(store.zaakItem)
+	updated() {
+		this.loading = true
+
+		zaakStore.refreshZakenList()
+			.then(() => {
+				this.loading = false
+			})
 	},
 	methods: {
-		fetchData(zaakId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
 		},
