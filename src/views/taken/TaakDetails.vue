@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -56,6 +56,54 @@ export default {
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	props: {
+		taakId: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			taak: [],
+			loading: false,
+		}
+	},
+	watch: {
+		taakId: {
+			handler(taakId) {
+				this.fetchData(taakId)
+			},
+			deep: true,
+		},
+	},
+	mounted() {
+		this.fetchData(store.taakId)
+	},
+	methods: {
+		fetchData(taakId) {
+			this.loading = true
+			fetch(
+				'/index.php/apps/zaakafhandelapp/api/taken/' + taakId,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.taak = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
+		editTaak(taak) {
+			store.setTaakItem(taak)
+			navigationStore.setModal('editTaak')
+		},
 	},
 }
 </script>

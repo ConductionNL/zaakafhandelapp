@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -150,6 +150,54 @@ export default {
 		CalendarMonthOutline,
 		BriefcaseAccountOutline,
 		TrashCanOutline,
+	},
+	props: {
+		klantId: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			klant: [],
+			loading: false,
+		}
+	},
+	watch: {
+		klantId: {
+			handler(klantId) {
+				this.fetchData(klantId)
+			},
+			deep: true,
+		},
+	},
+	mounted() {
+		this.fetchData(store.klantId)
+	},
+	methods: {
+		editKlant(klant) {
+			store.setKlantItem(klant)
+			navigationStore.setModal('editKlant')
+		},
+		fetchData(klantId) {
+			this.loading = true
+			fetch(
+				'/index.php/apps/zaakafhandelapp/api/klanten/' + klantId,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.klant = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
 	},
 }
 </script>

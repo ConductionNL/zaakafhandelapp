@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { store } from '../../store.js'
 			<BerichtenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.berichtItem || !store.berichtItem.id || store.selected != 'berichten' "
+			<NcEmptyContent v-if="!store.berichtItem || navigationStore.selected !== 'berichten'"
 				class="detailContainer"
 				name="Geen bericht"
 				description="Nog geen bericht geselecteerd">
@@ -16,12 +16,12 @@ import { store } from '../../store.js'
 					<ChatOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="store.setModal('addBericht')">
+					<NcButton type="primary" @click="navigationStore.setModal('addBericht')">
 						Bericht aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BerichDetails v-if="store.berichtItem && store.berichtItem.id && store.selected === 'berichten'" />
+			<BerichDetails v-if="store.berichtItem && navigationStore.selected === 'berichten'" :bericht-id="store.berichtId" />
 		</template>
 	</NcAppContent>
 </template>

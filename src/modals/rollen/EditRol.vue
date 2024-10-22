@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editRol'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editRol'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Rol aanpassen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -58,11 +58,11 @@ export default {
 		}
 	},
 	updated() {
-		if (store.modal === 'editRol' && this.hasUpdated) {
+		if (navigationStore.modal === 'editRol' && this.hasUpdated) {
 			if (this.rol === store.rolItem) return
 			this.hasUpdated = false
 		}
-		if (store.modal === 'editRol' && !this.hasUpdated) {
+		if (navigationStore.modal === 'editRol' && !this.hasUpdated) {
 			this.fetchData(store.rolId)
 			this.hasUpdated = true
 			this.rol = store.rolItem
@@ -97,7 +97,7 @@ export default {
 				})
 		},
 		closeModal() {
-			store.modal = false
+			navigationStore.modal = false
 		},
 		editRol() {
 			fetch(

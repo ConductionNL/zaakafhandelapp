@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'editKlant'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'editKlant'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Klant aanpassen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -131,7 +131,44 @@ export default {
 			error: false,
 		}
 	},
+	updated() {
+		if (navigationStore.modal === 'editKlant' && this.hasUpdated) {
+			if (this.klant === store.klantItem) return
+			this.hasUpdated = false
+		}
+		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
+			// uncomment when api works
+			// this.fetchData(store.klantId)
+			this.hasUpdated = true
+			this.klant = store.klantItem
+		}
+	},
 	methods: {
+		fetchData(id) {
+			this.klantLoading = true
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/${id}`,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.klant = data
+						this.klant.data = JSON.stringify(data.data)
+						this.catalogi.value = [data.catalogi]
+						this.metaData.value = [data.metaData]
+					})
+					this.klantLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.klantLoading = false
+				})
+		},
+		closeModal() {
+			navigationStore.modal = false
+		},
 		editKlant() {
 			this.loading = true
 			fetch(

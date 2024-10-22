@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addKlant')">
+					<NcActionButton @click="navigationStore.setModal('addKlant')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -112,6 +112,33 @@ export default {
 	methods: {
 		fullName(klant) {
 			return klant.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant.achternaam
+		},
+		toggleKlantDetailView(klantId) {
+			if (store.klantId === klantId) store.setKlantId(false)
+			else store.setKlantId(klantId)
+		},
+		editKlant(klant) {
+			store.setKlantItem(klant)
+			navigationStore.setModal('editKlant')
+		},
+		fetchData(newPage) {
+			this.loading = true
+			fetch(
+				'/index.php/apps/zaakafhandelapp/api/klanten',
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.klantenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
 		},
 		clearText() {
 			this.search = ''

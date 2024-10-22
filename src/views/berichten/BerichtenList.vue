@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addBericht')">
+					<NcActionButton @click="navigationStore.setModal('addBericht')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -113,6 +113,34 @@ export default {
 		store.getBerichtenList()
 	},
 	methods: {
+		editBericht(bericht) {
+			store.setBerichtItem(bericht)
+			store.setBerichtId(bericht.id)
+			navigationStore.setModal('editBericht')
+		},
+		storeBericht(bericht) {
+			store.setBerichtId(bericht.id)
+			store.setBerichtItem(bericht)
+		},
+		fetchData(newPage) {
+			this.loading = true
+			fetch(
+				'/index.php/apps/zaakafhandelapp/api/berichten',
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.berichtenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
 		clearText() {
 			this.search = ''
 		},

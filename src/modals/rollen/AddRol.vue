@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addRol'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addRol'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Rol aanmaken</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -60,6 +60,9 @@ export default {
 		}
 	},
 	methods: {
+		closeModal() {
+			navigationStore.modal = false
+		},
 		addRol() {
 			this.$emit('rol', this.onderwerp)
 			fetch(

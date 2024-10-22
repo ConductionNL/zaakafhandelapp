@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addBericht'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addBericht'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Bericht aanmaken</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -127,6 +127,9 @@ export default {
 		store.setBerichtItem([])
 	},
 	methods: {
+		closeModal() {
+			navigationStore.modal = false
+		},
 		addBericht() {
 			fetch(
 				'/index.php/apps/zaakafhandelapp/api/berichten',

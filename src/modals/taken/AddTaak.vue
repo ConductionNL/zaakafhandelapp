@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addTaak'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addTaak'" ref="modalRef" @close="closeModal">
 		<div class="modalContent">
 			<h2>Taak toevoegen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -97,11 +97,19 @@ export default {
 			}],
 		}
 	},
-	mounted() {
-		// Lets create an empty zaak item
-		store.setTaakItem([])
+	updated() {
+		if (navigationStore.modal === 'addTaak' && !this.hasUpdated) {
+			this.fetchZaken()
+			this.hasUpdated = true
+		}
 	},
 	methods: {
+		closeModal() {
+			this.hasUpdated = false
+			navigationStore.setModal(false)
+			store.setTaakZaakId(false)
+
+		},
 		addTaak() {
 			this.loading = true
 			fetch(

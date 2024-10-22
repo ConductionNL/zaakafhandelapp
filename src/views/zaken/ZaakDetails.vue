@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,13 +9,14 @@ import { store } from '../../store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ zaak.identificatie }}
+						{{ zaakStore.zaakItem?.identificatie }}
 					</h1>
+
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('editZaak')">
+						<NcActionButton @click="navigationStore.setModal('zaakForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -27,19 +28,19 @@ import { store } from '../../store.js'
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addRoll')">
+						<NcActionButton @click="navigationStore.setModal('addRol')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addTaak')">
+						<NcActionButton @click="navigationStore.setModal('addTaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
 							Taak toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addBericht')">
+						<NcActionButton @click="navigationStore.setModal('addBericht')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
@@ -59,62 +60,75 @@ import { store } from '../../store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
+
 				<div class="detailGrid">
 					<div>
-						<b>Omschrijving:</b>
-						<span>{{ zaak.omschrijving }}</span>
+						<h4>Omschrijving:</h4>
+						<span>{{ zaakStore.zaakItem?.omschrijving }}</span>
 					</div>
 					<div>
-						<b>Zaaktype:</b>
-						<span>{{ zaak.zaaktype }}</span>
+						<h4>
+							Zaaktype:
+						</h4>
+						<span>{{ zaakStore.zaakItem?.zaaktype }}</span>
 					</div>
 					<div>
-						<b>Archiefstatus:</b>
-						<span>{{ zaak.archiefstatus }}</span>
+						<div>
+							<h4>Archiefstatus:</h4>
+							<p>
+								{{ zaakStore.zaakItem?.archiefstatus }}
+							</p>
+						</div>
+						<h4>Registratiedatum:</h4>
+						<span>{{ zaakStore.zaakItem?.registratiedatum }}</span>
 					</div>
 					<div>
-						<b>Registratiedatum:</b>
-						<span>{{ zaak.registratiedatum }}</span>
+						<h4>Bronorganisatie:</h4>
+						<p>
+							{{ zaakStore.zaakItem?.bronorganisatie }}
+						</p>
 					</div>
 					<div>
-						<b>Bronorganisatie:</b>
-						<span>{{ zaak.bronorganisatie }}</span>
+						<h4>VerantwoordelijkeOrganisatie:</h4>
+						<p>
+							{{ zaakStore.zaakItem?.verantwoordelijkeOrganisatie }}
+						</p>
 					</div>
 					<div>
-						<b>VerantwoordelijkeOrganisatie:</b>
-						<span>{{ zaak.verantwoordelijkeOrganisatie }}</span>
+						<h4>Startdatum:</h4>
+						<p>
+							{{ zaakStore.zaakItem?.startdatum }}
+						</p>
 					</div>
 					<div>
-						<b>Startdatum:</b>
-						<span>{{ zaak.startdatum }}</span>
-					</div>
-					<div>
-						<b>Toelichting:</b><span>{{ zaak.toelichting }}
-						</span>
+						<h4>Toelichting:</h4>
+						<p>
+							{{ zaakStore.zaakItem?.toelichting }}
+						</p>
 					</div>
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen :zaak-id="zaak.uuid" />
+							<ZaakEigenschappen />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten :zaak-id="zaak.uuid" />
+							<ZaakDocumenten />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen :zaak-id="zaak.uuid" />
+							<ZaakRollen />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken :zaak-id="zaak.uuid" />
+							<ZaakTaken />
 						</BTab>
 						<BTab title="Besluiten">
-							<ZaakBesluiten :zaak-id="zaak.uuid" />
+							<ZaakBesluiten />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten :zaak-id="zaak.uuid" />
+							<ZaakBerichten />
 						</BTab>
 						<BTab title="Zaken">
-							<ZakenZaken :zaak-id="zaak.uuid" />
+							<ZakenZaken />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
@@ -179,50 +193,22 @@ export default {
 		VectorPolylineEdit,
 
 	},
-	props: {
-		zaakId: {
-			type: String,
-			required: true,
-		},
-	},
 	data() {
 		return {
 			zaak: [],
 			loading: true,
 		}
 	},
-	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
-		},
-	},
 	mounted() {
-		this.fetchData(store.zaakId)
+		this.fetchData()
 	},
 	methods: {
-		addTaakToZaak() {
-			store.setModal('addTaak')
-			store.setTaakZaakId(this.zaak.uuid)
-		},
-		fetchData(zaakId) {
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zaak = data
-						this.loading = false
-					})
-				})
-				.catch((err) => {
-					console.error(err)
+
+			// get current zaak once
+			zaakStore.getZaak(zaakStore.zaakItem.uuid, { setZaakItem: true })
+				.then(() => {
 					this.loading = false
 				})
 		},

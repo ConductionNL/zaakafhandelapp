@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -100,6 +100,55 @@ export default {
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	props: {
+		berichtId: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			bericht: [],
+			loading: false,
+		}
+	},
+	watch: {
+		berichtId: {
+			handler(berichtId) {
+				this.fetchData(berichtId)
+			},
+			deep: true,
+		},
+	},
+	// First time the is no emit so lets grap it directly
+	mounted() {
+		this.fetchData(store.berichtItem.id)
+	},
+	methods: {
+		editBericht(bericht) {
+			store.setBerichtItem(bericht)
+			navigationStore.setModal('editBericht')
+		},
+		fetchData(berichtId) {
+			this.loading = true
+			fetch(
+				'/index.php/apps/zaakafhandelapp/api/berichten/' + berichtId,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.bericht = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
 	},
 }
 </script>

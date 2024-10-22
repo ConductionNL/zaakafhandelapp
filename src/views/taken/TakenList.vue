@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -22,7 +22,7 @@ import { store } from '../../store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addTaak')">
+					<NcActionButton @click="navigationStore.setModal('addTaak')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -110,6 +110,33 @@ export default {
 		store.getTakenList()
 	},
 	methods: {
+		toggleTaakDetailView(taakId) {
+			if (store.taakId === taakId) store.setTaakId(false)
+			else store.setTaakId(taakId)
+		},
+		editTaak(taak) {
+			store.setTaakItem(taak)
+			navigationStore.setModal('editTaak')
+		},
+		fetchData(newPage) {
+			this.loading = true
+			fetch(
+				'/index.php/apps/zaakafhandelapp/api/taken',
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.takenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
 		clearText() {
 			this.search = ''
 		},

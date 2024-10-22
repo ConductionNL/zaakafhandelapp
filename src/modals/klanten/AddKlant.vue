@@ -1,9 +1,9 @@
 <script setup>
-import { store } from '../../store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal v-if="store.modal === 'addKlant'" ref="modalRef" @close="store.setModal(false)">
+	<NcModal v-if="navigationStore.modal === 'addKlant'" ref="modalRef" @close="navigationStore.setModal(false)">
 		<div class="modal__content">
 			<h2>Klant toevoegen</h2>
 			<NcNoteCard v-if="succes" type="success">
@@ -133,11 +133,15 @@ export default {
 			error: false,
 		}
 	},
-	mounted() {
-		// Lets create an empty zaak item
-		store.setKlantItem([])
+	updated() {
+		if (navigationStore.modal === 'addKlant' && !this.hasUpdated) {
+			this.hasUpdated = true
+		}
 	},
 	methods: {
+		closeModal() {
+			navigationStore.modal = false
+		},
 		addKlant() {
 			this.loading = true
 			fetch(
