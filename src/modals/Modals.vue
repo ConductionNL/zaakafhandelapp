@@ -5,8 +5,8 @@ import { navigationStore } from '../store/store.js'
 <template>
 	<!-- Placeholder -->
 	<div>
-		<AddZaak />
-		<EditZaak />
+		<ZaakForm v-if="navigationStore.modal === 'zaakForm'" />
+
 		<AddZaakType />
 		<EditZaakType />
 		<AddKlant />
@@ -21,8 +21,7 @@ import { navigationStore } from '../store/store.js'
 </template>
 
 <script>
-import AddZaak from './zaken/AddZaak.vue'
-import EditZaak from './zaken/EditZaak.vue'
+import ZaakForm from './zaken/ZaakForm.vue'
 import AddZaakType from './zaakTypen/AddZaakType.vue'
 import EditZaakType from './zaakTypen/EditZaakType.vue'
 import AddKlant from './klanten/AddKlant.vue'
@@ -37,8 +36,7 @@ import EditRol from './rollen/EditRol.vue'
 export default {
 	name: 'Modals',
 	components: {
-		AddZaak,
-		EditZaak,
+		ZaakForm,
 		AddZaakType,
 		EditZaakType,
 		AddKlant,

@@ -5,7 +5,7 @@ import { navigationStore } from '../store/store.js'
 <template>
 	<NcAppNavigation>
 		<NcAppNavigationList>
-			<NcAppNavigationNewItem
+			<NcAppNavigationNew
 				name="Zaak Starten"
 				@new-item="navigationStore.modal = 'zaakAdd'">
 				<template #icon>
