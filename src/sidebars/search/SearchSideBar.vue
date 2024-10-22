@@ -1,5 +1,5 @@
 <script setup>
-import { store } from '../../store.js'
+import { searchStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -11,7 +11,7 @@ import { store } from '../../store.js'
 				<Magnify :size="20" />
 			</template>
 			<NcTextField class="searchField"
-				:value.sync="store.search"
+				:value.sync="searchStore.search"
 				label="Search" />
 		</NcAppSidebarTab>
 		<NcAppSidebarTab id="share-tab" name="Personen" :order="2">
@@ -19,7 +19,7 @@ import { store } from '../../store.js'
 				<AccountGroupOutline :size="20" />
 			</template>
 			<NcTextField class="searchField"
-				:value.sync="store.search"
+				:value.sync="searchStore.search"
 				label="Naam" />
 		</NcAppSidebarTab>
 		<NcAppSidebarTab id="settings-tab" name="Organisaties" :order="3">
@@ -27,7 +27,7 @@ import { store } from '../../store.js'
 				<OfficeBuildingOutline :size="20" />
 			</template>
 			<NcTextField class="searchField"
-				:value.sync="store.search"
+				:value.sync="searchStore.search"
 				label="Naam" />
 		</NcAppSidebarTab>
 	</NcAppSidebar>

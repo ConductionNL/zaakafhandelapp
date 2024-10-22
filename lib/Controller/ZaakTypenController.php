@@ -7,61 +7,20 @@ use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\IAppConfig;
+use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\IRequest;
 
 class ZaakTypenController extends Controller
 {
-    const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "name" => "Zaakt type 1",
-            "summary" => "summary for one"
-        ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "name" => "Zaakt type 12",
-            "summary" => "summary for two"
-        ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "name" => "Zaakt type 3",
-            "summary" => "summary for two"
-        ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "name" => "Zaakt type 4",
-            "summary" => "summary for two"
-        ]
-    ];
-
     public function __construct(
 		$appName,
 		IRequest $request,
-		private readonly IAppConfig $config
+        private readonly ObjectService $objectService,
 	)
     {
         parent::__construct($appName, $request);
     }
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{
-        return new TemplateResponse(
-            //Application::APP_ID,
-            'zaakafhandelapp',
-            'index',
-            []
-        );
-	}
 
 	/**
 	 * Return (and serach) all objects
@@ -73,11 +32,14 @@ class ZaakTypenController extends Controller
 	 */
 	public function index(CallService $callService): JSONResponse
 	{
-		// Latere zorg
-		$query= $this->request->getParams();
+		 // Retrieve all request parameters
+		 $requestParams = $this->request->getParams();
 
-		$results = $callService->index(source: 'ztc', endpoint: 'zaaktypen');
-		return new JSONResponse($results);
+		 // Fetch catalog objects based on filters and order
+		 $data = $this->objectService->getResultArrayForRequest('zaaktypen', $requestParams);
+ 
+		 // Return JSON response
+		 return new JSONResponse($data);
 	}
 
 	/**
@@ -90,11 +52,11 @@ class ZaakTypenController extends Controller
 	 */
 	public function show(string $id, CallService $callService): JSONResponse
 	{
-		// Latere zorg
-		$query= $this->request->getParams();
+        // Fetch the catalog object by its ID
+        $object = $this->objectService->getObject('zaaktypen', $id);
 
-		$results = $callService->show(source: 'ztc', endpoint: 'zaaktypen', id: $id);
-		return new JSONResponse($results);
+        // Return the catalog as a JSON response
+        return new JSONResponse($object);
 	}
 
 
@@ -108,10 +70,17 @@ class ZaakTypenController extends Controller
 	 */
 	public function create(CallService $callService): JSONResponse
 	{
-		// get post from requests
-		$body = $this->request->getParams();
-		$results = $callService->create(source: 'ztc', endpoint: 'zaaktypen', data: $body);
-		return new JSONResponse($results);
+        // Get all parameters from the request
+        $data = $this->request->getParams();
+
+        // Remove the 'id' field if it exists, as we're creating a new object
+        unset($data['id']);
+
+        // Save the new catalog object
+        $object = $this->objectService->saveObject('zaaktypen', $data);
+        
+        // Return the created object as a JSON response
+        return new JSONResponse($object);
 	}
 
 	/**
@@ -124,9 +93,17 @@ class ZaakTypenController extends Controller
 	 */
 	public function update(string $id, CallService $callService): JSONResponse
 	{
-		$body = $this->request->getParams();
-		$results = $callService->update(source: 'ztc', endpoint: 'zaaktypen', data: $body, id: $id);
-		return new JSONResponse($results);
+        // Get all parameters from the request
+        $data = $this->request->getParams();
+
+        // Remove the 'id' field if it exists, as we're creating a new object
+        unset($data['id']);
+
+        // Save the new catalog object
+        $object = $this->objectService->saveObject('zaaktypen', $data);
+        
+        // Return the created object as a JSON response
+        return new JSONResponse($object);
 	}
 
 	/**
@@ -139,8 +116,10 @@ class ZaakTypenController extends Controller
 	 */
 	public function destroy(string $id, CallService $callService): JSONResponse
 	{
-		$callService->destroy(source: 'ztc', endpoint: 'zaaktypen', id: $id);
+        // Delete the catalog object
+        $result = $this->objectService->deleteObject('zaaktypen', $id);
 
-		return new JsonResponse([]);
+        // Return the result as a JSON response
+		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
 	}
 }

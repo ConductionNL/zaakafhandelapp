@@ -7,7 +7,7 @@ use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\IAppConfig;
+use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\IRequest;
 
 class TakenController extends Controller
@@ -15,29 +15,11 @@ class TakenController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly IAppConfig $config
+        private readonly ObjectService $objectService,
     ) {
         parent::__construct($appName, $request);
     }
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{
-        return new TemplateResponse(
-            //Application::APP_ID,
-            'zaakafhandelapp',
-            'index',
-            []
-        );
-	}
 
 	/**
 	 * Return (and serach) all objects
@@ -49,11 +31,14 @@ class TakenController extends Controller
 	 */
 	public function index(CallService $klantenService): JSONResponse
 	{
-		// Latere zorg
-		$query= $this->request->getParams();
+		 // Retrieve all request parameters
+		 $requestParams = $this->request->getParams();
 
-		$results = $klantenService->index(source: 'klanten', endpoint: 'taken');
-		return new JSONResponse($results);
+		 // Fetch catalog objects based on filters and order
+		 $data = $this->objectService->getResultArrayForRequest('taken', $requestParams);
+ 
+		 // Return JSON response
+		 return new JSONResponse($data);
 	}
 
 	/**
@@ -66,11 +51,11 @@ class TakenController extends Controller
 	 */
 	public function show(string $id, CallService $klantenService): JSONResponse
 	{
-		// Latere zorg
-		$query= $this->request->getParams();
+        // Fetch the catalog object by its ID
+        $object = $this->objectService->getObject('taken', $id);
 
-		$results = $klantenService->show(source: 'klanten', endpoint: 'taken', id: $id);
-		return new JSONResponse($results);
+        // Return the catalog as a JSON response
+        return new JSONResponse($object);
 	}
 
 
@@ -84,20 +69,19 @@ class TakenController extends Controller
 	 */
 	public function create(CallService $callService): JSONResponse
 	{
-		// get post from requests
-		$body = $this->request->getParams();
-		$body['id'] = $this->get_guid(); //@todo remove this hotfic (or actually horror fix)
-		$body['data'] = [];
-		$results = $callService->create(source: 'klanten', endpoint: 'taken', data: $body);
-		return new JSONResponse($results);
+        // Get all parameters from the request
+        $data = $this->request->getParams();
+
+        // Remove the 'id' field if it exists, as we're creating a new object
+        unset($data['id']);
+
+        // Save the new catalog object
+        $object = $this->objectService->saveObject('taken', $data);
+        
+        // Return the created object as a JSON response
+        return new JSONResponse($object);
 	}
 
-	function get_guid() {
-		$data = PHP_MAJOR_VERSION < 7 ? openssl_random_pseudo_bytes(16) : random_bytes(16);
-		$data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // Set version to 0100
-		$data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
-		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-	}
 	/**
 	 * Update an object
 	 *
@@ -108,9 +92,17 @@ class TakenController extends Controller
 	 */
 	public function update(string $id, CallService $callService): JSONResponse
 	{
-		$body = $this->request->getParams();
-		$results = $callService->update(source: 'klanten', endpoint: 'taken', data: $body, id: $id);
-		return new JSONResponse($results);
+        // Get all parameters from the request
+        $data = $this->request->getParams();
+
+        // Remove the 'id' field if it exists, as we're creating a new object
+        unset($data['id']);
+
+        // Save the new catalog object
+        $object = $this->objectService->saveObject('taken', $data);
+        
+        // Return the created object as a JSON response
+        return new JSONResponse($object);
 	}
 
 	/**
@@ -123,8 +115,10 @@ class TakenController extends Controller
 	 */
 	public function destroy(string $id, CallService $callService): JSONResponse
 	{
-		$callService->destroy(source: 'klanten', endpoint: 'taken', id: $id);
+        // Delete the catalog object
+        $result = $this->objectService->deleteObject('taken', $id);
 
-		return new JsonResponse([]);
+        // Return the result as a JSON response
+		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
 	}
 }

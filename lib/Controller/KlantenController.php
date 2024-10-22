@@ -6,8 +6,7 @@ use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCA\ZaakAfhandelApp\Service\CallService;
-use OCP\IAppConfig;
+use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\IRequest;
 
 class KlantenController extends Controller
@@ -17,30 +16,11 @@ class KlantenController extends Controller
 	(
 		$appName,
 		IRequest $request,
-		private readonly IAppConfig $config
+        private readonly ObjectService $objectService,
 	)
     {
         parent::__construct($appName, $request);
     }
-
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{
-        return new TemplateResponse(
-            //Application::APP_ID,
-            'zaakafhandelapp',
-            'index',
-            []
-        );
-	}
 
 
     /**
@@ -53,11 +33,14 @@ class KlantenController extends Controller
      */
     public function index(CallService $klantenService): JSONResponse
     {
-        // Latere zorg
-        $query= $this->request->getParams();
+        // Retrieve all request parameters
+        $requestParams = $this->request->getParams();
 
-        $results = $klantenService->index(source: 'klanten', endpoint: 'klanten');
-        return new JSONResponse($results);
+        // Fetch catalog objects based on filters and order
+        $data = $this->objectService->getResultArrayForRequest('klanten', $requestParams);
+
+        // Return JSON response
+        return new JSONResponse($data);
     }
 
     /**
@@ -70,11 +53,11 @@ class KlantenController extends Controller
      */
     public function show(string $id, CallService $klantenService): JSONResponse
     {
-        // Latere zorg
-        $query= $this->request->getParams();
+        // Fetch the catalog object by its ID
+        $object = $this->objectService->getObject('klanten', $id);
 
-		$results = $klantenService->show(source: 'klanten', endpoint: 'klanten', id: $id);
-        return new JSONResponse($results);
+        // Return the catalog as a JSON response
+        return new JSONResponse($object);
     }
 
 
@@ -88,10 +71,17 @@ class KlantenController extends Controller
      */
     public function create(CallService $callService): JSONResponse
     {
-        // get post from requests
-		$body = $this->request->getParams();
-        $results = $callService->create(source: 'klanten', endpoint: 'klanten', data: $body);
-        return new JSONResponse($results);
+        // Get all parameters from the request
+        $data = $this->request->getParams();
+
+        // Remove the 'id' field if it exists, as we're creating a new object
+        unset($data['id']);
+
+        // Save the new catalog object
+        $object = $this->objectService->saveObject('klanten', $data);
+        
+        // Return the created object as a JSON response
+        return new JSONResponse($object);
     }
 
     /**
@@ -104,9 +94,17 @@ class KlantenController extends Controller
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
-		$body = $this->request->getParams();
-		$results = $callService->update(source: 'klanten', endpoint: 'klanten', data: $body, id: $id);
-		return new JSONResponse($results);
+        // Get all parameters from the request
+        $data = $this->request->getParams();
+
+        // Remove the 'id' field if it exists, as we're creating a new object
+        unset($data['id']);
+
+        // Save the new catalog object
+        $object = $this->objectService->saveObject('klanten', $data);
+        
+        // Return the created object as a JSON response
+        return new JSONResponse($object);
     }
 
     /**
@@ -119,8 +117,10 @@ class KlantenController extends Controller
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {
-		$callService->destroy(source: 'klanten', endpoint: 'klanten', id: $id);
+        // Delete the catalog object
+        $result = $this->objectService->deleteObject('klanten', $id);
 
-		return new JsonResponse([]);
+        // Return the result as a JSON response
+		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
     }
 }

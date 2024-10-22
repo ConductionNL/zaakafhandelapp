@@ -7,6 +7,7 @@ import { useRolStore } from './modules/rol.js'
 import { useTaakStore } from './modules/taak.js'
 import { useZaakStore } from './modules/zaken.ts'
 import { useZaakTypeStore } from './modules/zaakTypen.ts'
+import { useSearchStore } from './modules/search.ts'
 
 const berichtStore = useBerichtStore(pinia)
 const klantStore = useKlantStore(pinia)
@@ -15,6 +16,7 @@ const rolStore = useRolStore(pinia)
 const taakStore = useTaakStore(pinia)
 const zaakStore = useZaakStore(pinia)
 const zaakTypeStore = useZaakTypeStore(pinia)
+const searchStore = useSearchStore(pinia)
 
 export {
 	berichtStore,
@@ -24,4 +26,5 @@ export {
 	taakStore,
 	zaakStore,
 	zaakTypeStore,
+	searchStore
 }
