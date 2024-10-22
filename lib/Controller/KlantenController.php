@@ -121,4 +121,78 @@ class KlantenController extends Controller
         // Return the result as a JSON response
 		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
     }
+
+    /**
+     * Get zaken for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getZaken(string $id): JSONResponse
+    {
+        $requestParams = ['klant' => $id];
+        $zaken = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
+        return new JSONResponse($zaken);
+    }
+
+    /**
+     * Get taken for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getTaken(string $id): JSONResponse
+    {
+        $requestParams = ['klant' => $id];
+        $taken = $this->objectService->getResultArrayForRequest('taken', $requestParams);
+        return new JSONResponse($taken);
+    }
+
+    /**
+     * Get berichten for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getBerichten(string $id): JSONResponse
+    {
+        $requestParams = ['gebruikerID' => $id];
+        $berichten = $this->objectService->getResultArrayForRequest('klanten', $requestParams);
+        return new JSONResponse($berichten);
+    }
+
+    /**
+     * Get contactmomenten for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getContactmomenten(string $id): JSONResponse
+    {
+        $requestParams = ['klant' => $id];
+        $contactmomenten = $this->objectService->getResultArrayForRequest('contactmomenten', $requestParams);
+        return new JSONResponse($contactmomenten);
+    }
+
+    /**
+     * Get audit trail for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getAuditTrail(string $id): JSONResponse
+    {
+        $auditTrail = $this->objectService->getAuditTrail('klanten', $id);
+        return new JSONResponse($auditTrail);
+    }
 }

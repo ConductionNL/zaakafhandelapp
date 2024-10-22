@@ -31,30 +31,30 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 			<div v-if="klantStore.klantenList">
-				<NcListItem v-for="(klant, i) in klantStore.klantenList.results"
+				<NcListItem v-for="(klant, i) in klantStore.klantenList"
 					:key="`${klant}${i}`"
-					:name="fullName(klant)"
-					:active="store.klantId === klant?.id"
+					:name="klant.voornaam || 'onbekend'"
+					:active="klantStore.klantItem.id === klant?.id"
 					:force-display-actions="true"
-					:details="'1h'"
-					:counter-number="44"
-					@click="store.setKlantItem(klant)">
+					:details="'Persoon'"
+					:counter-number="Math.floor(Math.random() * 101)"
+					@click="klantStore.setKlantItem(klant)">
 					<template #icon>
 						<AccountOutline :class="klantStore.klantItem === klant.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ klant?.subject }}
+						{{ klant?.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend' }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="klantStore.setKlantItem(klant); store.setModal('editKlant')">
+						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="klantStore.setKlantItem(klant); store.setDialog('deleteKlant')">
+						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setDialog('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -111,7 +111,14 @@ export default {
 	},
 	methods: {
 		fullName(klant) {
-			return klant.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant.achternaam
+			let name = klant.achternaam;
+			if (klant.tussenvoegsel) {
+				name = `${klant.tussenvoegsel} ${name}`;
+			}
+			if (klant.voornaam) {
+				name = `${name}, ${klant.voornaam}`;
+			}
+			return name;
 		},
 		fetchData(newPage) {
 			this.loading = true

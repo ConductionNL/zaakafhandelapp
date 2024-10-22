@@ -119,4 +119,18 @@ class BerichtenController extends Controller
         // Return the result as a JSON response
 		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
 	}
+
+	    /**
+     * Get audit trail for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getAuditTrail(string $id): JSONResponse
+    {
+        $auditTrail = $this->objectService->getAuditTrail('berichten', $id);
+        return new JSONResponse($auditTrail);
+    }
 }

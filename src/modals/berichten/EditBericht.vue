@@ -1,5 +1,5 @@
 <script setup>
-import { berichtStore, navigationStore } from '../../store/store.js'
+import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -76,8 +76,8 @@ import { berichtStore, navigationStore } from '../../store/store.js'
 				label="Batch ID" />
 
 			<NcTextField
-				:disabled="loading"
-				:value.sync="berichtItem.gebruikerID"
+				:disabled="true"
+				:value="klantStore.klantItem?.id || berichtItem.gebruikerID"
 				label="Gebruiker ID" />
 
 			<NcTextField
@@ -115,7 +115,7 @@ import { berichtStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcLoadingIcon, NcDialog, NcTextField, NcTextArea } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcDialog, NcTextField, NcTextArea, NcNoteCard } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -129,6 +129,7 @@ export default {
 		NcTextArea,
 		NcButton,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -176,9 +177,11 @@ export default {
 					referentie: berichtStore.berichtItem.referentie || '',
 					berichtID: berichtStore.berichtItem.berichtID || '',
 					batchID: berichtStore.berichtItem.batchID || '',
-					gebruikerID: berichtStore.berichtItem.gebruikerID || '',
+					gebruikerID: klantStore.klantItem?.id || berichtStore.berichtItem.gebruikerID || '',
 					volgorde: berichtStore.berichtItem.volgorde || '',
 				}
+			} else if (klantStore.klantItem?.id) {
+				this.berichtItem.gebruikerID = klantStore.klantItem.id
 			}
 			this.hasUpdated = true
 		}
@@ -212,6 +215,7 @@ export default {
 			try {
 				await berichtStore.saveBericht({
 					...this.berichtItem,
+					gebruikerID: klantStore.klantItem?.id || this.berichtItem.gebruikerID,
 				})
 				this.success = true
 				this.loading = false

@@ -4,7 +4,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 
 <template>
 	<div class="detailContainer">
-		<div v-if="!loading" id="app-content">
+		<div id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
@@ -22,7 +22,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addDocument')">
+						<NcActionButton @click="navigationStore.setModal('addDocument')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>
@@ -192,26 +192,6 @@ export default {
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 
-	},
-	data() {
-		return {
-			zaak: [],
-			loading: true,
-		}
-	},
-	mounted() {
-		this.fetchData()
-	},
-	methods: {
-		fetchData() {
-			this.loading = true
-
-			// get current zaak once
-			zaakStore.getZaak(zaakStore.zaakItem.uuid, { setItem: true })
-				.then(() => {
-					this.loading = false
-				})
-		},
 	},
 }
 </script>

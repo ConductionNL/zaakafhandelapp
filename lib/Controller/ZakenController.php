@@ -122,4 +122,17 @@ class ZakenController extends Controller
 		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
 	}
 
+        /**
+     * Get audit trail for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+     */
+    public function getAuditTrail(string $id): JSONResponse
+    {
+        $auditTrail = $this->objectService->getAuditTrail('zaken', $id);
+        return new JSONResponse($auditTrail);
+    }
 }

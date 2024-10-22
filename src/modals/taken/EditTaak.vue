@@ -1,5 +1,5 @@
 <script setup>
-import { taakStore, navigationStore } from '../../store/store.js'
+import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -44,6 +44,11 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				:disabled="loading"
 				:value.sync="taakItem.toelichting"
 				label="Toelichting" />
+
+			<NcTextField
+				:disabled="true"
+				:value="taakItem.klant"
+				label="Klant" />
 		</div>
 
 		<template #actions>
@@ -82,6 +87,7 @@ import {
 	NcTextArea,
 	NcSelect,
 	NcLoadingIcon,
+	NcNoteCard,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
@@ -97,6 +103,7 @@ export default {
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -115,6 +122,7 @@ export default {
 				status: '',
 				onderwerp: '',
 				toelichting: '',
+				klant: '',
 			},
 		}
 	},
@@ -128,7 +136,10 @@ export default {
 					status: taakStore.taakItem.status || '',
 					onderwerp: taakStore.taakItem.onderwerp || '',
 					toelichting: taakStore.taakItem.toelichting || '',
+					klant: klantStore.klantItem?.id || '',
 				}
+			} else {
+				this.taakItem.klant = klantStore.klantItem?.id || ''
 			}
 			this.hasUpdated = true
 		}
@@ -146,6 +157,7 @@ export default {
 				status: '',
 				onderwerp: '',
 				toelichting: '',
+				klant: '',
 			}
 		},
 		async editTaak() {

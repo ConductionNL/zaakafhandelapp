@@ -1,46 +1,46 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div class="detailContainer">
-		<div v-if="store.klantItem" id="app-content">
+		<div id="app-content">
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ store.klantItem.voornaam }} {{ store.klantItem.voorvoegsel }} {{ store.klantItem.achternaam }}
+						{{ klantStore.klantItem.voornaam }} {{ klantStore.klantItem.voorvoegsel }} {{ klantStore.klantItem.achternaam }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('editKlant')">
+						<NcActionButton @click="navigationStore.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addTaak')">
+						<NcActionButton @click="taakStore.setTaakItem(); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<CalendarMonthOutline :size="20" />
 							</template>
 							Taak geven
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addBericht')">
+						<NcActionButton @click="berichtStore.setBerichtItem(); navigationStore.setModal('editBericht')">
 							<template #icon>
 								<ChatOutline :size="20" />
 							</template>
 							Bericht versturen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addZaak')">
+						<NcActionButton @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 							<template #icon>
 								<BriefcaseAccountOutline :size="20" />
 							</template>
 							Zaak starten
 						</NcActionButton>
-						<NcActionButton @click="store.setDialog('deleteKlant')">
+						<NcActionButton @click="navigationStore.setDialog('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -48,61 +48,61 @@ import { navigationStore } from '../../store/store.js'
 						</NcActionButton>
 					</NcActions>
 				</div>
-				<span> {{ store.klantItem.subject }} </span>
+				<span> {{ klantStore.klantItem.subject }} </span>
 
 				<div class="detailGrid">
 					<div class="gridContent gridFullWidth">
 						<b>Klantnummer:</b>
-						<p>{{ store.klantItem.klantnummer }}</p>
+						<p>{{ klantStore.klantItem.klantnummer }}</p>
 					</div>
 
 					<div class="gridContent">
 						<b>Telefoonnummer:</b>
-						<p>{{ store.klantItem.telefoonnummer }}</p>
+						<p>{{ klantStore.klantItem.telefoonnummer }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Email adres:</b>
-						<p>{{ store.klantItem.emailadres }}</p>
+						<p>{{ klantStore.klantItem.emailadres }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Adres:</b>
-						<p>{{ store.klantItem.adres }}</p>
+						<p>{{ klantStore.klantItem.adres }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Functie:</b>
-						<p>{{ store.klantItem.functie }}</p>
+						<p>{{ klantStore.klantItem.functie }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Bedrijfsnaam:</b>
-						<p>{{ store.klantItem.bedrijfsnaam }}</p>
+						<p>{{ klantStore.klantItem.bedrijfsnaam }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Website url:</b>
-						<p>{{ store.klantItem.websiteUrl }}</p>
+						<p>{{ klantStore.klantItem.websiteUrl }}</p>
 					</div>
 					<div class="gridContent">
 						<b>url:</b>
-						<p>{{ store.klantItem.url }}</p>
+						<p>{{ klantStore.klantItem.url }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Bron organisatie:</b>
-						<p>{{ store.klantItem.bronorganisatie }}</p>
+						<p>{{ klantStore.klantItem.bronorganisatie }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Aanmaakkanaal:</b>
-						<p>{{ store.klantItem.aanmaakkanaal }}</p>
+						<p>{{ klantStore.klantItem.aanmaakkanaal }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Geverifieerd:</b>
-						<p>{{ store.klantItem.geverifieerd }}</p>
+						<p>{{ klantStore.klantItem.geverifieerd }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Subject Identificatie:</b>
-						<p>{{ store.klantItem.subjectIdentificatie }}</p>
+						<p>{{ klantStore.klantItem.subjectIdentificatie }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Subject Type:</b>
-						<p>{{ store.klantItem.subjectType }}</p>
+						<p>{{ klantStore.klantItem.subjectType }}</p>
 					</div>
 				</div>
 				<div class="tabContainer">
@@ -114,6 +114,12 @@ import { navigationStore } from '../../store/store.js'
 							asda
 						</BTab>
 						<BTab title="Berichten">
+							asdsa
+						</BTab>
+						<BTab title="Contact Momeenten">
+							asdsa
+						</BTab>
+						<BTab title="Audit trail">
 							asdsa
 						</BTab>
 					</BTabs>
@@ -151,52 +157,36 @@ export default {
 		BriefcaseAccountOutline,
 		TrashCanOutline,
 	},
-	props: {
-		klantId: {
-			type: String,
-			required: true,
-		},
-	},
 	data() {
 		return {
-			klant: [],
-			loading: false,
+			zaken: [],
+			taken: [],
+			berichten: [],
+			contactMomenten: [],
+			auditTrail: [],
 		}
 	},
-	watch: {
-		klantId: {
-			handler(klantId) {
-				this.fetchData(klantId)
-			},
-			deep: true,
-		},
-	},
 	mounted() {
-		this.fetchData(store.klantId)
+		this.fetchKlantData(klantStore.klantItem.id);
 	},
 	methods: {
-		editKlant(klant) {
-			store.setKlantItem(klant)
-			navigationStore.setModal('editKlant')
-		},
-		fetchData(klantId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/klanten/' + klantId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.klant = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
+		async fetchKlantData(id) {
+			try {
+				const [zaken, taken, berichten, contactMomenten, auditTrail] = await Promise.all([
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`).then(res => res.json()),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`).then(res => res.json()),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`).then(res => res.json()),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/contactmomenten`).then(res => res.json()),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`).then(res => res.json()),
+				])
+				this.zaken = zaken
+				this.taken = taken
+				this.berichten = berichten
+				this.contactMomenten = contactMomenten
+				this.auditTrail = auditTrail
+			} catch (error) {
+				console.error('Error fetching klant data:', error)
+			}
 		},
 	},
 }

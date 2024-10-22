@@ -125,6 +125,7 @@ import {
 	NcDialog,
 	NcTextField,
 	NcLoadingIcon,
+	NcNoteCard,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
@@ -138,6 +139,7 @@ export default {
 		NcTextField,
 		NcButton,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 		Cancel,

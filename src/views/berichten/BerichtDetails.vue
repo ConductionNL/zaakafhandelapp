@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,20 +9,20 @@ import { navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ store.berichtItem.onderwerp }}
+						{{ berichtStore.berichtItem.onderwerp }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('editBericht')">
+						<NcActionButton @click="navigationStore.setModal('editBericht')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setDialog('deleteBericht')">
+						<NcActionButton @click="navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -33,47 +33,47 @@ import { navigationStore } from '../../store/store.js'
 				<div class="detailGrid">
 					<div>
 						<b>Berichttekst:</b>
-						<p>{{ store.berichtItem.berichttekst }}</p>
+						<p>{{ berichtStore.berichtItem.berichttekst }}</p>
 					</div>
 					<div>
 						<b>Inhoud:</b>
-						<p>{{ store.berichtItem.inhoud }}</p>
+						<p>{{ berichtStore.berichtItem.inhoud }}</p>
 					</div>
 					<div>
 						<b>Soort gebruiker:</b>
-						<span>{{ store.berichtItem.soortGebruiker }}</span>
+						<span>{{ berichtStore.berichtItem.soortGebruiker }}</span>
 					</div>
 					<div>
 						<b>Publicatiedatum:</b>
-						<span>{{ store.berichtItem.publicatieDatum }}</span>
+						<span>{{ berichtStore.berichtItem.publicatieDatum }}</span>
 					</div>
 					<div>
 						<b>Aanmaak datum:</b>
-						<span>{{ store.berichtItem.aanmaakDatum }}</span>
+						<span>{{ berichtStore.berichtItem.aanmaakDatum }}</span>
 					</div>
 					<div>
 						<b>Bericht type:</b>
-						<span>{{ store.berichtItem.berichtType }}</span>
+						<span>{{ berichtStore.berichtItem.berichtType }}</span>
 					</div>
 					<div>
 						<b>Referentie:</b>
-						<span>{{ store.berichtItem.referentie }}</span>
+						<span>{{ berichtStore.berichtItem.referentie }}</span>
 					</div>
 					<div>
 						<b>Bericht ID:</b>
-						<span>{{ store.berichtItem.berichtID }}</span>
+						<span>{{ berichtStore.berichtItem.berichtID }}</span>
 					</div>
 					<div>
 						<b>Batch ID:</b>
-						<span>{{ store.berichtItem.batchID }}</span>
+						<span>{{ berichtStore.berichtItem.batchID }}</span>
 					</div>
 					<div>
 						<b>Gebruiker ID:</b>
-						<span>{{ store.berichtItem.gebruikerID }}</span>
+						<span>{{ berichtStore.berichtItem.gebruikerID }}</span>
 					</div>
 					<div>
 						<b>Volgorde:</b>
-						<span>{{ store.berichtItem.volgorde }}</span>
+						<span>{{ berichtStore.berichtItem.volgorde }}</span>
 					</div>
 				</div>
 			</div>
@@ -100,55 +100,6 @@ export default {
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
-	},
-	props: {
-		berichtId: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			bericht: [],
-			loading: false,
-		}
-	},
-	watch: {
-		berichtId: {
-			handler(berichtId) {
-				this.fetchData(berichtId)
-			},
-			deep: true,
-		},
-	},
-	// First time the is no emit so lets grap it directly
-	mounted() {
-		this.fetchData(store.berichtItem.id)
-	},
-	methods: {
-		editBericht(bericht) {
-			store.setBerichtItem(bericht)
-			navigationStore.setModal('editBericht')
-		},
-		fetchData(berichtId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten/' + berichtId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.bericht = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 	},
 }
 </script>

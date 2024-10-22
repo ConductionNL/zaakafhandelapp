@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,19 +9,19 @@ import { navigationStore } from '../../store/store.js'
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ store.taakItem.title }}
+						{{ taakStore.taakItem.title }}
 					</h1>
 					<NcActions :primary="true" menu-name="Acties">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="store.setModal('editTaak')">
+						<NcActionButton @click="navigationStore.setModal('editTaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="store.setDialog('deleteTaak')">
+						<NcActionButton @click="navigationStore.setDialog('deleteTaak')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -32,7 +32,7 @@ import { navigationStore } from '../../store/store.js'
 				<div class="grid">
 					<div class="gridContent">
 						<b>Sammenvatting:</b>
-						<span>{{ store.taakItem.onderwerp }}</span>
+						<span>{{ taakStore.taakItem.onderwerp }}</span>
 					</div>
 				</div>
 			</div>
@@ -56,54 +56,6 @@ export default {
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
-	},
-	props: {
-		taakId: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			taak: [],
-			loading: false,
-		}
-	},
-	watch: {
-		taakId: {
-			handler(taakId) {
-				this.fetchData(taakId)
-			},
-			deep: true,
-		},
-	},
-	mounted() {
-		this.fetchData(store.taakId)
-	},
-	methods: {
-		fetchData(taakId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken/' + taakId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.taak = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
-		editTaak(taak) {
-			store.setTaakItem(taak)
-			navigationStore.setModal('editTaak')
-		},
 	},
 }
 </script>
