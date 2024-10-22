@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { navigationStore } from '../../store/store.js'
 			<ZaakTypeList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!store.zaakTypeItem || navigationStore.selected != 'zaakTypen' "
+			<NcEmptyContent v-if="!zaakTypeStore.zaakTypeItem || navigationStore.selected != 'zaakTypen' "
 				class="detailContainer"
 				name="Geen Zaaktype"
 				description="Nog geen zaaktype geselecteerd">
@@ -16,12 +16,12 @@ import { navigationStore } from '../../store/store.js'
 					<AlphaTBoxOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('zaakTypeAdd')">
-						Zaaktype toeveogen
+					<NcButton type="primary" @click="zaakTypeStore.setZaakTypeItem(null); navigationStore.setModal('zaakTypeForm')">
+						Zaaktype toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZaakTypeDetails v-if="store.zaakTypeItem && navigationStore.selected === 'zaakTypen'" :zaaktype-id="store.zaakTypeItem" />
+			<ZaakTypeDetails v-if="zaakTypeStore.zaakTypeItem && navigationStore.selected === 'zaakTypen'" />
 		</template>
 	</NcAppContent>
 </template>
@@ -31,7 +31,7 @@ import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import ZaakTypeList from './ZaakTypenList.vue'
 import ZaakTypeDetails from './ZaakTypeDetails.vue'
 // eslint-disable-next-line n/no-missing-import
-import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline'
+import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
 
 export default {
 	name: 'ZakenTypenIndex',
@@ -41,7 +41,6 @@ export default {
 		NcButton,
 		ZaakTypeList,
 		ZaakTypeDetails,
-		AlphaTBoxOutline,
 	},
 }
 </script>

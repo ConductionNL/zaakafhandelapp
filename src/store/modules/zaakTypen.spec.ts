@@ -2,7 +2,7 @@
 import { setActivePinia, createPinia } from 'pinia'
 
 import { useZaakTypeStore } from './zaakTypen.js'
-import { ZaakType, mockZaakTypen } from '../../entities/index.js'
+import { ZaakType, mockZaakType } from '../../entities/index.js'
 
 describe('ZaakTypen Store', () => {
 	beforeEach(() => {
@@ -12,10 +12,10 @@ describe('ZaakTypen Store', () => {
 	it('sets zaakType item correctly', () => {
 		const store = useZaakTypeStore()
 
-		store.setZaakTypeItem(mockZaakTypen()[0])
+		store.setZaakTypeItem(mockZaakType()[0])
 
 		expect(store.zaakTypeItem).toBeInstanceOf(ZaakType)
-		expect(store.zaakTypeItem).toEqual(mockZaakTypen()[0])
+		expect(store.zaakTypeItem).toEqual(mockZaakType()[0])
 
 		expect(store.zaakTypeItem.validate().success).toBe(true)
 	})
@@ -23,13 +23,13 @@ describe('ZaakTypen Store', () => {
 	it('sets zaakTypen list correctly', () => {
 		const store = useZaakTypeStore()
 
-		store.setZaakTypeList(mockZaakTypen())
+		store.setZaakTypeList(mockZaakType())
 
-		expect(store.zaakTypeList).toHaveLength(mockZaakTypen().length)
+		expect(store.zaakTypeList).toHaveLength(mockZaakType().length)
 
 		store.zaakTypeList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(ZaakType)
-			expect(item).toEqual(mockZaakTypen()[index])
+			expect(item).toEqual(mockZaakType()[index])
 			expect(item.validate().success).toBe(true)
 		})
 	})

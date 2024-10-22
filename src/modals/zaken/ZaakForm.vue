@@ -67,7 +67,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 			</div>
 
 			<NcButton v-if="success === null"
-				:disabled="loading || !zaak.identificatie || !zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum"
+				:disabled="loading || !zaak.identificatie || zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum"
 				type="primary"
 				@click="saveZaak()">
 				<template #icon>
@@ -122,7 +122,9 @@ export default {
 				archiefstatus: '',
 			},
 			loading: false,
-			success: false,
+			success: null,
+			error: null,
+			zaakLoading: false,
 			zaakType: {},
 			zaakTypeLoading: false,
 			archiefstatus: {
