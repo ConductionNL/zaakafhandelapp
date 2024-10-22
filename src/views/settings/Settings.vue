@@ -34,7 +34,7 @@
 					</NcButton>
 				</div>
 
-				<template v-for="objectType in objectTypesList" :key="objectType.id">
+				<div v-for="objectType in objectTypesList" :key="objectType.id">
 					<h3>{{ objectType.title }}</h3>
 					<p>{{ objectType.description }}</p>
 					<NcButton v-if="objectType.helpLink" @click="openLink(objectType.helpLink, '_blank')">
@@ -73,7 +73,7 @@
 							Opslaan
 						</NcButton>
 					</div>
-				</template>
+				</div>
 			</div>
 			<NcLoadingIcon v-if="loading"
 				class="loadingIcon"
