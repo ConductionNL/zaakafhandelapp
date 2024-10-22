@@ -42,33 +42,33 @@
 					</NcButton>
 					<div class="selectionContainer">
 						<NcSelect v-bind="labelOptions"
-							v-model="objectTypes[objectType.id].selectedSource"
+							v-model="getDataProperty(objectType.id).selectedSource"
 							required
 							input-label="Source"
-							:loading="objectTypes[objectType.id].loading"
-							:disabled="loading || objectTypes[objectType.id].loading" />
+							:loading="getDataProperty(objectType.id).loading"
+							:disabled="loading || getDataProperty(objectType.id).loading" />
 
-						<NcSelect v-if="objectTypes[objectType.id].selectedSource?.value === 'openregister'"
+						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister'"
 							v-bind="availableRegisters"
-							v-model="objectTypes[objectType.id].selectedRegister"
+							v-model="getDataProperty(objectType.id).selectedRegister"
 							input-label="Register"
-							:loading="objectTypes[objectType.id].loading"
-							:disabled="loading || objectTypes[objectType.id].loading" />
+							:loading="getDataProperty(objectType.id).loading"
+							:disabled="loading || getDataProperty(objectType.id).loading" />
 
-						<NcSelect v-if="objectTypes[objectType.id].selectedSource?.value === 'openregister' && objectTypes[objectType.id].selectedRegister?.value"
-							v-bind="objectTypes[objectType.id].availableSchemas"
-							v-model="objectTypes[objectType.id].selectedSchema"
+						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister' && getDataProperty(objectType.id).selectedRegister?.value"
+							v-bind="getDataProperty(objectType.id).availableSchemas"
+							v-model="getDataProperty(objectType.id).selectedSchema"
 							input-label="Schema"
-							:loading="objectTypes[objectType.id].loading"
-							:disabled="loading || objectTypes[objectType.id].loading" />
+							:loading="getDataProperty(objectType.id).loading"
+							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcButton
 							type="primary"
 							:disabled="loading || saving || objectTypes[objectType.id].loading || !objectTypes[objectType.id].selectedSource?.value || objectTypes[objectType.id].selectedSource?.value === 'openregister' && (!objectTypes[objectType.id].selectedRegister?.value || !objectTypes[objectType.id].selectedSchema?.value)"
 							@click="saveConfig(objectType.id)">
 							<template #icon>
-								<NcLoadingIcon v-if="loading || objectTypes[objectType.id].loading" :size="20" />
-								<Plus v-if="!loading && !objectTypes[objectType.id].loading" :size="20" />
+								<NcLoadingIcon v-if="loading || getDataProperty(objectType.id).loading" :size="20" />
+								<Plus v-if="!loading && !getDataProperty(objectType.id).loading" :size="20" />
 							</template>
 							Opslaan
 						</NcButton>
@@ -91,7 +91,7 @@ import Plus from 'vue-material-design-icons/Plus.vue'
 import Restart from 'vue-material-design-icons/Restart.vue'
 
 export default {
-	name: 'AdminSettings',
+	name: 'Settings',
 	components: {
 		NcSettingsSection,
 		NcNoteCard,
@@ -109,7 +109,77 @@ export default {
 			saving: false,
 			settingsData: {},
 			availableRegisters: [],
-			objectTypes: {},
+			objectTypes: [],
+			berichten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			besluiten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			documenten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			klanten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			resultaten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			taken: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			informatieobjecten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			organisaties: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			personen: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			themas: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
@@ -136,6 +206,10 @@ export default {
 		this.fetchAll()
 	},
 	methods: {
+		getDataProperty(name) {
+			return this[name]
+
+		},
 		setRegisterSchemaOptions(registerId, property) {
 			const selectedRegister = this.settingsData.availableRegisters.find((register) => register.id.toString() === registerId)
 
@@ -149,7 +223,7 @@ export default {
 		fetchAll() {
 			this.loading = true
 
-			fetch('/index.php/apps/opencatalogi/settings',
+			fetch('/index.php/apps/zaakafhandelapp/settings',
 				{
 					method: 'GET',
 				},
@@ -160,6 +234,7 @@ export default {
 						this.openRegisterInstalled = data.openRegisters
 						this.settingsData = data
 						this.availableRegisters = data.availableRegisters
+						this.objectTypes = data.objectTypes
 
 						this.availableRegisters = {
 							options: data.availableRegisters.map((register) => ({
@@ -193,9 +268,9 @@ export default {
 				})
 		},
 		saveConfig(configId) {
-			this.objectTypes[configId].loading = true
+			this[configId].loading = true
 			this.saving = true
-			console.log(`Saving ${configId} config`)
+			console.info(`Saving ${configId} config`)
 
 			const settingsDataCopy = this.settingsData
 
@@ -203,14 +278,14 @@ export default {
 			delete settingsDataCopy.openRegisters
 			delete settingsDataCopy.availableRegisters
 
-			fetch('/index.php/apps/opencatalogi/settings',
+			fetch('/index.php/apps/zaakafhandelapp/settings',
 				{
 					method: 'POST',
 					body: JSON.stringify({
 						...settingsDataCopy,
-						[configId + '_register']: this.objectTypes[configId].selectedRegister?.value ?? '',
-						[configId + '_schema']: this.objectTypes[configId].selectedSchema?.value ?? '',
-						[configId + '_source']: this.objectTypes[configId].selectedSource?.value ?? 'internal',
+						[configId + '_register']: this[configId].selectedRegister?.value ?? '',
+						[configId + '_schema']: this[configId].selectedSchema?.value ?? '',
+						[configId + '_source']: this[configId].selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -219,7 +294,7 @@ export default {
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.objectTypes[configId].loading = false
+						this[configId].loading = false
 						this.saving = false
 
 						this.settingsData = {
@@ -232,7 +307,7 @@ export default {
 				})
 				.catch((err) => {
 					console.error(err)
-					this.objectTypes[configId].loading = false
+					this[configId].loading = false
 					this.saving = false
 					return err
 				})
@@ -253,7 +328,7 @@ export default {
 				return acc
 			}, {})
 
-			fetch('/index.php/apps/opencatalogi/settings',
+			fetch('/index.php/apps/zaakafhandelapp/settings',
 				{
 					method: 'POST',
 					body: JSON.stringify({

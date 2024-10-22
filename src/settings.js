@@ -1,10 +1,10 @@
 import Vue from 'vue'
-import AdminSettings from './views/settings/Settings.vue'
+import Settings from './views/settings/Settings.vue'
 
 Vue.mixin({ methods: { t, n } })
 
 new Vue(
 	{
-		render: h => h(AdminSettings),
+		render: h => h(Settings),
 	},
-).$mount('#admin-settings')
+).$mount('#settings')

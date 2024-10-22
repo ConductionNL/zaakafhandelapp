@@ -38,5 +38,8 @@ return [
 		['name' => 'taken#page','url' => '/taken', 'verb' => 'GET'],
 		['name' => 'klanten#page','url' => '/klanten', 'verb' => 'GET'],
 		['name' => 'berichten#index','url' => '/berichten', 'verb' => 'GET'],
+		// user Settings
+		['name' => 'settings#index','url' => '/settings', 'verb' => 'GET'],
+		['name' => 'settings#create', 'url' => '/settings', 'verb' => 'POST'],
 	]
 ];
