@@ -5,6 +5,7 @@ import { navigationStore } from '../store/store.js'
 <template>
 	<!-- Placeholder -->
 	<div>
+		<ZaakForm v-if="navigationStore.modal === 'zaakForm'" />
 		<EditZaakType />
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
@@ -13,12 +14,12 @@ import { navigationStore } from '../store/store.js'
 		<EditTaak />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<EditRol />
-		<EditZaak />
 		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
 	</div>
 </template>
 
 <script>
+import ZaakForm from './zaken/ZaakForm.vue'
 import EditZaakType from './zaakTypen/EditZaakType.vue'
 import EditKlant from './klanten/EditKlant.vue'
 import ViewKlantAuditTrail from './klanten/ViewKlantAuditTrail.vue'
@@ -27,12 +28,12 @@ import ViewBerichtAuditTrail from './berichten/ViewBerichtAuditTrail.vue'
 import EditTaak from './taken/EditTaak.vue'
 import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
 import EditRol from './rollen/EditRol.vue'
-import EditZaak from './zaken/EditZaak.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 
 export default {
 	name: 'Modals',
 	components: {
+		ZaakForm,
 		EditZaakType,
 		EditKlant,
 		ViewKlantAuditTrail,
@@ -41,7 +42,6 @@ export default {
 		EditTaak,
 		ViewTaakAuditTrail,
 		EditRol,
-		EditZaak,
 		ViewZaakAuditTrail,
 	},
 }

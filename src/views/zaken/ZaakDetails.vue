@@ -109,30 +109,31 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen />
+						<!-- TODO: Fix tabs -->
+						<!-- <BTab title="Eigenschappen" active>
+							<ZaakEigenschappen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten />
+							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen />
+							<ZaakRollen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken />
+							<ZaakTaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Besluiten">
-							<ZaakBesluiten />
+							<ZaakBesluiten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten />
+							<ZaakBerichten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Zaken">
-							<ZakenZaken />
+							<ZakenZaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
-						</BTab>
+						</BTab> -->
 						<BTab title="Audit trail" active>
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
@@ -230,6 +231,8 @@ export default {
 		return {
 			currentActiveZaak: null,
 			auditTrails: [],
+			zaak: [],
+			loading: true,
 		}
 	},
 	mounted() {
@@ -237,6 +240,7 @@ export default {
 			this.currentActiveZaak = zaakStore.zaakItem
 			this.fetchAuditTrails(zaakStore.zaakItem.id)
 		}
+		this.fetchData()
 	},
 	updated() {
 		if (zaakStore.zaakItem?.id && JSON.stringify(this.currentActiveZaak) !== JSON.stringify(zaakStore.zaakItem)) {
@@ -245,6 +249,15 @@ export default {
 		}
 	},
 	methods: {
+		fetchData() {
+			this.loading = true
+
+			// get current zaak once
+			zaakStore.getZaak(zaakStore.zaakItem.id, { setItem: true })
+				.then(() => {
+					this.loading = false
+				})
+		},
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
 				.then(response => response.json())

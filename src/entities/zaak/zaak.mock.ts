@@ -3,6 +3,7 @@ import { TZaak } from './zaak.types'
 
 export const mockZaakData = (): TZaak[] => [
 	{
+		id: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
 		uuid: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
 		omschrijving: 'Zaak 3',
 		url: 'http://example.com',

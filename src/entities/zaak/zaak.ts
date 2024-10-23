@@ -3,6 +3,7 @@ import { TZaak, zaakTypeID } from './zaak.types'
 
 export class Zaak implements TZaak {
 
+	public id: string
 	public uuid: string
 	public omschrijving: string
 	public identificatie: string
@@ -26,6 +27,7 @@ export class Zaak implements TZaak {
 	public hoofdzaak: string
 
 	constructor(source: TZaak) {
+		this.id = source.id || ''
 		this.uuid = source.uuid || ''
 		this.omschrijving = source.omschrijving || ''
 		this.identificatie = source.identificatie || ''
@@ -51,6 +53,7 @@ export class Zaak implements TZaak {
 
 	public validate(): SafeParseReturnType<TZaak, unknown> {
 		const schema = z.object({
+			id: z.string().optional(),
 			uuid: z.string().optional(),
 			omschrijving: z.string().min(1),
 			identificatie: z.string().min(1),
