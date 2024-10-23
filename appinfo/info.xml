@@ -26,7 +26,7 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
 	<licence>agpl</licence>
 	<author mail="info@conduction.nl" homepage="https://www.conduction.nl/">Conduction</author>
 	<namespace>ZaakAfhandelApp</namespace>
-	<category>organisation</category>
+	<category>organization</category>
     <website>https://github.com/ConductionNL/zaakafhandelapp</website>
 	<bugs>https://github.com/ConductionNL/zaakafhandelapp/issues</bugs>
 	<repository type="git">https://github.com/ConductionNL/zaakafhandelapp.git</repository>
