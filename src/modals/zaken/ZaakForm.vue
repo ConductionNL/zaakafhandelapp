@@ -3,9 +3,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal 
-		v-if="store.modal === 'zaakForm'"
-		ref="modalRef"
+	<NcModal ref="modalRef"
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
@@ -183,7 +181,7 @@ export default {
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
-			zaakTypeStore.refreshZaakTypenList()
+			zaakTypeStore.refreshZaakTypeList()
 				.then(({ entities }) => {
 					const selectedZaakType = entities.find((zaakType) => zaakType.id === this.zaak.zaaktype.id)
 
