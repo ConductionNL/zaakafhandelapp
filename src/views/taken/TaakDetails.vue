@@ -35,6 +35,43 @@ import { navigationStore, taakStore } from '../../store/store.js'
 						<span>{{ taakStore.taakItem.onderwerp }}</span>
 					</div>
 				</div>
+
+				<div class="tabContainer">
+					<BTabs content-class="mt-3" justified>
+						<BTab title="Audit trail" active>
+							<div v-if="auditTrails.length">
+								<NcListItem v-for="(auditTrail, key) in auditTrails"
+									:key="key"
+									:name="new Date(auditTrail.created).toLocaleString()"
+									:bold="false"
+									:details="auditTrail.action"
+									:counter-number="Object.keys(auditTrail.changed).length"
+									:force-display-actions="true">
+									<template #icon>
+										<TimelineQuestionOutline disable-menu
+											:size="44" />
+									</template>
+									<template #subname>
+										{{ auditTrail.userName }}
+									</template>
+									<template #actions>
+										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewObjectAuditTrail')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+								<template #description>
+									Er is geen audit trail gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
+						</BTab>
+					</BTabs>
+				</div>
 			</div>
 		</div>
 	</div>
