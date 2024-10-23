@@ -35,6 +35,43 @@ import { navigationStore, taakStore } from '../../store/store.js'
 						<span>{{ taakStore.taakItem.onderwerp }}</span>
 					</div>
 				</div>
+
+				<div class="tabContainer">
+					<BTabs content-class="mt-3" justified>
+						<BTab title="Audit trail" active>
+							<div v-if="auditTrails.length">
+								<NcListItem v-for="(auditTrail, key) in auditTrails"
+									:key="key"
+									:name="new Date(auditTrail.created).toLocaleString()"
+									:bold="false"
+									:details="auditTrail.action"
+									:counter-number="Object.keys(auditTrail.changed).length"
+									:force-display-actions="true">
+									<template #icon>
+										<TimelineQuestionOutline disable-menu
+											:size="44" />
+									</template>
+									<template #subname>
+										{{ auditTrail.userName }}
+									</template>
+									<template #actions>
+										<NcActionButton @click="taakStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewTaakAuditTrail')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+								<template #description>
+									Er is geen audit trail gevonden voor deze taak.
+								</template>
+							</NcEmptyContent>
+						</BTab>
+					</BTabs>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -42,12 +79,15 @@ import { navigationStore, taakStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 
 export default {
 	name: 'TaakDetails',
@@ -56,6 +96,35 @@ export default {
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	data() {
+		return {
+			currentActiveTaak: null,
+			auditTrails: [],
+		}
+	},
+	mounted() {
+		if (taakStore.taakItem?.id) {
+			this.currentActiveTaak = taakStore.taakItem
+			this.fetchAuditTrails(taakStore.taakItem.id)
+		}
+	},
+	updated() {
+		if (taakStore.taakItem?.id && JSON.stringify(this.currentActiveTaak) !== JSON.stringify(taakStore.taakItem)) {
+			this.currentActiveTaak = taakStore.taakItem
+			this.fetchAuditTrails(taakStore.taakItem.id)
+		}
+	},
+	methods: {
+		fetchAuditTrails(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}/audit_trail`)
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data)) {
+						this.auditTrails = data
+					}
+				})
+		},
 	},
 }
 </script>

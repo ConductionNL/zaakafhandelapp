@@ -232,7 +232,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewObjectAuditTrail')">
+										<NcActionButton @click="klantStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewKlantAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>

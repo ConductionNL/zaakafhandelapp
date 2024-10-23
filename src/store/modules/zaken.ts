@@ -14,6 +14,7 @@ export const useZaakStore = defineStore('zaken', {
 	state: () => ({
 		zaakItem: null,
 		zakenList: [],
+		auditTrailItem: null,
 	}),
 	actions: {
 		setZaakItem(zaakItem: Zaak | TZaak) {
@@ -25,6 +26,9 @@ export const useZaakStore = defineStore('zaken', {
 			    (zaakItem) => new Zaak(zaakItem),
 			)
 			console.info('Zaken list set to ' + zakenList.length + ' items')
+		},
+		setAuditTrailItem(auditTrailItem: unknown) {
+			this.auditTrailItem = auditTrailItem
 		},
 		/**
 		 * Refresh the list of zaken items.
