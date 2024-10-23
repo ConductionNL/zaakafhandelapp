@@ -27,7 +27,7 @@ describe('ZaakTypen Store', () => {
 
 		expect(store.zaakTypeList).toHaveLength(mockZaakType().length)
 
-		store.zaakTypenList.forEach((item, index) => {
+		store.zaakTypeList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(ZaakType)
 			expect(item).toEqual(mockZaakType()[index])
 			expect(item.validate().success).toBe(true)

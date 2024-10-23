@@ -109,30 +109,31 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen />
+						<!-- TODO: Fix tabs -->
+						<!-- <BTab title="Eigenschappen" active>
+							<ZaakEigenschappen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten />
+							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen />
+							<ZaakRollen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken />
+							<ZaakTaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Besluiten">
-							<ZaakBesluiten />
+							<ZaakBesluiten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten />
+							<ZaakBerichten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Zaken">
-							<ZakenZaken />
+							<ZakenZaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
-						</BTab>
+						</BTab> -->
 					</BTabs>
 				</div>
 			</div>
@@ -207,7 +208,7 @@ export default {
 			this.loading = true
 
 			// get current zaak once
-			zaakStore.getZaak(zaakStore.zaakItem.uuid, { setItem: true })
+			zaakStore.getZaak(zaakStore.zaakItem.id, { setItem: true })
 				.then(() => {
 					this.loading = false
 				})

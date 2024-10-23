@@ -1,6 +1,7 @@
 export type zaakTypeID = string // create an alias for string called ZaakTypeID to make it easier for developers to understand that this is a ID from a ZaakType
 
 export type TZaak = {
+    id: string;
     uuid: string;
     omschrijving: string;
     identificatie: string;

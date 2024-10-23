@@ -220,8 +220,8 @@ export default {
 
 			const newZaak = new Zaak({
 				...this.zaak,
-				archiefstatus: this.archiefstatus.value.id || '',
-				zaaktype: this.zaakType.value.id || '',
+				archiefstatus: this.archiefstatus.value?.id || '',
+				zaaktype: this.zaakType.value?.id || '',
 			})
 
 			zaakStore.saveZaak(newZaak)
