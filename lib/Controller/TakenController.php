@@ -91,10 +91,7 @@ class TakenController extends Controller
 	{
         // Get all parameters from the request
         $data = $this->request->getParams();
-
-        // Remove the 'id' field if it exists, as we're creating a new object
-        unset($data['id']);
-
+		
         // Save the new catalog object
         $object = $this->objectService->saveObject('taken', $data);
         

@@ -108,19 +108,144 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab title="Zaken">
-							asdads
+							<div v-if="zaken.length">
+								<NcListItem v-for="(zaak, key) in zaken"
+									:key="key"
+									:name="zaak.title"
+									:bold="false"
+									:details="zaak.description"
+									:force-display-actions="true">
+									<template #icon>
+										<BriefcaseAccountOutline :size="44" />
+									</template>
+									<template #actions>
+										<NcActionButton @click="zaakStore.setZaakItem(zaak); navigationStore.setModal('viewZaak')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+								<template #description>
+									Er zijn geen zaken gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
 						</BTab>
 						<BTab title="Taken">
-							asda
+							<div v-if="taken.length">
+								<NcListItem v-for="(taak, key) in taken"
+									:key="key"
+									:name="taak.title"
+									:bold="false"
+									:details="taak.description"
+									:force-display-actions="true">
+									<template #icon>
+										<CalendarMonthOutline :size="44" />
+									</template>
+									<template #actions>
+										<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('viewTaak')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+								<template #description>
+									Er zijn geen taken gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
 						</BTab>
 						<BTab title="Berichten">
-							asdsa
+							<div v-if="berichten.length">
+								<NcListItem v-for="(bericht, key) in berichten"
+									:key="key"
+									:name="bericht.title"
+									:bold="false"
+									:details="bericht.description"
+									:force-display-actions="true">
+									<template #icon>
+										<ChatOutline :size="44" />
+									</template>
+									<template #actions>
+										<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('viewBericht')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-mail" title="Geen berichten gevonden">
+								<template #description>
+									Er zijn geen berichten gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
 						</BTab>
-						<BTab title="Contact Momeenten">
-							asdsa
+						<BTab title="Contact Momenten">
+							<div v-if="contactMomenten.length">
+								<NcListItem v-for="(contactMoment, key) in contactMomenten"
+									:key="key"
+									:name="contactMoment.title"
+									:bold="false"
+									:details="contactMoment.description"
+									:force-display-actions="true">
+									<template #icon>
+										<AccountOutline :size="44" />
+									</template>
+									<template #actions>
+										<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('viewContactMoment')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-contacts" title="Geen contactmomenten gevonden">
+								<template #description>
+									Er zijn geen contactmomenten gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
 						</BTab>
 						<BTab title="Audit trail">
-							asdsa
+							<div v-if="auditTrails.length">
+								<NcListItem v-for="(auditTrail, key) in auditTrails"
+									:key="key"
+									:name="new Date(auditTrail.created).toLocaleString()"
+									:bold="false"
+									:details="auditTrail.action"
+									:counter-number="Object.keys(auditTrail.changed).length"
+									:force-display-actions="true">
+									<template #icon>
+										<TimelineQuestionOutline disable-menu
+											:size="44" />
+									</template>
+									<template #subname>
+										{{ auditTrail.userName }}
+									</template>
+									<template #actions>
+										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewObjectAuditTrail')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+								<template #description>
+									Er is geen audit trail gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
 						</BTab>
 					</BTabs>
 				</div>
@@ -132,7 +257,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -141,12 +266,15 @@ import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 
 export default {
 	name: 'KlantDetails',
 	components: {
 		NcActions,
 		NcActionButton,
+		NcEmptyContent,
 		BTabs,
 		BTab,
 		// Icons
@@ -156,6 +284,8 @@ export default {
 		CalendarMonthOutline,
 		BriefcaseAccountOutline,
 		TrashCanOutline,
+		Eye,
+		TimelineQuestionOutline,
 	},
 	data() {
 		return {
@@ -163,7 +293,7 @@ export default {
 			taken: [],
 			berichten: [],
 			contactMomenten: [],
-			auditTrail: [],
+			auditTrails: [],
 		}
 	},
 	mounted() {
@@ -172,18 +302,18 @@ export default {
 	methods: {
 		async fetchKlantData(id) {
 			try {
-				const [zaken, taken, berichten, contactMomenten, auditTrail] = await Promise.all([
+				const [zaken, taken, berichten, contactMomenten, auditTrails] = await Promise.all([
 					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`).then(res => res.json()),
 					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`).then(res => res.json()),
 					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`).then(res => res.json()),
 					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/contactmomenten`).then(res => res.json()),
 					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`).then(res => res.json()),
 				])
-				this.zaken = zaken
-				this.taken = taken
-				this.berichten = berichten
-				this.contactMomenten = contactMomenten
-				this.auditTrail = auditTrail
+				this.zaken = zaken.results
+				this.taken = taken.results
+				this.berichten = berichten.results
+				this.contactMomenten = contactMomenten.results
+				this.auditTrails = auditTrails
 			} catch (error) {
 				console.error('Error fetching klant data:', error)
 			}

@@ -453,4 +453,37 @@ class ObjectService
 		// Return the extended entity as an array
 		return $result;
 	}
+
+	/**
+	 * Gets the audit trail for a specific object.
+	 *
+	 * @param string $objectType The type of object.
+	 * @param string $id The id of the object.
+	 *
+	 * @return array The audit trail for the object.
+	 * @throws ContainerExceptionInterface|NotFoundExceptionInterface|Exception If the OpenRegister service is not available or if register/schema is not configured.
+	 */
+	public function getAuditTrail(string $objectType, string $id): array
+	{
+		$objectTypeLower = strtolower($objectType);
+
+		// Get the register and schema from the configuration
+		$register = $this->config->getValueString($this->appName, $objectTypeLower . '_register', '');
+		if (empty($register)) {
+			throw new Exception("Register not configured for $objectType");
+		}
+		$schema = $this->config->getValueString($this->appName, $objectTypeLower . '_schema', '');
+		if (empty($schema)) {
+			throw new Exception("Schema not configured for $objectType");
+		}
+
+		// Get the OpenRegister service
+		$openRegister = $this->getOpenRegisters();
+		if ($openRegister === null) {
+			throw new Exception("OpenRegister service not available");
+		}
+
+		// Call the OpenRegister service to get the audit trail
+		return $openRegister->getAuditTrail($register, $schema, $id);
+	}
 }

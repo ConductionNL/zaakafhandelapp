@@ -19,7 +19,7 @@
 					</NcButton>
 				</div>
 
-				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister')">
+				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister')">
 					<NcNoteCard type="warning">
 						Het lijkt erop dat je een open register hebt geselecteerd maar dat deze nog niet geïnstalleerd is. Dit kan problemen geven. Wil je de instelling resetten?
 					</NcNoteCard>
@@ -198,6 +198,13 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+			contactmomenten: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
@@ -216,6 +223,7 @@ export default {
 				{ id: 'personen', title: 'Personen', description: 'Configureer de opslag voor persoonsgegevens', helpLink: 'https://example.com/help/personen' },
 				{ id: 'zaken', title: 'Zaken', description: 'Configureer de opslag voor zaken', helpLink: 'https://example.com/help/zaken' },
 				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
+				{ id: 'contactmomenten', title: 'Contactmomenten', description: 'Configureer de opslag voor contactmomenten', helpLink: 'https://example.com/help/contactmomenten' },
 			],
 		}
 	},
@@ -432,6 +440,27 @@ export default {
 			},
 			deep: true,
 		},
+		'contactmomenten.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.contactmomenten.selectedRegister = ''
+					this.contactmomenten.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'contactmomenten.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'contactmomenten')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.contactmomenten.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
 
 	},
 	mounted() {
@@ -594,6 +623,9 @@ export default {
 						zaken_register: this.zaken.selectedRegister?.value ?? '',
 						zaken_schema: this.zaken.selectedSchema?.value ?? '',
 						zaken_source: this.zaken.selectedSource?.value ?? 'internal',
+						contactmomenten_register: this.contactmomenten.selectedRegister?.value ?? '',
+						contactmomenten_schema: this.contactmomenten.selectedSchema?.value ?? '',
+						contactmomenten_source: this.contactmomenten.selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -638,6 +670,9 @@ export default {
 							zaken_register: data.zaken_register,
 							zaken_schema: data.zaken_schema,
 							zaken_source: data.zaken_source,
+							contactmomenten_register: data.contactmomenten_register,
+							contactmomenten_schema: data.contactmomenten_schema,
+							contactmomenten_source: data.contactmomenten_source,
 						}
 
 					})
@@ -696,6 +731,9 @@ export default {
 						zaken_register: '',
 						zaken_schema: '',
 						zaken_source: 'internal',
+						contactmomenten_register: '',
+						contactmomenten_schema: '',
+						contactmomenten_source: 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
