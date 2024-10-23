@@ -8,6 +8,7 @@ export const useTaakStore = defineStore('taken', {
 	state: () => ({
 		taakItem: false,
 		takenList: [],
+		auditTrailItem: null,
 	}),
 	actions: {
 		setTaakItem(taakItem) {
@@ -19,6 +20,9 @@ export const useTaakStore = defineStore('taken', {
 			    (taakItem) => new Taak(taakItem),
 			)
 			console.log('Taken list set to ' + takenList.length + ' items')
+		},
+		setAuditTrailItem(auditTrailItem) {
+			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		async refreshTakenList(search = null) {

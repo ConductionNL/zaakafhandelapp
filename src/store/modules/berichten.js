@@ -8,6 +8,7 @@ export const useBerichtStore = defineStore('berichten', {
 	state: () => ({
 		berichtItem: false,
 		berichtenList: [],
+		auditTrailItem: null,
 	}),
 	actions: {
 		setBerichtItem(berichtItem) {
@@ -19,6 +20,9 @@ export const useBerichtStore = defineStore('berichten', {
 			    (berichtItem) => new Bericht(berichtItem),
 			)
 			console.log('Berichten list set to ' + berichtenList.length + ' items')
+		},
+		setAuditTrailItem(auditTrailItem) {
+			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		async refreshBerichtenList(search = null) {
