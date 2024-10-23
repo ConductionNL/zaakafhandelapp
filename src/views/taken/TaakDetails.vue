@@ -94,6 +94,35 @@ export default {
 		DotsHorizontal,
 		TrashCanOutline,
 	},
+	data() {
+		return {
+			currentActiveTaak: null,
+			auditTrails: [],
+		}
+	},
+	mounted() {
+		if (taakStore.taakItem?.id) {
+			this.currentActiveTaak = taakStore.taakItem
+			this.fetchAuditTrails(taakStore.taakItem.id)
+		}
+	},
+	updated() {
+		if (taakStore.taakItem?.id && JSON.stringify(this.currentActiveTaak) !== JSON.stringify(taakStore.taakItem)) {
+			this.currentActiveTaak = taakStore.taakItem
+			this.fetchAuditTrails(taakStore.taakItem.id)
+		}
+	},
+	methods: {
+		fetchAuditTrails(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}/audit_trail`)
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data)) {
+						this.auditTrails = data
+					}
+				})
+		},
+	},
 }
 </script>
 
