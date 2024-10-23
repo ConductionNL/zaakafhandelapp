@@ -13,7 +13,7 @@ type TOptions = {
 export const useZaakTypeStore = defineStore('zaakTypen', {
 	state: () => ({
 		zaakTypeItem: null,
-		zaakTypenList: [],
+		zaakTypeList: [],
 	}),
 	actions: {
 		setZaakTypeItem(zaakTypeItem: ZaakType | TZaakType) {
@@ -33,7 +33,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TZaakType[], entities: ZaakType[] }>} The response, raw data, and entities.
 		 */
-		async refreshZaakTypenList(search: string = null): Promise<{ response: Response, data: TZaakType[], entities: ZaakType[] }> {
+		async refreshZaakTypeList(search: string = null): Promise<{ response: Response, data: TZaakType[], entities: ZaakType[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -119,7 +119,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			this.refreshZaakTypenList()
+			this.refreshZaakTypeList()
 
 			return { response }
 		},
@@ -168,7 +168,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 			const entity = new ZaakType(data)
 
 			options.setItem && this.setZaakTypeItem(data)
-			this.refreshZaakTypenList()
+			this.refreshZaakTypeList()
 
 			return { response, data, entity }
 		},

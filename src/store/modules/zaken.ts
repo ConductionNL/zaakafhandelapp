@@ -7,7 +7,7 @@ type TOptions = {
 	/**
 	 * Save the zaak item to the store in 'zaakItem'
 	 */
-	setZaakItem?: boolean
+	setItem?: boolean
 }
 
 export const useZaakStore = defineStore('zaken', {
@@ -86,7 +86,7 @@ export const useZaakStore = defineStore('zaken', {
 			const data = await response.json()
 			const entity = new Zaak(data)
 
-			options.setZaakItem && this.setZaakItem(data)
+			options.setItem && this.setZaakItem(data)
 
 			return { response, data, entity }
 		},
@@ -134,7 +134,7 @@ export const useZaakStore = defineStore('zaken', {
 		 */
 		async saveZaak(
 			zaakItem: Zaak | TZaak,
-			options: TOptions = { setZaakItem: true },
+			options: TOptions = { setItem: true },
 		): Promise<{ response: Response, data: TZaak, entity: Zaak }> {
 			if (!zaakItem) {
 				throw new Error('No zaak item to save')
@@ -167,7 +167,7 @@ export const useZaakStore = defineStore('zaken', {
 			const data = await response.json() as TZaak
 			const entity = new Zaak(data)
 
-			options.setZaakItem && this.setZaakItem(data)
+			options.setItem && this.setZaakItem(data)
 			this.refreshZakenList()
 
 			return { response, data, entity }
