@@ -440,6 +440,27 @@ export default {
 			},
 			deep: true,
 		},
+		'zaaktypen.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.zaaktypen.selectedRegister = ''
+					this.zaaktypen.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'zaaktypen.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'zaaktypen')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.zaaktypen.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
 		'contactmomenten.selectedSource': {
 			handler(newValue) {
 				if (newValue?.value === 'internal') {

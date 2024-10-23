@@ -109,29 +109,62 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Eigenschappen" active>
-							<ZaakEigenschappen />
+						<!-- TODO: Fix tabs -->
+						<!-- <BTab title="Eigenschappen" active>
+							<ZaakEigenschappen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Documenten">
-							<ZaakDocumenten />
+							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen />
+							<ZaakRollen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Taken">
-							<ZaakTaken />
+							<ZaakTaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Besluiten">
-							<ZaakBesluiten />
+							<ZaakBesluiten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Berichten">
-							<ZaakBerichten />
+							<ZaakBerichten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Zaken">
-							<ZakenZaken />
+							<ZakenZaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
+						</BTab> -->
+						<BTab title="Audit trail" active>
+							<div v-if="auditTrails.length">
+								<NcListItem v-for="(auditTrail, key) in auditTrails"
+									:key="key"
+									:name="new Date(auditTrail.created).toLocaleString()"
+									:bold="false"
+									:details="auditTrail.action"
+									:counter-number="Object.keys(auditTrail.changed).length"
+									:force-display-actions="true">
+									<template #icon>
+										<TimelineQuestionOutline disable-menu
+											:size="44" />
+									</template>
+									<template #subname>
+										{{ auditTrail.userName }}
+									</template>
+									<template #actions>
+										<NcActionButton @click="zaakStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewZaakAuditTrail')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+								<template #description>
+									Er is geen audit trail gevonden voor deze zaak.
+								</template>
+							</NcEmptyContent>
 						</BTab>
 					</BTabs>
 				</div>
@@ -147,7 +180,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcLoadingIcon, NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -157,6 +190,8 @@ import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
 import MessagePlus from 'vue-material-design-icons/MessagePlus.vue'
 import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusOutline.vue'
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
@@ -191,7 +226,47 @@ export default {
 		CalendarPlus,
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
+	},
+	data() {
+		return {
+			currentActiveZaak: null,
+			auditTrails: [],
+			zaak: [],
+			loading: true,
+		}
+	},
+	mounted() {
+		if (zaakStore.zaakItem?.id) {
+			this.currentActiveZaak = zaakStore.zaakItem
+			this.fetchAuditTrails(zaakStore.zaakItem.id)
+		}
+		this.fetchData()
+	},
+	updated() {
+		if (zaakStore.zaakItem?.id && JSON.stringify(this.currentActiveZaak) !== JSON.stringify(zaakStore.zaakItem)) {
+			this.currentActiveZaak = zaakStore.zaakItem
+			this.fetchAuditTrails(zaakStore.zaakItem.id)
+		}
+	},
+	methods: {
+		fetchData() {
+			this.loading = true
 
+			// get current zaak once
+			zaakStore.getZaak(zaakStore.zaakItem.id, { setItem: true })
+				.then(() => {
+					this.loading = false
+				})
+		},
+		fetchAuditTrails(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data)) {
+						this.auditTrails = data
+					}
+				})
+		},
 	},
 }
 </script>

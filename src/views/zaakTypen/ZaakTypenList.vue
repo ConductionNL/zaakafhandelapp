@@ -25,7 +25,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 
-			<div v-if="!zaakTypeStore.zaakTypenList?.length">
+			<div v-if="!!zaakTypeStore.zaakTypenList?.length">
 				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypenList"
 					:key="`${zaaktype}${i}`"
 					:name="zaaktype?.name"

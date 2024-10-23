@@ -232,7 +232,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewObjectAuditTrail')">
+										<NcActionButton @click="klantStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewKlantAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
@@ -290,6 +290,7 @@ export default {
 	},
 	data() {
 		return {
+			currentActiveKlant: undefined, // whole klant object
 			zaken: [],
 			taken: [],
 			berichten: [],
@@ -298,7 +299,16 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchKlantData(klantStore.klantItem.id);
+		if (klantStore.klantItem?.id) {
+			this.currentActiveKlant = klantStore.klantItem
+			this.fetchKlantData(klantStore.klantItem.id)
+		}
+	},
+	updated() {
+		if (klantStore.klantItem?.id && JSON.stringify(this.currentActiveKlant) !== JSON.stringify(klantStore.klantItem)) {
+			this.currentActiveKlant = klantStore.klantItem
+			this.fetchKlantData(klantStore.klantItem.id)
+		}
 	},
 	methods: {
 		fetchKlantData(id) {
@@ -306,37 +316,33 @@ export default {
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
-						this.zaken = data.results;
+						this.zaken = data.results
 					}
-					console.log(this.zaken);
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`);
+					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				})
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
-						this.taken = data.results;
+						this.taken = data.results
 					}
-					console.log(this.taken);
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`);
+					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				})
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
-						this.berichten = data.results;
+						this.berichten = data.results
 					}
-					console.log(this.berichten);
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`);
+					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
 				})
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data)) {
-						this.auditTrails = data;
+						this.auditTrails = data
 					}
-					console.log(this.auditTrails);
 				})
 				.catch(error => {
-					console.error('Error fetching klant data:', error);
-				});
+					console.error('Error fetching klant data:', error)
+				})
 		},
 	},
 }

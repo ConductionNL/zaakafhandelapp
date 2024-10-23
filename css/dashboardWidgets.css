@@ -1,0 +1,9 @@
+.icon-zaken-widget {
+    background-image: url("../img/app-dark.svg");
+    filter: var(--background-invert-if-dark);
+  }
+  
+  body.theme--dark .icon-zaken-widget {
+    background-image: url("../img/app.svg");
+  }
+  

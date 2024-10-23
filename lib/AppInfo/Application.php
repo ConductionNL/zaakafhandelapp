@@ -6,6 +6,9 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCA\ZaakAfhandelApp\Dashboard\ZakenWidget;
+use OCA\ZaakAfhandelApp\Dashboard\TakenWidget;
+use OCA\ZaakAfhandelApp\Dashboard\OpenZakenWidget;
 
 /**
  * Class Application
@@ -28,6 +31,10 @@ class Application extends App implements IBootstrap
 
 	public function register(IRegistrationContext $context): void
 	{
+		$context->registerDashboardWidget(ZakenWidget::class);
+		$context->registerDashboardWidget(TakenWidget::class);
+		$context->registerDashboardWidget(OpenZakenWidget::class);
+
 	}
 
 	public function boot(IBootContext $context): void
