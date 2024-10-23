@@ -8,6 +8,7 @@ export const useKlantStore = defineStore('klanten', {
 	state: () => ({
 		klantItem: false,
 		klantenList: [],
+		auditTrailItem: null,
 	}),
 	actions: {
 		setKlantItem(klantItem) {
@@ -19,6 +20,9 @@ export const useKlantStore = defineStore('klanten', {
 			    (klantItem) => new Klant(klantItem),
 			)
 			console.log('Klanten list set to ' + klantenList.length + ' items')
+		},
+		setAuditTrailItem(auditTrailItem) {
+			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		async refreshKlantenList(search = null) {
