@@ -1,3 +1,7 @@
+<script setup>
+import { taakStore } from '../../store/store.js'
+</script>
+
 <template>
 	<div class="takenContainer">
 		<div class="itemContainer">
@@ -42,27 +46,35 @@ export default {
 	data() {
 		return {
 			loading: false,
-			zaakItems: [
-				{
-					id: '1',
-					mainText: 'Terugbel verzoek brandkraan',
-					subText: 'brandkraan staat schuin',
-					avatarUrl: '/apps-extra/zaakafhandelapp/img/calendar-month-outline.svg',
-				},
-			],
+			taakItems: [],
 		}
 	},
 
 	computed: {
 		items() {
-			return this.zaakItems
+			return this.taakItems
 		},
 	},
 
 	mounted() {
+		this.fetchTaakItems()
 	},
 
 	methods: {
+		fetchTaakItems() {
+			this.loading = true
+			taakStore.refreshTakenList()
+				.then(() => {
+					this.taakItems = taakStore.takenList.map(taak => ({
+						id: taak.id,
+						mainText: taak.title,
+						subText: taak.type,
+						avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
+					}))
+
+					this.loading = false
+				})
+		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')
 		},

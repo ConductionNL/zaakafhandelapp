@@ -1,3 +1,7 @@
+<script setup>
+import { zaakStore } from '../../store/store.js'
+</script>
+
 <template>
 	<div class="zakenContainer">
 		<div class="itemContainer">
@@ -44,28 +48,7 @@ export default {
 	data() {
 		return {
 			loading: false,
-			zaakItems: [
-				{
-					id: '1',
-					mainText: 'Klant kan niet meer inloggen',
-					subText: 'Klacht',
-					avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
-				},
-				{
-					id: '2',
-					mainText: 'Klant heeft meerdere meldingen gemaakt',
-					subText: 'Informatie verzoek',
-					avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
-
-				},
-				{
-					id: '3',
-					mainText: 'Geluidsoverlast',
-					subText: 'Klacht',
-					avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
-
-				},
-			],
+			zaakItems: [],
 		}
 	},
 
@@ -76,9 +59,24 @@ export default {
 	},
 
 	mounted() {
+		this.fetchZaakItems()
 	},
 
 	methods: {
+		fetchZaakItems() {
+			this.loading = true
+			zaakStore.refreshZakenList()
+				.then(() => {
+					this.zaakItems = zaakStore.zakenList.map(zaak => ({
+						id: zaak.id,
+						mainText: zaak.identificatie,
+						subText: zaak.zaaktype,
+						avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
+					}))
+
+					this.loading = false
+				})
+		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')
 		},

@@ -31,14 +31,14 @@ import { navigationStore, taakStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 			<div v-if="taakStore.takenList">
-				<NcListItem v-for="(taak, i) in taakStore.takenList.results"
+				<NcListItem v-for="(taak, i) in taakStore.takenList"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
 					:force-display-actions="true"
 					:active="taakStore.taakItem?.id === taak?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="navigationStore.setTaakItem(taak)">
+					@click="taakStore.setTaakItem(taak)">
 					<template #icon>
 						<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
 							disable-menu
