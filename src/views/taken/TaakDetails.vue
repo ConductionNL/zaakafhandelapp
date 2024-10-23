@@ -55,7 +55,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewObjectAuditTrail')">
+										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewTaakAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
@@ -66,7 +66,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 							</div>
 							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
 								<template #description>
-									Er is geen audit trail gevonden voor deze klant.
+									Er is geen audit trail gevonden voor deze taak.
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -79,7 +79,8 @@ import { navigationStore, taakStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
