@@ -76,6 +76,43 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 						<span>{{ berichtStore.berichtItem.volgorde }}</span>
 					</div>
 				</div>
+
+				<div class="tabContainer">
+					<BTabs content-class="mt-3" justified>
+						<BTab title="Audit trail" active>
+							<div v-if="auditTrails.length">
+								<NcListItem v-for="(auditTrail, key) in auditTrails"
+									:key="key"
+									:name="new Date(auditTrail.created).toLocaleString()"
+									:bold="false"
+									:details="auditTrail.action"
+									:counter-number="Object.keys(auditTrail.changed).length"
+									:force-display-actions="true">
+									<template #icon>
+										<TimelineQuestionOutline disable-menu
+											:size="44" />
+									</template>
+									<template #subname>
+										{{ auditTrail.userName }}
+									</template>
+									<template #actions>
+										<NcActionButton @click="berichtStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewBerichtAuditTrail')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											View details
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+								<template #description>
+									Er is geen audit trail gevonden voor deze bericht.
+								</template>
+							</NcEmptyContent>
+						</BTab>
+					</BTabs>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -83,7 +120,8 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -100,6 +138,35 @@ export default {
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	data() {
+		return {
+			currentActiveBericht: null,
+			auditTrails: [],
+		}
+	},
+	mounted() {
+		if (berichtStore.berichtItem?.id) {
+			this.currentActiveBericht = berichtStore.berichtItem
+			this.fetchAuditTrails(berichtStore.berichtItem.id)
+		}
+	},
+	updated() {
+		if (berichtStore.berichtItem?.id && JSON.stringify(this.currentActiveBericht) !== JSON.stringify(berichtStore.berichtItem)) {
+			this.currentActiveBericht = berichtStore.berichtItem
+			this.fetchAuditTrails(berichtStore.berichtItem.id)
+		}
+	},
+	methods: {
+		fetchAuditTrails(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/berichten/${id}/audit_trail`)
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data)) {
+						this.auditTrails = data
+					}
+				})
+		},
 	},
 }
 </script>

@@ -55,7 +55,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewTaakAuditTrail')">
+										<NcActionButton @click="taakStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewTaakAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
