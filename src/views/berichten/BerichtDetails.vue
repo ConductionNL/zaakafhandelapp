@@ -127,6 +127,8 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 
 export default {
 	name: 'BerichtDetails',
