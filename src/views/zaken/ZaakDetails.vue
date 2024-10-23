@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore } from '../../store/store.js'
+import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -192,6 +192,49 @@ export default {
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 
+	},
+	props: {
+		zaakId: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			zaak: [],
+			loading: true,
+		}
+	},
+	watch: {
+		zaakId: {
+			handler(zaakId) {
+				this.fetchData(zaakId)
+			},
+			deep: true,
+		},
+	},
+	mounted() {
+		this.fetchData(zaakStore.zaakId)
+	},
+	methods: {
+		addTaakToZaak() {
+			navigationStore.setModal('addTaak')
+			taakStore.setTaakZaakId(this.zaak.uuid)
+		},
+		fetchData(zaakId) {
+			this.loading = true
+
+			zaakStore.getZaak(zaakId)
+				.then(({ entity }) => {
+					this.zaak = { ...entity }
+				})
+				.catch((e) => {
+					console.error(e)
+				})
+				.finally(() => {
+					this.loading = false
+				})
+		},
 	},
 }
 </script>

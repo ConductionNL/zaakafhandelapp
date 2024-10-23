@@ -8,7 +8,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			<ZakenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!zaakStore.zaakItem || navigationStore.selected != 'zaken' "
+			<NcEmptyContent v-if="!zaakStore.zaakId || navigationStore.selected != 'zaken' "
 				class="detailContainer"
 				name="Geen Zaak"
 				description="Nog geen zaak geselecteerd">
@@ -21,7 +21,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZaakDetails v-if="zaakStore.zaakItem && navigationStore.selected === 'zaken'" />
+			<ZaakDetails v-if="zaakStore.zaakId && navigationStore.selected === 'zaken'" :zaak-id="zaakStore.zaakId" />
 		</template>
 	</NcAppContent>
 </template>

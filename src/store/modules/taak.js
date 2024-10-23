@@ -8,6 +8,7 @@ export const useTaakStore = defineStore('taken', {
 	state: () => ({
 		taakItem: false,
 		takenList: [],
+		taakZaakId: null,
 	}),
 	actions: {
 		setTaakItem(taakItem) {
@@ -16,9 +17,13 @@ export const useTaakStore = defineStore('taken', {
 		},
 		setTakenList(takenList) {
 			this.takenList = takenList.map(
-			    (taakItem) => new Taak(taakItem),
+				(taakItem) => new Taak(taakItem),
 			)
 			console.log('Taken list set to ' + takenList.length + ' items')
+		},
+		setTaakZaakId(taakZaakId) {
+			this.taakZaakId = taakZaakId
+			console.log('Active taak Zaak Id set to ' + taakZaakId)
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		async refreshTakenList(search = null) {
