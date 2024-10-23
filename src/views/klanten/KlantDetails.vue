@@ -318,7 +318,6 @@ export default {
 					if (Array.isArray(data.results)) {
 						this.zaken = data.results
 					}
-					console.log(this.zaken)
 					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				})
 				.then(response => response.json())
@@ -326,7 +325,6 @@ export default {
 					if (Array.isArray(data.results)) {
 						this.taken = data.results
 					}
-					console.log(this.taken)
 					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				})
 				.then(response => response.json())
@@ -334,7 +332,6 @@ export default {
 					if (Array.isArray(data.results)) {
 						this.berichten = data.results
 					}
-					console.log(this.berichten)
 					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
 				})
 				.then(response => response.json())
@@ -342,7 +339,6 @@ export default {
 					if (Array.isArray(data)) {
 						this.auditTrails = data
 					}
-					console.log(this.auditTrails)
 				})
 				.catch(error => {
 					console.error('Error fetching klant data:', error)
