@@ -7,12 +7,11 @@ import { taakStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
-				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
 					<NcEmptyContent :title="t('Geen open taken')">
 						<template #icon>
-							<FolderIcon />
+							<Folder />
 						</template>
 					</NcEmptyContent>
 				</template>
@@ -32,6 +31,7 @@ import { taakStore } from '../../store/store.js'
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import Folder from 'vue-material-design-icons/Folder.vue'
 
 export default {
 	name: 'TakenWidget',
@@ -74,6 +74,9 @@ export default {
 
 					this.loading = false
 				})
+		},
+		search() {
+			console.info('click')
 		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')

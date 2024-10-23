@@ -7,12 +7,11 @@ import { zaakStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
-				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
 					<NcEmptyContent :title="t('Geen open zaken')">
 						<template #icon>
-							<FolderIcon />
+							<Folder />
 						</template>
 					</NcEmptyContent>
 				</template>
@@ -31,6 +30,7 @@ import { zaakStore } from '../../store/store.js'
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
+import Folder from 'vue-material-design-icons/Folder.vue'
 
 export default {
 	name: 'OpenZakenWidget',
@@ -73,6 +73,9 @@ export default {
 
 					this.loading = false
 				})
+		},
+		search() {
+			console.info('click')
 		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')

@@ -7,7 +7,6 @@ import { zaakStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
-				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
 					<NcEmptyContent :title="t('Geen open zaken')">
@@ -76,6 +75,9 @@ export default {
 
 					this.loading = false
 				})
+		},
+		search() {
+			console.info('click')
 		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')
