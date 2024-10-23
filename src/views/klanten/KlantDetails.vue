@@ -257,7 +257,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcEmptyContent, NcListItem } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -277,6 +277,7 @@ export default {
 		NcEmptyContent,
 		BTabs,
 		BTab,
+		NcListItem,
 		// Icons
 		DotsHorizontal,
 		Pencil,
@@ -300,23 +301,42 @@ export default {
 		this.fetchKlantData(klantStore.klantItem.id);
 	},
 	methods: {
-		async fetchKlantData(id) {
-			try {
-				const [zaken, taken, berichten, contactMomenten, auditTrails] = await Promise.all([
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`).then(res => res.json()),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`).then(res => res.json()),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`).then(res => res.json()),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/contactmomenten`).then(res => res.json()),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`).then(res => res.json()),
-				])
-				this.zaken = zaken.results
-				this.taken = taken.results
-				this.berichten = berichten.results
-				this.contactMomenten = contactMomenten.results
-				this.auditTrails = auditTrails
-			} catch (error) {
-				console.error('Error fetching klant data:', error)
-			}
+		fetchKlantData(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data.results)) {
+						this.zaken = data.results;
+					}
+					console.log(this.zaken);
+					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`);
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data.results)) {
+						this.taken = data.results;
+					}
+					console.log(this.taken);
+					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`);
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data.results)) {
+						this.berichten = data.results;
+					}
+					console.log(this.berichten);
+					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`);
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data)) {
+						this.auditTrails = data;
+					}
+					console.log(this.auditTrails);
+				})
+				.catch(error => {
+					console.error('Error fetching klant data:', error);
+				});
 		},
 	},
 }
