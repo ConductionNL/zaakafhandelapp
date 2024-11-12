@@ -6,7 +6,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 	<NcDialog v-if="navigationStore.modal === 'editBericht'"
 		name="Bericht"
 		size="normal"
-		@closing="response = $event, closeModalFromButton()">
+		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
 			<p>Bericht succesvol aangepast</p>
 		</NcNoteCard>
