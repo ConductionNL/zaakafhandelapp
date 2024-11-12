@@ -30,7 +30,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="berichtStore.berichtenList">
+			<div v-if="!!berichtStore.berichtenList?.length">
 				<NcListItem v-for="(bericht, i) in berichtStore.berichtenList"
 					:key="`${bericht}${i}`"
 					:name="bericht?.onderwerp"

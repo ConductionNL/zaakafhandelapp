@@ -31,7 +31,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 
-			<div v-if="!!zaakStore.zakenList?.length">
+			<div v-if="!!zaakStore.zakenList?.length && !loading">
 				<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
 					:key="`${zaak}${i}`"
 					:name="zaak?.identificatie"

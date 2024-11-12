@@ -54,7 +54,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setDialog('deleteKlant')">
+						<NcActionButton @click="klantStore.setKlantItem(klant); deleteKlant()">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -125,6 +125,24 @@ export default {
 				name = `${name}, ${klant.voornaam}`
 			}
 			return name
+		},
+		deleteKlant() {
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}`,
+				{
+					method: 'DELETE',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.klantenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
 		},
 		fetchData(newPage) {
 			this.loading = true

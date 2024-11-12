@@ -28,7 +28,7 @@ services:
   nextcloud:
     user: root
     container_name: nextcloud
-#    entrypoint: occ app:enable openconnector
+#    entrypoint: occ app:enable zaakafhandelapp
     image: nextcloud
     restart: always
     ports:

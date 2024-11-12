@@ -9,6 +9,7 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCA\ZaakAfhandelApp\Dashboard\ZakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\TakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\OpenZakenWidget;
+use OCA\ZaakAfhandelApp\Dashboard\ContactmomentenWidget;
 
 /**
  * Class Application
@@ -34,7 +35,7 @@ class Application extends App implements IBootstrap
 		$context->registerDashboardWidget(ZakenWidget::class);
 		$context->registerDashboardWidget(TakenWidget::class);
 		$context->registerDashboardWidget(OpenZakenWidget::class);
-
+		$context->registerDashboardWidget(ContactmomentenWidget::class);
 	}
 
 	public function boot(IBootContext $context): void
