@@ -65,7 +65,11 @@ import { navigationStore, taakStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!taakStore.takenList"
+		<div v-if="!taakStore.takenList?.length && !loading">
+			Geen taken gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -107,7 +111,9 @@ export default {
 		}
 	},
 	mounted() {
-		taakStore.refreshTakenList()
+		taakStore.refreshTakenList().then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
 		fetchData(newPage) {

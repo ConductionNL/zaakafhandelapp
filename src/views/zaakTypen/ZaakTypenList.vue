@@ -54,8 +54,8 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<div v-if="!zaakTypeStore.zaakTypenList.length">
-			No zaaktypen have been defined yet.
+		<div v-if="!zaakTypeStore.zaakTypenList?.length && !loading">
+			Geen zaaktypen gedefinieerd.
 		</div>
 
 		<NcLoadingIcon v-if="loading"
@@ -103,6 +103,10 @@ export default {
 
 		zaakTypeStore.refreshZaakTypenList()
 			.then(() => {
+				this.loading = false
+			})
+			.catch((err) => {
+				console.error(err)
 				this.loading = false
 			})
 	},

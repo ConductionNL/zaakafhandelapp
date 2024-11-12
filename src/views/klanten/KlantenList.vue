@@ -65,7 +65,11 @@ import { navigationStore, klantStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!klantStore.klantenList"
+		<div v-if="!klantStore.klantenList?.length && !loading">
+			Geen klanten gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -107,18 +111,20 @@ export default {
 		}
 	},
 	mounted() {
-		klantStore.refreshKlantenList()
+		klantStore.refreshKlantenList().then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
 		fullName(klant) {
-			let name = klant.achternaam;
+			let name = klant.achternaam
 			if (klant.tussenvoegsel) {
-				name = `${klant.tussenvoegsel} ${name}`;
+				name = `${klant.tussenvoegsel} ${name}`
 			}
 			if (klant.voornaam) {
-				name = `${name}, ${klant.voornaam}`;
+				name = `${name}, ${klant.voornaam}`
 			}
-			return name;
+			return name
 		},
 		fetchData(newPage) {
 			this.loading = true

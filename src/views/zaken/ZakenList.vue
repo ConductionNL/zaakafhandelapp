@@ -66,8 +66,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<div v-if="!zaakStore.zakenList.length">
-			No zaken have been defined yet.
+		<div v-if="!zaakStore.zakenList.length && !loading">
+			Geen zaken gedefinieerd.
 		</div>
 
 		<NcLoadingIcon v-if="loading"

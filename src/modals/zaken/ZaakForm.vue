@@ -181,7 +181,7 @@ export default {
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
-			zaakTypeStore.refreshZaakTypeList()
+			zaakTypeStore.refreshZaakTypenList()
 				.then(({ entities }) => {
 					const selectedZaakType = entities.find((zaakType) => zaakType.id === this.zaak.zaaktype.id)
 

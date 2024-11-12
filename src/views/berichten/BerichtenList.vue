@@ -65,11 +65,15 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!berichtStore.berichtenList"
+		<div v-if="!berichtStore.berichtenList?.length && !loading">
+			Geen berichten gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Klanten aan het laden" />
+			name="Berichten aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
@@ -110,7 +114,9 @@ export default {
 		}
 	},
 	mounted() {
-		berichtStore.refreshBerichtenList()
+		berichtStore.refreshBerichtenList().then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
 		editBericht(bericht) {
