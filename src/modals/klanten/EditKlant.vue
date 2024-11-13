@@ -190,7 +190,7 @@ export default {
 	updated() {
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
 
-			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem.type)
+			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem?.type)
 
 			if (klantStore.klantItem?.id) {
 				this.klantItem = {
