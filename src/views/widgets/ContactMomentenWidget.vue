@@ -27,8 +27,7 @@ import { berichtStore, navigationStore } from '../../store/store.js'
 
 		<BerichtForm v-if="isModalOpen"
 			:dashboard-widget="true"
-			@save-success="fetchBerichtItems"
-			@close="closeModal" />
+			@save-success="fetchBerichtItems" />
 	</div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup>
-import { taakStore } from '../../store/store.js'
+import { taakStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -18,12 +18,16 @@ import { taakStore } from '../../store/store.js'
 			</NcDashboardWidget>
 		</div>
 
-		<NcButton type="primary" @click="search">
+		<NcButton type="primary" @click="openModal">
 			<template #icon>
 				<Plus :size="20" />
 			</template>
 			Taak aanmaken
 		</NcButton>
+
+		<TakenForm v-if="isModalOpen"
+			:dashboard-widget="true"
+			@save-success="fetchTaakItems" />
 	</div>
 </template>
 
@@ -32,6 +36,7 @@ import { taakStore } from '../../store/store.js'
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
+import TakenForm from '../../modals/taken/EditTaak.vue'
 
 export default {
 	name: 'TakenWidget',
@@ -46,6 +51,7 @@ export default {
 	data() {
 		return {
 			loading: false,
+			isModalOpen: false,
 			taakItems: [],
 		}
 	},
@@ -75,8 +81,14 @@ export default {
 					this.loading = false
 				})
 		},
-		search() {
-			console.info('click')
+		openModal() {
+			this.isModalOpen = true
+			taakStore.setTaakItem(null)
+			navigationStore.setModal('editTaak')
+		},
+		closeModal() {
+			this.isModalOpen = false
+			navigationStore.setModal(null)
 		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')
