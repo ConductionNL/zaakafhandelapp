@@ -95,7 +95,7 @@ export const useTaakStore = defineStore('taken', {
 			return { response }
 		},
 		// Create or save a taak from store
-		async saveTaak(taakItem) {
+		async saveTaak(taakItem, widget = false) {
 			if (!taakItem) {
 				throw new Error('No taak item to save')
 			}
@@ -126,7 +126,9 @@ export const useTaakStore = defineStore('taken', {
 			const entity = new Taak(data)
 
 			this.setTaakItem(data)
-			this.refreshTakenList()
+			if (!widget) {
+				this.refreshTakenList()
+			}
 
 			return { response, data, entity }
 		},

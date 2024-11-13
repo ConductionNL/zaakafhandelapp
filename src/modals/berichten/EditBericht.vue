@@ -197,7 +197,6 @@ export default {
 			setTimeout(() => {
 				this.closeModal()
 			}, 300)
-
 		},
 		closeModal() {
 			navigationStore.setModal(false)

@@ -303,7 +303,7 @@ export default {
 		},
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
-				return klant?.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
+				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.websiteUrl ?? 'onbekend'

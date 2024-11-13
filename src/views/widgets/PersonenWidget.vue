@@ -82,7 +82,7 @@ export default {
 				.then(() => {
 					this.personenItems = klantStore.klantenList.map(person => ({
 						id: person.id,
-						mainText: `${person.voornaam} ${person.achternaam}`,
+						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
 						subText: person.emailadres,
 						avatarUrl: '/apps-extra/zaakafhandelapp/img/account-outline.svg',
 					}))
@@ -95,7 +95,7 @@ export default {
 				.then(() => {
 					this.personenItems = klantStore.klantenList.map(person => ({
 						id: person.id,
-						mainText: `${person.voornaam} ${person.achternaam}`,
+						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
 						subText: person.emailadres,
 						avatarUrl: '/apps-extra/zaakafhandelapp/img/account-outline.svg',
 					}))

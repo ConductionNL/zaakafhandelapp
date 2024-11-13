@@ -6,7 +6,7 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 	<NcDialog v-if="navigationStore.modal === 'editTaak'"
 		name="Taak"
 		size="normal"
-		:can-close="false">
+		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
 			<p>Taak succesvol aangepast</p>
 		</NcNoteCard>
@@ -18,6 +18,7 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 			<NcTextField
 				:disabled="loading"
 				:value.sync="taakItem.title"
+				required
 				label="Titel"
 				maxlength="255" />
 
@@ -45,10 +46,12 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				:value.sync="taakItem.toelichting"
 				label="Toelichting" />
 
-			<NcTextField
-				:disabled="true"
-				:value="taakItem.klant"
-				label="Klant" />
+			<NcSelect
+				v-bind="klanten"
+				v-model="klanten.value"
+				input-label="Klant"
+				:loading="klantenLoading"
+				:disabled="loading" />
 		</div>
 
 		<template #actions>
@@ -65,7 +68,7 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				Help
 			</NcButton>
 			<NcButton v-if="!success"
-				:disabled="loading"
+				:disabled="loading || klantenLoading || !taakItem.title"
 				type="primary"
 				@click="editTaak()">
 				<template #icon>
@@ -110,19 +113,26 @@ export default {
 		Plus,
 		Help,
 	},
+	props: {
+		dashboardWidget: {
+			type: Boolean,
+			required: false,
+		},
+	},
 	data() {
 		return {
 			success: false,
 			loading: false,
 			error: false,
 			hasUpdated: false,
+			klantenLoading: false,
+			klanten: [],
 			taakItem: {
 				title: '',
 				type: '',
 				status: '',
 				onderwerp: '',
 				toelichting: '',
-				klant: '',
 			},
 			statusOptions: {
 				options: [
@@ -141,6 +151,9 @@ export default {
 				],
 			},
 		}
+	},
+	mounted() {
+		this.fetchKlanten()
 	},
 	updated() {
 		if (navigationStore.modal === 'editTaak' && !this.hasUpdated) {
@@ -161,6 +174,11 @@ export default {
 		}
 	},
 	methods: {
+		closeModalFromButton() {
+			setTimeout(() => {
+				this.closeModal()
+			}, 300)
+		},
 		closeModal() {
 			navigationStore.setModal(false)
 			this.success = false
@@ -176,15 +194,46 @@ export default {
 				klant: '',
 			}
 		},
+		fetchKlanten() {
+			this.klantenLoading = true
+
+			klantStore.refreshKlantenList()
+				.then(({ response, data }) => {
+					const selectedKlant = data.filter((klant) => klant?.id.toString() === taakStore.taakItem?.klant?.toString())[0] || null
+
+					this.klanten = {
+						options: data.map((klant) => ({
+							id: klant.id,
+							label: klant.type === 'persoon' ? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` : klant.bedrijfsnaam,
+						})),
+						value: selectedKlant
+							? {
+								id: selectedKlant?.id,
+								label: selectedKlant?.type === 'persoon' ? `${selectedKlant.voornaam} ${selectedKlant.tussenvoegsel} ${selectedKlant.achternaam}` : selectedKlant.bedrijfsnaam,
+							}
+							: null,
+					}
+
+					this.klantenLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.klantenLoading = false
+				})
+		},
 		async editTaak() {
 			this.loading = true
 			try {
 				await taakStore.saveTaak({
 					...this.taakItem,
-				})
+					klant: this.klanten.value?.id ?? '',
+				}, this.dashboardWidget)
 				this.success = true
 				this.loading = false
 				setTimeout(this.closeModal, 2000)
+				if (this.dashboardWidget === true) {
+					this.$emit('save-success')
+				}
 			} catch (error) {
 				this.loading = false
 				this.success = false
