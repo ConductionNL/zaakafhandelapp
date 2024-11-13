@@ -41,6 +41,7 @@ import { klantStore } from '../../store/store.js'
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 
@@ -84,7 +85,7 @@ export default {
 						id: person.id,
 						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
 						subText: person.emailadres,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/account-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 					this.loading = false
 				})
@@ -97,13 +98,17 @@ export default {
 						id: person.id,
 						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
 						subText: person.emailadres,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/account-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 					this.loading = false
 				})
 				.finally(() => {
 					this.loading = false
 				})
+		},
+		getItemIcon() {
+			const theme = getTheme()
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/account-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/account-outline.svg'
 		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')

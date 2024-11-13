@@ -35,6 +35,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 
@@ -73,7 +74,7 @@ export default {
 						id: zaak.id,
 						mainText: zaak.identificatie,
 						subText: zaak.zaaktype,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
@@ -87,6 +88,10 @@ export default {
 		closeModal() {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
+		},
+		getItemIcon() {
+			const theme = getTheme()
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/briefcase-account-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg'
 		},
 		search() {
 			console.info('click')
@@ -109,4 +114,11 @@ export default {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
  }
+</style>
+<style>
+:root {
+	--zaa-margin-10: 10px;
+	--zaa-margin-20: 20px;
+	--zaa-margin-50: 50px;
+  }
 </style>

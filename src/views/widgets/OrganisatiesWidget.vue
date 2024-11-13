@@ -41,6 +41,7 @@ import { klantStore } from '../../store/store.js'
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 
@@ -82,7 +83,7 @@ export default {
 						id: organisatie.id,
 						mainText: organisatie.bedrijfsnaam,
 						subText: organisatie.websiteUrl,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/office-building-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
@@ -96,13 +97,17 @@ export default {
 						id: organisatie.id,
 						mainText: organisatie.bedrijfsnaam,
 						subText: organisatie.websiteUrl,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/office-building-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 					this.loading = false
 				})
 				.finally(() => {
 					this.loading = false
 				})
+		},
+		getItemIcon() {
+			const theme = getTheme()
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/office-building-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/office-building-outline.svg'
 		},
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')

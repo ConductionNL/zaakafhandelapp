@@ -34,6 +34,7 @@ import { berichtStore, navigationStore } from '../../store/store.js'
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 import BerichtForm from '../../modals/berichten/EditBericht.vue'
@@ -75,11 +76,15 @@ export default {
 						id: bericht.id,
 						mainText: bericht.title,
 						subText: bericht.aanmaakDatum,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/chat-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
 				})
+		},
+		getItemIcon() {
+			const theme = getTheme()
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/chat-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/chat-outline.svg'
 		},
 		openModal() {
 			this.isModalOpen = true
