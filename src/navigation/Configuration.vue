@@ -40,7 +40,7 @@
 					<NcCheckboxRadioSwitch :checked.sync="configuration.external" type="switch">
 						{{ t('forms', 'Enable sharing') }}
 					</NcCheckboxRadioSwitch>
-					
+
 					<b>Mongo DB</b>
 					<NcTextField :value.sync="configuration.mongodbLocation"
 						label="The location (url)"
