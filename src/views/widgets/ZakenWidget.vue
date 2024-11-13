@@ -1,5 +1,5 @@
 <script setup>
-import { zaakStore } from '../../store/store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -18,12 +18,17 @@ import { zaakStore } from '../../store/store.js'
 			</NcDashboardWidget>
 		</div>
 
-		<NcButton type="primary" @click="search">
+		<NcButton type="primary" @click="openModal">
 			<template #icon>
 				<Plus :size="20" />
 			</template>
 			Zaak aanmaken
 		</NcButton>
+
+		<ZaakForm v-if="isModalOpen"
+			:dashboard-widget="true"
+			@save-success="fetchZaakItems"
+			@close="closeModal" />
 	</div>
 </template>
 
@@ -33,9 +38,10 @@ import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+
 export default {
 	name: 'ZakenWidget',
-
 	components: {
 		NcDashboardWidget,
 		NcEmptyContent,
@@ -43,24 +49,21 @@ export default {
 		Plus,
 		Folder,
 	},
-
 	data() {
 		return {
 			loading: false,
+			isModalOpen: false,
 			zaakItems: [],
 		}
 	},
-
 	computed: {
 		items() {
 			return this.zaakItems
 		},
 	},
-
 	mounted() {
 		this.fetchZaakItems()
 	},
-
 	methods: {
 		fetchZaakItems() {
 			this.loading = true
@@ -76,6 +79,15 @@ export default {
 					this.loading = false
 				})
 		},
+		openModal() {
+			this.isModalOpen = true
+			zaakStore.setZaakItem(null)
+			navigationStore.setModal('zaakForm')
+		},
+		closeModal() {
+			this.isModalOpen = false
+			navigationStore.setModal(null)
+		},
 		search() {
 			console.info('click')
 		},
@@ -83,9 +95,9 @@ export default {
 			window.open('/apps/opencatalogi/catalogi', '_self')
 		},
 	},
-
 }
 </script>
+
 <style scoped>
 .zakenContainer{
     display: flex;
@@ -97,11 +109,4 @@ export default {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
  }
-</style>
-<style>
-:root {
-	--zaa-margin-10: 10px;
-	--zaa-margin-20: 20px;
-	--zaa-margin-50: 50px;
-  }
 </style>
