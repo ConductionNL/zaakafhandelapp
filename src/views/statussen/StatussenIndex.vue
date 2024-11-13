@@ -30,8 +30,7 @@ import { navigationStore } from '../../store/store.js'
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import StatussenList from './StatussenList.vue'
 import StatusDetails from './StatusDetails.vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'StatussenIndex',

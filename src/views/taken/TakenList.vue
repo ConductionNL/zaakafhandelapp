@@ -30,7 +30,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="taakStore.takenList">
+			<div v-if="taakStore.takenList?.length && !loading">
 				<NcListItem v-for="(taak, i) in taakStore.takenList"
 					:key="`${taak}${i}`"
 					:name="taak?.title"

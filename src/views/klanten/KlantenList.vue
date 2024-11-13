@@ -30,7 +30,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="klantStore.klantenList">
+			<div v-if="klantStore.klantenList?.length && !loading">
 				<NcListItem v-for="(klant, i) in klantStore.klantenList"
 					:key="`${klant}${i}`"
 					:name="klant.voornaam || 'onbekend'"
@@ -53,12 +53,6 @@ import { navigationStore, klantStore } from '../../store/store.js'
 								<Pencil :size="20" />
 							</template>
 							Bewerken
-						</NcActionButton>
-						<NcActionButton @click="klantStore.setKlantItem(klant); deleteKlant()">
-							<template #icon>
-								<TrashCanOutline :size="20" />
-							</template>
-							Verwijderen
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -86,7 +80,6 @@ import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
-import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'KlantenList',
@@ -101,7 +94,6 @@ export default {
 		AccountOutline,
 		Magnify,
 		Pencil,
-		TrashCanOutline,
 	},
 	data() {
 		return {
