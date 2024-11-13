@@ -34,6 +34,7 @@ import { taakStore, navigationStore } from '../../store/store.js'
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 import TakenForm from '../../modals/taken/EditTaak.vue'
@@ -75,11 +76,15 @@ export default {
 						id: taak.id,
 						mainText: taak.title,
 						subText: taak.type,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
 				})
+		},
+		getItemIcon() {
+			const theme = getTheme()
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/calendar-month-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/calendar-month-outline.svg'
 		},
 		openModal() {
 			this.isModalOpen = true
