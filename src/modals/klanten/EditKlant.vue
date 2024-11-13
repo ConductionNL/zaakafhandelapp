@@ -15,6 +15,13 @@ import { klantStore, navigationStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<div v-if="!success" class="form-group">
+			<NcSelect
+				v-bind="typeOptions"
+				v-model="klantItem.type"
+				:disabled="loading"
+				input-label="Type klant"
+				required />
+
 			<NcTextField :disabled="loading"
 				label="Voornaam"
 				maxlength="255"
@@ -105,7 +112,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				Help
 			</NcButton>
 			<NcButton v-if="!success"
-				:disabled="loading"
+				:disabled="loading || !klantItem.type"
 				type="primary"
 				@click="editKlant()">
 				<template #icon>
@@ -126,6 +133,7 @@ import {
 	NcTextField,
 	NcLoadingIcon,
 	NcNoteCard,
+	NcSelect,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
@@ -140,6 +148,7 @@ export default {
 		NcButton,
 		NcLoadingIcon,
 		NcNoteCard,
+		NcSelect,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -154,6 +163,7 @@ export default {
 			hasUpdated: false,
 			klantItem: {
 				voornaam: '',
+				type: 'persoon',
 				tussenvoegsel: '',
 				achternaam: '',
 				telefoonnummer: '',
@@ -169,14 +179,24 @@ export default {
 				subjectIdentificatie: '',
 				subjectType: '',
 			},
+			typeOptions: {
+				options: [
+					{ value: 'persoon', label: 'Persoon' },
+					{ value: 'organisatie', label: 'Organisatie' },
+				],
+			},
 		}
 	},
 	updated() {
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
+
+			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem?.type)
+
 			if (klantStore.klantItem?.id) {
 				this.klantItem = {
 					...klantStore.klantItem,
 					voornaam: klantStore.klantItem.voornaam || '',
+					type: klantType || { value: 'persoon', label: 'Persoon' },
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
@@ -205,6 +225,7 @@ export default {
 			this.hasUpdated = false
 			this.klantItem = {
 				voornaam: '',
+				type: { value: 'persoon', label: 'Persoon' },
 				tussenvoegsel: '',
 				achternaam: '',
 				telefoonnummer: '',
@@ -226,6 +247,7 @@ export default {
 			try {
 				await klantStore.saveKlant({
 					...this.klantItem,
+					type: this.klantItem.type.value,
 				})
 				this.success = true
 				this.loading = false

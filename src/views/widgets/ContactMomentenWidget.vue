@@ -9,7 +9,7 @@ import { berichtStore, navigationStore } from '../../store/store.js'
 				:loading="loading"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent :title="t('Geen contact momenten')">
+					<NcEmptyContent name="Geen contact momenten gevonden">
 						<template #icon>
 							<ChatOutline />
 						</template>
@@ -98,7 +98,7 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 .contactmomentenContainer{
     display: flex;
     justify-content: space-between;
@@ -107,5 +107,6 @@ export default {
 }
 .itemContainer{
 	overflow: auto;
+	margin-block-end: var(--zaa-margin-10);
  }
 </style>

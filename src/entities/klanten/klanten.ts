@@ -1,9 +1,10 @@
 import { SafeParseReturnType, z } from 'zod'
-import { TKlant } from './klanten.types'
+import { TKlant, TKlantType } from './klanten.types'
 
 export class Klant implements TKlant {
 
 	public id: string
+	public type: TKlantType
 	public voornaam: string
 	public tussenvoegsel: string
 	public achternaam: string
@@ -22,6 +23,7 @@ export class Klant implements TKlant {
 
 	constructor(source: TKlant) {
 		this.id = source.id || ''
+		this.type = source.type || 'persoon'
 		this.voornaam = source.voornaam || ''
 		this.tussenvoegsel = source.tussenvoegsel || ''
 		this.achternaam = source.achternaam || ''

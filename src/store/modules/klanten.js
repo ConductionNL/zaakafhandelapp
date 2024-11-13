@@ -48,6 +48,59 @@ export const useKlantStore = defineStore('klanten', {
 
 			return { response, data, entities }
 		},
+
+		async searchPersons(search = null) {
+			let endpoint = apiEndpoint
+
+			endpoint = endpoint + '?type=persoon'
+
+			if (search !== null && search !== '') {
+				endpoint = endpoint + '&voornaam=' + search
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.log(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results
+			const entities = data.map((klantItem) => new Klant(klantItem))
+
+			this.setKlantenList(data)
+
+			return { response, data, entities }
+		},
+
+		async searchOrganisations(search = null) {
+			let endpoint = apiEndpoint
+
+			endpoint = endpoint + '?type=organisatie'
+
+			if (search !== null && search !== '') {
+				endpoint = endpoint + '&bedrijfsnaam=' + search
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.log(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results
+			const entities = data.map((klantItem) => new Klant(klantItem))
+
+			this.setKlantenList(data)
+
+			return { response, data, entities }
+		},
+
 		// New function to get a single klant
 		async getKlant(id) {
 			const endpoint = `${apiEndpoint}/${id}`

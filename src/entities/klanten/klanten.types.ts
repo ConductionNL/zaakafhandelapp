@@ -1,5 +1,8 @@
+export type TKlantType = 'persoon' | 'organisatie'
+
 export type TKlant = {
     id: string;
+    type: TKlantType;
     voornaam: string;
     tussenvoegsel: string;
     achternaam: string;

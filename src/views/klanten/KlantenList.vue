@@ -33,11 +33,10 @@ import { navigationStore, klantStore } from '../../store/store.js'
 			<div v-if="klantStore.klantenList?.length && !loading">
 				<NcListItem v-for="(klant, i) in klantStore.klantenList"
 					:key="`${klant}${i}`"
-					:name="klant.voornaam || 'onbekend'"
-					:active="klantStore.klantItem.id === klant?.id"
+					:name="getName(klant)"
+					:active="klantStore.klantItem?.id === klant?.id"
 					:force-display-actions="true"
-					:details="'Persoon'"
-					:counter-number="Math.floor(Math.random() * 101)"
+					:details="_.upperFirst(klant.type)"
 					@click="klantStore.setKlantItem(klant)">
 					<template #icon>
 						<AccountOutline :class="klantStore.klantItem === klant.id && 'selectedZaakIcon'"
@@ -45,7 +44,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ klant?.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend' }}
+						{{ getSubname(klant) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
@@ -73,6 +72,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 <script>
 // Components
 import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon, NcActions } from '@nextcloud/vue'
+import _ from 'lodash'
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
@@ -117,6 +117,24 @@ export default {
 				name = `${name}, ${klant.voornaam}`
 			}
 			return name
+		},
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return klant?.voornaam ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+		getSubname(klant) {
+			if (klant.type === 'persoon') {
+				return klant?.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.websiteUrl ?? 'onbekend'
+			}
+			return 'onbekend'
 		},
 		deleteKlant() {
 			fetch(
