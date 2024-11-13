@@ -115,3 +115,10 @@ export default {
 	margin-block-end: var(--zaa-margin-10);
  }
 </style>
+<style>
+:root {
+	--zaa-margin-10: 10px;
+	--zaa-margin-20: 20px;
+	--zaa-margin-50: 50px;
+  }
+</style>
