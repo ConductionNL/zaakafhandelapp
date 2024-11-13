@@ -9,7 +9,7 @@ import { zaakStore } from '../../store/store.js'
 				:loading="loading"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent :title="t('Geen open zaken')">
+					<NcEmptyContent name="Geen open zaken">
 						<template #icon>
 							<Folder />
 						</template>
@@ -84,7 +84,7 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 .openZakenContainer{
     display: flex;
     justify-content: space-between;
@@ -93,5 +93,6 @@ export default {
 }
 .itemContainer{
    overflow: auto;
+   margin-block-end: var(--zaa-margin-10);
 }
 </style>

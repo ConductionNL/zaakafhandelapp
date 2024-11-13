@@ -10,6 +10,8 @@ use OCA\ZaakAfhandelApp\Dashboard\ZakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\TakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\OpenZakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\ContactmomentenWidget;
+use OCA\ZaakAfhandelApp\Dashboard\PersonenWidget;
+use OCA\ZaakAfhandelApp\Dashboard\OrganisatiesWidget;
 
 /**
  * Class Application
@@ -36,6 +38,8 @@ class Application extends App implements IBootstrap
 		$context->registerDashboardWidget(TakenWidget::class);
 		$context->registerDashboardWidget(OpenZakenWidget::class);
 		$context->registerDashboardWidget(ContactmomentenWidget::class);
+		$context->registerDashboardWidget(PersonenWidget::class);
+		$context->registerDashboardWidget(OrganisatiesWidget::class);
 	}
 
 	public function boot(IBootContext $context): void

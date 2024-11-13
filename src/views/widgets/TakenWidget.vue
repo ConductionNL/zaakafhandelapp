@@ -9,7 +9,7 @@ import { taakStore } from '../../store/store.js'
 				:loading="loading"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent :title="t('Geen open taken')">
+					<NcEmptyContent name="Geen open taken">
 						<template #icon>
 							<Folder />
 						</template>
@@ -85,7 +85,7 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 .takenContainer{
     display: flex;
     justify-content: space-between;
@@ -94,5 +94,6 @@ export default {
 }
 .itemContainer{
 	overflow: auto;
+	margin-block-end: var(--zaa-margin-10);
  }
 </style>
