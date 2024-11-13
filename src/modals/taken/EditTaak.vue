@@ -124,6 +124,22 @@ export default {
 				toelichting: '',
 				klant: '',
 			},
+			statusOptions: {
+				options: [
+					{
+						id: 'status1',
+						label: 'Status 1',
+					},
+					{
+						id: 'status2',
+						label: 'Status 2',
+					},
+					{
+						id: 'status3',
+						label: 'Status 3',
+					},
+				],
+			},
 		}
 	},
 	updated() {
@@ -151,7 +167,7 @@ export default {
 			this.loading = false
 			this.error = false
 			this.hasUpdated = false
-			this.taakItem ={
+			this.taakItem = {
 				title: '',
 				type: '',
 				status: '',

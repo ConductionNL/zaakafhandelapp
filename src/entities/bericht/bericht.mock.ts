@@ -4,6 +4,7 @@ import { TBericht } from './bericht.types'
 export const mockBerichtData = (): TBericht[] => [
 	{
 		id: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
+		title: 'Bericht 1',
 		batchID: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
 		aanmaakDatum: '2024-01-01',
 		berichtLeverancierID: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',

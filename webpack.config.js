@@ -32,6 +32,10 @@ webpackConfig.entry = {
 		import: path.join(__dirname, 'src', 'openZakenWidget.js'),
 		filename: appId + '-openZakenWidget.js',
 	},
+	contactmomentenWidget: {
+		import: path.join(__dirname, 'src', 'contactmomentenWidget.js'),
+		filename: appId + '-contactmomentenWidget.js',
+	},
 }
 
 module.exports = webpackConfig
