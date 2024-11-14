@@ -108,6 +108,13 @@ export default {
 		NcSelect,
 		NcTextArea,
 	},
+	props: {
+		dashboardWidget: {
+			type: Boolean,
+			default: false,
+			required: false,
+		},
+	},
 	data() {
 		return {
 			zaak: {
@@ -164,6 +171,7 @@ export default {
 	methods: {
 		closeModal() {
 			navigationStore.setModal(null)
+			this?.dashboardWidget && this.$emit('close')
 			this.success = null
 			this.loading = false
 			this.zaak = {
@@ -181,7 +189,7 @@ export default {
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
-			zaakTypeStore.refreshZaakTypeList()
+			zaakTypeStore.refreshZaakTypenList()
 				.then(({ entities }) => {
 					const selectedZaakType = entities.find((zaakType) => zaakType.id === this.zaak.zaaktype.id)
 
@@ -228,6 +236,8 @@ export default {
 				.then(({ response }) => {
 					this.success = response.ok
 					setTimeout(this.closeModal, 2500)
+
+					this?.dashboardWidget && this.$emit('save-success')
 				})
 				.catch((err) => {
 					console.error(err)
@@ -239,3 +249,10 @@ export default {
 	},
 }
 </script>
+
+<style scoped>
+.modalContent {
+    margin: var(--zaa-margin-50, 12px);
+    text-align: center;
+}
+</style>

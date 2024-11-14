@@ -1,5 +1,5 @@
 <script setup>
-import { zaakStore } from '../../store/store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,7 +9,7 @@ import { zaakStore } from '../../store/store.js'
 				:loading="loading"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent :title="t('Geen open zaken')">
+					<NcEmptyContent name="Geen open zaken">
 						<template #icon>
 							<Folder />
 						</template>
@@ -18,24 +18,31 @@ import { zaakStore } from '../../store/store.js'
 			</NcDashboardWidget>
 		</div>
 
-		<NcButton type="primary" @click="search">
+		<NcButton type="primary" @click="openModal">
 			<template #icon>
 				<Plus :size="20" />
 			</template>
 			Zaak aanmaken
 		</NcButton>
+
+		<ZaakForm v-if="isModalOpen"
+			:dashboard-widget="true"
+			@save-success="fetchZaakItems"
+			@close="closeModal" />
 	</div>
 </template>
 
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+
 export default {
 	name: 'ZakenWidget',
-
 	components: {
 		NcDashboardWidget,
 		NcEmptyContent,
@@ -43,24 +50,21 @@ export default {
 		Plus,
 		Folder,
 	},
-
 	data() {
 		return {
 			loading: false,
+			isModalOpen: false,
 			zaakItems: [],
 		}
 	},
-
 	computed: {
 		items() {
 			return this.zaakItems
 		},
 	},
-
 	mounted() {
 		this.fetchZaakItems()
 	},
-
 	methods: {
 		fetchZaakItems() {
 			this.loading = true
@@ -70,11 +74,24 @@ export default {
 						id: zaak.id,
 						mainText: zaak.identificatie,
 						subText: zaak.zaaktype,
-						avatarUrl: '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg',
+						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
 				})
+		},
+		openModal() {
+			this.isModalOpen = true
+			zaakStore.setZaakItem(null)
+			navigationStore.setModal('zaakForm')
+		},
+		closeModal() {
+			this.isModalOpen = false
+			navigationStore.setModal(null)
+		},
+		getItemIcon() {
+			const theme = getTheme()
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/briefcase-account-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg'
 		},
 		search() {
 			console.info('click')
@@ -83,10 +100,10 @@ export default {
 			window.open('/apps/opencatalogi/catalogi', '_self')
 		},
 	},
-
 }
 </script>
-<style>
+
+<style scoped>
 .zakenContainer{
     display: flex;
     justify-content: space-between;
@@ -95,5 +112,13 @@ export default {
 }
 .itemContainer{
 	overflow: auto;
+	margin-block-end: var(--zaa-margin-10);
  }
+</style>
+<style>
+:root {
+	--zaa-margin-10: 10px;
+	--zaa-margin-20: 20px;
+	--zaa-margin-50: 50px;
+  }
 </style>

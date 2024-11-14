@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, taakStore } from '../../store/store.js'
+import { navigationStore, taakStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -31,8 +31,27 @@ import { navigationStore, taakStore } from '../../store/store.js'
 				</div>
 				<div class="grid">
 					<div class="gridContent">
-						<b>Sammenvatting:</b>
-						<span>{{ taakStore.taakItem.onderwerp }}</span>
+						<div>
+							<b>Sammenvatting:</b>
+							<span>{{ taakStore.taakItem.onderwerp }}</span>
+						</div>
+						<div>
+							<b>Klant:</b>
+							<span v-if="klantLoading">Loading...</span>
+							<div v-if="!klantLoading" class="buttonLinkContainer">
+								<span>{{ getKlantName(klant) }}</span>
+								<NcActions>
+									<NcActionLink :aria-label="`ga naar ${getKlantName(klant)}`"
+										:name="getKlantName(klant)"
+										@click="goToKlant()">
+										<template #icon>
+											<OpenInApp :size="20" />
+										</template>
+										{{ getKlantName(klant) }}
+									</NcActionLink>
+								</NcActions>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -79,7 +98,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcActionLink } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
@@ -88,31 +107,40 @@ import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
 
 export default {
 	name: 'TaakDetails',
 	components: {
+		NcActionLink,
 		// Icons
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+		OpenInApp,
+		TimelineQuestionOutline,
+		Eye,
 	},
 	data() {
 		return {
 			currentActiveTaak: null,
 			auditTrails: [],
+			klant: [],
+			klantLoading: false,
 		}
 	},
 	mounted() {
 		if (taakStore.taakItem?.id) {
 			this.currentActiveTaak = taakStore.taakItem
 			this.fetchAuditTrails(taakStore.taakItem.id)
+			this.fetchKlant(taakStore.taakItem.klant)
 		}
 	},
 	updated() {
 		if (taakStore.taakItem?.id && JSON.stringify(this.currentActiveTaak) !== JSON.stringify(taakStore.taakItem)) {
 			this.currentActiveTaak = taakStore.taakItem
 			this.fetchAuditTrails(taakStore.taakItem.id)
+			this.fetchKlant(taakStore.taakItem.klant)
 		}
 	},
 	methods: {
@@ -124,6 +152,31 @@ export default {
 						this.auditTrails = data
 					}
 				})
+		},
+		getKlantName(klant) {
+			return klant?.type === 'persoon' ? `${klant?.voornaam} ${klant?.tussenvoegsel} ${klant?.achternaam}` : klant?.bedrijfsnaam
+		},
+		goToKlant() {
+			klantStore.setKlantItem(this.klant)
+			navigationStore.setSelected('klanten')
+		},
+		fetchKlant(klant) {
+			this.klantLoading = true
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant}`, {
+				method: 'GET',
+			})
+				.then((response) => {
+					response.json().then((data) => {
+						this.klant = data
+					})
+					this.klantLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.klantLoading = false
+				})
+
 		},
 	},
 }
@@ -156,6 +209,11 @@ h4 {
 .gridContent {
   display: flex;
   gap: 25px;
+}
+
+.buttonLinkContainer {
+	display: flex;
+	align-items: center;
 }
 
 </style>

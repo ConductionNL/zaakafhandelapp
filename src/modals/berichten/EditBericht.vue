@@ -6,7 +6,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 	<NcDialog v-if="navigationStore.modal === 'editBericht'"
 		name="Bericht"
 		size="normal"
-		:can-close="false">
+		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
 			<p>Bericht succesvol aangepast</p>
 		</NcNoteCard>
@@ -136,6 +136,12 @@ export default {
 		Plus,
 		Help,
 	},
+	props: {
+		dashboardWidget: {
+			type: Boolean,
+			required: false,
+		},
+	},
 	data() {
 		return {
 			success: false,
@@ -187,6 +193,11 @@ export default {
 		}
 	},
 	methods: {
+		closeModalFromButton() {
+			setTimeout(() => {
+				this.closeModal()
+			}, 300)
+		},
 		closeModal() {
 			navigationStore.setModal(false)
 			this.success = false
@@ -220,6 +231,10 @@ export default {
 				this.success = true
 				this.loading = false
 				setTimeout(this.closeModal, 2000)
+				if (this.dashboardWidget === true) {
+					this.$emit('save-success')
+				}
+
 			} catch (error) {
 				this.loading = false
 				this.success = false

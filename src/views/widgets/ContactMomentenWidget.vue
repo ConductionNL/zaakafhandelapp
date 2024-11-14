@@ -1,17 +1,17 @@
 <script setup>
-import { taakStore, navigationStore } from '../../store/store.js'
+import { berichtStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<div class="takenContainer">
+	<div class="contactmomentenContainer">
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent name="Geen open taken">
+					<NcEmptyContent name="Geen contact momenten gevonden">
 						<template #icon>
-							<Folder />
+							<ChatOutline />
 						</template>
 					</NcEmptyContent>
 				</template>
@@ -22,12 +22,12 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Taak aanmaken
+			Contact moment starten
 		</NcButton>
 
-		<TakenForm v-if="isModalOpen"
+		<BerichtForm v-if="isModalOpen"
 			:dashboard-widget="true"
-			@save-success="fetchTaakItems" />
+			@save-success="fetchBerichtItems" />
 	</div>
 </template>
 
@@ -36,11 +36,11 @@ import { taakStore, navigationStore } from '../../store/store.js'
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
-import Folder from 'vue-material-design-icons/Folder.vue'
-import TakenForm from '../../modals/taken/EditTaak.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import BerichtForm from '../../modals/berichten/EditBericht.vue'
 
 export default {
-	name: 'TakenWidget',
+	name: 'ContactMomentenWidget',
 
 	components: {
 		NcDashboardWidget,
@@ -53,29 +53,29 @@ export default {
 		return {
 			loading: false,
 			isModalOpen: false,
-			taakItems: [],
+			berichtItems: [],
 		}
 	},
 
 	computed: {
 		items() {
-			return this.taakItems
+			return this.berichtItems
 		},
 	},
 
 	mounted() {
-		this.fetchTaakItems()
+		this.fetchBerichtItems()
 	},
 
 	methods: {
-		fetchTaakItems() {
+		fetchBerichtItems() {
 			this.loading = true
-			taakStore.refreshTakenList()
+			berichtStore.refreshBerichtenList()
 				.then(() => {
-					this.taakItems = taakStore.takenList.map(taak => ({
-						id: taak.id,
-						mainText: taak.title,
-						subText: taak.type,
+					this.berichtItems = berichtStore.berichtenList.map(bericht => ({
+						id: bericht.id,
+						mainText: bericht.title,
+						subText: bericht.aanmaakDatum,
 						avatarUrl: this.getItemIcon(),
 					}))
 
@@ -84,12 +84,12 @@ export default {
 		},
 		getItemIcon() {
 			const theme = getTheme()
-			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/calendar-month-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/calendar-month-outline.svg'
+			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/chat-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/chat-outline.svg'
 		},
 		openModal() {
 			this.isModalOpen = true
-			taakStore.setTaakItem(null)
-			navigationStore.setModal('editTaak')
+			berichtStore.setBerichtItem(null)
+			navigationStore.setModal('editBericht')
 		},
 		closeModal() {
 			this.isModalOpen = false
@@ -103,7 +103,7 @@ export default {
 }
 </script>
 <style scoped>
-.takenContainer{
+.contactmomentenContainer{
     display: flex;
     justify-content: space-between;
     flex-direction: column;

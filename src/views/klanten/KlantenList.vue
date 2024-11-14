@@ -30,14 +30,13 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="klantStore.klantenList">
+			<div v-if="klantStore.klantenList?.length && !loading">
 				<NcListItem v-for="(klant, i) in klantStore.klantenList"
 					:key="`${klant}${i}`"
-					:name="klant.voornaam || 'onbekend'"
-					:active="klantStore.klantItem.id === klant?.id"
+					:name="getName(klant)"
+					:active="klantStore.klantItem?.id === klant?.id"
 					:force-display-actions="true"
-					:details="'Persoon'"
-					:counter-number="Math.floor(Math.random() * 101)"
+					:details="_.upperFirst(klant.type)"
 					@click="klantStore.setKlantItem(klant)">
 					<template #icon>
 						<AccountOutline :class="klantStore.klantItem === klant.id && 'selectedZaakIcon'"
@@ -45,7 +44,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ klant?.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend' }}
+						{{ getSubname(klant) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
@@ -54,18 +53,16 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setDialog('deleteKlant')">
-							<template #icon>
-								<TrashCanOutline :size="20" />
-							</template>
-							Verwijderen
-						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!klantStore.klantenList"
+		<div v-if="!klantStore.klantenList?.length && !loading">
+			Geen klanten gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -75,6 +72,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 <script>
 // Components
 import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon, NcActions } from '@nextcloud/vue'
+import _ from 'lodash'
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
@@ -82,7 +80,6 @@ import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
-import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'KlantenList',
@@ -97,7 +94,6 @@ export default {
 		AccountOutline,
 		Magnify,
 		Pencil,
-		TrashCanOutline,
 	},
 	data() {
 		return {
@@ -107,18 +103,56 @@ export default {
 		}
 	},
 	mounted() {
-		klantStore.refreshKlantenList()
+		klantStore.refreshKlantenList().then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
 		fullName(klant) {
-			let name = klant.achternaam;
+			let name = klant.achternaam
 			if (klant.tussenvoegsel) {
-				name = `${klant.tussenvoegsel} ${name}`;
+				name = `${klant.tussenvoegsel} ${name}`
 			}
 			if (klant.voornaam) {
-				name = `${name}, ${klant.voornaam}`;
+				name = `${name}, ${klant.voornaam}`
 			}
-			return name;
+			return name
+		},
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return klant?.voornaam ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+		getSubname(klant) {
+			if (klant.type === 'persoon') {
+				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.websiteUrl ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+		deleteKlant() {
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}`,
+				{
+					method: 'DELETE',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.klantenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
 		},
 		fetchData(newPage) {
 			this.loading = true
