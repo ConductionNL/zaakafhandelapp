@@ -19,7 +19,7 @@ description: >-
 | --------------- | --------------------------------------------------------------------- | ------------- | ----------------------------------------------------------- |
 | **Titel**       | De naam of titel van de taak.                                         | Ja            | Unieke naam die helpt de taak te identificeren.             |
 | **Type**        | Het type taak (bijvoorbeeld administratief, operationeel, etc.).      | Optioneel     | Dropdown of vrij tekstveld afhankelijk van de configuratie. |
-| **Status**      | De huidige status van de taak (bijv. Open, In behandeling, Afgerond). | Optioneel     | Dropdown met vooraf ingestelde statussen.                   |
+| **Status**      | De huidige status van de taak (bijv. Open, In behandeling, Afgerond). | Optioneel     | Dropdown met 3 vooraf ingestelde statussen.                 |
 | **Onderwerp**   | Korte beschrijving van het onderwerp of doel van de taak.             | Optioneel     | Helpt om snel inzicht te krijgen in de taakinhoud.          |
 | **Toelichting** | Gedetailleerde beschrijving of aanvullende informatie over de taak.   | Optioneel     | Tekstvak voor extra uitleg.                                 |
 | **Klant**       | De klant of partij aan wie de taak gekoppeld is.                      | Optioneel     | Dropdownmenu met klanten uit het systeem.                   |
