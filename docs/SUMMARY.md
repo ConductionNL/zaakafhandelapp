@@ -9,4 +9,6 @@
   * [Klantgegevens beheren](gebruikers/page-2.md)
 * [Beheerders](beheerders.md)
 * [Developers](developers.md)
+* [Installatie](installatie/README.md)
+  * [Installeren via de appstore](installatie/installeren-via-de-appstore.md)
 * [Veel gestelde vragen](veel-gestelde-vragen.md)
