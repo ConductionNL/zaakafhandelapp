@@ -25,6 +25,7 @@ export const mockZaakData = (): TZaak[] => [
 		laatsteBetaaldatum: '2019-08-24T14:15:22Z',
 		selectielijstklasse: 'http://example.com',
 		hoofdzaak: 'http://example.com',
+		klant: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
 	},
 ]
 

@@ -23,4 +23,5 @@ export type TZaak = {
     laatsteBetaaldatum: string;
     selectielijstklasse: string;
     hoofdzaak: string;
+    klant: string;
 }

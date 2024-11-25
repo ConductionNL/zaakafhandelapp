@@ -24,6 +24,7 @@ return [
 	 	'taken' => ['url' => 'api/taken'],
 	 	'klanten' => ['url' => 'api/klanten'],
 	 	'berichten' => ['url' => 'api/berichten'],
+		'contactmomenten' => ['url' => 'api/contactmomenten'],
 		
 	 ],
 	'routes' => [

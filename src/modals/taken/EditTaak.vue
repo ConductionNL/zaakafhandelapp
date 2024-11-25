@@ -167,8 +167,10 @@ export default {
 					toelichting: taakStore.taakItem.toelichting || '',
 					klant: klantStore.klantItem?.id || '',
 				}
+				this.fetchKlanten()
 			} else {
 				this.taakItem.klant = klantStore.klantItem?.id || ''
+				this.fetchKlanten()
 			}
 			this.hasUpdated = true
 		}

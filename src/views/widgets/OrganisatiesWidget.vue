@@ -1,5 +1,5 @@
 <script setup>
-import { klantStore } from '../../store/store.js'
+import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,6 +7,7 @@ import { klantStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
+				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
 					<NcEmptyContent name="Geen organisaties gevonden">
@@ -34,6 +35,11 @@ import { klantStore } from '../../store/store.js'
 				</template>
 				Zoeken
 			</NcButton>
+
+			<ViewKlantRegister v-if="isModalOpen"
+				:dashboard-widget="true"
+				:klant-id="klantStore.widgetKlantId"
+				@save-success="fetchOrganisatieItems" />
 		</div>
 	</div>
 </template>
@@ -44,6 +50,7 @@ import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextc
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
+import ViewKlantRegister from '../../modals/klantRegister/ViewKlantRegister.vue'
 
 export default {
 	name: 'OrganisatiesWidget',
@@ -54,13 +61,23 @@ export default {
 		NcButton,
 		Search,
 		NcTextField,
+		OfficeBuildingOutline,
+		ViewKlantRegister,
 	},
 
 	data() {
 		return {
 			loading: false,
+			isModalOpen: false,
 			organisatieItems: [],
 			searchOrganisatie: '',
+			selectedKlantId: '',
+			itemMenu: {
+				show: {
+					text: 'Bekijk',
+					icon: 'icon-toggle',
+				},
+			},
 		}
 	},
 
@@ -107,11 +124,22 @@ export default {
 		},
 		getItemIcon() {
 			const theme = getTheme()
-			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/office-building-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/office-building-outline.svg'
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/office-building-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/office-building-outline.svg`
 		},
-		onShow() {
-			window.open('/apps/opencatalogi/catalogi', '_self')
+		onShow(item) {
+			klantStore.setWidgetKlantId(item.id)
+			this.isModalOpen = true
+			navigationStore.setModal('viewKlantRegister')
+
 		},
+
 	},
 
 }

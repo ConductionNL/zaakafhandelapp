@@ -39,7 +39,7 @@ import { getTheme } from '../../services/getTheme.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 
-import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+import ZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
 
 export default {
 	name: 'ZakenWidget',
@@ -91,7 +91,14 @@ export default {
 		},
 		getItemIcon() {
 			const theme = getTheme()
-			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/briefcase-account-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/briefcase-account-outline.svg'
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/briefcase-account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/briefcase-account-outline.svg`
 		},
 		search() {
 			console.info('click')
