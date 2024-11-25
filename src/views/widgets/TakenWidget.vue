@@ -27,7 +27,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 
 		<TakenForm v-if="isModalOpen"
 			:dashboard-widget="true"
-			@save-success="fetchTaakItems" />
+			@save-success="fetchTaakItems"
+			@close-modal="closeModal" />
 	</div>
 </template>
 
@@ -84,7 +85,14 @@ export default {
 		},
 		getItemIcon() {
 			const theme = getTheme()
-			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/calendar-month-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/calendar-month-outline.svg'
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/calendar-month-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/calendar-month-outline.svg`
 		},
 		openModal() {
 			this.isModalOpen = true

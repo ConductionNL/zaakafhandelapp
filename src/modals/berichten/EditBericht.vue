@@ -220,6 +220,8 @@ export default {
 				gebruikerID: '',
 				volgorde: '',
 			}
+			this.$emit('close-modal')
+
 		},
 		async editBericht() {
 			this.loading = true

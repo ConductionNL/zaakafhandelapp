@@ -25,6 +25,7 @@ export class Zaak implements TZaak {
 	public laatsteBetaaldatum: string
 	public selectielijstklasse: string
 	public hoofdzaak: string
+	public klant: string
 
 	constructor(source: TZaak) {
 		this.id = source.id || ''
@@ -49,6 +50,7 @@ export class Zaak implements TZaak {
 		this.laatsteBetaaldatum = source.laatsteBetaaldatum || ''
 		this.selectielijstklasse = source.selectielijstklasse || ''
 		this.hoofdzaak = source.hoofdzaak || ''
+		this.klant = source.klant || ''
 	}
 
 	public validate(): SafeParseReturnType<TZaak, unknown> {
@@ -75,6 +77,7 @@ export class Zaak implements TZaak {
 			laatsteBetaaldatum: z.string(),
 			selectielijstklasse: z.string(),
 			hoofdzaak: z.string(),
+			klant: z.string(),
 		})
 
 		return schema.safeParse(this)

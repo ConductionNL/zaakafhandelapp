@@ -30,8 +30,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import KlantenList from './KlantenList.vue'
 import KlantDetails from './KlantDetails.vue'
-// eslint-disable-next-line n/no-missing-import
-import AccountOutline from 'vue-material-design-icons/AccountOutline'
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 
 export default {
 	name: 'KlantenIndex',
