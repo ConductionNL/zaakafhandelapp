@@ -8,12 +8,17 @@ export const useKlantStore = defineStore('klanten', {
 	state: () => ({
 		klantItem: false,
 		klantenList: [],
+		widgetKlantId: null,
 		auditTrailItem: null,
 	}),
 	actions: {
 		setKlantItem(klantItem) {
 			this.klantItem = klantItem && new Klant(klantItem)
 			console.log('Active klant item set to ' + klantItem)
+		},
+		setWidgetKlantId(widgetKlantId) {
+			this.widgetKlantId = widgetKlantId
+			console.log('Widget klant id set to ' + widgetKlantId)
 		},
 		setKlantenList(klantenList) {
 			this.klantenList = klantenList.map(

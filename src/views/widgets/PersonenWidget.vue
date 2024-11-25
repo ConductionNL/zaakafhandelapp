@@ -1,5 +1,5 @@
 <script setup>
-import { klantStore } from '../../store/store.js'
+import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,6 +7,7 @@ import { klantStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
+				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
 					<NcEmptyContent name="Geen personen gevonden">
@@ -34,6 +35,11 @@ import { klantStore } from '../../store/store.js'
 				</template>
 				Zoeken
 			</NcButton>
+
+			<ViewKlantRegister v-if="isModalOpen"
+				:dashboard-widget="true"
+				:klant-id="klantStore.widgetKlantId"
+				@save-success="fetchPersonenItems" />
 		</div>
 	</div>
 </template>
@@ -44,6 +50,7 @@ import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextc
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import ViewKlantRegister from '../../modals/klantRegister/ViewKlantRegister.vue'
 
 export default {
 	name: 'PersonenWidget',
@@ -55,6 +62,7 @@ export default {
 		Search,
 		NcTextField,
 		AccountOutline,
+		ViewKlantRegister,
 	},
 
 	data() {
@@ -63,6 +71,13 @@ export default {
 			isModalOpen: false,
 			personenItems: [],
 			searchPerson: '',
+			selectedKlantId: '',
+			itemMenu: {
+				show: {
+					text: 'Bekijk',
+					icon: 'icon-toggle',
+				},
+			},
 		}
 	},
 
@@ -108,10 +123,21 @@ export default {
 		},
 		getItemIcon() {
 			const theme = getTheme()
-			return theme === 'light' ? '/apps-extra/zaakafhandelapp/img/account-outline-dark.svg' : '/apps-extra/zaakafhandelapp/img/account-outline.svg'
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/account-outline.svg`
 		},
-		onShow() {
-			window.open('/apps/opencatalogi/catalogi', '_self')
+		onShow(item) {
+			klantStore.setWidgetKlantId(item.id)
+
+			this.isModalOpen = true
+			navigationStore.setModal('viewKlantRegister')
+
 		},
 	},
 
