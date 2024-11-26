@@ -54,6 +54,30 @@ export const useKlantStore = defineStore('klanten', {
 			return { response, data, entities }
 		},
 
+		async searchKlanten(queryParams = null) {
+			let endpoint = apiEndpoint
+
+			if (queryParams !== null && queryParams !== '') {
+				endpoint = endpoint + '?' + queryParams
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.log(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results
+			const entities = data.map((klantItem) => new Klant(klantItem))
+
+			this.setKlantenList(data)
+
+			return { response, data, entities }
+		},
+
 		async searchPersons(search = null) {
 			let endpoint = apiEndpoint
 

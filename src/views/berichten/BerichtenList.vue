@@ -33,7 +33,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			<div v-if="berichtStore.berichtenList?.length && !loading">
 				<NcListItem v-for="(bericht, i) in berichtStore.berichtenList"
 					:key="`${bericht}${i}`"
-					:name="bericht?.onderwerp"
+					:name="bericht?.onderwerp || bericht?.title || 'onbekend'"
 					:active="berichtStore.berichtItem?.id === bericht?.id"
 					:details="'1h'"
 					:counter-number="44"

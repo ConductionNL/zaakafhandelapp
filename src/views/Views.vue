@@ -17,6 +17,7 @@ import { navigationStore } from '../store/store.js'
 			<TakenIndex v-if="navigationStore.selected === 'taken'" />
 			<ZaakTypenIndex v-if="navigationStore.selected === 'zaakTypen'" />
 			<ZakenIndex v-if="navigationStore.selected === 'zaken'" />
+			<ContactMomentenIndex v-if="navigationStore.selected === 'contactMomenten'" />
 		</template>
 	</NcAppContent>
 </template>
@@ -35,7 +36,7 @@ import StatusssenIndex from './statussen/StatussenIndex.vue'
 import TakenIndex from './taken/TakenIndex.vue'
 import ZaakTypenIndex from './zaakTypen/ZakenTypenIndex.vue'
 import ZakenIndex from './zaken/ZakenIndex.vue'
-
+import ContactMomentenIndex from './contactMomenten/ContactMomentenIndex.vue'
 export default {
 	name: 'Views',
 	components: {
@@ -43,6 +44,7 @@ export default {
 		BesluitenIndex,
 		DashboardIndex,
 		SearchIndex,
+		ContactMomentenIndex,
 		DocumentenIndex,
 		KlantenIndex,
 		ResultatenIndex,

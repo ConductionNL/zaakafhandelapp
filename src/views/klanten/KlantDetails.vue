@@ -9,7 +9,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 			<div>
 				<div class="head">
 					<h1 class="h1">
-						{{ klantStore.klantItem.voornaam }} {{ klantStore.klantItem.voorvoegsel }} {{ klantStore.klantItem.achternaam }}
+						{{ getName(klantStore.klantItem) }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -55,6 +55,20 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 						<b>Klantnummer:</b>
 						<p>{{ klantStore.klantItem.klantnummer }}</p>
 					</div>
+					<div class="gridContent gridFullWidth">
+						<b>BSN:</b>
+						<p>{{ klantStore.klantItem.bsn }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>Geboortedatum:</b>
+						<p>{{ klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum).toLocaleDateString() : '-' }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>Land:</b>
+						<p>{{ getLandName(klantStore.klantItem.land) }}</p>
+					</div>
 
 					<div class="gridContent">
 						<b>Telefoonnummer:</b>
@@ -64,10 +78,21 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 						<b>Email adres:</b>
 						<p>{{ klantStore.klantItem.emailadres }}</p>
 					</div>
+
 					<div class="gridContent">
-						<b>Adres:</b>
-						<p>{{ klantStore.klantItem.adres }}</p>
+						<b>Plaats:</b>
+						<p>{{ klantStore.klantItem.plaats }}</p>
 					</div>
+					<div class="gridContent">
+						<b>Straatnaam:</b>
+						<p>{{ klantStore.klantItem.straatnaam }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>Postcode + Huisnummer:</b>
+						<p>{{ klantStore.klantItem.postcode }} {{ klantStore.klantItem.huisnummer }}</p>
+					</div>
+
 					<div class="gridContent">
 						<b>Functie:</b>
 						<p>{{ klantStore.klantItem.functie }}</p>
@@ -75,6 +100,10 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 					<div class="gridContent">
 						<b>Bedrijfsnaam:</b>
 						<p>{{ klantStore.klantItem.bedrijfsnaam }}</p>
+					</div>
+					<div class="gridContent">
+						<b>KVK nummer:</b>
+						<p>{{ klantStore.klantItem.kvkNummer }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Website url:</b>
@@ -111,7 +140,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
-									:name="zaak.title"
+									:name="zaak.identificatie"
 									:bold="false"
 									:details="zaak.description"
 									:force-display-actions="true">
@@ -258,6 +287,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcActions, NcActionButton, NcEmptyContent, NcListItem } from '@nextcloud/vue'
+import { countries } from '../../data/countries.js'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -343,6 +373,20 @@ export default {
 				.catch(error => {
 					console.error('Error fetching klant data:', error)
 				})
+		},
+
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+
+		getLandName(landId) {
+			return countries.find(country => country.code === landId)?.name ?? 'onbekend'
 		},
 	},
 }
