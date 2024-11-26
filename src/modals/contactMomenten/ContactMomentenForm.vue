@@ -34,7 +34,7 @@ import { navigationStore } from '../../store/store.js'
 						<NcButton
 							:disabled="loading"
 							type="primary"
-							@click="searchKlantModalOpen = true">
+							@click="openSearchKlantModal('persoon')">
 							<template #icon>
 								<Plus :size="20" />
 							</template>
@@ -48,7 +48,7 @@ import { navigationStore } from '../../store/store.js'
 						<NcButton
 							:disabled="loading"
 							type="primary"
-							@click="searchKlantModalOpen = true">
+							@click="openSearchKlantModal('organisatie')">
 							<template #icon>
 								<Plus :size="20" />
 							</template>
@@ -147,6 +147,7 @@ import { navigationStore } from '../../store/store.js'
 
 			<SearchKlantModal v-if="searchKlantModalOpen"
 				:dashboard-widget="true"
+				:starting-type="startingType"
 				@selected-klant="fetchKlantData($event)"
 				@close-modal="closeSearchKlantModal" />
 		</div>
@@ -250,6 +251,7 @@ export default {
 			selectedZaak: null,
 			selectedTaak: null,
 			selectedProduct: null,
+			startingType: 'all',
 		}
 	},
 	mounted() {
@@ -302,6 +304,12 @@ export default {
 				.catch((err) => {
 					console.error(err)
 				})
+		},
+
+		// Search functions
+		openSearchKlantModal(type) {
+			this.searchKlantModalOpen = true
+			this.startingType = type
 		},
 
 		// Klant functions

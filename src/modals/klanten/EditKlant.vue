@@ -41,6 +41,18 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				label="BSN"
 				maxlength="255"
 				:value.sync="klantItem.bsn" />
+			<div>
+				<p>Geboortedatum</p>
+				<NcDateTimePicker v-model="klantItem.geboortedatum"
+					:disabled="loading"
+					input-label="Geboortedatum" />
+			</div>
+			<NcSelect
+				v-bind="countryOptions"
+				v-model="klantItem.land"
+				class="country-select"
+				:disabled="loading"
+				input-label="Land" />
 
 			<NcTextField :disabled="loading"
 				label="Telefoonnummer"
@@ -51,6 +63,26 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				label="Email adres"
 				maxlength="255"
 				:value.sync="klantItem.emailadres" />
+
+			<NcTextField :disabled="loading"
+				label="Straatnaam"
+				maxlength="255"
+				:value.sync="klantItem.straatnaam" />
+
+			<NcTextField :disabled="loading"
+				label="Plaats"
+				maxlength="255"
+				:value.sync="klantItem.plaats" />
+
+			<NcTextField :disabled="loading"
+				label="Postcode"
+				maxlength="255"
+				:value.sync="klantItem.postcode" />
+
+			<NcTextField :disabled="loading"
+				label="Huisnummer"
+				maxlength="255"
+				:value.sync="klantItem.huisnummer" />
 
 			<NcTextField :disabled="loading"
 				label="Functie"
@@ -71,6 +103,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				label="Bedrijfsnaam"
 				maxlength="255"
 				:value.sync="klantItem.bedrijfsnaam" />
+
+			<NcTextField :disabled="loading"
+				label="KVK nummer"
+				maxlength="255"
+				:value.sync="klantItem.kvkNummer" />
 
 			<NcTextField :disabled="loading"
 				label="Website Url"
@@ -139,7 +176,11 @@ import {
 	NcLoadingIcon,
 	NcNoteCard,
 	NcSelect,
+	NcDateTimePicker,
 } from '@nextcloud/vue'
+import { countries } from '../../data/countries.js'
+
+// Icons
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -154,6 +195,7 @@ export default {
 		NcLoadingIcon,
 		NcNoteCard,
 		NcSelect,
+		NcDateTimePicker,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -166,18 +208,31 @@ export default {
 			loading: false,
 			error: false,
 			hasUpdated: false,
+			countryOptions: {
+				options: countries.map((country) => ({
+					id: country.code,
+					label: country.name,
+				})),
+			},
 			klantItem: {
 				voornaam: '',
 				type: 'persoon',
 				tussenvoegsel: '',
 				achternaam: '',
 				bsn: '',
+				geboortedatum: '',
+				land: '',
 				telefoonnummer: '',
 				emailadres: '',
+				straatnaam: '',
+				plaats: '',
+				postcode: '',
+				huisnummer: '',
 				functie: '',
 				aanmaakkanaal: '',
 				bronorganisatie: '',
 				bedrijfsnaam: '',
+				kvkNummer: '',
 				websiteUrl: '',
 				url: '',
 				geverifieerd: '',
@@ -193,10 +248,17 @@ export default {
 			},
 		}
 	},
+	computed: {
+		items() {
+			return this.contactMomentItems
+		},
+	},
 	updated() {
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
 
 			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem?.type)
+
+			const country = this.countryOptions.options.find((option) => option.id === klantStore.klantItem?.land)
 
 			if (klantStore.klantItem?.id) {
 				this.klantItem = {
@@ -206,12 +268,19 @@ export default {
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
 					bsn: klantStore.klantItem.bsn || '',
+					geboortedatum: klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum) : '',
+					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
+					straatnaam: klantStore.klantItem.straatnaam || '',
+					plaats: klantStore.klantItem.plaats || '',
+					postcode: klantStore.klantItem.postcode || '',
+					huisnummer: klantStore.klantItem.huisnummer || '',
 					functie: klantStore.klantItem.functie || '',
 					aanmaakkanaal: klantStore.klantItem.aanmaakkanaal || '',
 					bronorganisatie: klantStore.klantItem.bronorganisatie || '',
 					bedrijfsnaam: klantStore.klantItem.bedrijfsnaam || '',
+					kvkNummer: klantStore.klantItem.kvkNummer || '',
 					websiteUrl: klantStore.klantItem.websiteUrl || '',
 					url: klantStore.klantItem.url || '',
 					geverifieerd: klantStore.klantItem.geverifieerd || '',
@@ -236,12 +305,19 @@ export default {
 				tussenvoegsel: '',
 				achternaam: '',
 				bsn: '',
+				geboortedatum: '',
+				land: '',
 				telefoonnummer: '',
 				emailadres: '',
+				straatnaam: '',
+				plaats: '',
+				postcode: '',
+				huisnummer: '',
 				functie: '',
 				aanmaakkanaal: '',
 				bronorganisatie: '',
 				bedrijfsnaam: '',
+				kvkNummer: '',
 				websiteUrl: '',
 				url: '',
 				geverifieerd: '',
@@ -252,10 +328,13 @@ export default {
 		},
 		async editKlant() {
 			this.loading = true
+
 			try {
 				await klantStore.saveKlant({
 					...this.klantItem,
 					type: this.klantItem.type.value,
+					geboortedatum: this.klantItem.geboortedatum !== '' && new Date(this.klantItem.geboortedatum).toISOString(),
+					land: this.klantItem.land.id,
 				})
 				this.success = true
 				this.loading = false
@@ -273,30 +352,8 @@ export default {
 }
 </script>
 
-<style>
-.modal__content {
-    margin: var(--zaa-margin-50);
-    text-align: center;
+<style scoped>
+.country-select {
+	width: 100%;
 }
-
-/* .modal__content > button {
-    margin-block: 6px;
-} */
-
-.zaakDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
-}
-
-.success {
-    color: green;
-}
-
-/* .input-field__label {
-    margin-block: -6px;
-}
-.input-field__input:focus + .input-field__label {
-    margin-block: 0px;
-} */
 </style>

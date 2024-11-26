@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, klantStore } from '../../store/store.js'
+import { klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -11,6 +11,76 @@ import { navigationStore, klantStore } from '../../store/store.js'
 		:close-on-click-outside="false"
 		@closing="closeModalFromButton()">
 		<div class="listContainer">
+			<div class="filtersContainer">
+				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
+					:checked.sync="klantenSearchType"
+					disabled
+					value="geboortedatum_achternaam"
+					name="klantenSearchType"
+					type="radio">
+					Geboortedatum + achternaam
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
+					:checked.sync="klantenSearchType"
+					value="bsn"
+					name="klantenSearchType"
+					type="radio">
+					BSN
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
+					:checked.sync="klantenSearchType"
+					value="bedrijfsnaam"
+					name="klantenSearchType"
+					type="radio">
+					Bedrijfsnaam
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
+					:checked.sync="klantenSearchType"
+					value="kvkNummer"
+					name="klantenSearchType"
+					type="radio">
+					KVK nummer
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+					value="postcode_huisnummer"
+					name="klantenSearchType"
+					type="radio">
+					Postcode + huisnummer
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+					value="emailadres"
+					name="klantenSearchType"
+					type="radio">
+					Emailadres
+				</NcCheckboxRadioSwitch>
+				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+					value="telefoonnummer"
+					name="klantenSearchType"
+					type="radio">
+					Telefoonnummer
+				</NcCheckboxRadioSwitch>
+			</div>
+		</div>
+
+		<div class="searchContainer">
+			<NcTextField :disabled="loading"
+				:label="startingType === 'persoon' ? 'Zoek naar een persoon' : 'Zoek naar een organisatie'"
+				maxlength="255"
+				class="searchField"
+				:value.sync="searchQuery" />
+
+			<NcButton type="primary"
+				:disabled="loading || !searchQuery"
+				class="searchButton"
+				@click="search">
+				<template #icon>
+					<Search :size="20" />
+				</template>
+				Zoeken
+			</NcButton>
+		</div>
+
+		<div class="searchResultsContainer">
 			<div v-if="klanten?.length && !loading">
 				<NcListItem v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
@@ -36,7 +106,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="!klanten?.length && !loading">
-				Geen klanten gevonden.
+				Geen {{ startingType === 'persoon' ? 'personen' : 'organisaties' }} gevonden.
 			</div>
 
 			<NcLoadingIcon v-if="loading"
@@ -46,23 +116,6 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				name="Aan het zoeken" />
 		</div>
 
-		<div class="searchContainer">
-			<NcTextField :disabled="loading"
-				label="Zoeken op bedrijfsnaam"
-				maxlength="255"
-				class="searchField"
-				:value.sync="searchQuery" />
-
-			<NcButton type="primary"
-				:disabled="loading"
-				class="searchButton"
-				@click="searchFunction">
-				<template #icon>
-					<Search :size="20" />
-				</template>
-				Zoeken
-			</NcButton>
-		</div>
 		<template #actions>
 			<NcButton
 				type="secondary"
@@ -87,7 +140,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon } from '@nextcloud/vue'
+import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon, NcCheckboxRadioSwitch } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import _ from 'lodash'
 
@@ -106,6 +159,7 @@ export default {
 		OfficeBuildingOutline,
 		AccountOutline,
 		Search,
+		NcCheckboxRadioSwitch,
 	},
 	props: {
 		startingType: {
@@ -123,26 +177,7 @@ export default {
 			klanten: [],
 			searchQuery: '',
 			selectedKlant: null,
-		}
-	},
-	mounted() {
-		this.searchFunction()
-	},
-	updated() {
-		if (navigationStore.modal === 'searchKlant' && !this.hasUpdated) {
-
-			switch (this.startingType) {
-			case 'organisatie':
-				this.searchOrganisations()
-				break
-			case 'persoon':
-				this.searchPersons()
-				break
-			default:
-				this.searchAll()
-			}
-
-			this.hasUpdated = true
+			klantenSearchType: 'emailadres',
 		}
 	},
 	methods: {
@@ -161,40 +196,32 @@ export default {
 			this.$emit('selected-klant', this.selectedKlant)
 			this.closeModalFromButton()
 		},
-		searchFunction() {
-			switch (this.startingType) {
-			case 'organisatie':
-				this.searchOrganisations()
+
+		search() {
+			this.loading = true
+
+			this.selectedKlant = null
+
+			let queryParams = { [this.klantenSearchType]: this.searchQuery }
+			const newQuery = this.searchQuery.replaceAll(' ', '')
+
+			switch (this.klantenSearchType) {
+			case 'postcode_huisnummer':
+				queryParams = { postcode: newQuery.substring(0, 6), huisnummer: newQuery.substring(6) }
 				break
-			case 'persoon':
-				this.searchPersons()
+			case 'kvkNummer':
+				queryParams = { kvkNummer: newQuery }
 				break
 			default:
-				this.searchAll()
+				break
 			}
-		},
-		searchAll() {
-			this.loading = true
-			klantStore.refreshKlantenList(this.searchQuery)
-				.then(() => {
-					this.klanten = klantStore.klantenList
-					this.loading = false
-				})
-		},
-		searchOrganisations() {
-			this.loading = true
-			klantStore.searchOrganisations(this.searchQuery)
-				.then(() => {
-					this.klanten = klantStore.klantenList
-					this.loading = false
-				})
-				.finally(() => {
-					this.loading = false
-				})
-		},
-		searchPersons() {
-			this.loading = true
-			klantStore.searchPersons(this.searchQuery)
+
+			const searchParams = new URLSearchParams({
+				...(this.searchQuery && queryParams),
+				...(this.startingType && { type: this.startingType }),
+			}).toString()
+
+			klantStore.searchKlanten(searchParams)
 				.then(() => {
 					this.klanten = klantStore.klantenList
 					this.loading = false
@@ -247,6 +274,11 @@ export default {
 .listContainer {
 	margin-bottom: 10px;
 }
+
+.filtersContainer {
+	display: ruby;
+}
+
 .searchContainer {
     display: flex;
     align-items: end;
@@ -257,5 +289,12 @@ export default {
   }
   .searchButton {
     min-width: min-content !important;
+  }
+
+  .searchResultsContainer {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding-block: 20px;
+    margin-block: 30px;
   }
 </style>

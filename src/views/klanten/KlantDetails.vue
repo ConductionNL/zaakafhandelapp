@@ -61,6 +61,16 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 					</div>
 
 					<div class="gridContent">
+						<b>Geboortedatum:</b>
+						<p>{{ klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum).toLocaleDateString() : '-' }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>Land:</b>
+						<p>{{ getLandName(klantStore.klantItem.land) }}</p>
+					</div>
+
+					<div class="gridContent">
 						<b>Telefoonnummer:</b>
 						<p>{{ klantStore.klantItem.telefoonnummer }}</p>
 					</div>
@@ -68,10 +78,21 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 						<b>Email adres:</b>
 						<p>{{ klantStore.klantItem.emailadres }}</p>
 					</div>
+
 					<div class="gridContent">
-						<b>Adres:</b>
-						<p>{{ klantStore.klantItem.adres }}</p>
+						<b>Plaats:</b>
+						<p>{{ klantStore.klantItem.plaats }}</p>
 					</div>
+					<div class="gridContent">
+						<b>Straatnaam:</b>
+						<p>{{ klantStore.klantItem.straatnaam }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>Postcode + Huisnummer:</b>
+						<p>{{ klantStore.klantItem.postcode }} {{ klantStore.klantItem.huisnummer }}</p>
+					</div>
+
 					<div class="gridContent">
 						<b>Functie:</b>
 						<p>{{ klantStore.klantItem.functie }}</p>
@@ -79,6 +100,10 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 					<div class="gridContent">
 						<b>Bedrijfsnaam:</b>
 						<p>{{ klantStore.klantItem.bedrijfsnaam }}</p>
+					</div>
+					<div class="gridContent">
+						<b>KVK nummer:</b>
+						<p>{{ klantStore.klantItem.kvkNummer }}</p>
 					</div>
 					<div class="gridContent">
 						<b>Website url:</b>
@@ -262,6 +287,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcActions, NcActionButton, NcEmptyContent, NcListItem } from '@nextcloud/vue'
+import { countries } from '../../data/countries.js'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -357,6 +383,10 @@ export default {
 				return klant?.bedrijfsnaam ?? 'onbekend'
 			}
 			return 'onbekend'
+		},
+
+		getLandName(landId) {
+			return countries.find(country => country.code === landId)?.name ?? 'onbekend'
 		},
 	},
 }
