@@ -18,4 +18,5 @@ export type TKlant = {
     subject: string;
     subjectIdentificatie: string;
     subjectType: string;
+    bsn: string;
 }

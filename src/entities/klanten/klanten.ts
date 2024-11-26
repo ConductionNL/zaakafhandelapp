@@ -20,6 +20,7 @@ export class Klant implements TKlant {
 	public subject: string
 	public subjectIdentificatie: string
 	public subjectType: string
+	public bsn: string
 
 	constructor(source: TKlant) {
 		this.id = source.id || ''
@@ -39,6 +40,7 @@ export class Klant implements TKlant {
 		this.subject = source.subject || ''
 		this.subjectIdentificatie = source.subjectIdentificatie || ''
 		this.subjectType = source.subjectType || ''
+		this.bsn = source.bsn || ''
 	}
 
 	public validate(): SafeParseReturnType<TKlant, unknown> {
@@ -59,6 +61,7 @@ export class Klant implements TKlant {
 			subject: z.string(),
 			subjectIdentificatie: z.string(),
 			subjectType: z.string(),
+			bsn: z.string(),
 		})
 
 		return schema.safeParse(this)

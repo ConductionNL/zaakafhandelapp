@@ -38,6 +38,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:value.sync="klantItem.achternaam" />
 
 			<NcTextField :disabled="loading"
+				label="BSN"
+				maxlength="255"
+				:value.sync="klantItem.bsn" />
+
+			<NcTextField :disabled="loading"
 				label="Telefoonnummer"
 				maxlength="255"
 				:value.sync="klantItem.telefoonnummer" />
@@ -166,6 +171,7 @@ export default {
 				type: 'persoon',
 				tussenvoegsel: '',
 				achternaam: '',
+				bsn: '',
 				telefoonnummer: '',
 				emailadres: '',
 				functie: '',
@@ -199,6 +205,7 @@ export default {
 					type: klantType || { value: 'persoon', label: 'Persoon' },
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
+					bsn: klantStore.klantItem.bsn || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
 					functie: klantStore.klantItem.functie || '',
@@ -228,6 +235,7 @@ export default {
 				type: { value: 'persoon', label: 'Persoon' },
 				tussenvoegsel: '',
 				achternaam: '',
+				bsn: '',
 				telefoonnummer: '',
 				emailadres: '',
 				functie: '',
