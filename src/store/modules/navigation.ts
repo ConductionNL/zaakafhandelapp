@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 
 interface NavigationStoreState {
-    selected: 'dashboard' | 'berichten' | 'klanten' | 'rollen' | 'taken' | 'zaken' | 'zaakTypen' | 'search' | 'auditTrail';
+    selected: 'dashboard' | 'berichten' | 'klanten' | 'rollen' | 'taken' | 'zaken' | 'zaakTypen' | 'search' | 'auditTrail' | 'contactMomenten';
     modal: string;
     dialog: string;
     transferData: string;

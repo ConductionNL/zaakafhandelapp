@@ -18,6 +18,7 @@ import { navigationStore } from '../store/store.js'
 		<EditRol />
 		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
 		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
+		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 	</div>
 </template>
 
@@ -35,7 +36,7 @@ import WidgetTaakForm from './taken/WidgetTaakForm.vue'
 import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
-
+import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 export default {
 	name: 'Modals',
 	components: {
@@ -52,6 +53,7 @@ export default {
 		EditRol,
 		ViewZaakAuditTrail,
 		ViewKlantRegister,
+		DeleteContactMoment,
 	},
 }
 </script>
