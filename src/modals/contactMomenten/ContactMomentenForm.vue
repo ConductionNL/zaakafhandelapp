@@ -322,29 +322,46 @@ export default {
 				.then(response => response.json())
 				.then(data => {
 					this.klant = data
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant:', error)
+					throw error // if this one fails, fetching the rest is pointless
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.zaken = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant zaken:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.taken = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant taken:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.berichten = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant berichten:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data)) {
@@ -352,7 +369,7 @@ export default {
 					}
 				})
 				.catch(error => {
-					console.error('Error fetching klant data:', error)
+					console.error('Error fetching klant audit trail:', error)
 				})
 		},
 

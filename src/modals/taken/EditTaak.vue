@@ -229,6 +229,7 @@ export default {
 				await taakStore.saveTaak({
 					...this.taakItem,
 					klant: this.klanten.value?.id ?? '',
+					status: this.taakItem.status?.id ?? null,
 				}, this.dashboardWidget)
 				this.success = true
 				this.loading = false
