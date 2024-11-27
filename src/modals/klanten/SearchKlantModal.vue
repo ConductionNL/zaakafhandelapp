@@ -84,7 +84,7 @@ import { klantStore } from '../../store/store.js'
 			<div v-if="klanten?.length && !loading">
 				<NcListItem v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
-					:name="getName(klant)"
+					:name="`${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant === klant?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(klant.type)"
@@ -100,7 +100,7 @@ import { klantStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ getSubname(klant) }}
+						{{ getSummary(klant) }}
 					</template>
 				</NcListItem>
 			</div>
@@ -150,6 +150,7 @@ import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
+import getValidISOstring from '../../services/getValidISOstring.js'
 export default {
 	name: 'SearchKlantModal',
 	components: {
@@ -223,6 +224,7 @@ export default {
 
 			klantStore.searchKlanten(searchParams)
 				.then(() => {
+					console.log(klantStore.klantenList)
 					this.klanten = klantStore.klantenList
 					this.loading = false
 				})
@@ -251,6 +253,17 @@ export default {
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return ''
+			}
+			return 'onbekend'
+		},
+		getSummary(klant) {
+			if (klant.type === 'persoon') {
+				const geboortedatum = getValidISOstring(klant.geboortedatum) ? new Date(klant.geboortedatum).toLocaleDateString() : 'onbekend'
+				const geboortestad = klant.plaats ? `${klant.plaats}` : 'onbekend'
+				return `${geboortedatum} - ${geboortestad}`
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.websiteUrl ?? 'onbekend'
