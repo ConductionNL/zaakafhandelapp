@@ -144,10 +144,11 @@ jobs:
 
       # Step 13: Run Changelog CI
       - name: Run Changelog CI
-        if: github.ref == 'refs/heads/development'
+        if: github.ref == 'refs/heads/main'
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           release_version: ${{ env.NEW_VERSION }}
+          config_file: changelog-ci-config.json
         
       # Step 14: Output the version
       - name: Use the version
