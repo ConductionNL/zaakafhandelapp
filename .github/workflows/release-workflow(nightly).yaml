@@ -35,6 +35,7 @@ jobs:
             echo "VERSION=${nightly_version}" >> $GITHUB_ENV
           else
             echo "VERSION=${current_version}" >> $GITHUB_ENV
+          fi
 
       # - name: Update version in info.xml
       #   run: |
