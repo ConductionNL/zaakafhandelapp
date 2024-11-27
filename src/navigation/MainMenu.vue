@@ -45,6 +45,14 @@ import { navigationStore } from '../store/store.js'
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
+				:active="navigationStore.selected === 'contactMomenten'"
+				name="Contact momenten"
+				@click="navigationStore.setSelected('contactMomenten')">
+				<template #icon>
+					<CardAccountPhoneOutline :size="20" />
+				</template>
+			</NcAppNavigationItem>
+			<NcAppNavigationItem
 				:active="navigationStore.selected === 'berichten'"
 				name="Berichten"
 				@click="navigationStore.setSelected('berichten')">
@@ -106,6 +114,7 @@ import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountO
 import Plus from 'vue-material-design-icons/Plus.vue'
 import SortVariantLock from 'vue-material-design-icons/SortVariantLock.vue'
 import Magnify from 'vue-material-design-icons/Magnify.vue'
+import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
 
 export default {
 	name: 'MainMenu',
@@ -126,6 +135,7 @@ export default {
 		Plus,
 		SortVariantLock,
 		Configuration,
+		CardAccountPhoneOutline,
 	},
 }
 </script>

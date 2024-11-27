@@ -8,7 +8,7 @@ import { useKlantStore } from './modules/klanten.js'
 import { useRolStore } from './modules/rol.js'
 import { useTaakStore } from './modules/taak.js'
 import { useSearchStore } from './modules/search.ts'
-
+import { useContactMomentStore } from './modules/contactmoment.js'
 const berichtStore = useBerichtStore(pinia)
 const klantStore = useKlantStore(pinia)
 const navigationStore = useNavigationStore(pinia)
@@ -17,7 +17,7 @@ const taakStore = useTaakStore(pinia)
 const zaakStore = useZaakStore(pinia)
 const zaakTypeStore = useZaakTypeStore(pinia)
 const searchStore = useSearchStore(pinia)
-
+const contactMomentStore = useContactMomentStore(pinia)
 export {
 	berichtStore,
 	klantStore,
@@ -27,4 +27,5 @@ export {
 	zaakStore,
 	zaakTypeStore,
 	searchStore,
+	contactMomentStore,
 }
