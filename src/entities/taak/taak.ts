@@ -1,5 +1,6 @@
 import { SafeParseReturnType, z } from 'zod'
 import { TTaak, ZaakID } from './taak.types'
+import getValidISOstring from '../../services/getValidISOstring'
 
 export class Taak implements TTaak {
 
@@ -8,6 +9,7 @@ export class Taak implements TTaak {
 	public zaak: ZaakID
 	public type: string
 	public status: string
+	public deadline: string
 	public onderwerp: string
 	public toelichting: string
 	public actie: string
@@ -19,6 +21,7 @@ export class Taak implements TTaak {
 		this.zaak = source.zaak || ''
 		this.type = source.type || ''
 		this.status = source.status || ''
+		this.deadline = getValidISOstring(source.deadline)
 		this.onderwerp = source.onderwerp || ''
 		this.toelichting = source.toelichting || ''
 		this.actie = source.actie || ''
@@ -32,6 +35,7 @@ export class Taak implements TTaak {
 			zaak: z.string().min(1),
 			type: z.string().min(1),
 			status: z.string().min(1),
+			deadline: z.string().datetime().nullable(),
 			onderwerp: z.string().min(1),
 			toelichting: z.string(),
 			actie: z.string(),

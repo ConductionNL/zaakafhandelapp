@@ -35,6 +35,14 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				input-label="Status"
 				required />
 
+			<div>
+				<p>Deadline</p>
+				<NcDateTimePicker
+					v-model="taakItem.deadline"
+					:clearable="true"
+					:disabled="loading" />
+			</div>
+
 			<NcTextField
 				:disabled="loading"
 				:value.sync="taakItem.onderwerp"
@@ -88,6 +96,7 @@ import {
 	NcDialog,
 	NcTextField,
 	NcTextArea,
+	NcDateTimePicker,
 	NcSelect,
 	NcLoadingIcon,
 	NcNoteCard,
@@ -103,6 +112,7 @@ export default {
 		NcDialog,
 		NcTextField,
 		NcTextArea,
+		NcDateTimePicker,
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
@@ -131,6 +141,7 @@ export default {
 				title: '',
 				type: '',
 				status: '',
+				deadline: new Date(),
 				onderwerp: '',
 				toelichting: '',
 			},
@@ -163,6 +174,7 @@ export default {
 					title: taakStore.taakItem.title || '',
 					type: taakStore.taakItem.type || '',
 					status: taakStore.taakItem.status || '',
+					deadline: new Date(taakStore.taakItem.deadline),
 					onderwerp: taakStore.taakItem.onderwerp || '',
 					toelichting: taakStore.taakItem.toelichting || '',
 					klant: klantStore.klantItem?.id || '',
@@ -191,6 +203,7 @@ export default {
 				title: '',
 				type: '',
 				status: '',
+				deadline: new Date(),
 				onderwerp: '',
 				toelichting: '',
 				klant: '',
@@ -230,6 +243,7 @@ export default {
 					...this.taakItem,
 					klant: this.klanten.value?.id ?? '',
 					status: this.taakItem.status?.id ?? null,
+					deadline: this.taakItem.deadline.toISOString(),
 				}, this.dashboardWidget)
 				this.success = true
 				this.loading = false
