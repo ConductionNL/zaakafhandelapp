@@ -14,7 +14,6 @@ import { klantStore } from '../../store/store.js'
 			<div class="filtersContainer">
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
 					:checked.sync="klantenSearchType"
-					disabled
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
@@ -67,6 +66,7 @@ import { klantStore } from '../../store/store.js'
 				:label="searchLabel"
 				maxlength="255"
 				class="searchField"
+				:helper-text="klantenSearchType === 'geboortedatum_achternaam' ? 'Voer de geboortedatum in in de vorm YYYY-MM-DD + achternaam, e.g. 1990-01-01 Huisman' : ''"
 				:value.sync="searchQuery" />
 
 			<NcButton type="primary"
@@ -233,11 +233,15 @@ export default {
 			this.selectedKlant = null
 
 			let queryParams = { [this.klantenSearchType]: this.searchQuery }
-			const newQuery = this.searchQuery.replaceAll(' ', '')
+			const newQuery = this.searchQuery.trim()
+			const splitQuery = newQuery.split(/ +/g)
 
 			switch (this.klantenSearchType) {
 			case 'postcode_huisnummer':
-				queryParams = { postcode: newQuery.substring(0, 6), huisnummer: newQuery.substring(6) }
+				queryParams = { postcode: splitQuery[0], huisnummer: splitQuery[1] }
+				break
+			case 'geboortedatum_achternaam':
+				queryParams = { geboortedatum: splitQuery[0], achternaam: splitQuery[1] }
 				break
 			case 'kvkNummer':
 				queryParams = { kvkNummer: newQuery }
