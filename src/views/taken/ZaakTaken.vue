@@ -1,21 +1,21 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<ul v-if="!loading">
+		<div v-if="!loading">
 			<NcListItem v-for="(taak, i) in takenList.results"
 				:key="`${taak}${i}`"
 				:name="taak?.title"
 				:bold="true"
-				:active="store.taakId === taak?.id"
+				:active="taakStore.taakItem?.id === taak?.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setTaakId(taak.id)">
+				@click="toggleTaak(taak)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
+					<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -31,7 +31,7 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
@@ -70,19 +70,16 @@ export default {
 		}
 	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		zaakId(newVal) {
+			this.fetchData(newVal)
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData(this.zaakId)
 	},
 	methods: {
 		showEditTaakModal(taak) {
-			store.setTaakItem(taak)
+			taakStore.setTaakItem(taak)
 			navigationStore.setModal('editTaak')
 		},
 		fetchData(zaakId) {
@@ -103,6 +100,9 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
+		},
+		toggleTaak(taak) {
+			// TODO: toggle taak
 		},
 		clearText() {
 			this.search = ''

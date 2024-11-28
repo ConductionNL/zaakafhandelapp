@@ -1,20 +1,20 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcAppContentList>
-		<ul v-if="!loading">
-			<NcListItem v-for="(bericht, i) in berichtenList.results"
+	<div>
+		<div v-if="!loading">
+			<NcListItem v-for="(bericht, i) in berichtenList"
 				:key="`${bericht}${i}`"
 				:name="bericht?.onderwerp"
-				:active="store.berichtId === bericht.id"
+				:active="berichtStore.berichtItem?.id === bericht.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setBerichtItem(bericht)">
+				@click="toggleBericht(bericht)">
 				<template #icon>
-					<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
+					<ChatOutline :class="berichtStore.berichtItem?.id === bericht.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -30,18 +30,18 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Berichten aan het laden" />
-	</NcAppContentList>
+	</div>
 </template>
 <script>
 // Components
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
@@ -51,7 +51,6 @@ export default {
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
 		ChatOutline,
 		NcLoadingIcon,
 	},
@@ -69,20 +68,16 @@ export default {
 		}
 	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		zaakId(newVal) {
+			this.fetchData(newVal)
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData(this.zaakId)
 	},
 	methods: {
 		editBericht(bericht) {
-			store.setBerichtItem(bericht)
-			store.setBerichtId(bericht.id)
+			berichtStore.setBerichtItem(bericht)
 			navigationStore.setModal('editBericht')
 		},
 		fetchData(zaakId) {
@@ -95,7 +90,7 @@ export default {
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.berichtenList = data
+						this.berichtenList = data.results || []
 					})
 					this.loading = false
 				})
@@ -103,6 +98,13 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
+		},
+		toggleBericht(bericht) {
+			if (berichtStore.berichtItem?.id === bericht.id) {
+				berichtStore.setBerichtItem(null)
+			} else {
+				berichtStore.setBerichtItem(bericht)
+			}
 		},
 		clearText() {
 			this.search = ''
