@@ -224,7 +224,6 @@ export default {
 
 			klantStore.searchKlanten(searchParams)
 				.then(() => {
-					console.log(klantStore.klantenList)
 					this.klanten = klantStore.klantenList
 					this.loading = false
 				})
