@@ -4,7 +4,7 @@ import { klantStore } from '../../store/store.js'
 
 <template>
 	<NcDialog
-		name="Klanten zoeken"
+		:name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
 		size="normal"
 		label-id="searchKlantModal"
 		dialog-classes="SearchKlantModal"
@@ -64,7 +64,7 @@ import { klantStore } from '../../store/store.js'
 
 		<div class="searchContainer">
 			<NcTextField :disabled="loading"
-				:label="startingType === 'persoon' ? 'Zoek naar een persoon' : 'Zoek naar een organisatie'"
+				:label="searchLabel"
 				maxlength="255"
 				class="searchField"
 				:value.sync="searchQuery" />
@@ -181,6 +181,34 @@ export default {
 			selectedKlant: null,
 			klantenSearchType: 'emailadres',
 		}
+	},
+	computed: {
+		searchLabel() {
+			const baseLabel = 'Zoek naar een '
+			const typeLabels = {
+				persoon: {
+					default: 'persoon',
+					geboortedatum_achternaam: ' met geboortedatum en achternaam',
+					bsn: ' met BSN',
+				},
+				organisatie: {
+					default: 'organisatie',
+					bedrijfsnaam: ' met bedrijfsnaam',
+					kvkNummer: ' met KVK nummer',
+				},
+			}
+			const commonLabels = {
+				postcode_huisnummer: ' met postcode en huisnummer',
+				emailadres: ' met emailadres',
+				telefoonnummer: ' met telefoonnummer',
+			}
+
+			let label = baseLabel + (typeLabels[this.startingType]?.default || '')
+			label += typeLabels[this.startingType]?.[this.klantenSearchType] || ''
+			label += commonLabels[this.klantenSearchType] || ''
+
+			return label
+		},
 	},
 	methods: {
 		closeModalFromButton() {
