@@ -121,7 +121,7 @@ import { klantStore } from '../../store/store.js'
 				type="secondary"
 				@click="closeModal()">
 				<template #icon>
-					<Cancel v-if="!loading" :size="20" />
+					<Cancel :size="20" />
 				</template>
 				Annuleer
 			</NcButton>
@@ -130,9 +130,9 @@ import { klantStore } from '../../store/store.js'
 				:disabled="!selectedKlant"
 				@click="addKlant()">
 				<template #icon>
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<Plus :size="20" />
 				</template>
-				toevoegen
+				Koppelen
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -147,7 +147,7 @@ import _ from 'lodash'
 // Icons
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import getValidISOstring from '../../services/getValidISOstring.js'
@@ -161,6 +161,7 @@ export default {
 		AccountOutline,
 		Search,
 		NcCheckboxRadioSwitch,
+		NcLoadingIcon,
 	},
 	props: {
 		startingType: {
