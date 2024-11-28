@@ -84,7 +84,7 @@ import { klantStore } from '../../store/store.js'
 			<div v-if="klanten?.length && !loading">
 				<NcListItem v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
-					:name="`${getName(klant)} ${getSubname(klant)}`"
+					:name="`(${klant.isMale ? 'm' : 'v'}) ${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant === klant?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(klant.type)"
