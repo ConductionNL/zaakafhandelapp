@@ -6,6 +6,7 @@ export type TTaak = {
     zaak: ZaakID;
     type: string;
     status: string;
+    deadline: string;
     onderwerp: string;
     toelichting: string;
     actie: string;

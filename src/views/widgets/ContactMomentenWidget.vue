@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, contactMomentStore } from '../../store/store.js'
+import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -73,15 +73,27 @@ export default {
 	methods: {
 		fetchContactMomentItems() {
 			this.loading = true
-			contactMomentStore.refreshContactMomentenList()
-				.then(() => {
-					this.contactMomentItems = contactMomentStore.contactMomentenList.map(contactMoment => ({
+
+			Promise.all([
+				contactMomentStore.refreshContactMomentenList(),
+				klantStore.refreshKlantenList(),
+			])
+				.then(([contactMomentResponse, klantResponse]) => {
+					this.contactMomentItems = contactMomentResponse.entities.map(contactMoment => ({
 						id: contactMoment.id,
-						mainText: contactMoment.titel,
+						mainText: (() => { // this is a self calling function to get the klant name
+							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
+							if (klant) {
+								const tussenvoegsel = klant.tussenvoegsel ? klant.tussenvoegsel + ' ' : ''
+								return `${klant.voornaam} ${tussenvoegsel}${klant.achternaam}`
+							}
+							return ''
+						})(),
 						subText: new Date(contactMoment.startDate).toLocaleString(),
 						avatarUrl: this.getItemIcon(),
 					}))
-
+				})
+				.finally(() => {
 					this.loading = false
 				})
 		},
