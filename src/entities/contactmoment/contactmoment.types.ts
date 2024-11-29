@@ -8,4 +8,5 @@ export type TContactMoment = {
     taak: string;
     product: string;
     startDate: string;
+    status: string;
 }

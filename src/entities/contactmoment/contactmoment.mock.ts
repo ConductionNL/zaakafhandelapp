@@ -12,6 +12,7 @@ export const mockContactMomentData = (): TContactMoment[] => [
 		taak: 'Taak 3',
 		product: 'Product 3',
 		startDate: new Date().toISOString(),
+		status: 'open',
 	},
 ]
 

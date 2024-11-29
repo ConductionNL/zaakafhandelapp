@@ -23,11 +23,11 @@ describe('Contact Moment Store', () => {
 	it('sets contact moment list correctly', () => {
 		const store = useContactMomentStore()
 
-		store.setContactMomentList(mockContactMoment())
+		store.setContactMomentenList(mockContactMoment())
 
-		expect(store.contactMomentList).toHaveLength(mockContactMoment().length)
+		expect(store.contactMomentenList).toHaveLength(mockContactMoment().length)
 
-		store.contactMomentList.forEach((item, index) => {
+		store.contactMomentenList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(ContactMoment)
 			expect(item).toEqual(mockContactMoment()[index])
 			expect(item.validate().success).toBe(true)
