@@ -22,6 +22,12 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
+						<NcActionButton @click="closeContactMoment">
+							<template #icon>
+								<ProgressClose :size="20" />
+							</template>
+							Sluiten
+						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteContactMoment')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
@@ -54,6 +60,10 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 					<div>
 						<b>Product:</b>
 						<p>{{ contactMomentStore.contactMomentItem.product }}</p>
+					</div>
+					<div>
+						<b>Status:</b>
+						<p>{{ contactMomentStore.contactMomentItem.status }}</p>
 					</div>
 				</div>
 
@@ -103,12 +113,16 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
+// Entities
+import { ContactMoment } from '../../entities/index.js'
+
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import ProgressClose from 'vue-material-design-icons/ProgressClose.vue'
 
 export default {
 	name: 'ContactMomentDetails',
@@ -146,6 +160,24 @@ export default {
 				.then(data => {
 					if (Array.isArray(data)) {
 						this.auditTrails = data
+					}
+				})
+		},
+		async closeContactMoment() {
+			if (contactMomentStore.contactMomentItem?.status === 'gesloten') {
+				console.info('Contact moment is already closed')
+				return
+			}
+
+			const newContactMoment = new ContactMoment({
+				...contactMomentStore.contactMomentItem,
+				status: 'gesloten',
+			})
+
+			contactMomentStore.saveContactMoment(newContactMoment)
+				.then(({ response }) => {
+					if (response.ok) {
+						this.fetchContactMomentItems()
 					}
 				})
 		},

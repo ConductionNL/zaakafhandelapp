@@ -67,10 +67,10 @@ export default {
 			searchKlantModalOpen: false,
 			contactMomentItems: [],
 			itemMenu: {
-				show: {
-					text: 'Bekijk',
-					icon: 'icon-toggle',
-				},
+				// show: {
+				// 	text: 'Bekijk',
+				// 	icon: 'icon-toggle',
+				// },
 				sluiten: {
 					text: 'Sluit',
 					icon: this.getSluitenIcon(),
