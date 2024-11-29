@@ -62,15 +62,30 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<div class="searchContainer">
-			<NcTextField :disabled="loading"
-				:label="searchLabel"
-				maxlength="255"
-				class="searchField"
-				:helper-text="klantenSearchType === 'geboortedatum_achternaam' ? 'Voer de geboortedatum in in de vorm YYYY-MM-DD + achternaam, e.g. 1990-01-01 Huisman' : ''"
-				:value.sync="searchQuery" />
+			<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
+				<NcDateTimePicker v-model="searchQuery_geboortedatum"
+					:disabled="loading"
+					class="date-picker" />
+
+				<NcTextField :disabled="loading"
+					label="achternaam"
+					maxlength="255"
+					class="searchField"
+					:value.sync="searchQuery" />
+			</div>
+			<div v-else>
+				<NcTextField :disabled="loading"
+					:label="searchLabel"
+					maxlength="255"
+					class="searchField"
+					:value.sync="searchQuery" />
+			</div>
 
 			<NcButton type="primary"
-				:disabled="loading || !searchQuery"
+				:disabled="loading
+					|| !searchQuery
+					// If the search type is geboortedatum_achternaam, the geboortedatum is required
+					|| (klantenSearchType === 'geboortedatum_achternaam' && !searchQuery_geboortedatum)"
 				class="searchButton"
 				@click="search">
 				<template #icon>
@@ -140,7 +155,7 @@ import { klantStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon, NcCheckboxRadioSwitch } from '@nextcloud/vue'
+import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon, NcCheckboxRadioSwitch, NcDateTimePicker } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import _ from 'lodash'
 
@@ -161,6 +176,7 @@ export default {
 		AccountOutline,
 		Search,
 		NcCheckboxRadioSwitch,
+		NcDateTimePicker,
 		NcLoadingIcon,
 	},
 	props: {
@@ -178,6 +194,7 @@ export default {
 			hasUpdated: false,
 			klanten: [],
 			searchQuery: '',
+			searchQuery_geboortedatum: null,
 			selectedKlant: null,
 			klantenSearchType: 'emailadres',
 		}
@@ -241,7 +258,10 @@ export default {
 				queryParams = { postcode: splitQuery[0], huisnummer: splitQuery[1] }
 				break
 			case 'geboortedatum_achternaam':
-				queryParams = { geboortedatum: splitQuery[0], achternaam: splitQuery[1] }
+				queryParams = {
+					geboortedatum: this.searchQuery_geboortedatum && this.searchQuery_geboortedatum.toISOString() ? this.searchQuery_geboortedatum.toISOString() : '',
+					achternaam: newQuery,
+				}
 				break
 			case 'kvkNummer':
 				queryParams = { kvkNummer: newQuery }
@@ -325,21 +345,31 @@ export default {
 }
 
 .searchContainer {
-    display: flex;
-    align-items: end;
-    gap: 10px;
-  }
-  .searchField {
-    width: auto;
-  }
-  .searchButton {
-    min-width: min-content !important;
-  }
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.searchField {
+	width: auto;
+}
+.searchButton {
+	margin-block-start: 3px;
+	min-width: min-content !important;
+}
 
-  .searchResultsContainer {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    padding-block: 20px;
-    margin-block: 30px;
-  }
+.searchResultsContainer {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	padding-block: 20px;
+	margin-block: 30px;
+}
+
+.flex {
+	display: flex;
+	gap: 10px;
+}
+
+.date-picker {
+	margin-block-start: 3px;
+}
 </style>
