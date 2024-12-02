@@ -94,7 +94,7 @@ export default {
 			this.loading = true
 
 			Promise.all([
-				contactMomentStore.refreshContactMomentenList(),
+				contactMomentStore.refreshContactMomentenList(null, true),
 				klantStore.refreshKlantenList(),
 			])
 				.then(([contactMomentResponse, klantResponse]) => {
@@ -162,7 +162,7 @@ export default {
 			contactMomentStore.saveContactMoment(newContactMoment)
 				.then(({ response }) => {
 					if (response.ok) {
-						this.fetchContactMomentItems()
+						this.fetchContactMomentItems(null, true)
 					}
 				})
 		},
