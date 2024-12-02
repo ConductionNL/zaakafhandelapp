@@ -21,7 +21,7 @@ export class Taak implements TTaak {
 		this.zaak = source.zaak || ''
 		this.type = source.type || ''
 		this.status = source.status || ''
-		this.deadline = getValidISOstring(source.deadline)
+		this.deadline = source.deadline ? getValidISOstring(source.deadline) : null
 		this.onderwerp = source.onderwerp || ''
 		this.toelichting = source.toelichting || ''
 		this.actie = source.actie || ''
