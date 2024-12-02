@@ -150,6 +150,7 @@ export default {
 			this.isModalOpen = true
 			navigationStore.setModal('contactMomentenForm')
 		},
+
 		async onSluiten(event) {
 			// change status to 'gesloten'
 			const { data } = await contactMomentStore.getContactMoment(event.id)
