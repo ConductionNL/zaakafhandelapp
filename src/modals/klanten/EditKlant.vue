@@ -49,7 +49,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			</div>
 
 			<NcSelect v-bind="sexOptions"
-				v-model="sexOptions.value"
+				v-model="klantItem.geslacht"
 				:clearable="false"
 				class="wide-select"
 				:disabled="loading"
@@ -261,7 +261,6 @@ export default {
 					{ value: 'vrouw', label: 'Vrouw' },
 					{ value: 'overige', label: 'Overige' },
 				],
-				value: { value: 'man', label: 'Man' },
 			},
 		}
 	},
@@ -272,7 +271,6 @@ export default {
 	},
 	updated() {
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
-
 			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem?.type)
 
 			const country = this.countryOptions.options.find((option) => option.id === klantStore.klantItem?.land)
@@ -326,7 +324,7 @@ export default {
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
-				geslacht: '',
+				geslacht: { value: 'man', label: 'Man' },
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',
@@ -346,8 +344,6 @@ export default {
 				subjectIdentificatie: '',
 				subjectType: '',
 			}
-
-			this.sexOptions.value = { value: 'man', label: 'Man' }
 		},
 		async editKlant() {
 			this.loading = true
@@ -358,7 +354,7 @@ export default {
 					type: this.klantItem.type.value,
 					geboortedatum: this.klantItem.geboortedatum !== '' && new Date(this.klantItem.geboortedatum).toISOString(),
 					land: this.klantItem.land.id,
-					geslacht: this.sexOptions.value.value,
+					geslacht: this.klantItem.geslacht.value,
 				})
 				this.success = true
 				this.loading = false

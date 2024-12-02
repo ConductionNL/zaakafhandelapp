@@ -1,5 +1,5 @@
 <script setup>
-import { taakStore, navigationStore, klantStore } from '../../store/store.js'
+import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -28,12 +28,20 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				label="Type"
 				maxlength="255" />
 
-			<NcSelect
+			<!-- <NcSelect
 				v-bind="statusOptions"
 				v-model="taakItem.status"
 				:disabled="loading"
 				input-label="Status"
-				required />
+				required /> -->
+
+			<div>
+				<p>Deadline</p>
+				<NcDateTimePicker
+					v-model="taakItem.deadline"
+					:disabled="loading"
+					required />
+			</div>
 
 			<NcTextField
 				:disabled="loading"
@@ -46,14 +54,14 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				:value.sync="taakItem.toelichting"
 				label="Toelichting" />
 
-			<NcSelect
+			<!-- <NcSelect
 				v-bind="klanten"
 				v-model="klanten.value"
 				input-label="Klant"
 				:loading="klantenLoading"
-				:disabled="loading" />
+				:disabled="loading" /> -->
 
-			<!-- <NcSelect
+			<!-- <<NcSelect
 				v-bind="executorOptions"
 				v-model="executorOptions.value"
 				input-label="Klant of Medewerker"
@@ -66,16 +74,16 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 					input-label="Klant"
 					:loading="klantenLoading"
 					:disabled="loading" />
-			</div>
-			<div v-if="executorOptions.value.id === 'medewerker'">
+			</div> -->
+			<div>
 				<NcSelect
-					v-bind="mederwerkerOptions"
-					v-model="mederwerkerOptions.value"
+					v-bind="medewerkers"
+					v-model="medewerkers.value"
 					:user-select="true"
 					input-label="Medewerker"
 					:loading="medewerkersLoading"
 					:disabled="loading" />
-			</div> -->
+			</div>
 		</div>
 
 		<template #actions>
@@ -92,7 +100,7 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				Help
 			</NcButton>
 			<NcButton v-if="!success"
-				:disabled="loading || klantenLoading || !taakItem.title"
+				:disabled="loading || klantenLoading || !taakItem.title || !taakItem.deadline"
 				type="primary"
 				@click="editTaak()">
 				<template #icon>
@@ -112,6 +120,7 @@ import {
 	NcDialog,
 	NcTextField,
 	NcTextArea,
+	NcDateTimePicker,
 	NcSelect,
 	NcLoadingIcon,
 	NcNoteCard,
@@ -127,6 +136,7 @@ export default {
 		NcDialog,
 		NcTextField,
 		NcTextArea,
+		NcDateTimePicker,
 		NcButton,
 		NcSelect,
 		NcLoadingIcon,
@@ -147,6 +157,10 @@ export default {
 			default: null,
 			required: false,
 		},
+		taakId: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -162,6 +176,7 @@ export default {
 				title: '',
 				type: '',
 				status: '',
+				deadline: new Date(),
 				onderwerp: '',
 				toelichting: '',
 			},
@@ -197,71 +212,14 @@ export default {
 					},
 				],
 			},
-			mederwerkerOptions: {
-				options: [
-					{
-						id: '0-john',
-						displayName: 'John',
-						isNoUser: false,
-						subname: 'john@example.org',
-						icon: '',
-						// Example of how to show the user status within the option
-						user: '0-john',
-						preloadedUserStatus: {
-							icon: '',
-							status: 'online',
-							message: 'I am online',
-						},
-					},
-					{
-						id: '0-emma',
-						displayName: 'Emma',
-						isNoUser: false,
-						subname: 'emma@example.org',
-						icon: '',
-					},
-					{
-						id: '0-olivia',
-						displayName: 'Olivia',
-						isNoUser: false,
-						subname: 'olivia@example.org',
-						icon: '',
-					},
-					{
-						id: '0-noah',
-						displayName: 'Noah',
-						isNoUser: false,
-						subname: 'noah@example.org',
-						icon: '',
-					},
-					{
-						id: '0-oliver',
-						displayName: 'Oliver',
-						isNoUser: false,
-						subname: 'oliver@example.org',
-						icon: '',
-					},
-					{
-						id: '1-admin',
-						displayName: 'Admin',
-						isNoUser: true,
-						subname: null,
-						iconName: 'Group icon',
-					},
-					{
-						id: '2-org@example.org',
-						displayName: 'Organization',
-						isNoUser: true,
-						subname: 'org@example.org',
-						iconName: 'Email icon',
-					},
-				],
-			},
 		}
 	},
 	mounted() {
 		this.fetchKlanten()
-		// this.fetchMedewerkers()
+		this.fetchMedewerkers()
+		if (this.taakId) {
+			this.fetchTaakData(this.taakId)
+		}
 	},
 	updated() {
 		if (navigationStore.modal === 'editTaak' && !this.hasUpdated) {
@@ -270,7 +228,8 @@ export default {
 					...taakStore.taakItem,
 					title: taakStore.taakItem.title || '',
 					type: taakStore.taakItem.type || '',
-					status: taakStore.taakItem.status || '',
+					status: 'open',
+					deadline: new Date(taakStore.taakItem.deadline),
 					onderwerp: taakStore.taakItem.onderwerp || '',
 					toelichting: taakStore.taakItem.toelichting || '',
 					klant: klantStore.klantItem?.id || '',
@@ -298,6 +257,7 @@ export default {
 				title: '',
 				type: '',
 				status: '',
+				deadline: new Date(),
 				onderwerp: '',
 				toelichting: '',
 				klant: '',
@@ -305,9 +265,18 @@ export default {
 			if (this.dashboardWidget === true) {
 				this.$emit('save-success')
 			} else {
-				navigationStore.setModal(false)
+				navigationStore.setModal(null)
 				this.$emit('close-modal')
 			}
+		},
+
+		fetchTaakData(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}`)
+				.then(response => response.json())
+				.then(data => {
+					this.taakItem = data
+					this.fetchMedewerkers()
+				})
 		},
 		fetchKlanten() {
 			this.klantenLoading = true
@@ -342,13 +311,35 @@ export default {
 				})
 		},
 		fetchMedewerkers() {
-			this.medewerkersLoading = true
-			fetch('/index.php/apps/zaakafhandelapp/api/taken/medewerkers')
-				.then(response => response.json())
-				.then(data => {
-					console.log(data)
-					// this.medewerkers = data
-					// this.medewerkersLoading = false
+			medewerkerStore.refreshMedewerkersList()
+				.then(({ response, data }) => {
+
+					let selectedMedewerker = data.filter((medewerker) => medewerker?.id.toString() === taakStore.taakItem?.klant?.toString())[0] || null
+
+					if (this.taakId) {
+						selectedMedewerker = data.filter((medewerker) => medewerker?.id.toString() === this.taakItem.klant?.toString())[0] || null
+					}
+
+					this.medewerkers = {
+						options: data.map((medewerker) => ({
+							id: medewerker.id,
+							displayName: `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}`,
+							subName: medewerker.email,
+							icon: medewerker.icon ?? '',
+
+						})),
+						value: selectedMedewerker
+							? {
+								id: selectedMedewerker?.id,
+								displayName: `${selectedMedewerker.voornaam} ${selectedMedewerker.tussenvoegsel} ${selectedMedewerker.achternaam}`,
+								subName: selectedMedewerker.email,
+								icon: selectedMedewerker.icon ?? '',
+
+							}
+							: null,
+					}
+
+					this.medewerkersLoading = false
 				})
 				.catch((err) => {
 					console.error(err)
@@ -357,10 +348,13 @@ export default {
 		},
 		async editTaak() {
 			this.loading = true
+
 			try {
 				await taakStore.saveTaak({
 					...this.taakItem,
-					klant: this.klanten.value?.id ?? '',
+					klant: this.medewerkers.value?.id ?? '',
+					status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
+					deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
 				}, this.dashboardWidget)
 				this.success = true
 				this.loading = false

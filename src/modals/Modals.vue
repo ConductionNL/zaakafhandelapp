@@ -12,13 +12,14 @@ import { navigationStore } from '../store/store.js'
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
-		<EditTaak />
+		<EditTaak v-if="navigationStore.modal === 'editTaak'" />
 		<WidgetTaakForm v-if="navigationStore.modal === 'widgetTaakForm'" />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<EditRol />
 		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
 		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
 		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
+		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
 	</div>
 </template>
 
@@ -37,6 +38,7 @@ import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
+import EditMedewerker from './medewerkers/EditMedewerker.vue'
 export default {
 	name: 'Modals',
 	components: {
@@ -54,6 +56,7 @@ export default {
 		ViewZaakAuditTrail,
 		ViewKlantRegister,
 		DeleteContactMoment,
+		EditMedewerker,
 	},
 }
 </script>

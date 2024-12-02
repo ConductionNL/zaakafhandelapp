@@ -45,6 +45,14 @@ import { navigationStore } from '../store/store.js'
 				</template>
 			</NcAppNavigationItem>
 			<NcAppNavigationItem
+				:active="navigationStore.selected === 'medewerkers'"
+				name="Medewerkers"
+				@click="navigationStore.setSelected('medewerkers')">
+				<template #icon>
+					<AccountGroupOutline :size="20" />
+				</template>
+			</NcAppNavigationItem>
+			<NcAppNavigationItem
 				:active="navigationStore.selected === 'contactMomenten'"
 				name="Contact momenten"
 				@click="navigationStore.setSelected('contactMomenten')">
