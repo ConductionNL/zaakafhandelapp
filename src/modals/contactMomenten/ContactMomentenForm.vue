@@ -29,7 +29,7 @@ import { navigationStore } from '../../store/store.js'
 						</div>
 					</template>
 				</NcNoteCard>
-				<div class="buttonsContainer">
+				<div v-if="!klant" class="buttonsContainer">
 					<div>
 						<NcButton
 							:disabled="loading"
@@ -56,7 +56,22 @@ import { navigationStore } from '../../store/store.js'
 						</NcButton>
 					</div>
 				</div>
+
+				<div v-if="klant" class="buttonsContainer">
+					<div>
+						<NcButton
+							:disabled="loading"
+							type="primary"
+							@click="klant = null">
+							<template #icon>
+								<Plus :size="20" />
+							</template>
+							Klant ontkoppelen
+						</NcButton>
+					</div>
+				</div>
 			</div>
+
 			<div v-if="!success" class="form-group">
 				<NcTextArea v-model="notitie"
 					label="Notitie"
