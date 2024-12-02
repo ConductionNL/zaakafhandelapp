@@ -302,6 +302,7 @@ export default {
 						zaak: this.selectedZaak ?? '',
 						taak: this.selectedTaak ?? '',
 						product: this.selectedProduct ?? '',
+						status: 'open',
 						startDate: new Date().toISOString(),
 					}),
 				},
