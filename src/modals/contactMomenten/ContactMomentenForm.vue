@@ -64,7 +64,7 @@ import { navigationStore } from '../../store/store.js'
 							type="primary"
 							@click="klant = null">
 							<template #icon>
-								<Plus :size="20" />
+								<Minus :size="20" />
 							</template>
 							Klant ontkoppelen
 						</NcButton>
@@ -223,6 +223,7 @@ import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Minus from 'vue-material-design-icons/Minus.vue'
 
 export default {
 	name: 'ContactMomentenForm',
