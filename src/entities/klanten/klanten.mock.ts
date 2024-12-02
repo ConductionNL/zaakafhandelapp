@@ -10,7 +10,7 @@ export const mockKlantData = (): TKlant[] => [
 		achternaam: 'Doe',
 		bsn: '1234567890',
 		geboortedatum: '1990-01-01',
-		isMale: true,
+		geslacht: 'man',
 		land: 'Nederland',
 		telefoonnummer: '0612345678',
 		emailadres: 'john.doe@example.com',

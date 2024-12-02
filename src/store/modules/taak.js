@@ -10,6 +10,7 @@ export const useTaakStore = defineStore('taken', {
 		takenList: [],
 		taakZaakId: null,
 		auditTrailItem: null,
+		widgetTaakId: null,
 	}),
 	actions: {
 		setTaakItem(taakItem) {
@@ -29,12 +30,24 @@ export const useTaakStore = defineStore('taken', {
 		setAuditTrailItem(auditTrailItem) {
 			this.auditTrailItem = auditTrailItem
 		},
+		setWidgetTaakId(widgetTaakId) {
+			this.widgetTaakId = widgetTaakId
+			console.log('Active widget taak Id set to ' + widgetTaakId)
+		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null) {
+		async refreshTakenList(search = null, notClosed = false) {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
 				endpoint = endpoint + '?_search=' + search
+			}
+
+			if (notClosed) {
+				if (search !== null && search !== '') {
+					endpoint = endpoint + '&status=open'
+				} else {
+					endpoint = endpoint + '?status=open'
+				}
 			}
 
 			const response = await fetch(endpoint, {

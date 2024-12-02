@@ -29,6 +29,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 
 		<ContactMomentenForm v-if="isModalOpen"
 			:dashboard-widget="true"
+			:contact-moment-id="contactMomentId"
 			@save-success="fetchContactMomentItems"
 			@close-modal="closeModal" />
 	</div>
@@ -66,11 +67,12 @@ export default {
 			isModalOpen: false,
 			searchKlantModalOpen: false,
 			contactMomentItems: [],
+			contactMomentId: null,
 			itemMenu: {
-				// show: {
-				// 	text: 'Bekijk',
-				// 	icon: 'icon-toggle',
-				// },
+				show: {
+					text: 'Bekijk',
+					icon: 'icon-toggle',
+				},
 				sluiten: {
 					text: 'Sluit',
 					icon: this.getSluitenIcon(),
@@ -134,6 +136,7 @@ export default {
 		},
 		openModal() {
 			this.isModalOpen = true
+			contactMomentStore.setWidgetContactMomentId(null)
 			contactMomentStore.setContactMomentItem(null)
 			navigationStore.setModal('contactMomentenForm')
 		},
@@ -142,8 +145,10 @@ export default {
 			navigationStore.setModal(null)
 		},
 
-		onShow() {
-			window.open('/apps/opencatalogi/catalogi', '_self')
+		onShow(event) {
+			this.contactMomentId = event.id
+			this.isModalOpen = true
+			navigationStore.setModal('contactMomentenForm')
 		},
 		async onSluiten(event) {
 			// change status to 'gesloten'

@@ -7,7 +7,9 @@ import { taakStore, navigationStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
-				@show="onShow">
+				:item-menu="itemMenu"
+				@show="onShow"
+				@sluiten="onSluiten">
 				<template #empty-content>
 					<NcEmptyContent name="Geen open taken">
 						<template #icon>
@@ -18,16 +20,25 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			</NcDashboardWidget>
 		</div>
 
-		<NcButton type="primary" @click="openModal">
-			<template #icon>
-				<Plus :size="20" />
-			</template>
-			Taak aanmaken
-		</NcButton>
+		<div class="buttonContainer">
+			<NcButton type="primary" @click="openModal">
+				<template #icon>
+					<Plus :size="20" />
+				</template>
+				Taak aanmaken
+			</NcButton>
+			<NcButton type="primary" @click="fetchTaakItems">
+				<template #icon>
+					<Refresh :size="20" />
+				</template>
+				Refresh
+			</NcButton>
+		</div>
 
 		<TakenForm v-if="isModalOpen"
 			:dashboard-widget="true"
-			@save-success="fetchTaakItems"
+			:taak-id="taakId"
+			@save-success="closeModal"
 			@close-modal="closeModal" />
 	</div>
 </template>
@@ -36,9 +47,14 @@ import { taakStore, navigationStore } from '../../store/store.js'
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
+
+// Entities
+import { Taak } from '../../entities/index.js'
+
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
-import TakenForm from '../../modals/taken/EditTaak.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
 
 export default {
 	name: 'TakenWidget',
@@ -55,6 +71,16 @@ export default {
 			loading: false,
 			isModalOpen: false,
 			taakItems: [],
+			itemMenu: {
+				show: {
+					text: 'Bekijk',
+					icon: 'icon-toggle',
+				},
+				sluiten: {
+					text: 'Sluiten',
+					icon: this.getSluitenIcon(),
+				},
+			},
 		}
 	},
 
@@ -71,8 +97,9 @@ export default {
 	methods: {
 		fetchTaakItems() {
 			this.loading = true
-			taakStore.refreshTakenList()
+			taakStore.refreshTakenList(null, true)
 				.then(() => {
+
 					this.taakItems = taakStore.takenList.map(taak => ({
 						id: taak.id,
 						mainText: taak.title,
@@ -102,9 +129,41 @@ export default {
 		closeModal() {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
+			this.fetchTaakItems()
 		},
-		onShow() {
-			window.open('/apps/opencatalogi/catalogi', '_self')
+
+		onShow(event) {
+			this.taakId = event.id
+			this.isModalOpen = true
+			navigationStore.setModal('widgetTaakForm')
+		},
+
+		getSluitenIcon() {
+			const theme = getTheme()
+
+			return theme === 'light' ? 'icon-progress-close-dark' : 'icon-progress-close-light'
+		},
+
+		async onSluiten(event) {
+			// change status to 'gesloten'
+			const { data } = await taakStore.getTaak(event.id)
+
+			if (data?.status === 'gesloten') {
+				console.info('Taak is already closed')
+				return
+			}
+
+			const newTaak = new Taak({
+				...data,
+				status: 'gesloten',
+			})
+
+			taakStore.saveTaak(newTaak)
+				.then(({ response }) => {
+					if (response.ok) {
+						this.fetchTaakItems(null, true)
+					}
+				})
 		},
 	},
 
@@ -120,5 +179,10 @@ export default {
 .itemContainer{
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
+ }
+
+ .buttonContainer{
+	display: flex;
+	gap: 10px;
  }
 </style>
