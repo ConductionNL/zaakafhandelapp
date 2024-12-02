@@ -110,7 +110,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<!-- TODO: Fix tabs -->
-						<!-- <BTab title="Eigenschappen" active>
+						<BTab title="Eigenschappen" active>
 							<ZaakEigenschappen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Documenten">
@@ -133,8 +133,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 						</BTab>
 						<BTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
-						</BTab> -->
-						<BTab title="Audit trail" active>
+						</BTab>
+						<BTab title="Audit trail">
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"

@@ -76,7 +76,7 @@ export default {
 					this.taakItems = taakStore.takenList.map(taak => ({
 						id: taak.id,
 						mainText: taak.title,
-						subText: taak.type,
+						subText: `${taak.deadline ? new Date(taak.deadline).toLocaleDateString() : ''} ${taak.deadline && taak.type ? '-' : ''}  ${taak.type}`,
 						avatarUrl: this.getItemIcon(),
 					}))
 
