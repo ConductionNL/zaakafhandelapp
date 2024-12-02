@@ -136,7 +136,7 @@ export default {
 		},
 		openModal() {
 			this.isModalOpen = true
-			contactMomentStore.setWidgetContactMomentId(null)
+			this.contactMomentId = null
 			contactMomentStore.setContactMomentItem(null)
 			navigationStore.setModal('contactMomentenForm')
 		},

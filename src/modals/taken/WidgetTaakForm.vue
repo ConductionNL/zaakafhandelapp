@@ -274,7 +274,11 @@ export default {
 			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}`)
 				.then(response => response.json())
 				.then(data => {
-					this.taakItem = data
+					this.taakItem = {
+						...data,
+						deadline: new Date(data.deadline),
+					}
+
 					this.fetchMedewerkers()
 				})
 		},
