@@ -19,7 +19,7 @@
 					</NcButton>
 				</div>
 
-				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister')">
+				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister' || settingsData.medewerkers_source === 'openregister')">
 					<NcNoteCard type="warning">
 						Het lijkt erop dat je een open register hebt geselecteerd maar dat deze nog niet geïnstalleerd is. Dit kan problemen geven. Wil je de instelling resetten?
 					</NcNoteCard>
@@ -205,6 +205,13 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+			medewerkers: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
@@ -224,6 +231,7 @@ export default {
 				{ id: 'zaken', title: 'Zaken', description: 'Configureer de opslag voor zaken', helpLink: 'https://example.com/help/zaken' },
 				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
 				{ id: 'contactmomenten', title: 'Contactmomenten', description: 'Configureer de opslag voor contactmomenten', helpLink: 'https://example.com/help/contactmomenten' },
+				{ id: 'medewerkers', title: 'Medewerkers', description: 'Configureer de opslag voor medewerkers', helpLink: 'https://example.com/help/medewerkers' },
 			],
 		}
 	},
@@ -482,6 +490,27 @@ export default {
 			},
 			deep: true,
 		},
+		'medewerkers.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.medewerkers.selectedRegister = ''
+					this.medewerkers.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'medewerkers.selectedRegister': {
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'medewerkers')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.medewerkers.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
 
 	},
 	mounted() {
@@ -647,6 +676,9 @@ export default {
 						contactmomenten_register: this.contactmomenten.selectedRegister?.value ?? '',
 						contactmomenten_schema: this.contactmomenten.selectedSchema?.value ?? '',
 						contactmomenten_source: this.contactmomenten.selectedSource?.value ?? 'internal',
+						medewerkers_register: this.medewerkers.selectedRegister?.value ?? '',
+						medewerkers_schema: this.medewerkers.selectedSchema?.value ?? '',
+						medewerkers_source: this.medewerkers.selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -694,6 +726,9 @@ export default {
 							contactmomenten_register: data.contactmomenten_register,
 							contactmomenten_schema: data.contactmomenten_schema,
 							contactmomenten_source: data.contactmomenten_source,
+							medewerkers_register: data.medewerkers_register,
+							medewerkers_schema: data.medewerkers_schema,
+							medewerkers_source: data.medewerkers_source,
 						}
 
 					})

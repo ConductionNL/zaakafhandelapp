@@ -25,6 +25,7 @@ return [
 	 	'klanten' => ['url' => 'api/klanten'],
 	 	'berichten' => ['url' => 'api/berichten'],
 		'contactmomenten' => ['url' => 'api/contactmomenten'],
+		'medewerkers' => ['url' => 'api/medewerkers'],
 		
 	 ],
 	'routes' => [
