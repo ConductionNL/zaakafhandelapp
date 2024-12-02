@@ -34,7 +34,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Refresh the list of contact moments.
 		 *
 		 * @param search - Optional search query to filter the contact moments list. (default: `null`)
-		 * @param notClosed
+		 * @param notClosed - Optional boolean to filter out closed contact moments from the contact moments list. (default: `false`)
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
 		 */
