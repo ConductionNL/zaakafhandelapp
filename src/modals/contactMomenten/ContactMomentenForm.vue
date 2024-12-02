@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -26,6 +26,14 @@ import { navigationStore } from '../../store/store.js'
 						</div>
 						<div v-else>
 							Geen klant geselecteerd
+						</div>
+						<div class="statusAndStartDateContainer">
+							<div v-if="status">
+								status: {{ status }}
+							</div>
+							<div v-if="startDate">
+								startDate: {{ new Date(startDate).toLocaleDateString() }}
+							</div>
 						</div>
 					</template>
 				</NcNoteCard>
@@ -180,13 +188,13 @@ import { navigationStore } from '../../store/store.js'
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
-				<NcActionButton @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
+				<NcActionButton @click="openTaakForm">
 					<template #icon>
-						<BriefcaseAccountOutline :size="20" />
+						<CalendarMonthOutline :size="20" />
 					</template>
-					Zaak starten
+					Taak aanmaken
 				</NcActionButton>
-				<NcActionButton @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
+				<NcActionButton :disabled="true" @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
@@ -205,6 +213,10 @@ import { navigationStore } from '../../store/store.js'
 				Opslaan
 			</NcButton>
 		</template>
+		<TakenForm v-if="taakFormOpen"
+			:dashboard-widget="true"
+			@close-modal="closeTaakForm"
+			@save-success="closeTaakForm" />
 	</NcDialog>
 </template>
 
@@ -215,6 +227,7 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
+import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -248,6 +261,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		contactMomentId: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -256,6 +273,8 @@ export default {
 			error: false,
 			titel: '',
 			notitie: '',
+			status: null,
+			startDate: null,
 			klantenLoading: false,
 			zaken: [],
 			taken: [],
@@ -268,9 +287,13 @@ export default {
 			selectedTaak: null,
 			selectedProduct: null,
 			startingType: 'all',
+			taakFormOpen: false,
 		}
 	},
 	mounted() {
+		if (this.contactMomentId) {
+			this.fetchContactMomentData(this.contactMomentId)
+		}
 	},
 	methods: {
 		// Modal functions
@@ -302,7 +325,7 @@ export default {
 						zaak: this.selectedZaak ?? '',
 						taak: this.selectedTaak ?? '',
 						product: this.selectedProduct ?? '',
-						status: 'open',
+						status: this.status === 'gesloten' ? 'gesloten' : 'open',
 						startDate: new Date().toISOString(),
 					}),
 				},
@@ -332,6 +355,30 @@ export default {
 		// Klant functions
 		closeSearchKlantModal() {
 			this.searchKlantModalOpen = false
+		},
+
+		openTaakForm() {
+			this.taakFormOpen = true
+			taakStore.setTaakItem(null)
+		},
+
+		closeTaakForm() {
+			this.taakFormOpen = false
+		},
+
+		fetchContactMomentData(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/contactmomenten/${id}`)
+				.then(response => response.json())
+				.then(data => {
+					this.titel = data.titel
+					this.notitie = data.notitie
+					this.status = data.status
+					this.startDate = data.startDate
+					this.fetchKlantData(data.klant)
+					this.selectedZaak = data.zaak
+					this.selectedTaak = data.taak
+					this.selectedProduct = data.product
+				})
 		},
 
 		fetchKlantData(id) {
@@ -469,5 +516,10 @@ div[class='modal-container']:has(.ContactMomentenForm) {
     display: flex;
     justify-content: flex-end;
     gap: var(--zaa-margin-10);
+}
+
+.statusAndStartDateContainer {
+	display: flex;
+	gap: var(--zaa-margin-10);
 }
 </style>

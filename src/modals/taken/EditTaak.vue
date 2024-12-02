@@ -3,7 +3,7 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog v-if="navigationStore.modal === 'editTaak'"
+	<NcDialog
 		name="Taak"
 		size="normal"
 		@closing="closeModalFromButton()">
@@ -148,16 +148,12 @@ export default {
 			statusOptions: {
 				options: [
 					{
-						id: 'status1',
-						label: 'Status 1',
+						id: 'open',
+						label: 'Open',
 					},
 					{
-						id: 'status2',
-						label: 'Status 2',
-					},
-					{
-						id: 'status3',
-						label: 'Status 3',
+						id: 'gesloten',
+						label: 'Gesloten',
 					},
 				],
 			},
@@ -242,7 +238,7 @@ export default {
 				await taakStore.saveTaak({
 					...this.taakItem,
 					klant: this.klanten.value?.id ?? '',
-					status: this.taakItem.status?.id ?? null,
+					status: this.status === 'gesloten' ? 'gesloten' : 'open',
 					deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
 				}, this.dashboardWidget)
 				this.success = true

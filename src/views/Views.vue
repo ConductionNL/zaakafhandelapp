@@ -11,6 +11,7 @@ import { navigationStore } from '../store/store.js'
 			<DashboardIndex v-if="navigationStore.selected === 'dashboard'" />
 			<DocumentenIndex v-if="navigationStore.selected === 'documenten'" />
 			<KlantenIndex v-if="navigationStore.selected === 'klanten'" />
+			<MedewerkerIndex v-if="navigationStore.selected === 'medewerkers'" />
 			<ResultatenIndex v-if="navigationStore.selected === 'resultaten'" />
 			<RollenIndex v-if="navigationStore.selected === 'rollen'" />
 			<StatusssenIndex v-if="navigationStore.selected === 'statusssen'" />
@@ -30,6 +31,7 @@ import DashboardIndex from './dashboard/DashboardIndex.vue'
 import SearchIndex from './search/SearchIndex.vue'
 import DocumentenIndex from './documenten/DocumentenIndex.vue'
 import KlantenIndex from './klanten/KlantenIndex.vue'
+import MedewerkerIndex from './medewerkers/MedewerkerIndex.vue'
 import ResultatenIndex from './resultaten/ResultatenIndex.vue'
 import RollenIndex from './rollen/RollenIndex.vue'
 import StatusssenIndex from './statussen/StatussenIndex.vue'
@@ -47,6 +49,7 @@ export default {
 		ContactMomentenIndex,
 		DocumentenIndex,
 		KlantenIndex,
+		MedewerkerIndex,
 		ResultatenIndex,
 		RollenIndex,
 		StatusssenIndex,
