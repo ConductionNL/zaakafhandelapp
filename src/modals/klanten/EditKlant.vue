@@ -47,13 +47,18 @@ import { klantStore, navigationStore } from '../../store/store.js'
 					:disabled="loading"
 					input-label="Geboortedatum" />
 			</div>
-			<NcCheckboxRadioSwitch :checked.sync="klantItem.isMale">
-				Is een man?
-			</NcCheckboxRadioSwitch>
+
+			<NcSelect v-bind="sexOptions"
+				v-model="sexOptions.value"
+				:clearable="false"
+				class="wide-select"
+				:disabled="loading"
+				input-label="Geslacht" />
+
 			<NcSelect
 				v-bind="countryOptions"
 				v-model="klantItem.land"
-				class="country-select"
+				class="wide-select"
 				:disabled="loading"
 				input-label="Land" />
 
@@ -180,7 +185,6 @@ import {
 	NcNoteCard,
 	NcSelect,
 	NcDateTimePicker,
-	NcCheckboxRadioSwitch,
 } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
@@ -200,7 +204,6 @@ export default {
 		NcNoteCard,
 		NcSelect,
 		NcDateTimePicker,
-		NcCheckboxRadioSwitch,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -226,7 +229,7 @@ export default {
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
-				isMale: false,
+				geslacht: '',
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',
@@ -252,6 +255,14 @@ export default {
 					{ value: 'organisatie', label: 'Organisatie' },
 				],
 			},
+			sexOptions: {
+				options: [
+					{ value: 'man', label: 'Man' },
+					{ value: 'vrouw', label: 'Vrouw' },
+					{ value: 'overige', label: 'Overige' },
+				],
+				value: { value: 'man', label: 'Man' },
+			},
 		}
 	},
 	computed: {
@@ -266,6 +277,8 @@ export default {
 
 			const country = this.countryOptions.options.find((option) => option.id === klantStore.klantItem?.land)
 
+			const sex = this.sexOptions.options.find((option) => option.value === klantStore.klantItem?.geslacht)
+
 			if (klantStore.klantItem?.id) {
 				this.klantItem = {
 					...klantStore.klantItem,
@@ -275,7 +288,7 @@ export default {
 					achternaam: klantStore.klantItem.achternaam || '',
 					bsn: klantStore.klantItem.bsn || '',
 					geboortedatum: klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum) : '',
-					isMale: klantStore.klantItem.isMale || false,
+					geslacht: sex || { value: 'man', label: 'Man' },
 					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
@@ -313,7 +326,7 @@ export default {
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
-				isMale: false,
+				geslacht: '',
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',
@@ -333,6 +346,8 @@ export default {
 				subjectIdentificatie: '',
 				subjectType: '',
 			}
+
+			this.sexOptions.value = { value: 'man', label: 'Man' }
 		},
 		async editKlant() {
 			this.loading = true
@@ -343,6 +358,7 @@ export default {
 					type: this.klantItem.type.value,
 					geboortedatum: this.klantItem.geboortedatum !== '' && new Date(this.klantItem.geboortedatum).toISOString(),
 					land: this.klantItem.land.id,
+					geslacht: this.sexOptions.value.value,
 				})
 				this.success = true
 				this.loading = false
@@ -361,7 +377,7 @@ export default {
 </script>
 
 <style scoped>
-.country-select {
+.wide-select {
 	width: 100%;
 }
 </style>
