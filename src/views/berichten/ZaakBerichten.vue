@@ -32,6 +32,10 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			</NcListItem>
 		</div>
 
+		<div v-if="!berichtenList?.length && !loading">
+			Geen berichten gevonden.
+		</div>
+
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"

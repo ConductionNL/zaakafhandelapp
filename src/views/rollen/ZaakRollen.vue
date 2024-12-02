@@ -32,6 +32,10 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			</NcListItem>
 		</div>
 
+		<div v-if="!rollenList?.length && !loading">
+			Geen rollen gevonden.
+		</div>
+
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
