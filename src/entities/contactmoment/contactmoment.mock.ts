@@ -5,7 +5,6 @@ export const mockContactMomentData = (): TContactMoment[] => [
 	{
 		id: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
 		uuid: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
-		titel: 'Zaak 3',
 		notitie: 'Zaak 3',
 		klant: 'Klant 3',
 		zaak: 'Zaak 3',
