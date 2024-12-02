@@ -39,8 +39,8 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				<p>Deadline</p>
 				<NcDateTimePicker
 					v-model="taakItem.deadline"
-					:clearable="true"
-					:disabled="loading" />
+					:disabled="loading"
+					required />
 			</div>
 
 			<NcTextField
@@ -76,7 +76,7 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				Help
 			</NcButton>
 			<NcButton v-if="!success"
-				:disabled="loading || klantenLoading || !taakItem.title"
+				:disabled="loading || klantenLoading || !taakItem.title || !taakItem.deadline"
 				type="primary"
 				@click="editTaak()">
 				<template #icon>
@@ -243,7 +243,7 @@ export default {
 					...this.taakItem,
 					klant: this.klanten.value?.id ?? '',
 					status: this.taakItem.status?.id ?? null,
-					deadline: this.taakItem.deadline.toISOString(),
+					deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
 				}, this.dashboardWidget)
 				this.success = true
 				this.loading = false

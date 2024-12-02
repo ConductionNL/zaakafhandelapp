@@ -10,8 +10,8 @@ import { navigationStore, taakStore } from '../../store/store.js'
 				:name="taak?.title"
 				:bold="true"
 				:active="taakStore.taakItem?.id === taak?.id"
-				:details="'1h'"
-				:counter-number="44"
+				:details="taak.status"
+				:counter-number="taak.deadline ? new Date(taak.deadline).toLocaleDateString() : 'no deadline'"
 				:force-display-actions="true"
 				@click="toggleTaak(taak)">
 				<template #icon>
@@ -31,6 +31,10 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
+		</div>
+
+		<div v-if="!takenList?.results?.length && !loading">
+			Geen taken gevonden.
 		</div>
 
 		<NcLoadingIcon v-if="loading"

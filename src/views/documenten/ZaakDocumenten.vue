@@ -34,11 +34,15 @@ import { zaakStore } from '../../store/store.js'
 				</template>
 			</NcListItem>
 
+			<div v-if="!zakenList?.length && !loading">
+				Geen documenten gevonden.
+			</div>
+
 			<NcLoadingIcon v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Zaken aan het laden" />
+				name="Documenten aan het laden" />
 		</div>
 	</div>
 </template>
