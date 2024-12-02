@@ -45,7 +45,7 @@ class SettingsController extends Controller
 	{
 		// Initialize the data array
 		$data = [];
-		$data['objectTypes'] = ['berichten', 'besluiten', 'documenten', 'klanten', 'resultaten', 'taken', 'informatieobjecten', 'organisaties', 'personen', 'zaken', 'rollen', 'statusen', 'zaakeigenschappen', 'zaaktypen','contactmomenten'];
+		$data['objectTypes'] = ['berichten', 'besluiten', 'documenten', 'klanten', 'resultaten', 'taken', 'informatieobjecten', 'organisaties', 'personen', 'zaken', 'rollen', 'statusen', 'zaakeigenschappen', 'zaaktypen','contactmomenten', 'medewerkers'];
 		$data['openRegisters'] = false;
 		$data['availableRegisters'] = [];
 
@@ -102,7 +102,10 @@ class SettingsController extends Controller
 			'zaaktypen_register' => '',
 			'contactmomenten_source' => 'internal',
 			'contactmomenten_schema' => '',
-			'contactmomenten_register' => ''
+			'contactmomenten_register' => '',
+			'medewerkers_source' => 'internal',
+			'medewerkers_schema' => '',
+			'medewerkers_register' => ''
 		];
 
 		// Get the current values for the object types from the configuration
