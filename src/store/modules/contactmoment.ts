@@ -34,14 +34,23 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Refresh the list of contact moments.
 		 *
 		 * @param search - Optional search query to filter the contact moments list. (default: `null`)
+		 * @param notClosed
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
 		 */
-		async refreshContactMomentenList(search: string = null): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
+		async refreshContactMomentenList(search: string = null, notClosed: boolean = false): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
 				endpoint = endpoint + '?_search=' + search
+			}
+
+			if (notClosed) {
+				if (search !== null && search !== '') {
+					endpoint = endpoint + '&status=open'
+				} else {
+					endpoint = endpoint + '?status=open'
+				}
 			}
 
 			const response = await fetch(endpoint, {
