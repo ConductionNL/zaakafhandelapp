@@ -99,7 +99,7 @@ import { klantStore } from '../../store/store.js'
 			<div v-if="klanten?.length && !loading">
 				<NcListItem v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
-					:name="`(${klant.isMale ? 'm' : 'v'}) ${getName(klant)} ${getSubname(klant)}`"
+					:name="`${getSex(klant)} ${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant === klant?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(klant.type)"
@@ -321,6 +321,12 @@ export default {
 				return klant?.websiteUrl ?? 'onbekend'
 			}
 			return 'onbekend'
+		},
+		getSex(klant) {
+			if (klant.type === 'persoon') {
+				return `(${klant?.geslacht})`
+			}
+			return ''
 		},
 		setActive(klant) {
 			if (this.selectedKlant === klant) {

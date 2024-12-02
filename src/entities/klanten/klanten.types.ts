@@ -8,7 +8,7 @@ export type TKlant = {
     achternaam: string;
     bsn: string;
     geboortedatum: string;
-    isMale: boolean;
+    geslacht: 'man' | 'vrouw' | 'overige';
     land: string;
     telefoonnummer: string;
     emailadres: string;
