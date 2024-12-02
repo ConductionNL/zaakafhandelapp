@@ -29,7 +29,7 @@ import { navigationStore } from '../../store/store.js'
 						</div>
 					</template>
 				</NcNoteCard>
-				<div class="buttonsContainer">
+				<div v-if="!klant" class="buttonsContainer">
 					<div>
 						<NcButton
 							:disabled="loading"
@@ -56,7 +56,22 @@ import { navigationStore } from '../../store/store.js'
 						</NcButton>
 					</div>
 				</div>
+
+				<div v-if="klant" class="buttonsContainer">
+					<div>
+						<NcButton
+							:disabled="loading"
+							type="primary"
+							@click="klant = null">
+							<template #icon>
+								<Minus :size="20" />
+							</template>
+							Klant ontkoppelen
+						</NcButton>
+					</div>
+				</div>
 			</div>
+
 			<div v-if="!success" class="form-group">
 				<NcTextArea v-model="notitie"
 					label="Notitie"
@@ -208,6 +223,7 @@ import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Minus from 'vue-material-design-icons/Minus.vue'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -322,29 +338,46 @@ export default {
 				.then(response => response.json())
 				.then(data => {
 					this.klant = data
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant:', error)
+					throw error // if this one fails, fetching the rest is pointless
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.zaken = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant zaken:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.taken = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant taken:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.berichten = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
 				})
+				.catch(error => {
+					console.error('Error fetching klant berichten:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data)) {
@@ -352,7 +385,7 @@ export default {
 					}
 				})
 				.catch(error => {
-					console.error('Error fetching klant data:', error)
+					console.error('Error fetching klant audit trail:', error)
 				})
 		},
 

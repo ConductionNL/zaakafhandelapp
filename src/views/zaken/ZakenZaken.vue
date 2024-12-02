@@ -3,18 +3,18 @@ import { zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcAppContentList>
-		<ul v-if="!loading">
+	<div>
+		<div v-if="!loading">
 			<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
 				:key="`${zaak}${i}`"
-				:name="zaak?.omschrijving"
-				:active="zaakStore.zaakItem?.uuid === zaak?.uuid"
+				:name="zaak?.identificatie"
+				:active="zaakStore.zaakItem?.id === zaak?.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="zaakStore.setZaakItem(zaak)">
+				@click="toggleZaak(zaak)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="zaakStore.zaakItem?.uuid === zaak?.uuid && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak?.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -33,17 +33,21 @@ import { zaakStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
+
+		<div v-if="!zaakStore.zakenList?.length && !loading">
+			Geen zaken gevonden.
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Zaken aan het laden" />
-	</NcAppContentList>
+	</div>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 // eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
@@ -52,9 +56,14 @@ export default {
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
 		BriefcaseAccountOutline,
 		NcLoadingIcon,
+	},
+	props: {
+		zaakId: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -63,15 +72,26 @@ export default {
 			zakenList: [],
 		}
 	},
-	updated() {
-		this.loading = true
-
-		zaakStore.refreshZakenList()
-			.then(() => {
-				this.loading = false
-			})
+	watch: {
+		zaakId(newVal) {
+			this.fetchData(newVal)
+		},
+	},
+	mounted() {
+		this.fetchData(this.zaakId)
 	},
 	methods: {
+		fetchData() {
+			this.loading = true
+
+			zaakStore.refreshZakenList()
+				.finally(() => {
+					this.loading = false
+				})
+		},
+		toggleZaak(zaak) {
+			// TODO: toggle zaak in local component
+		},
 		clearText() {
 			this.search = ''
 		},

@@ -4,7 +4,7 @@ import { klantStore } from '../../store/store.js'
 
 <template>
 	<NcDialog
-		name="Klanten zoeken"
+		:name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
 		size="normal"
 		label-id="searchKlantModal"
 		dialog-classes="SearchKlantModal"
@@ -14,7 +14,6 @@ import { klantStore } from '../../store/store.js'
 			<div class="filtersContainer">
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
 					:checked.sync="klantenSearchType"
-					disabled
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
@@ -63,14 +62,30 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<div class="searchContainer">
-			<NcTextField :disabled="loading"
-				:label="startingType === 'persoon' ? 'Zoek naar een persoon' : 'Zoek naar een organisatie'"
-				maxlength="255"
-				class="searchField"
-				:value.sync="searchQuery" />
+			<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
+				<NcDateTimePicker v-model="searchQuery_geboortedatum"
+					:disabled="loading"
+					class="date-picker" />
+
+				<NcTextField :disabled="loading"
+					label="achternaam"
+					maxlength="255"
+					class="searchField"
+					:value.sync="searchQuery" />
+			</div>
+			<div v-else>
+				<NcTextField :disabled="loading"
+					:label="searchLabel"
+					maxlength="255"
+					class="searchField"
+					:value.sync="searchQuery" />
+			</div>
 
 			<NcButton type="primary"
-				:disabled="loading || !searchQuery"
+				:disabled="loading
+					|| !searchQuery
+					// If the search type is geboortedatum_achternaam, the geboortedatum is required
+					|| (klantenSearchType === 'geboortedatum_achternaam' && !searchQuery_geboortedatum)"
 				class="searchButton"
 				@click="search">
 				<template #icon>
@@ -84,7 +99,7 @@ import { klantStore } from '../../store/store.js'
 			<div v-if="klanten?.length && !loading">
 				<NcListItem v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
-					:name="getName(klant)"
+					:name="`(${klant.isMale ? 'm' : 'v'}) ${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant === klant?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(klant.type)"
@@ -100,7 +115,7 @@ import { klantStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ getSubname(klant) }}
+						{{ getSummary(klant) }}
 					</template>
 				</NcListItem>
 			</div>
@@ -121,7 +136,7 @@ import { klantStore } from '../../store/store.js'
 				type="secondary"
 				@click="closeModal()">
 				<template #icon>
-					<Cancel v-if="!loading" :size="20" />
+					<Cancel :size="20" />
 				</template>
 				Annuleer
 			</NcButton>
@@ -130,9 +145,9 @@ import { klantStore } from '../../store/store.js'
 				:disabled="!selectedKlant"
 				@click="addKlant()">
 				<template #icon>
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<Plus :size="20" />
 				</template>
-				toevoegen
+				Koppelen
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -140,16 +155,17 @@ import { klantStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon, NcCheckboxRadioSwitch } from '@nextcloud/vue'
+import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon, NcCheckboxRadioSwitch, NcDateTimePicker } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import _ from 'lodash'
 
 // Icons
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
+import getValidISOstring from '../../services/getValidISOstring.js'
 export default {
 	name: 'SearchKlantModal',
 	components: {
@@ -160,6 +176,8 @@ export default {
 		AccountOutline,
 		Search,
 		NcCheckboxRadioSwitch,
+		NcDateTimePicker,
+		NcLoadingIcon,
 	},
 	props: {
 		startingType: {
@@ -176,9 +194,38 @@ export default {
 			hasUpdated: false,
 			klanten: [],
 			searchQuery: '',
+			searchQuery_geboortedatum: null,
 			selectedKlant: null,
 			klantenSearchType: 'emailadres',
 		}
+	},
+	computed: {
+		searchLabel() {
+			const baseLabel = 'Zoek naar een '
+			const typeLabels = {
+				persoon: {
+					default: 'persoon',
+					geboortedatum_achternaam: ' met geboortedatum en achternaam',
+					bsn: ' met BSN',
+				},
+				organisatie: {
+					default: 'organisatie',
+					bedrijfsnaam: ' met bedrijfsnaam',
+					kvkNummer: ' met KVK nummer',
+				},
+			}
+			const commonLabels = {
+				postcode_huisnummer: ' met postcode en huisnummer',
+				emailadres: ' met emailadres',
+				telefoonnummer: ' met telefoonnummer',
+			}
+
+			let label = baseLabel + (typeLabels[this.startingType]?.default || '')
+			label += typeLabels[this.startingType]?.[this.klantenSearchType] || ''
+			label += commonLabels[this.klantenSearchType] || ''
+
+			return label
+		},
 	},
 	methods: {
 		closeModalFromButton() {
@@ -203,11 +250,18 @@ export default {
 			this.selectedKlant = null
 
 			let queryParams = { [this.klantenSearchType]: this.searchQuery }
-			const newQuery = this.searchQuery.replaceAll(' ', '')
+			const newQuery = this.searchQuery.trim()
+			const splitQuery = newQuery.split(/ +/g)
 
 			switch (this.klantenSearchType) {
 			case 'postcode_huisnummer':
-				queryParams = { postcode: newQuery.substring(0, 6), huisnummer: newQuery.substring(6) }
+				queryParams = { postcode: splitQuery[0], huisnummer: splitQuery[1] }
+				break
+			case 'geboortedatum_achternaam':
+				queryParams = {
+					geboortedatum: this.searchQuery_geboortedatum && this.searchQuery_geboortedatum.toISOString() ? this.searchQuery_geboortedatum.toISOString() : '',
+					achternaam: newQuery,
+				}
 				break
 			case 'kvkNummer':
 				queryParams = { kvkNummer: newQuery }
@@ -253,6 +307,17 @@ export default {
 				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
+				return ''
+			}
+			return 'onbekend'
+		},
+		getSummary(klant) {
+			if (klant.type === 'persoon') {
+				const geboortedatum = getValidISOstring(klant.geboortedatum) ? new Date(klant.geboortedatum).toLocaleDateString() : 'onbekend'
+				const geboortestad = klant.plaats ? `${klant.plaats}` : 'onbekend'
+				return `${geboortedatum} - ${geboortestad}`
+			}
+			if (klant.type === 'organisatie') {
 				return klant?.websiteUrl ?? 'onbekend'
 			}
 			return 'onbekend'
@@ -280,21 +345,31 @@ export default {
 }
 
 .searchContainer {
-    display: flex;
-    align-items: end;
-    gap: 10px;
-  }
-  .searchField {
-    width: auto;
-  }
-  .searchButton {
-    min-width: min-content !important;
-  }
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.searchField {
+	width: auto;
+}
+.searchButton {
+	margin-block-start: 3px;
+	min-width: min-content !important;
+}
 
-  .searchResultsContainer {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    padding-block: 20px;
-    margin-block: 30px;
-  }
+.searchResultsContainer {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	padding-block: 20px;
+	margin-block: 30px;
+}
+
+.flex {
+	display: flex;
+	gap: 10px;
+}
+
+.date-picker {
+	margin-block-start: 3px;
+}
 </style>

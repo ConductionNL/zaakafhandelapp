@@ -3,6 +3,7 @@ import { TRol } from './rol.types'
 
 export class Rol implements TRol {
 
+	public id: string
 	public uuid: string
 	public omschrijving: string
 	public omschrijvingGeneriek: string
@@ -37,6 +38,7 @@ export class Rol implements TRol {
     }
 
 	constructor(source: TRol) {
+		this.id = source.id || null
 		this.uuid = source.uuid || ''
 		this.omschrijving = source.omschrijving || ''
 		this.omschrijvingGeneriek = source.omschrijvingGeneriek || ''
@@ -57,6 +59,7 @@ export class Rol implements TRol {
 
 	public validate(): SafeParseReturnType<TRol, unknown> {
 		const schema = z.object({
+			id: z.string().optional(),
 			uuid: z.string().optional(),
 			omschrijving: z.string().min(1),
 			omschrijvingGeneriek: z.string(),

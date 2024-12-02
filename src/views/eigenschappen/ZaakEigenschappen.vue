@@ -1,25 +1,25 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<ul v-if="!loading">
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+		<div v-if="!loading">
+			<NcListItem v-for="(zaak, i) in zakenList"
+				:key="`${zaak}${i}`"
+				:name="zaak?.zaakStore"
+				:active="zaakStore.zakenItem?.id === zaak?.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setMetadataItem(zaken.id)">
+				@click="toggleZaakEigenschap(zaak)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="zaakStore.zakenItem === zaak.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ zaak?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -33,7 +33,11 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
+
+		<div v-if="!zakenList?.length && !loading">
+			Geen eigenschappen gevonden.
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
@@ -68,15 +72,12 @@ export default {
 		}
 	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		zaakId(newVal) {
+			this.fetchData(newVal)
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData(this.zaakId)
 	},
 	methods: {
 		fetchData(zaakId) {
@@ -89,7 +90,7 @@ export default {
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zakenList = data
+						this.zakenList = data.results || []
 					})
 					this.loading = false
 				})
@@ -97,6 +98,9 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
+		},
+		toggleZaakEigenschap(zaakEigenschap) {
+			// TODO: toggle zaakEigenschap
 		},
 		clearText() {
 			this.search = ''

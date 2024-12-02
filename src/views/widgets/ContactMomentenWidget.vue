@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, contactMomentStore } from '../../store/store.js'
+import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,7 +7,9 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="items"
 				:loading="loading"
-				@show="onShow">
+				:item-menu="itemMenu"
+				@show="onShow"
+				@sluiten="onSluiten">
 				<template #empty-content>
 					<NcEmptyContent name="Geen contact momenten gevonden">
 						<template #icon>
@@ -36,8 +38,15 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
+
+// Entities
+import { ContactMoment } from '../../entities/index.js'
+
+// Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+
+// Modals
 import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
 
 export default {
@@ -57,6 +66,16 @@ export default {
 			isModalOpen: false,
 			searchKlantModalOpen: false,
 			contactMomentItems: [],
+			itemMenu: {
+				// show: {
+				// 	text: 'Bekijk',
+				// 	icon: 'icon-toggle',
+				// },
+				sluiten: {
+					text: 'Sluit',
+					icon: this.getSluitenIcon(),
+				},
+			},
 		}
 	},
 
@@ -73,15 +92,27 @@ export default {
 	methods: {
 		fetchContactMomentItems() {
 			this.loading = true
-			contactMomentStore.refreshContactMomentenList()
-				.then(() => {
-					this.contactMomentItems = contactMomentStore.contactMomentenList.map(contactMoment => ({
+
+			Promise.all([
+				contactMomentStore.refreshContactMomentenList(),
+				klantStore.refreshKlantenList(),
+			])
+				.then(([contactMomentResponse, klantResponse]) => {
+					this.contactMomentItems = contactMomentResponse.entities.map(contactMoment => ({
 						id: contactMoment.id,
-						mainText: contactMoment.titel,
+						mainText: (() => { // this is a self calling function to get the klant name
+							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
+							if (klant) {
+								const tussenvoegsel = klant.tussenvoegsel ? klant.tussenvoegsel + ' ' : ''
+								return `${klant.voornaam} ${tussenvoegsel}${klant.achternaam}`
+							}
+							return ''
+						})(),
 						subText: new Date(contactMoment.startDate).toLocaleString(),
 						avatarUrl: this.getItemIcon(),
 					}))
-
+				})
+				.finally(() => {
 					this.loading = false
 				})
 		},
@@ -96,6 +127,17 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
 		},
+		getSluitenIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/progress-close-dark.svg` : `${appLocation}/zaakafhandelapp/img/progress-close-light.svg`
+		},
 		openModal() {
 			this.isModalOpen = true
 			contactMomentStore.setContactMomentItem(null)
@@ -108,6 +150,27 @@ export default {
 
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')
+		},
+		async onSluiten(event) {
+			// change status to 'gesloten'
+			const { data } = await contactMomentStore.getContactMoment(event.id)
+
+			if (data?.status === 'gesloten') {
+				console.info('Contact moment is already closed')
+				return
+			}
+
+			const newContactMoment = new ContactMoment({
+				...data,
+				status: 'gesloten',
+			})
+
+			contactMomentStore.saveContactMoment(newContactMoment)
+				.then(({ response }) => {
+					if (response.ok) {
+						this.fetchContactMomentItems()
+					}
+				})
 		},
 	},
 

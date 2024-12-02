@@ -5,10 +5,10 @@ import { useZaakStore } from './modules/zaken.ts'
 import { useZaakTypeStore } from './modules/zaakTypen.ts'
 import { useBerichtStore } from './modules/berichten.js'
 import { useKlantStore } from './modules/klanten.js'
-import { useRolStore } from './modules/rol.js'
+import { useRolStore } from './modules/rol.ts'
 import { useTaakStore } from './modules/taak.js'
 import { useSearchStore } from './modules/search.ts'
-import { useContactMomentStore } from './modules/contactmoment.js'
+import { useContactMomentStore } from './modules/contactmoment.ts'
 const berichtStore = useBerichtStore(pinia)
 const klantStore = useKlantStore(pinia)
 const navigationStore = useNavigationStore(pinia)

@@ -35,6 +35,7 @@ jobs:
             echo "VERSION=${nightly_version}" >> $GITHUB_ENV
           else
             echo "VERSION=${current_version}" >> $GITHUB_ENV
+          fi
 
       # - name: Update version in info.xml
       #   run: |
@@ -186,8 +187,7 @@ jobs:
           appstore_token: ${{ secrets.NEXTCLOUD_APPSTORE_TOKEN }}
           download_url: https://github.com/${{ github.repository }}/releases/download/v${{ env.NEW_VERSION }}/${{ env.APP_NAME }}-${{ env.NEW_VERSION }}.tar.gz
           app_private_key: ${{ secrets.NEXTCLOUD_SIGNING_KEY }}
-          nightly: false
-
+          nightly: true
       - name: Verify version and contents
         run: |
           echo "App version: ${{ env.NEW_VERSION }}"

@@ -12,14 +12,12 @@
 export const getTheme = () => {
 	if (document.body.hasAttribute('data-theme-light')) {
 		return 'light'
-	}
-
-	if (document.body.hasAttribute('data-theme-dark')) {
+	} else if (document.body.hasAttribute('data-theme-dark')) {
 		return 'dark'
-	}
-
-	if (document.body.hasAttribute('data-theme-default')) {
-		return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+	} else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+		return 'light'
+	} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		return 'dark'
 	}
 	return 'light'
 }

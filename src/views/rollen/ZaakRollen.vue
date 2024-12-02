@@ -1,20 +1,20 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcAppContentList>
-		<ul v-if="!loading">
-			<NcListItem v-for="(rollen, i) in rollenList.results"
+	<div>
+		<div v-if="!loading">
+			<NcListItem v-for="(rollen, i) in rollenList"
 				:key="`${rollen}${i}`"
 				:name="rollen?.omschrijving"
-				:active="store.rolId === rollen.id"
+				:active="rolStore.rolItem?.id === rollen.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="setZaakRolItem(rollen.id)">
+				@click="toggleRol(rollen)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="rolStore.rolItem?.id === rollen.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -30,17 +30,21 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
+
+		<div v-if="!rollenList?.length && !loading">
+			Geen rollen gevonden.
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
 			name="Rollen aan het laden" />
-	</NcAppContentList>
+	</div>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 // eslint-disable-next-line n/no-missing-import
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
 
@@ -49,7 +53,6 @@ export default {
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
 		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
@@ -67,20 +70,16 @@ export default {
 		}
 	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		zaakId(newVal) {
+			this.fetchData(newVal)
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData(this.zaakId)
 	},
 	methods: {
 		editRol(rol) {
-			store.setRolItem(rol)
-			store.setRolId(rol.id)
+			rolStore.setRolItem(rol)
 			navigationStore.setModal('editRol')
 		},
 		fetchData(zaakId) {
@@ -93,7 +92,7 @@ export default {
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.rollenList = data
+						this.rollenList = data.results
 					})
 					this.loading = false
 				})
@@ -101,6 +100,9 @@ export default {
 					console.error(err)
 					this.loading = false
 				})
+		},
+		toggleRol(rol) {
+			// TODO: toggle rol
 		},
 		clearText() {
 			this.search = ''

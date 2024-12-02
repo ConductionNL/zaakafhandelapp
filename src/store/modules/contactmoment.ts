@@ -1,0 +1,165 @@
+/* eslint-disable no-console */
+import { defineStore } from 'pinia'
+import { ContactMoment, TContactMoment } from '../../entities/index.js'
+
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/contactmomenten'
+
+export const useContactMomentStore = defineStore('contactmomenten', {
+	state: () => ({
+		contactMomentItem: null as ContactMoment,
+		contactMomentenList: [] as ContactMoment[],
+	}),
+	actions: {
+		/**
+		 * Set the active contact moment item.
+		 *
+		 * @param contactMomentItem - The contact moment item to set.
+		 */
+		setContactMomentItem(contactMomentItem: TContactMoment | ContactMoment) {
+			this.contactMomentItem = contactMomentItem && new ContactMoment(contactMomentItem)
+			console.info('Active contactmoment item set to ' + contactMomentItem)
+		},
+		/**
+		 * Set the list of contact moments.
+		 *
+		 * @param contactMomentenList - The list of contact moments to set.
+		 */
+		setContactMomentenList(contactMomentenList: TContactMoment[] | ContactMoment[]) {
+			this.contactMomentenList = contactMomentenList.map(
+				(contactMomentItem) => new ContactMoment(contactMomentItem),
+			)
+			console.info('Contactmomenten list set to ' + contactMomentenList.length + ' items')
+		},
+		/**
+		 * Refresh the list of contact moments.
+		 *
+		 * @param search - Optional search query to filter the contact moments list. (default: `null`)
+		 * @throws If the HTTP request fails.
+		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
+		 */
+		async refreshContactMomentenList(search: string = null): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
+			let endpoint = apiEndpoint
+
+			if (search !== null && search !== '') {
+				endpoint = endpoint + '?_search=' + search
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.info(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results as TContactMoment[]
+			const entities = data.map((contactMomentItem) => new ContactMoment(contactMomentItem))
+
+			this.setContactMomentenList(data)
+
+			return { response, data, entities }
+		},
+		/**
+		 * Fetch a single contact moment by its ID.
+		 *
+		 * @param id - The ID of the contact moment to fetch.
+		 * @throws If the ID is invalid or if the HTTP request fails.
+		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
+		 */
+		async getContactMoment(id: string | number): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
+			if (!id || (typeof id !== 'string' && typeof id !== 'number') || (typeof id === 'string' && id.trim() === '')) {
+				throw new Error('Invalid ID provided for fetching contact moment')
+			}
+
+			const endpoint = `${apiEndpoint}/${id}`
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.info(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = await response.json() as TContactMoment
+			const entity = new ContactMoment(data)
+
+			this.setContactMomentItem(data)
+
+			return { response, data, entity }
+		},
+		/**
+		 * Delete a contact moment.
+		 *
+		 * @param contactMomentItem - The contact moment item to delete.
+		 * @throws If there is no contact moment item to delete or if the contact moment item does not have an id.
+		 * @throws If the HTTP request fails.
+		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 */
+		async deleteContactMoment(contactMomentItem: ContactMoment): Promise<{ response: Response }> {
+			if (!contactMomentItem || !contactMomentItem.id) {
+				throw new Error('No contactmoment item to delete')
+			}
+
+			const endpoint = `${apiEndpoint}/${contactMomentItem.id}`
+
+			const response = await fetch(endpoint, {
+				method: 'DELETE',
+			})
+
+			if (!response.ok) {
+				console.info(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			this.refreshContactMomentenList()
+
+			return { response }
+		},
+		/**
+		 * Save a contact moment to the database. If the contact moment does not have an id, it will be created.
+		 * Otherwise, it will be updated.
+		 *
+		 * @param contactMomentItem - The contact moment item to save.
+		 * @throws If there is no contact moment item to save or if the HTTP request fails.
+		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
+		 */
+		async saveContactMoment(contactMomentItem: TContactMoment | ContactMoment): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
+			if (!contactMomentItem) {
+				throw new Error('No contactmoment item to save')
+			}
+
+			const isNewContactMoment = !contactMomentItem.id
+			const endpoint = isNewContactMoment
+				? `${apiEndpoint}`
+				: `${apiEndpoint}/${contactMomentItem.id}`
+			const method = isNewContactMoment ? 'POST' : 'PUT'
+
+			const response = await fetch(
+				endpoint,
+				{
+					method,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ ...contactMomentItem }),
+				},
+			)
+
+			if (!response.ok) {
+				console.info(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = await response.json() as TContactMoment
+			const entity = new ContactMoment(data)
+
+			this.setContactMomentItem(data)
+			this.refreshContactMomentenList()
+
+			return { response, data, entity }
+		},
+	},
+})

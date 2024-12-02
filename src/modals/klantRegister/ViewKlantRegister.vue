@@ -12,8 +12,8 @@ import { taakStore, navigationStore, zaakStore, klantStore } from '../../store/s
 		</h1>
 		<div class="detailGrid">
 			<div class="gridContent gridFullWidth">
-				<b>Klantnummer:</b>
-				<p>{{ klant.klantnummer || '-' }}</p>
+				<b>KVK nummer:</b>
+				<p>{{ klant.kvkNummer || '-' }}</p>
 			</div>
 
 			<div class="gridContent">
@@ -26,7 +26,7 @@ import { taakStore, navigationStore, zaakStore, klantStore } from '../../store/s
 			</div>
 			<div class="gridContent">
 				<b>Adres:</b>
-				<p>{{ klant.adres || '-' }}</p>
+				<p>{{ `${klant.straatnaam} ${klant.huisnummer} ${klant.postcode} ${klant.plaats}` || '-' }}</p>
 			</div>
 			<div class="gridContent">
 				<b>Functie:</b>
@@ -295,15 +295,23 @@ export default {
 					if (Array.isArray(data.results)) {
 						this.zaken = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				})
+				.catch(error => {
+					console.error('Error fetching zaken:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
 						this.taken = data.results
 					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				})
+				.catch(error => {
+					console.error('Error fetching taken:', error)
+				})
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data.results)) {
@@ -311,7 +319,7 @@ export default {
 					}
 				})
 				.catch(error => {
-					console.error('Error fetching klant data:', error)
+					console.error('Error fetching berichten:', error)
 				})
 		},
 

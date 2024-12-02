@@ -1,4 +1,5 @@
 export type TRol = {
+    id?: string;
     uuid: string;
     omschrijving: string;
     omschrijvingGeneriek: string;

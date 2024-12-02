@@ -47,6 +47,9 @@ import { klantStore, navigationStore } from '../../store/store.js'
 					:disabled="loading"
 					input-label="Geboortedatum" />
 			</div>
+			<NcCheckboxRadioSwitch :checked.sync="klantItem.isMale">
+				Is een man?
+			</NcCheckboxRadioSwitch>
 			<NcSelect
 				v-bind="countryOptions"
 				v-model="klantItem.land"
@@ -177,6 +180,7 @@ import {
 	NcNoteCard,
 	NcSelect,
 	NcDateTimePicker,
+	NcCheckboxRadioSwitch,
 } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
@@ -196,6 +200,7 @@ export default {
 		NcNoteCard,
 		NcSelect,
 		NcDateTimePicker,
+		NcCheckboxRadioSwitch,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -221,6 +226,7 @@ export default {
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
+				isMale: false,
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',
@@ -269,6 +275,7 @@ export default {
 					achternaam: klantStore.klantItem.achternaam || '',
 					bsn: klantStore.klantItem.bsn || '',
 					geboortedatum: klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum) : '',
+					isMale: klantStore.klantItem.isMale || false,
 					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
@@ -306,6 +313,7 @@ export default {
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
+				isMale: false,
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',
