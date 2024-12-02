@@ -11,6 +11,7 @@ export class Klant implements TKlant {
 	public achternaam: string
 	public bsn: string
 	public geboortedatum: string
+	public isMale: boolean
 	public land: string
 
 	public telefoonnummer: string
@@ -41,6 +42,7 @@ export class Klant implements TKlant {
 		this.achternaam = source.achternaam || ''
 		this.bsn = source.bsn || ''
 		this.geboortedatum = source.geboortedatum || ''
+		this.isMale = source.isMale || false
 		this.land = source.land || ''
 		this.telefoonnummer = source.telefoonnummer || ''
 		this.emailadres = source.emailadres || ''
@@ -69,6 +71,7 @@ export class Klant implements TKlant {
 			achternaam: z.string(),
 			bsn: z.string(),
 			geboortedatum: z.string(),
+			isMale: z.boolean(),
 			land: z.string(),
 			telefoonnummer: z.string(),
 			emailadres: z.string().email(),
