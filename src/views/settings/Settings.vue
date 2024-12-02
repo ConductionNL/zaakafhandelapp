@@ -676,6 +676,9 @@ export default {
 						contactmomenten_register: this.contactmomenten.selectedRegister?.value ?? '',
 						contactmomenten_schema: this.contactmomenten.selectedSchema?.value ?? '',
 						contactmomenten_source: this.contactmomenten.selectedSource?.value ?? 'internal',
+						medewerkers_register: this.medewerkers.selectedRegister?.value ?? '',
+						medewerkers_schema: this.medewerkers.selectedSchema?.value ?? '',
+						medewerkers_source: this.medewerkers.selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -723,6 +726,9 @@ export default {
 							contactmomenten_register: data.contactmomenten_register,
 							contactmomenten_schema: data.contactmomenten_schema,
 							contactmomenten_source: data.contactmomenten_source,
+							medewerkers_register: data.medewerkers_register,
+							medewerkers_schema: data.medewerkers_schema,
+							medewerkers_source: data.medewerkers_source,
 						}
 
 					})
