@@ -28,13 +28,6 @@ import { taakStore, navigationStore, klantStore } from '../../store/store.js'
 				label="Type"
 				maxlength="255" />
 
-			<NcSelect
-				v-bind="statusOptions"
-				v-model="taakItem.status"
-				:disabled="loading"
-				input-label="Status"
-				required />
-
 			<div>
 				<p>Deadline</p>
 				<NcDateTimePicker
@@ -144,18 +137,6 @@ export default {
 				deadline: new Date(),
 				onderwerp: '',
 				toelichting: '',
-			},
-			statusOptions: {
-				options: [
-					{
-						id: 'open',
-						label: 'Open',
-					},
-					{
-						id: 'gesloten',
-						label: 'Gesloten',
-					},
-				],
 			},
 		}
 	},

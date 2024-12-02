@@ -123,6 +123,7 @@ export default {
 		},
 		openModal() {
 			this.isModalOpen = true
+			this.taakId = null
 			taakStore.setTaakItem(null)
 			navigationStore.setModal('editTaak')
 		},

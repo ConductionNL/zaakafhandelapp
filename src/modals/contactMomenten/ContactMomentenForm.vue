@@ -65,7 +65,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 					</div>
 				</div>
 
-				<div v-if="klant" class="buttonsContainer">
+				<div v-if="klant && !contactMomentId" class="buttonsContainer">
 					<div>
 						<NcButton
 							:disabled="loading"
@@ -85,10 +85,6 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 					label="Notitie"
 					:disabled="loading"
 					placeholder="Notitie" />
-				<NcTextField
-					:value.sync="titel"
-					label="Titel"
-					:disabled="loading" />
 			</div>
 			<div class="tabContainer">
 				<BTabs content-class="mt-3" justified>
@@ -184,7 +180,10 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 				</template>
 				Annuleer
 			</NcButton>
-			<NcActions :disabled="loading || success" :primary="true" menu-name="Acties">
+			<NcActions v-if="!contactMomentId"
+				:disabled="loading || success"
+				:primary="true"
+				menu-name="Acties">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
@@ -202,6 +201,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 				</NcActionButton>
 			</NcActions>
 			<NcButton
+				v-if="!contactMomentId"
 				type="primary"
 				:disabled="!klant || loading || success"
 				:loading="loading"
@@ -223,7 +223,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcTextField } from '@nextcloud/vue'
+import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
 
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
@@ -249,7 +249,6 @@ export default {
 		NcListItem,
 		NcActionButton,
 		NcEmptyContent,
-		NcTextField,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
@@ -304,6 +303,7 @@ export default {
 		},
 		closeModal() {
 			navigationStore.setModal(false)
+			
 			this.$emit('close-modal')
 		},
 
@@ -319,7 +319,6 @@ export default {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						titel: this.titel,
 						notitie: this.notitie,
 						klant: this.klant?.id ?? '',
 						zaak: this.selectedZaak ?? '',
@@ -370,7 +369,6 @@ export default {
 			fetch(`/index.php/apps/zaakafhandelapp/api/contactmomenten/${id}`)
 				.then(response => response.json())
 				.then(data => {
-					this.titel = data.titel
 					this.notitie = data.notitie
 					this.status = data.status
 					this.startDate = data.startDate

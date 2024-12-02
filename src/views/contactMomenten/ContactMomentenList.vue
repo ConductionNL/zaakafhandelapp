@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, contactMomentStore } from '../../store/store.js'
+import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -33,7 +33,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 			<div v-if="contactMomentStore.contactMomentenList?.length && !loading">
 				<NcListItem v-for="(contactMoment, i) in contactMomentStore.contactMomentenList"
 					:key="`${contactMoment}${i}`"
-					:name="contactMoment?.titel || 'onbekend'"
+					:name="getKlantName(contactMoment.klant) || 'onbekend'"
 					:active="contactMomentStore.contactMomentItem?.id === contactMoment?.id"
 					:force-display-actions="true"
 					@click="contactMomentStore.setContactMomentItem(contactMoment)">
@@ -115,6 +115,7 @@ export default {
 		contactMomentStore.refreshContactMomentenList().then(() => {
 			this.loading = false
 		})
+		klantStore.refreshKlantenList()
 	},
 	methods: {
 		editContactMoment(contactMoment) {
@@ -124,6 +125,17 @@ export default {
 		storeContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
 		},
+		getKlantName(klantId) {
+			const klant = klantStore.klantenList.find(klant => klant.id === klantId)
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -147,6 +159,7 @@ export default {
 			this.search = ''
 		},
 	},
+
 }
 </script>
 <style>
