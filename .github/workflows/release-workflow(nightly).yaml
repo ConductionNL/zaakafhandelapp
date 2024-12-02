@@ -144,12 +144,12 @@ jobs:
 
       # Step 13: Run Changelog CI
       - name: Run Changelog CI
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/development'
         uses: saadmk11/changelog-ci@v1.1.2
         with:
           release_version: ${{ env.NEW_VERSION }}
           config_file: changelog-ci-config.json
-        
+
       # Step 14: Output the version
       - name: Use the version
         run: |
@@ -188,7 +188,6 @@ jobs:
           download_url: https://github.com/${{ github.repository }}/releases/download/v${{ env.NEW_VERSION }}/${{ env.APP_NAME }}-${{ env.NEW_VERSION }}.tar.gz
           app_private_key: ${{ secrets.NEXTCLOUD_SIGNING_KEY }}
           nightly: true
-
       - name: Verify version and contents
         run: |
           echo "App version: ${{ env.NEW_VERSION }}"
