@@ -319,7 +319,7 @@ export default {
 		async fetchData(id) {
 			this.fetchLoading = true
 
-			const { data } = await contactMomentStore.getContactMoment(this.contactMomentId)
+			const { data } = await contactMomentStore.getContactMoment(id)
 
 			this.contactMoment = {
 				...data,
