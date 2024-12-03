@@ -1,17 +1,16 @@
 <script setup>
-import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
+import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog
-		name="Contactmoment"
+	<NcDialog name="Contactmoment"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
 		:close-on-click-outside="false"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>Contact moment succesvol opgeslagen</p>
+			<p>Contactmoment succesvol opgeslagen</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -28,11 +27,11 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 							Geen klant geselecteerd
 						</div>
 						<div class="statusAndStartDateContainer">
-							<div v-if="status">
-								status: {{ status }}
+							<div v-if="contactMoment.status">
+								status: {{ contactMoment.status }}
 							</div>
-							<div v-if="startDate">
-								startDate: {{ new Date(startDate).toLocaleDateString() }}
+							<div v-if="contactMoment.startDate">
+								startDate: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
 							</div>
 						</div>
 					</template>
@@ -41,6 +40,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 					<div>
 						<NcButton
 							:disabled="loading"
+							:loading="fetchLoading"
 							type="primary"
 							@click="openSearchKlantModal('persoon')">
 							<template #icon>
@@ -55,6 +55,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 					<div>
 						<NcButton
 							:disabled="loading"
+							:loading="fetchLoading"
 							type="primary"
 							@click="openSearchKlantModal('organisatie')">
 							<template #icon>
@@ -65,10 +66,11 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 					</div>
 				</div>
 
-				<div v-if="klant && !contactMomentId" class="buttonsContainer">
+				<div v-if="klant && !isView" class="buttonsContainer">
 					<div>
 						<NcButton
 							:disabled="loading"
+							:loading="fetchLoading"
 							type="primary"
 							@click="klant = null">
 							<template #icon>
@@ -81,9 +83,10 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="!success" class="form-group">
-				<NcTextArea v-model="notitie"
+				<NcTextArea v-model="contactMoment.notitie"
 					label="Notitie"
 					:disabled="loading"
+					:loading="fetchLoading"
 					placeholder="Notitie" />
 			</div>
 			<div class="tabContainer">
@@ -96,6 +99,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 								:bold="false"
 								:details="zaak.startdatum"
 								:disabled="loading"
+								:loading="fetchLoading"
 								:active="selectedZaak === zaak.id"
 								:force-display-actions="true"
 								@click="setSelectedZaak(zaak.id)">
@@ -121,6 +125,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 								:bold="false"
 								:details="taak.status"
 								:disabled="loading"
+								:loading="fetchLoading"
 								:active="selectedTaak === taak.id"
 								:force-display-actions="true"
 								@click="setSelectedTaak(taak.id)">
@@ -147,6 +152,7 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 								:bold="false"
 								:details="product.omschrijving ?? 'N/A'"
 								:disabled="loading"
+								:loading="fetchLoading"
 								:active="selectedProduct === product.id"
 								:force-display-actions="true"
 								@click="setSelectedProduct(product.id)">
@@ -180,8 +186,8 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 				</template>
 				Annuleer
 			</NcButton>
-			<NcActions v-if="!contactMomentId"
-				:disabled="loading || success"
+			<NcActions v-if="!isView"
+				:disabled="loading || success || fetchLoading"
 				:primary="true"
 				menu-name="Acties">
 				<template #icon>
@@ -201,18 +207,19 @@ import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 				</NcActionButton>
 			</NcActions>
 			<NcButton
-				v-if="!contactMomentId"
+				v-if="!isView"
 				type="primary"
-				:disabled="!klant || loading || success"
+				:disabled="!klant || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<ContentSaveOutline v-else :size="20" />
 				</template>
-				Opslaan
+				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
+
 		<TakenForm v-if="taakFormOpen"
 			:dashboard-widget="true"
 			@close-modal="closeTaakForm"
@@ -264,16 +271,30 @@ export default {
 			type: String,
 			default: null,
 		},
+		/**
+		 * If true, the form is in view mode and no actions are shown
+		 */
+		isView: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
+			/**
+			 * determines if this modal is an edit modal or a create modal. Is unrelated to the isView property.
+			 */
+			isEdit: !!this.contactMomentId,
+			fetchLoading: false, // used as the loading state when editing
 			success: false,
 			loading: false,
 			error: false,
-			titel: '',
-			notitie: '',
-			status: null,
-			startDate: null,
+			contactMoment: {
+				titel: '',
+				notitie: '',
+				status: null,
+				startDate: null,
+			},
 			klantenLoading: false,
 			zaken: [],
 			taken: [],
@@ -291,10 +312,32 @@ export default {
 	},
 	mounted() {
 		if (this.contactMomentId) {
-			this.fetchContactMomentData(this.contactMomentId)
+			this.fetchData(this.contactMomentId)
 		}
 	},
 	methods: {
+		async fetchData(id) {
+			this.fetchLoading = true
+
+			const { data } = await contactMomentStore.getContactMoment(id)
+
+			this.contactMoment = {
+				...data,
+				titel: data.titel ?? '',
+				notitie: data.notitie ?? '',
+				status: data.status ?? null,
+				startDate: data.startDate ?? null,
+			}
+
+			this.selectedZaak = data.zaak
+			this.selectedTaak = data.taak
+			this.selectedProduct = data.product
+
+			await this.fetchKlantData(data.klant)
+
+			this.fetchLoading = false
+		},
+
 		// Modal functions
 		closeModalFromButton() {
 			setTimeout(() => {
@@ -303,28 +346,32 @@ export default {
 		},
 		closeModal() {
 			navigationStore.setModal(false)
-			
+
 			this.$emit('close-modal')
 		},
 
-		// Contact moment functions
+		// Contactmoment functions
 		addContactMoment() {
 			this.loading = true
 
+			const endpoint = this.contactMomentId ? `contactmomenten/${this.contactMomentId}` : 'contactmomenten'
+			const method = this.contactMomentId ? 'PUT' : 'POST'
+
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/contactmomenten',
+				`/index.php/apps/zaakafhandelapp/api/${endpoint}`,
 				{
-					method: 'POST',
+					method,
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						notitie: this.notitie,
+						...this.contactMoment,
+						notitie: this.contactMoment.notitie,
 						klant: this.klant?.id ?? '',
 						zaak: this.selectedZaak ?? '',
 						taak: this.selectedTaak ?? '',
 						product: this.selectedProduct ?? '',
-						status: this.status === 'gesloten' ? 'gesloten' : 'open',
+						status: this.contactMoment.status === 'gesloten' ? 'gesloten' : 'open',
 						startDate: new Date().toISOString(),
 					}),
 				},
@@ -365,74 +412,45 @@ export default {
 			this.taakFormOpen = false
 		},
 
-		fetchContactMomentData(id) {
-			fetch(`/index.php/apps/zaakafhandelapp/api/contactmomenten/${id}`)
-				.then(response => response.json())
-				.then(data => {
-					this.notitie = data.notitie
-					this.status = data.status
-					this.startDate = data.startDate
-					this.fetchKlantData(data.klant)
-					this.selectedZaak = data.zaak
-					this.selectedTaak = data.taak
-					this.selectedProduct = data.product
-				})
-		},
+		async fetchKlantData(id) {
+			try {
+				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
+				this.klant = await klantResponse.json()
 
-		fetchKlantData(id) {
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
-				.then(response => response.json())
-				.then(data => {
-					this.klant = data
-				})
-				.catch(error => {
-					console.error('Error fetching klant:', error)
-					throw error // if this one fails, fetching the rest is pointless
-				})
+				// fetch all data in parallel
+				const [zakenRes, takenRes, berichtenRes, auditTrailRes] = await Promise.all([
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`),
+				])
 
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.zaken = data.results
-					}
-				})
-				.catch(error => {
-					console.error('Error fetching klant zaken:', error)
-				})
+				// parse all data
+				const [zakenData, takenData, berichtenData, auditTrailData] = await Promise.all([
+					zakenRes.json(),
+					takenRes.json(),
+					berichtenRes.json(),
+					auditTrailRes.json(),
+				])
 
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.taken = data.results
-					}
-				})
-				.catch(error => {
-					console.error('Error fetching klant taken:', error)
-				})
+				// set data
+				if (Array.isArray(zakenData.results)) {
+					this.zaken = zakenData.results
+				}
+				if (Array.isArray(takenData.results)) {
+					this.taken = takenData.results
+				}
+				if (Array.isArray(berichtenData.results)) {
+					this.berichten = berichtenData.results
+				}
+				if (Array.isArray(auditTrailData)) {
+					this.auditTrails = auditTrailData
+				}
 
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.berichten = data.results
-					}
-				})
-				.catch(error => {
-					console.error('Error fetching klant berichten:', error)
-				})
-
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data)) {
-						this.auditTrails = data
-					}
-				})
-				.catch(error => {
-					console.error('Error fetching klant audit trail:', error)
-				})
+			} catch (error) {
+				console.error('Error in fetchKlantData:', error)
+				throw error
+			}
 		},
 
 		getName(klant) {
