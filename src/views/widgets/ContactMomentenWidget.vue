@@ -12,7 +12,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 				@edit="onEdit"
 				@sluiten="onSluiten">
 				<template #empty-content>
-					<NcEmptyContent name="Geen contact momenten gevonden">
+					<NcEmptyContent name="Geen contactmomenten gevonden">
 						<template #icon>
 							<ChatOutline />
 						</template>
@@ -25,7 +25,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Contact moment starten
+			Contactmoment starten
 		</NcButton>
 
 		<ContactMomentenForm v-if="isContactMomentFormOpen"
@@ -68,11 +68,11 @@ export default {
 		return {
 			loading: false,
 			/**
-			 * determines if the contact moment form modal is open
+			 * determines if the contactmoment form modal is open
 			 */
 			isContactMomentFormOpen: false,
 			contactMomentItems: [],
-			// contact moment form props
+			// contactmoment form props
 			contactMomentId: null,
 			isView: false,
 			// widget options
@@ -136,7 +136,7 @@ export default {
 		},
 		// === MODAL CONTROL ===
 		/**
-		 * Opens the contact moment form modal in create/add mode
+		 * Opens the contactmoment form modal in create/add mode
 		 */
 		openModal() {
 			this.isContactMomentFormOpen = true
@@ -153,8 +153,8 @@ export default {
 		},
 		// === EVENTS ===
 		/**
-		 * runs when the user clicks on the show button, and opens the contact moment form modal in view mode
-		 * @param {{id: number}} event - the contact moment item received from the widget
+		 * runs when the user clicks on the show button, and opens the contactmoment form modal in view mode
+		 * @param {{id: number}} event - the contactmoment item received from the widget
 		 */
 		onShow(event) {
 			this.contactMomentId = event.id
@@ -162,8 +162,8 @@ export default {
 			this.isView = true
 		},
 		/**
-		 * runs when the user clicks on the edit button, and opens the contact moment form modal in edit mode
-		 * @param {{id: number}} event - the contact moment item received from the widget
+		 * runs when the user clicks on the edit button, and opens the contactmoment form modal in edit mode
+		 * @param {{id: number}} event - the contactmoment item received from the widget
 		 */
 		onEdit(event) {
 			this.contactMomentId = event.id
@@ -171,14 +171,14 @@ export default {
 			this.isView = false
 		},
 		/**
-		 * runs when the user clicks on the "sluiten" button, and changes the status of the contact moment to 'gesloten'
-		 * @param {{id: number}} event - the contact moment item received from the widget
+		 * runs when the user clicks on the "sluiten" button, and changes the status of the contactmoment to 'gesloten'
+		 * @param {{id: number}} event - the contactmoment item received from the widget
 		 */
 		async onSluiten(event) {
 			const { data } = await contactMomentStore.getContactMoment(event.id)
 
 			if (data?.status === 'gesloten') {
-				console.info('Contact moment is already closed')
+				console.info('Contactmoment is already closed')
 				return
 			}
 

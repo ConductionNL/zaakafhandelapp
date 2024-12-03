@@ -10,7 +10,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		:close-on-click-outside="false"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>Contact moment succesvol opgeslagen</p>
+			<p>Contactmoment succesvol opgeslagen</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -350,7 +350,7 @@ export default {
 			this.$emit('close-modal')
 		},
 
-		// Contact moment functions
+		// Contactmoment functions
 		addContactMoment() {
 			this.loading = true
 
