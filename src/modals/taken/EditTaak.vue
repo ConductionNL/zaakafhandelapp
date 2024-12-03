@@ -173,7 +173,6 @@ export default {
 			loading: false,
 			error: false,
 			// data
-			/** medewerkers is a list of clients (also known as klanten throughout the code / app) */
 			medewerkers: [],
 			medewerkersLoading: false,
 			// item
