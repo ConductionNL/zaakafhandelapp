@@ -35,10 +35,10 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			</NcButton>
 		</div>
 
-		<TakenForm v-if="isModalOpen"
+		<EditTaakForm v-if="isModalOpen"
 			:dashboard-widget="true"
 			:taak-id="taakId"
-			@save-success="closeModal"
+			@save-success="fetchTaakItems"
 			@close-modal="closeModal" />
 	</div>
 </template>
@@ -54,7 +54,7 @@ import { Taak } from '../../entities/index.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
-import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 
 export default {
 	name: 'TakenWidget',
@@ -64,6 +64,7 @@ export default {
 		NcEmptyContent,
 		NcButton,
 		Plus,
+		EditTaakForm: EditTaak,
 	},
 
 	data() {
@@ -130,13 +131,11 @@ export default {
 		closeModal() {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
-			this.fetchTaakItems()
 		},
 
 		onShow(event) {
 			this.taakId = event.id
 			this.isModalOpen = true
-			navigationStore.setModal('widgetTaakForm')
 		},
 
 		getSluitenIcon() {

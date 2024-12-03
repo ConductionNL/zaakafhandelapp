@@ -220,7 +220,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</NcButton>
 		</template>
 
-		<TakenForm v-if="taakFormOpen"
+		<EditTaakForm v-if="taakFormOpen"
 			:dashboard-widget="true"
 			@close-modal="closeTaakForm"
 			@save-success="closeTaakForm" />
@@ -234,7 +234,7 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
-import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -256,6 +256,7 @@ export default {
 		NcListItem,
 		NcActionButton,
 		NcEmptyContent,
+		EditTaakForm: EditTaak,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
