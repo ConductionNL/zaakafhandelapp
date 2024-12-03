@@ -9,7 +9,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				:loading="loading"
 				:item-menu="itemMenu"
 				@show="onShow"
-				@sluiten="onSluiten">
+				@sluiten="onSluiten"
+				@afhandelen="onAfhandelen">
 				<template #empty-content>
 					<NcEmptyContent name="Geen open taken">
 						<template #icon>
@@ -51,6 +52,9 @@ import { getTheme } from '../../services/getTheme.js'
 // Entities
 import { Taak } from '../../entities/index.js'
 
+// Icons
+import { iconProgressClose, iconCalendarCheckOutline } from '../../services/icons/index.js'
+
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
@@ -78,7 +82,11 @@ export default {
 				},
 				sluiten: {
 					text: 'Sluiten',
-					icon: this.getSluitenIcon(),
+					icon: iconProgressClose,
+				},
+				afhandelen: {
+					text: 'Taak Afhandelen',
+					icon: iconCalendarCheckOutline,
 				},
 			},
 		}
@@ -139,12 +147,6 @@ export default {
 			navigationStore.setModal('widgetTaakForm')
 		},
 
-		getSluitenIcon() {
-			const theme = getTheme()
-
-			return theme === 'light' ? 'icon-progress-close-dark' : 'icon-progress-close-light'
-		},
-
 		async onSluiten(event) {
 			// change status to 'gesloten'
 			const { data } = await taakStore.getTaak(event.id)
@@ -157,6 +159,27 @@ export default {
 			const newTaak = new Taak({
 				...data,
 				status: 'gesloten',
+			})
+
+			taakStore.saveTaak(newTaak)
+				.then(({ response }) => {
+					if (response.ok) {
+						this.fetchTaakItems(null, true)
+					}
+				})
+		},
+		async onAfhandelen(event) {
+			// change status to 'afgerond'
+			const { data } = await taakStore.getTaak(event.id)
+
+			if (data?.status === 'afgerond') {
+				console.info('Taak is already handled')
+				return
+			}
+
+			const newTaak = new Taak({
+				...data,
+				status: 'afgerond',
 			})
 
 			taakStore.saveTaak(newTaak)
