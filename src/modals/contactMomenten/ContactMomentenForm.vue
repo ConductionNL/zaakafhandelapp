@@ -3,8 +3,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 </script>
 
 <template>
-	<NcDialog
-		name="Contactmoment"
+	<NcDialog name="Contactmoment"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
@@ -67,7 +66,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</div>
 				</div>
 
-				<div v-if="klant && !contactMomentId" class="buttonsContainer">
+				<div v-if="klant && !isView" class="buttonsContainer">
 					<div>
 						<NcButton
 							:disabled="loading"
@@ -187,7 +186,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</template>
 				Annuleer
 			</NcButton>
-			<NcActions v-if="!contactMomentId"
+			<NcActions v-if="!isView"
 				:disabled="loading || success || fetchLoading"
 				:primary="true"
 				menu-name="Acties">
@@ -208,18 +207,19 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</NcActionButton>
 			</NcActions>
 			<NcButton
-				v-if="!contactMomentId"
+				v-if="!isView"
 				type="primary"
 				:disabled="!klant || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading" :size="20" />
+					<ContentSaveOutline v-else :size="20" />
 				</template>
-				Opslaan
+				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
+
 		<TakenForm v-if="taakFormOpen"
 			:dashboard-widget="true"
 			@close-modal="closeTaakForm"
@@ -271,9 +271,20 @@ export default {
 			type: String,
 			default: null,
 		},
+		/**
+		 * If true, the form is in view mode and no actions are shown
+		 */
+		isView: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
+			/**
+			 * determines if this modal is an edit modal or a create modal. Is unrelated to the isView property.
+			 */
+			isEdit: !!this.contactMomentId,
 			fetchLoading: false, // used as the loading state when editing
 			success: false,
 			loading: false,
@@ -343,14 +354,18 @@ export default {
 		addContactMoment() {
 			this.loading = true
 
+			const endpoint = this.contactMomentId ? `contactmomenten/${this.contactMomentId}` : 'contactmomenten'
+			const method = this.contactMomentId ? 'PUT' : 'POST'
+
 			fetch(
-				'/index.php/apps/zaakafhandelapp/api/contactmomenten',
+				`/index.php/apps/zaakafhandelapp/api/${endpoint}`,
 				{
-					method: 'POST',
+					method,
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
+						...this.contactMoment,
 						notitie: this.contactMoment.notitie,
 						klant: this.klant?.id ?? '',
 						zaak: this.selectedZaak ?? '',
