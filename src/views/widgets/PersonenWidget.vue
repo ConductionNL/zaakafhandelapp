@@ -5,16 +5,22 @@ import { klantStore, navigationStore } from '../../store/store.js'
 <template>
 	<div class="personenContainer">
 		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
-				:loading="loading"
+			<NcDashboardWidget :items="personenItems"
 				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent name="Geen personen gevonden">
-						<template #icon>
-							<AccountOutline />
-						</template>
-					</NcEmptyContent>
+					<div>
+						<NcEmptyContent v-if="loading" name="Persoon laden...">
+							<template #icon>
+								<NcLoadingIcon />
+							</template>
+						</NcEmptyContent>
+						<NcEmptyContent v-if="!loading" name="Geen personen gevonden">
+							<template #icon>
+								<AccountOutline />
+							</template>
+						</NcEmptyContent>
+					</div>
 				</template>
 			</NcDashboardWidget>
 		</div>
@@ -46,7 +52,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextcloud/vue'
+import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
@@ -63,6 +69,7 @@ export default {
 		NcTextField,
 		AccountOutline,
 		ViewKlantRegister,
+		NcLoadingIcon,
 	},
 
 	data() {
@@ -81,41 +88,23 @@ export default {
 		}
 	},
 
-	computed: {
-		items() {
-			return this.personenItems
-		},
-	},
-
-	mounted() {
-		this.fetchPersonenItems()
-	},
-
 	methods: {
-		fetchPersonenItems() {
-			this.loading = true
-			klantStore.searchPersons()
-				.then(() => {
-					this.personenItems = klantStore.klantenList.map(person => ({
-						id: person.id,
-						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
-						subText: person.emailadres,
-						avatarUrl: this.getItemIcon(),
-					}))
-					this.loading = false
-				})
-		},
 		search() {
+			if (!this.searchPerson.trim()) {
+				this.personenItems = []
+				return
+			}
+
 			this.loading = true
+
 			klantStore.searchPersons(this.searchPerson)
-				.then(() => {
-					this.personenItems = klantStore.klantenList.map(person => ({
+				.then(({ data }) => {
+					this.personenItems = data.map(person => ({
 						id: person.id,
 						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
 						subText: person.emailadres,
 						avatarUrl: this.getItemIcon(),
 					}))
-					this.loading = false
 				})
 				.finally(() => {
 					this.loading = false
