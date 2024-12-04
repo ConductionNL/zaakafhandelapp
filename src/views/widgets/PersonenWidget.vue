@@ -26,37 +26,37 @@ import { klantStore, navigationStore } from '../../store/store.js'
 		</div>
 
 		<div class="searchContainer">
-			<NcTextField :disabled="loading"
-				label="Zoeken op voornaam"
-				maxlength="255"
-				class="searchField"
-				:value.sync="searchPerson" />
-
 			<NcButton type="primary"
 				:disabled="loading"
 				class="searchButton"
-				@click="search">
+				@click="() => (searchKlantModalOpen = true)">
 				<template #icon>
 					<Search :size="20" />
 				</template>
-				Zoeken
+				Zoek
 			</NcButton>
 
 			<ViewKlantRegister v-if="isModalOpen"
 				:dashboard-widget="true"
-				:klant-id="klantStore.widgetKlantId"
-				@save-success="fetchPersonenItems" />
+				:klant-id="klantStore.widgetKlantId" />
+
+			<SearchKlantModal v-if="searchKlantModalOpen"
+				:dashboard-widget="true"
+				starting-type="persoon"
+				@selected-klant="createKlantItems($event)"
+				@close-modal="() => (searchKlantModalOpen = false)" />
 		</div>
 	</div>
 </template>
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import ViewKlantRegister from '../../modals/klantRegister/ViewKlantRegister.vue'
+import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 
 export default {
 	name: 'PersonenWidget',
@@ -66,7 +66,6 @@ export default {
 		NcEmptyContent,
 		NcButton,
 		Search,
-		NcTextField,
 		AccountOutline,
 		ViewKlantRegister,
 		NcLoadingIcon,
@@ -79,6 +78,7 @@ export default {
 			personenItems: [],
 			searchPerson: '',
 			selectedKlantId: '',
+			searchKlantModalOpen: false,
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
@@ -89,26 +89,13 @@ export default {
 	},
 
 	methods: {
-		search() {
-			if (!this.searchPerson.trim()) {
-				this.personenItems = []
-				return
-			}
-
-			this.loading = true
-
-			klantStore.searchPersons(this.searchPerson)
-				.then(({ data }) => {
-					this.personenItems = data.map(person => ({
-						id: person.id,
-						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
-						subText: person.emailadres,
-						avatarUrl: this.getItemIcon(),
-					}))
-				})
-				.finally(() => {
-					this.loading = false
-				})
+		createKlantItems(klant) {
+			this.personenItems = [{
+				id: klant.id,
+				mainText: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
+				subText: klant.emailadres,
+				avatarUrl: this.getItemIcon(),
+			}]
 		},
 		getItemIcon() {
 			const theme = getTheme()
@@ -120,6 +107,12 @@ export default {
 			}
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/account-outline.svg`
+		},
+		openSearchKlantModal() {
+			this.searchKlantModalOpen = true
+		},
+		closeSearchKlantModal() {
+			this.searchKlantModalOpen = false
 		},
 		onShow(item) {
 			klantStore.setWidgetKlantId(item.id)

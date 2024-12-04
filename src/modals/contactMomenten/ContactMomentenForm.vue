@@ -173,7 +173,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<SearchKlantModal v-if="searchKlantModalOpen"
 				:dashboard-widget="true"
 				:starting-type="startingType"
-				@selected-klant="fetchKlantData($event)"
+				select-button-label="Koppelen"
+				@selected-klant="fetchKlantData($event?.id)"
 				@close-modal="closeSearchKlantModal" />
 		</div>
 		<template #actions>
