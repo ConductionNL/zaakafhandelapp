@@ -43,7 +43,7 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 
 <script>
 import { NcButton, NcModal, NcLoadingIcon, NcNoteCard, NcSelect } from '@nextcloud/vue'
-import { Zaak } from '../../entities/index.js'
+import { Taak } from '../../entities/index.js'
 
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -84,10 +84,13 @@ export default {
 			taakStore.refreshTakenList()
 				.then(({ data }) => {
 					this.taken = {
-						options: data.map((taak) => ({
-							id: taak.id,
-							label: taak.title,
-						})),
+						options: data
+							// zaak is stored on the taak itself as a singular id, indicating that only taken without a zaak can be used
+							.filter((taak) => !taak.zaak)
+							.map((taak) => ({
+								id: taak.id,
+								label: taak.title,
+							})),
 					}
 				})
 				.catch((err) => {
@@ -101,17 +104,20 @@ export default {
 			this.loading = true
 			this.error = false
 
-			const zaakItemCopy = _.cloneDeep(this.zaakItem)
-
-			if (zaakItemCopy.taken) {
-				zaakItemCopy.taken.push(this.taken.value.id)
-			} else {
-				zaakItemCopy.taken = [this.taken.value.id]
+			const taakItem = taakStore.takenList.find((taak) => taak.id === this.taken.value.id)
+			if (!taakItem) {
+				this.error = 'something went majorly wrong'
+				this.loading = false
+				return
 			}
 
-			const newZaakItem = new Zaak(zaakItemCopy)
+			const taakItemCopy = _.cloneDeep(taakItem)
 
-			zaakStore.saveZaak(newZaakItem)
+			taakItemCopy.zaak = this.zaakItem.id
+
+			const newTaakItem = new Taak(taakItemCopy)
+
+			taakStore.saveTaak(newTaakItem)
 				.then(({ response }) => {
 					this.success = response.ok
 

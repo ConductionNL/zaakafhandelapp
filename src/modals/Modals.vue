@@ -10,6 +10,7 @@ import { navigationStore } from '../store/store.js'
 		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
 		<WidgetZaakForm v-if="navigationStore.modal === 'widgetZaakForm'" />
 		<AddBerichtToZaak v-if="navigationStore.modal === 'addBerichtToZaak'" />
+		<AddTaakToZaak v-if="navigationStore.modal === 'addTaakToZaak'" />
 		<!-- ==== -->
 		<EditZaakType />
 		<EditKlant />
@@ -43,6 +44,7 @@ import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
+import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
 
 export default {
 	name: 'Modals',
@@ -63,6 +65,7 @@ export default {
 		DeleteContactMoment,
 		EditMedewerker,
 		AddBerichtToZaak,
+		AddTaakToZaak,
 	},
 }
 </script>

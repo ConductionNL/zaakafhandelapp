@@ -34,7 +34,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addTaak')">
+						<NcActionButton @click="navigationStore.setModal('addTaakToZaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
