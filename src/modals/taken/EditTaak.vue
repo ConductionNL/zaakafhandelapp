@@ -48,13 +48,29 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 				label="Toelichting" />
 
 			<div>
-				<NcSelect
-					v-bind="medewerkers"
-					v-model="medewerkers.value"
-					:user-select="true"
-					input-label="Medewerker"
-					:loading="medewerkersLoading"
-					:disabled="loading" />
+				<NcCheckboxRadioSwitch v-if="clientType === 'both'"
+					:checked.sync="useMedewerkerInsteadOfKlant"
+					type="switch">
+					Klant / Medewerker
+				</NcCheckboxRadioSwitch>
+
+				<div>
+					<NcSelect v-if="clientType !== 'medewerker' || (clientType === 'both' && !useMedewerkerInsteadOfKlant)"
+						v-bind="klanten"
+						v-model="klanten.value"
+						:user-select="true"
+						input-label="Klant*"
+						:loading="klantenLoading"
+						:disabled="loading" />
+
+					<NcSelect v-if="clientType !== 'klant' || (clientType === 'both' && useMedewerkerInsteadOfKlant)"
+						v-bind="medewerkers"
+						v-model="medewerkers.value"
+						:user-select="true"
+						input-label="Medewerker*"
+						:loading="medewerkersLoading"
+						:disabled="loading" />
+				</div>
 			</div>
 		</div>
 
@@ -72,7 +88,14 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 				Help
 			</NcButton>
 			<NcButton v-if="!success"
-				:disabled="loading || medewerkersLoading || !taakItem.title || !taakItem.deadline"
+				:disabled="loading
+					|| medewerkersLoading
+					|| !taakItem.title
+					|| !taakItem.deadline
+					|| (clientType === 'both' && !useMedewerkerInsteadOfKlant && !klanten.value?.id)
+					|| (clientType === 'both' && useMedewerkerInsteadOfKlant && !medewerkers.value?.id)
+					|| (clientType === 'klant' && !klanten.value?.id)
+					|| (clientType === 'medewerker' && !medewerkers.value?.id)"
 				type="primary"
 				@click="editTaak()">
 				<template #icon>
@@ -94,6 +117,7 @@ import {
 	NcTextArea,
 	NcDateTimePicker,
 	NcSelect,
+	NcCheckboxRadioSwitch,
 	NcLoadingIcon,
 	NcNoteCard,
 } from '@nextcloud/vue'
@@ -102,6 +126,20 @@ import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Help from 'vue-material-design-icons/Help.vue'
 
+/**
+ * EditTaak component
+ *
+ * This component allows users to create and edit a taak (task).
+ * It fetches data from the API and pre-selects the associated medewerker (employee) if one exists.
+ * The component provides options to change the client type, pre-select a klant (client), and disable the klant dropdown.
+ *
+ * Props:
+ * - `dashboardWidget` (Boolean, optional): Whether the modal is being used within a dashboard widget. If true, the modal will emit a 'save-success' event upon successful taak saving.
+ * - `taakId` (String, optional): ID of the taak (task) to load and edit. When provided, this prop takes precedence over any ID present in `taakStore.taakItem`. The component will fetch the taak data associated with this ID from the API, load the fetched data into the form, and pre-select the associated medewerker (employee) if one exists.
+ * - `clientType` (String, required): Determines which client type to use for the taak. Depending on the value, it'll show either the klant dropdown, medewerker dropdown, or both as default.
+ * - `klantId` (String, optional): ID of the klant (client) to pre-select in the klanten dropdown. When provided, this prop will attempt to find and select the klant with the given ID in the klanten dropdown. If the klant ID does not exist in the dropdown options, no klant will be pre-selected.
+ * - `medewerkerId` (String, optional): ID of the medewerker (employee) to pre-select in the medewerkers dropdown. When provided, this prop will attempt to find and select the medewerker with the given ID in the medewerkers dropdown. If the medewerker ID does not exist in the dropdown options, no medewerker will be pre-selected.
+ */
 export default {
 	name: 'EditTaak',
 	components: {
@@ -111,6 +149,7 @@ export default {
 		NcDateTimePicker,
 		NcButton,
 		NcSelect,
+		NcCheckboxRadioSwitch,
 		NcLoadingIcon,
 		NcNoteCard,
 		// Icons
@@ -130,25 +169,6 @@ export default {
 			required: false,
 		},
 		/**
-		 * ID of a medewerker (employee) to pre-select in the dropdown.
-		 *
-		 * This prop has the highest priority when determining which medewerker to select:
-		 * 1. selectedMedewerker prop (if provided)
-		 * 2. medewerker ID from taakId prop fetch result (if taakId provided)
-		 * 3. taakStore.taakItem.klant
-		 *
-		 * Note: While functional, using this prop is not recommended. Instead, prefer using
-		 * the taakId prop to load a complete taak, or let the component handle medewerker
-		 * selection based on the taakStore state.
-		 *
-		 * If the provided klant ID does not exist in the database, or is in any other way invalid,
-		 * the medewerker dropdown will not have a default/selected option.
-		 */
-		selectedMedewerker: {
-			type: String,
-			default: null,
-		},
-		/**
 		 * ID of the taak (task) to load and edit.
 		 *
 		 * When provided, this prop takes precedence over any ID present in `taakStore.taakItem`.
@@ -165,6 +185,56 @@ export default {
 			type: String,
 			default: null,
 		},
+		/**
+		 * Determines which client type to use for the taak.
+		 *
+		 * Depending on the value, it'll show either the klant dropdown, medewerker dropdown, or both as default.
+		 *
+		 * Possible values:
+		 * - 'klant': Only the klant (client) dropdown will be shown.
+		 * - 'medewerker': Only the medewerker (employee) dropdown will be shown.
+		 * - 'both': Both the klant and medewerker dropdowns will be shown.
+		 *
+		 * @default 'both'
+		 */
+		clientType: {
+			type: String,
+			/** @type { 'both' } */
+			default: 'both',
+			/**
+			 * @param { 'klant' | 'medewerker' | 'both' } value - The value to validate.
+			 * @return {boolean} Returns true if the value is valid, false otherwise.
+			 */
+			validator: (value) => ['klant', 'medewerker', 'both'].includes(value),
+		},
+		/**
+		 * ID of the klant (client) to pre-select in the klanten dropdown.
+		 *
+		 * When provided, this prop will:
+		 * 1. Attempt to find and select the klant with the given ID in the klanten dropdown.
+		 * 2. If the klant ID does not exist in the dropdown options, no klant will be pre-selected.
+		 *
+		 * @example
+		 * <EditTaak klantId="2469afb2-950b-48a3-a7ea-9667557c373d" />
+		 */
+		klantId: {
+			type: String,
+			default: null,
+		},
+		/**
+		 * ID of the medewerker (employee) to pre-select in the medewerkers dropdown.
+		 *
+		 * When provided, this prop will:
+		 * 1. Attempt to find and select the medewerker with the given ID in the medewerkers dropdown.
+		 * 2. If the medewerker ID does not exist in the dropdown options, no medewerker will be pre-selected.
+		 *
+		 * @example
+		 * <EditTaak medewerkerId="2469afb2-950b-48a3-a7ea-9667557c373d" />
+		 */
+		medewerkerId: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -172,7 +242,10 @@ export default {
 			success: false,
 			loading: false,
 			error: false,
+			useMedewerkerInsteadOfKlant: false,
 			// data
+			klanten: [],
+			klantenLoading: false,
 			medewerkers: [],
 			medewerkersLoading: false,
 			// item
@@ -219,25 +292,7 @@ export default {
 		}
 	},
 	mounted() {
-		if (this.taakId) {
-			this.fetchTaakData(this.taakId)
-		} else if (taakStore.taakItem?.id) {
-			// fetchMedewerkers also gets called by fetchTaakData, if taakId is provided. So we don't need to call it first
-			this.fetchMedewerkers()
-
-			this.taakItem = {
-				...taakStore.taakItem,
-				title: taakStore.taakItem.title || '',
-				type: taakStore.taakItem.type || '',
-				status: taakStore.taakItem.status || 'open',
-				deadline: new Date(taakStore.taakItem.deadline),
-				onderwerp: taakStore.taakItem.onderwerp || '',
-				toelichting: taakStore.taakItem.toelichting || '',
-				klant: klantStore.klantItem?.id || '',
-			}
-		} else {
-			this.fetchMedewerkers()
-		}
+		this.fetchData()
 	},
 	methods: {
 		closeModalFromButton() {
@@ -252,15 +307,78 @@ export default {
 				this.$emit('close-modal')
 			}
 		},
-		async fetchTaakData(id) {
-			const { entity: taakEntity } = await taakStore.getTaak(id)
+		async fetchData() {
+			let taakEntity
 
-			this.taakItem = {
-				...taakEntity,
-				deadline: new Date(taakEntity.deadline),
+			// if taakId is provided, fetch the taak data from the API
+			if (this.taakId) {
+				const { entity } = await taakStore.getTaak(this.taakId)
+				taakEntity = entity
+			} else if (taakStore.taakItem?.id) {
+				taakEntity = taakStore.taakItem
 			}
 
-			this.fetchMedewerkers(taakEntity?.klant)
+			if (taakEntity) {
+				this.taakItem = {
+					...this.taakItem,
+					...taakEntity,
+					title: taakEntity.title || '',
+					type: taakEntity.type || '',
+					status: taakEntity.status || 'open',
+					deadline: new Date(taakEntity.deadline),
+					onderwerp: taakEntity.onderwerp || '',
+					toelichting: taakEntity.toelichting || '',
+					klant: taakEntity?.klant || '',
+					medewerker: taakEntity?.medewerker || '',
+				}
+
+				if (this.clientType === 'both') {
+					this.useMedewerkerInsteadOfKlant = !!taakEntity?.medewerker
+				}
+			}
+
+			if (this.clientType !== 'medewerker') this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
+			if (this.clientType !== 'klant') this.fetchMedewerkers(taakEntity?.medewerker)
+		},
+		/**
+		 * @param {string} klantId - Optional ID of the klant to select. Will take precedence over the ID present in `taakStore.taakItem`.
+		 *                           If none are provided the default selected klant will be `null`.
+		 */
+		fetchKlanten(klantId = null) {
+			this.klantenLoading = true
+
+			klantStore.refreshKlantenList()
+				.then(({ data }) => {
+
+					const taakKlantId = taakStore.taakItem?.klant
+					const searchId = (this.klantId ?? klantId ?? taakKlantId)?.toString()
+
+					const selectedKlant = data.find((klant) => klant?.id.toString() === searchId) || null
+
+					this.klanten = {
+						options: data.map((klant) => ({
+							id: klant.id,
+							displayName: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
+							subName: klant.email,
+							icon: klant.icon ?? '',
+
+						})),
+						value: selectedKlant
+							? {
+								id: selectedKlant?.id,
+								displayName: `${selectedKlant.voornaam} ${selectedKlant.tussenvoegsel} ${selectedKlant.achternaam}`,
+								subName: selectedKlant.email,
+								icon: selectedKlant.icon ?? '',
+							}
+							: null,
+					}
+				})
+				.catch((err) => {
+					console.error(err)
+				})
+				.finally(() => {
+					this.klantenLoading = false
+				})
 		},
 		/**
 		 * @param {string} medewerkerId - Optional ID of the medewerker to select. Will take precedence over the ID present in `taakStore.taakItem`.
@@ -270,8 +388,8 @@ export default {
 			medewerkerStore.refreshMedewerkersList()
 				.then(({ data }) => {
 
-					const taakKlantId = taakStore.taakItem?.klant
-					const searchId = (this.selectedMedewerker ?? medewerkerId ?? taakKlantId)?.toString()
+					const taakMedewerkerId = taakStore.taakItem?.medewerker
+					const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
 
 					const selectedMedewerker = data.find((medewerker) => medewerker?.id.toString() === searchId) || null
 
@@ -303,9 +421,20 @@ export default {
 		async editTaak() {
 			this.loading = true
 
+			let klantId
+			if (this.clientType !== 'medewerker' && (this.clientType !== 'both' || !this.useMedewerkerInsteadOfKlant)) {
+				klantId = this.klanten.value?.id
+			}
+
+			let medewerkerId
+			if (this.clientType !== 'klant' && (this.clientType !== 'both' || this.useMedewerkerInsteadOfKlant)) {
+				medewerkerId = this.medewerkers.value?.id
+			}
+
 			taakStore.saveTaak({
 				...this.taakItem,
-				klant: this.medewerkers.value?.id ?? '',
+				klant: klantId || null,
+				medewerker: medewerkerId || null,
 				status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
 				deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
 			}, { doNotRefresh: true })
