@@ -1,11 +1,11 @@
 <script setup>
-import { navigationStore, berichtStore } from '../../store/store.js'
+import { navigationStore, berichtStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<div v-if="!loading">
-			<NcListItem v-for="(bericht, i) in berichtenList"
+		<div v-if="!loading && !!filteredBerichten?.length">
+			<NcListItem v-for="(bericht, i) in filteredBerichten"
 				:key="`${bericht}${i}`"
 				:name="bericht?.onderwerp"
 				:active="berichtStore.berichtItem?.id === bericht.id"
@@ -22,17 +22,29 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 					{{ bericht?.berichttekst }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editBericht(bericht)">
-						Bewerken
+					<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setSelected('berichten')">
+						<template #icon>
+							<Eye :size="20" />
+						</template>
+						Bekijken
 					</NcActionButton>
+					<!-- <NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('editBericht')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						Bewerken
+					</NcActionButton> -->
 					<NcActionButton>
-						Verwijderen
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						Verwijderen van zaak
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
-		<div v-if="!berichtenList?.length && !loading">
+		<div v-if="!filteredBerichten?.length && !loading">
 			Geen berichten gevonden.
 		</div>
 
@@ -49,6 +61,9 @@ import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakBerichten',
@@ -68,38 +83,27 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			berichtenList: [],
 		}
+	},
+	computed: {
+		filteredBerichten() {
+			return berichtStore.berichtenList.filter(bericht => zaakStore.zaakItem.berichten.includes(bericht.id))
+		},
 	},
 	watch: {
 		zaakId(newVal) {
-			this.fetchData(newVal)
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(this.zaakId)
+		this.fetchData()
 	},
 	methods: {
-		editBericht(bericht) {
-			berichtStore.setBerichtItem(bericht)
-			navigationStore.setModal('editBericht')
-		},
-		fetchData(zaakId) {
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.berichtenList = data.results || []
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
+
+			berichtStore.refreshBerichtenList()
+				.finally(() => {
 					this.loading = false
 				})
 		},
