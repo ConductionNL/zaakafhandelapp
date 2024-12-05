@@ -71,7 +71,6 @@ export default {
 		}
 	},
 	mounted() {
-		this.zaakItem = zaakStore.zaakItem
 		this.fetchBerichtenData()
 	},
 	methods: {
@@ -84,10 +83,12 @@ export default {
 			berichtStore.refreshBerichtenList()
 				.then(({ data }) => {
 					this.berichten = {
-						options: data.map((bericht) => ({
-							id: bericht.id,
-							label: bericht.title,
-						})),
+						options: data
+							.filter((bericht) => !zaakStore.zaakItem.berichten.includes(bericht.id))
+							.map((bericht) => ({
+								id: bericht.id,
+								label: bericht.title,
+							})),
 					}
 				})
 				.catch((err) => {
