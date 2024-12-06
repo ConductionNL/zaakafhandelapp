@@ -13,7 +13,6 @@ import { navigationStore } from '../store/store.js'
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
 		<EditTaak v-if="navigationStore.modal === 'editTaak'" />
-		<WidgetTaakForm v-if="navigationStore.modal === 'widgetTaakForm'" />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<EditRol />
 		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
@@ -33,7 +32,6 @@ import EditBericht from './berichten/EditBericht.vue'
 import ViewBerichtAuditTrail from './berichten/ViewBerichtAuditTrail.vue'
 import EditTaak from './taken/EditTaak.vue'
 import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
-import WidgetTaakForm from './taken/WidgetTaakForm.vue'
 import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
@@ -50,7 +48,6 @@ export default {
 		EditBericht,
 		ViewBerichtAuditTrail,
 		EditTaak,
-		WidgetTaakForm,
 		ViewTaakAuditTrail,
 		EditRol,
 		ViewZaakAuditTrail,

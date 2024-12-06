@@ -33,7 +33,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 			<NcTextField :disabled="loading"
 				label="Email adres"
 				maxlength="255"
-				:value.sync="medewerkerItem.emailadres" />
+				:value.sync="medewerkerItem.email" />
 		</div>
 
 		<template #actions>
@@ -118,6 +118,17 @@ export default {
 		items() {
 			return this.medewerkerItems
 		},
+	},
+	mounted() {
+		if (medewerkerStore.medewerkerItem?.id) {
+			this.medewerkerItem = {
+				...medewerkerStore.medewerkerItem,
+				voornaam: medewerkerStore.medewerkerItem.voornaam || '',
+				tussenvoegsel: medewerkerStore.medewerkerItem.tussenvoegsel || '',
+				achternaam: medewerkerStore.medewerkerItem.achternaam || '',
+				email: medewerkerStore.medewerkerItem.email || '',
+			}
+		}
 	},
 	updated() {
 		if (navigationStore.modal === 'editMedewerker' && !this.hasUpdated) {

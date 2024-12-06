@@ -83,7 +83,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</div>
 
 			<div v-if="!success" class="form-group">
-				<NcTextArea v-model="contactMoment.notitie"
+				<NcTextArea :value.sync="contactMoment.notitie"
 					label="Notitie"
 					:disabled="loading"
 					:loading="fetchLoading"
@@ -193,11 +193,17 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
-				<NcActionButton @click="openTaakForm">
+				<NcActionButton @click="openTaakForm('medewerker')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Taak aanmaken
+					Medewerker taak aanmaken
+				</NcActionButton>
+				<NcActionButton @click="openTaakForm('klant')">
+					<template #icon>
+						<CalendarMonthOutline :size="20" />
+					</template>
+					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton :disabled="true" @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 					<template #icon>
@@ -220,8 +226,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</NcButton>
 		</template>
 
-		<TakenForm v-if="taakFormOpen"
+		<EditTaakForm v-if="taakFormOpen"
 			:dashboard-widget="true"
+			:client-type="taakClientType"
+			:klant-id="klant?.id"
 			@close-modal="closeTaakForm"
 			@save-success="closeTaakForm" />
 	</NcDialog>
@@ -234,7 +242,7 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
-import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -256,6 +264,7 @@ export default {
 		NcListItem,
 		NcActionButton,
 		NcEmptyContent,
+		EditTaakForm: EditTaak,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
@@ -308,6 +317,7 @@ export default {
 			selectedProduct: null,
 			startingType: 'all',
 			taakFormOpen: false,
+			taakClientType: 'both',
 		}
 	},
 	mounted() {
@@ -403,8 +413,9 @@ export default {
 			this.searchKlantModalOpen = false
 		},
 
-		openTaakForm() {
+		openTaakForm(clientType = 'both') {
 			this.taakFormOpen = true
+			this.taakClientType = clientType
 			taakStore.setTaakItem(null)
 		},
 
