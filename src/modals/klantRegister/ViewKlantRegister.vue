@@ -194,7 +194,7 @@ import { taakStore, navigationStore, zaakStore, klantStore } from '../../store/s
 			:selected-klant-from-widget="klant"
 			@save-success="fetchZaakItems" />
 
-		<WidgetTaakForm v-if="taakModalOpen"
+		<EditTaakForm v-if="taakModalOpen"
 			:dashboard-widget="true"
 			:selected-klant-from-widget="klant"
 			@save-success="fetchTaakItems" />
@@ -220,7 +220,7 @@ import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
-import WidgetTaakForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 import WidgetZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
 
 export default {
@@ -240,7 +240,7 @@ export default {
 		AccountOutline,
 		Eye,
 		DotsHorizontal,
-		WidgetTaakForm,
+		EditTaakForm: EditTaak,
 		WidgetZaakForm,
 	},
 	props: {

@@ -16,7 +16,7 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="navigationStore.setModal('editKlant')">
+						<NcActionButton @click="navigationStore.setModal('editMedewerker')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -40,7 +40,7 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 							</template>
 							Zaak starten
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setDialog('deleteKlant')">
+						<NcActionButton @click="navigationStore.setDialog('deleteMedewerker')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -51,8 +51,10 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 				<span> {{ medewerkerStore.medewerkerItem.subject }} </span>
 
 				<div class="gridContent">
-					<b>Email adres:</b>
-					<p>{{ medewerkerStore.medewerkerItem.emailadres }}</p>
+					<div>
+						<b>Email adres:</b>
+						<p>{{ medewerkerStore.medewerkerItem.email }}</p>
+					</div>
 				</div>
 			</div>
 		</div>

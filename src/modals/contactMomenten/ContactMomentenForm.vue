@@ -18,24 +18,34 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 		<div v-if="!success">
 			<div class="headerContainer">
-				<NcNoteCard type="info" class="noteCard">
-					<template #default>
-						<div v-if="klant">
-							{{ getName(klant) }}
-						</div>
-						<div v-else>
-							Geen klant geselecteerd
-						</div>
-						<div class="statusAndStartDateContainer">
-							<div v-if="contactMoment.status">
-								status: {{ contactMoment.status }}
+				<div class="personInfoContainer">
+					<NcNoteCard type="info" class="noteCard">
+						<template #default>
+							<div v-if="klant">
+								{{ `${getSex(klant)} ${getName(klant)}` }}
+								<div v-if="klant?.type === 'persoon'" class="flexContainer">
+									<div>
+										Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+									</div>
+									<div>
+										Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
+									</div>
+								</div>
+								<div v-if="klant?.type === 'organisatie'" class="flexContainer">
+									<div>
+										KVK: {{ klant?.kvkNummer ?? 'N/A' }}
+									</div>
+									<div>
+										Locatie: {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}
+									</div>
+								</div>
 							</div>
-							<div v-if="contactMoment.startDate">
-								startDate: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
+							<div v-else>
+								Geen klant geselecteerd
 							</div>
-						</div>
-					</template>
-				</NcNoteCard>
+						</template>
+					</NcNoteCard>
+				</div>
 				<div v-if="!klant" class="buttonsContainer">
 					<div>
 						<NcButton
@@ -80,10 +90,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						</NcButton>
 					</div>
 				</div>
+				<div v-if="isView" class="statusContainer">
+					<div v-if="contactMoment.status">
+						Status: {{ contactMoment.status }}
+					</div>
+					<div v-if="contactMoment.startDate">
+						Start datum: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
+					</div>
+				</div>
 			</div>
 
 			<div v-if="!success" class="form-group">
-				<NcTextArea v-model="contactMoment.notitie"
+				<NcTextArea :value.sync="contactMoment.notitie"
 					label="Notitie"
 					:disabled="loading"
 					:loading="fetchLoading"
@@ -193,11 +211,17 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
-				<NcActionButton @click="openTaakForm">
+				<NcActionButton @click="openTaakForm('medewerker')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Taak aanmaken
+					Medewerker taak aanmaken
+				</NcActionButton>
+				<NcActionButton @click="openTaakForm('klant')">
+					<template #icon>
+						<CalendarMonthOutline :size="20" />
+					</template>
+					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton :disabled="true" @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 					<template #icon>
@@ -220,8 +244,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</NcButton>
 		</template>
 
-		<TakenForm v-if="taakFormOpen"
+		<EditTaakForm v-if="taakFormOpen"
 			:dashboard-widget="true"
+			:client-type="taakClientType"
+			:klant-id="klant?.id"
 			@close-modal="closeTaakForm"
 			@save-success="closeTaakForm" />
 	</NcDialog>
@@ -234,7 +260,7 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
-import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -244,6 +270,7 @@ import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Minus from 'vue-material-design-icons/Minus.vue'
+import getValidISOstring from '../../services/getValidISOstring.js'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -256,6 +283,7 @@ export default {
 		NcListItem,
 		NcActionButton,
 		NcEmptyContent,
+		EditTaakForm: EditTaak,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
@@ -308,6 +336,7 @@ export default {
 			selectedProduct: null,
 			startingType: 'all',
 			taakFormOpen: false,
+			taakClientType: 'both',
 		}
 	},
 	mounted() {
@@ -403,8 +432,9 @@ export default {
 			this.searchKlantModalOpen = false
 		},
 
-		openTaakForm() {
+		openTaakForm(clientType = 'both') {
 			this.taakFormOpen = true
+			this.taakClientType = clientType
 			taakStore.setTaakItem(null)
 		},
 
@@ -461,6 +491,12 @@ export default {
 				return klant?.bedrijfsnaam ?? 'onbekend'
 			}
 			return 'onbekend'
+		},
+		getSex(klant) {
+			if (klant.type === 'persoon') {
+				return `(${klant?.geslacht})`
+			}
+			return ''
 		},
 
 		// Tabs
@@ -534,8 +570,12 @@ div[class='modal-container']:has(.ContactMomentenForm) {
     gap: var(--zaa-margin-10);
 }
 
-.statusAndStartDateContainer {
+.flexContainer, .statusContainer {
 	display: flex;
 	gap: var(--zaa-margin-10);
+}
+
+.statusContainer {
+	align-items: center;
 }
 </style>

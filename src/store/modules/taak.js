@@ -38,16 +38,16 @@ export const useTaakStore = defineStore('taken', {
 		async refreshTakenList(search = null, notClosed = false) {
 			let endpoint = apiEndpoint
 
-			if (search !== null && search !== '') {
-				endpoint = endpoint + '?_search=' + search
+			const params = new URLSearchParams()
+			if (search) {
+				params.append('_search', search)
+			}
+			if (notClosed) {
+				params.append('status', 'open')
 			}
 
-			if (notClosed) {
-				if (search !== null && search !== '') {
-					endpoint = endpoint + '&status=open'
-				} else {
-					endpoint = endpoint + '?status=open'
-				}
+			if (params.toString()) {
+				endpoint += `?${params.toString()}`
 			}
 
 			const response = await fetch(endpoint, {
@@ -108,7 +108,7 @@ export const useTaakStore = defineStore('taken', {
 			return { response }
 		},
 		// Create or save a taak from store
-		async saveTaak(taakItem, widget = false) {
+		async saveTaak(taakItem, options = {}) {
 			if (!taakItem) {
 				throw new Error('No taak item to save')
 			}
@@ -139,7 +139,7 @@ export const useTaakStore = defineStore('taken', {
 			const entity = new Taak(data)
 
 			this.setTaakItem(data)
-			if (!widget) {
+			if (!options.doNotRefresh) {
 				this.refreshTakenList()
 			}
 
