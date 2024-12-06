@@ -9,8 +9,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				:loading="loading"
 				:item-menu="itemMenu"
 				@show="onShow"
-				@sluiten="onSluiten"
-				@afhandelen="onAfhandelen">
+				@statusClose="onCloseStatus"
+				@statusHandled="onHandledStatus">
 				<template #empty-content>
 					<NcEmptyContent name="Geen open taken">
 						<template #icon>
@@ -80,11 +80,11 @@ export default {
 					text: 'Bekijk',
 					icon: 'icon-toggle',
 				},
-				sluiten: {
+				statusClose: {
 					text: 'Sluiten',
 					icon: iconProgressClose,
 				},
-				afhandelen: {
+				statusHandled: {
 					text: 'Taak Afhandelen',
 					icon: iconCalendarCheckOutline,
 				},
@@ -147,7 +147,7 @@ export default {
 			navigationStore.setModal('widgetTaakForm')
 		},
 
-		async onSluiten(event) {
+		async onCloseStatus(event) {
 			// change status to 'gesloten'
 			const { data } = await taakStore.getTaak(event.id)
 
@@ -168,7 +168,7 @@ export default {
 					}
 				})
 		},
-		async onAfhandelen(event) {
+		async onHandledStatus(event) {
 			// change status to 'afgerond'
 			const { data } = await taakStore.getTaak(event.id)
 
