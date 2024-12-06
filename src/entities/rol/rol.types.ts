@@ -4,7 +4,7 @@ export type TRol = {
     omschrijving: string;
     omschrijvingGeneriek: string;
     url: string;
-    zaak: string;
+    zaak: string; // zaak id
     betrokkene: string;
     betrokkeneType: string;
     afwijkendeNaamBetrokkene: string;

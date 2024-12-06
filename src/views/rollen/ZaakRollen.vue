@@ -4,8 +4,8 @@ import { navigationStore, rolStore } from '../../store/store.js'
 
 <template>
 	<div>
-		<div v-if="!loading">
-			<NcListItem v-for="(rollen, i) in rollenList"
+		<div v-if="filteredRollenList?.length">
+			<NcListItem v-for="(rollen, i) in filteredRollenList"
 				:key="`${rollen}${i}`"
 				:name="rollen?.omschrijving"
 				:active="rolStore.rolItem?.id === rollen.id"
@@ -22,21 +22,33 @@ import { navigationStore, rolStore } from '../../store/store.js'
 					{{ rollen?.omschrijving }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editRol(rollen)">
-						Bewerken
+					<NcActionButton @click="rolStore.setRolItem(rollen); navigationStore.setSelected('rollen')">
+						<template #icon>
+							<Eye :size="20" />
+						</template>
+						Bekijken
 					</NcActionButton>
+					<!-- <NcActionButton @click="rolStore.setRolItem(rollen); navigationStore.setModal('rollen')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						Bewerken
+					</NcActionButton> -->
 					<NcActionButton>
-						Verwijderen
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						Verwijderen van zaak
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
-		<div v-if="!rollenList?.length && !loading">
+		<div v-if="!filteredRollenList?.length && !loading">
 			Geen rollen gevonden.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!filteredRollenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -66,43 +78,40 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			rollenList: [],
 		}
+	},
+	computed: {
+		filteredRollenList() {
+			return rolStore.rollenList.filter((rol) => rol.zaak === this.zaakId)
+		},
 	},
 	watch: {
 		zaakId(newVal) {
-			this.fetchData(newVal)
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(this.zaakId)
+		this.fetchData()
 	},
 	methods: {
 		editRol(rol) {
 			rolStore.setRolItem(rol)
 			navigationStore.setModal('editRol')
 		},
-		fetchData(zaakId) {
+		fetchData() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/zrc/rollen?zaak.id=${zaakId}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.rollenList = data.results
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
+
+			rolStore.refreshRollenList()
+				.finally(() => {
 					this.loading = false
 				})
 		},
 		toggleRol(rol) {
-			// TODO: toggle rol
+			if (rolStore.rolItem?.id === rol.id) {
+				rolStore.setRolItem(null)
+			} else {
+				rolStore.setRolItem(rol)
+			}
 		},
 		clearText() {
 			this.search = ''
