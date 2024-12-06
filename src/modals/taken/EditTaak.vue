@@ -55,7 +55,7 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 				</NcCheckboxRadioSwitch>
 
 				<div>
-					<NcSelect v-if="clientType !== 'medewerker' || (clientType === 'both' && !useMedewerkerInsteadOfKlant)"
+					<NcSelect v-if="(clientType !== 'medewerker' && (clientType !== 'both' || clientType === 'both' && !useMedewerkerInsteadOfKlant))"
 						v-bind="klanten"
 						v-model="klanten.value"
 						:user-select="true"
@@ -63,7 +63,7 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 						:loading="klantenLoading"
 						:disabled="loading" />
 
-					<NcSelect v-if="clientType !== 'klant' || (clientType === 'both' && useMedewerkerInsteadOfKlant)"
+					<NcSelect v-if="(clientType !== 'klant' && (clientType !== 'both' || clientType === 'both' && useMedewerkerInsteadOfKlant))"
 						v-bind="medewerkers"
 						v-model="medewerkers.value"
 						:user-select="true"

@@ -44,7 +44,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ getSubname(medewerker) }}
+						{{ medewerker.email }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="medewerkerStore.setMedewerkerItem(medewerker); navigationStore.setModal('editMedewerker')">
@@ -119,12 +119,7 @@ export default {
 			return name
 		},
 		getName(medewerker) {
-			return medewerker?.voornaam ?? 'onbekend'
-
-		},
-		getSubname(medewerker) {
-			return medewerker?.tussenvoegsel ? `${medewerker.tussenvoegsel} ${medewerker.achternaam}` : medewerker?.achternaam ? `${medewerker.achternaam}` : 'onbekend'
-
+			return `${medewerker?.voornaam} ${medewerker?.tussenvoegsel} ${medewerker?.achternaam}`
 		},
 		deleteKlant() {
 			fetch(

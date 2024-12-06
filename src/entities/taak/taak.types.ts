@@ -10,5 +10,6 @@ export type TTaak = {
     onderwerp: string;
     toelichting: string;
     actie: string;
-    klant: string;
+	klant: string
+	medewerker: string
 }
