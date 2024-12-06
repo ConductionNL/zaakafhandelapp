@@ -170,17 +170,13 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
-			:size="100"
-			appearance="dark"
-			name="Zaak details aan het laden" />
 	</div>
 </template>
 
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcLoadingIcon, NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -206,7 +202,6 @@ export default {
 	name: 'ZaakDetails',
 	components: {
 		// Components
-		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
 		BTabs,
@@ -230,7 +225,6 @@ export default {
 	data() {
 		return {
 			// state
-			loading: true,
 			currentActiveZaak: null,
 			// data
 			auditTrails: [],
@@ -248,16 +242,16 @@ export default {
 		}
 	},
 	methods: {
-		fetchData() {
-			this.loading = true
-		},
 		fetchAuditTrails(id) {
+
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data)) {
 						this.auditTrails = data
 					}
+				})
+				.finally(() => {
 				})
 		},
 	},
