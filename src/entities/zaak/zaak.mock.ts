@@ -26,6 +26,7 @@ export const mockZaakData = (): TZaak[] => [
 		selectielijstklasse: 'http://example.com',
 		hoofdzaak: 'http://example.com',
 		klant: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
+		berichten: [],
 	},
 ]
 

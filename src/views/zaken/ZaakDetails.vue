@@ -40,19 +40,19 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Taak toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addBericht')">
+						<NcActionButton @click="navigationStore.setModal('addBerichtToZaak')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
 							Bericht toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addBesluit')">
+						<NcActionButton @click="navigationStore.setModal('addBesluit')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
 							Besluit toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('updateZaakStatus')">
+						<NcActionButton @click="navigationStore.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
 							</template>
@@ -170,17 +170,13 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
-			:size="100"
-			appearance="dark"
-			name="Zaak details aan het laden" />
 	</div>
 </template>
 
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcLoadingIcon, NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -206,7 +202,6 @@ export default {
 	name: 'ZaakDetails',
 	components: {
 		// Components
-		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
 		BTabs,
@@ -229,18 +224,16 @@ export default {
 	},
 	data() {
 		return {
+			// state
 			currentActiveZaak: null,
+			// data
 			auditTrails: [],
 			zaak: [],
-			loading: true,
 		}
 	},
 	mounted() {
-		if (zaakStore.zaakItem?.id) {
-			this.currentActiveZaak = zaakStore.zaakItem
-			this.fetchAuditTrails(zaakStore.zaakItem.id)
-		}
-		this.fetchData()
+		this.currentActiveZaak = zaakStore.zaakItem
+		this.fetchAuditTrails(zaakStore.zaakItem.id)
 	},
 	updated() {
 		if (zaakStore.zaakItem?.id && JSON.stringify(this.currentActiveZaak) !== JSON.stringify(zaakStore.zaakItem)) {
@@ -249,22 +242,16 @@ export default {
 		}
 	},
 	methods: {
-		fetchData() {
-			this.loading = true
-
-			// get current zaak once
-			zaakStore.getZaak(zaakStore.zaakItem.id, { setItem: true })
-				.then(() => {
-					this.loading = false
-				})
-		},
 		fetchAuditTrails(id) {
+
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data)) {
 						this.auditTrails = data
 					}
+				})
+				.finally(() => {
 				})
 		},
 	},

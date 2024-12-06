@@ -26,6 +26,7 @@ export class Zaak implements TZaak {
 	public selectielijstklasse: string
 	public hoofdzaak: string
 	public klant: string
+	public berichten: string[]
 
 	constructor(source: TZaak) {
 		this.id = source.id || ''
@@ -51,6 +52,7 @@ export class Zaak implements TZaak {
 		this.selectielijstklasse = source.selectielijstklasse || ''
 		this.hoofdzaak = source.hoofdzaak || ''
 		this.klant = source.klant || ''
+		this.berichten = source.berichten || []
 	}
 
 	public validate(): SafeParseReturnType<TZaak, unknown> {
@@ -78,6 +80,7 @@ export class Zaak implements TZaak {
 			selectielijstklasse: z.string(),
 			hoofdzaak: z.string(),
 			klant: z.string(),
+			berichten: z.array(z.string()),
 		})
 
 		return schema.safeParse(this)
