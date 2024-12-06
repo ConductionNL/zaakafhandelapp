@@ -102,7 +102,7 @@ export default {
 			this.loading = true
 			this.error = false
 
-			const zaakItemCopy = _.cloneDeep(this.zaakItem)
+			const zaakItemCopy = _.cloneDeep(zaakStore.zaakItem)
 
 			if (zaakItemCopy.berichten) {
 				zaakItemCopy.berichten.push(this.berichten.value.id)
