@@ -34,7 +34,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addTaak')">
+						<NcActionButton @click="navigationStore.setModal('addTaakToZaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
@@ -225,6 +225,7 @@ export default {
 	data() {
 		return {
 			// state
+			loading: true,
 			currentActiveZaak: null,
 			// data
 			auditTrails: [],
@@ -242,6 +243,9 @@ export default {
 		}
 	},
 	methods: {
+		fetchData() {
+			this.loading = true
+		},
 		fetchAuditTrails(id) {
 
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)

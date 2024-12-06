@@ -1,17 +1,17 @@
 <script setup>
-import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
+import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcModal ref="modalRef"
-		label-id="addBerichtToZaak"
+		label-id="addTaakToZaak"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Bericht toevoegen aan {{ zaakStore.zaakItem.title }}</h2>
+			<h2>Taak toevoegen aan {{ zaakStore.zaakItem.title }}</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>Bericht succesvol toegevoegd aan zaak</p>
+					<p>Taak succesvol toegevoegd aan zaak</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -19,18 +19,18 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcSelect v-bind="berichten"
-					v-model="berichten.value"
-					input-label="Bericht"
-					:loading="berichtenLoading"
+				<NcSelect v-bind="taken"
+					v-model="taken.value"
+					input-label="Taak"
+					:loading="takenLoading"
 					:disabled="loading"
 					required />
 			</div>
 
 			<NcButton v-if="success === null"
-				:disabled="!berichten?.value || loading"
+				:disabled="!taken?.value || loading"
 				type="primary"
-				@click="addBerichtToZaak">
+				@click="addTaakToZaak">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
@@ -43,13 +43,13 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 
 <script>
 import { NcButton, NcModal, NcLoadingIcon, NcNoteCard, NcSelect } from '@nextcloud/vue'
-import { Zaak } from '../../entities/index.js'
+import { Taak } from '../../entities/index.js'
 
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
-	name: 'AddBerichtToZaak',
+	name: 'AddTaakToZaak',
 	components: {
 		NcModal,
 		NcButton,
@@ -61,8 +61,8 @@ export default {
 	},
 	data() {
 		return {
-			berichtenLoading: false,
-			berichten: [],
+			takenLoading: false,
+			taken: [],
 			loading: false,
 			success: null,
 			error: false,
@@ -72,23 +72,24 @@ export default {
 	},
 	mounted() {
 		this.zaakItem = zaakStore.zaakItem
-		this.fetchBerichtenData()
+		this.fetchTakenData()
 	},
 	methods: {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
-		fetchBerichtenData() {
-			this.berichtenLoading = true
+		fetchTakenData() {
+			this.takenLoading = true
 
-			berichtStore.refreshBerichtenList()
+			taakStore.refreshTakenList()
 				.then(({ data }) => {
-					this.berichten = {
+					this.taken = {
 						options: data
-							.filter((bericht) => !zaakStore.zaakItem.berichten.includes(bericht.id))
-							.map((bericht) => ({
-								id: bericht.id,
-								label: bericht.title,
+							// zaak is stored on the taak itself as a singular id, indicating that only taken without a zaak can be used
+							.filter((taak) => !taak.zaak)
+							.map((taak) => ({
+								id: taak.id,
+								label: taak.title,
 							})),
 					}
 				})
@@ -96,24 +97,27 @@ export default {
 					console.error(err)
 				})
 				.finally(() => {
-					this.berichtenLoading = false
+					this.takenLoading = false
 				})
 		},
-		addBerichtToZaak() {
+		addTaakToZaak() {
 			this.loading = true
 			this.error = false
 
-			const zaakItemCopy = _.cloneDeep(zaakStore.zaakItem)
-
-			if (zaakItemCopy.berichten) {
-				zaakItemCopy.berichten.push(this.berichten.value.id)
-			} else {
-				zaakItemCopy.berichten = [this.berichten.value.id]
+			const taakItem = taakStore.takenList.find((taak) => taak.id === this.taken.value.id)
+			if (!taakItem) {
+				this.error = 'something went majorly wrong'
+				this.loading = false
+				return
 			}
 
-			const newZaakItem = new Zaak(zaakItemCopy)
+			const taakItemCopy = _.cloneDeep(taakItem)
 
-			zaakStore.saveZaak(newZaakItem)
+			taakItemCopy.zaak = this.zaakItem.id
+
+			const newTaakItem = new Taak(taakItemCopy)
+
+			taakStore.saveTaak(newTaakItem)
 				.then(({ response }) => {
 					this.success = response.ok
 

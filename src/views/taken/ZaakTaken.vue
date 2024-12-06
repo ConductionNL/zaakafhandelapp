@@ -4,8 +4,8 @@ import { navigationStore, taakStore } from '../../store/store.js'
 
 <template>
 	<div>
-		<div v-if="!loading">
-			<NcListItem v-for="(taak, i) in takenList.results"
+		<div v-if="filteredTakenList?.length">
+			<NcListItem v-for="(taak, i) in filteredTakenList"
 				:key="`${taak}${i}`"
 				:name="taak?.title"
 				:bold="true"
@@ -23,21 +23,33 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="showEditTaakModal(taak)">
+					<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setSelected('taken')">
+						<template #icon>
+							<Eye :size="20" />
+						</template>
+						Bekijken
+					</NcActionButton>
+					<!-- <NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('editBericht')">
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
 						Bewerken
+					</NcActionButton> -->
+					<NcActionButton>
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						Verwijderen van zaak
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
-		<div v-if="!takenList?.results?.length && !loading">
+		<div v-if="!filteredTakenList?.length && !loading">
 			Geen taken gevonden.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!filteredTakenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -50,7 +62,8 @@ import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
 
 export default {
 	name: 'ZaakTaken',
@@ -70,43 +83,36 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			takenList: [],
 		}
+	},
+	computed: {
+		filteredTakenList() {
+			return taakStore.takenList.filter((taak) => taak.zaak === this.zaakId)
+		},
 	},
 	watch: {
 		zaakId(newVal) {
-			this.fetchData(newVal)
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(this.zaakId)
+		this.fetchData()
 	},
 	methods: {
-		showEditTaakModal(taak) {
-			taakStore.setTaakItem(taak)
-			navigationStore.setModal('editTaak')
-		},
-		fetchData(zaakId) {
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.takenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
+
+			taakStore.refreshTakenList()
+				.finally(() => {
 					this.loading = false
 				})
 		},
 		toggleTaak(taak) {
-			// TODO: toggle taak
+			if (taakStore.taakItem?.id === taak.id) {
+				taakStore.setTaakItem(null)
+			} else {
+				taakStore.setTaakItem(taak)
+			}
 		},
 		clearText() {
 			this.search = ''
