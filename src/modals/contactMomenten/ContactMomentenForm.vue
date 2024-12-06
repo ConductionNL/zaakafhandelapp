@@ -23,31 +23,29 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<template #default>
 							<div v-if="klant">
 								{{ `${getSex(klant)} ${getName(klant)}` }}
+								<div v-if="klant?.type === 'persoon'" class="flexContainer">
+									<div>
+										Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+									</div>
+									<div>
+										Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
+									</div>
+								</div>
+								<div v-if="klant?.type === 'organisatie'" class="flexContainer">
+									<div>
+										KVK: {{ klant?.kvkNummer ?? 'N/A' }}
+									</div>
+									<div>
+										Locatie: {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}
+									</div>
+								</div>
 							</div>
 							<div v-else>
 								Geen klant geselecteerd
 							</div>
-							<div class="flexContainer">
-								<div>
-									Geboortedatum: {{ getValidISOstring(klant.geboortedatum) ? new Date(klant.geboortedatum).toLocaleDateString() : 'N/A' }}
-								</div>
-								<div>
-									Geboorteplaats: {{ klant.plaats ?? 'N/A' }}
-								</div>
-							</div>
 						</template>
 					</NcNoteCard>
-
-					<div class="flexContainer">
-						<div v-if="contactMoment.status">
-							status: {{ contactMoment.status }}
-						</div>
-						<div v-if="contactMoment.startDate">
-							startDate: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
-						</div>
-					</div>
 				</div>
-
 				<div v-if="!klant" class="buttonsContainer">
 					<div>
 						<NcButton
@@ -90,6 +88,14 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</template>
 							Klant ontkoppelen
 						</NcButton>
+					</div>
+				</div>
+				<div v-if="isView" class="statusContainer">
+					<div v-if="contactMoment.status">
+						Status: {{ contactMoment.status }}
+					</div>
+					<div v-if="contactMoment.startDate">
+						Start datum: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
 					</div>
 				</div>
 			</div>
@@ -553,8 +559,12 @@ div[class='modal-container']:has(.ContactMomentenForm) {
     gap: var(--zaa-margin-10);
 }
 
-.flexContainer {
+.flexContainer, .statusContainer {
 	display: flex;
 	gap: var(--zaa-margin-10);
+}
+
+.statusContainer {
+	align-items: center;
 }
 </style>
