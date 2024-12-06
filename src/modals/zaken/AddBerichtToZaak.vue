@@ -84,10 +84,12 @@ export default {
 			berichtStore.refreshBerichtenList()
 				.then(({ data }) => {
 					this.berichten = {
-						options: data.map((bericht) => ({
-							id: bericht.id,
-							label: bericht.title,
-						})),
+						options: data
+							.filter((bericht) => !zaakStore.zaakItem.berichten.includes(bericht.id))
+							.map((bericht) => ({
+								id: bericht.id,
+								label: bericht.title,
+							})),
 					}
 				})
 				.catch((err) => {
@@ -101,7 +103,7 @@ export default {
 			this.loading = true
 			this.error = false
 
-			const zaakItemCopy = _.cloneDeep(this.zaakItem)
+			const zaakItemCopy = _.cloneDeep(zaakStore.zaakItem)
 
 			if (zaakItemCopy.berichten) {
 				zaakItemCopy.berichten.push(this.berichten.value.id)

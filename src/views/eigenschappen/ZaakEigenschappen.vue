@@ -67,7 +67,7 @@ export default {
 	data() {
 		return {
 			search: '',
-			loading: true,
+			loading: false,
 			zakenList: [],
 		}
 	},
