@@ -18,24 +18,34 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 		<div v-if="!success">
 			<div class="headerContainer">
-				<NcNoteCard type="info" class="noteCard">
-					<template #default>
-						<div v-if="klant">
-							{{ getName(klant) }}
-						</div>
-						<div v-else>
-							Geen klant geselecteerd
-						</div>
-						<div class="statusAndStartDateContainer">
-							<div v-if="contactMoment.status">
-								status: {{ contactMoment.status }}
+				<div class="personInfoContainer">
+					<NcNoteCard type="info" class="noteCard">
+						<template #default>
+							<div v-if="klant">
+								{{ `${getSex(klant)} ${getName(klant)}` }}
+								<div v-if="klant?.type === 'persoon'" class="flexContainer">
+									<div>
+										Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+									</div>
+									<div>
+										Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
+									</div>
+								</div>
+								<div v-if="klant?.type === 'organisatie'" class="flexContainer">
+									<div>
+										KVK: {{ klant?.kvkNummer ?? 'N/A' }}
+									</div>
+									<div>
+										Locatie: {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}
+									</div>
+								</div>
 							</div>
-							<div v-if="contactMoment.startDate">
-								startDate: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
+							<div v-else>
+								Geen klant geselecteerd
 							</div>
-						</div>
-					</template>
-				</NcNoteCard>
+						</template>
+					</NcNoteCard>
+				</div>
 				<div v-if="!klant" class="buttonsContainer">
 					<div>
 						<NcButton
@@ -78,6 +88,14 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</template>
 							Klant ontkoppelen
 						</NcButton>
+					</div>
+				</div>
+				<div v-if="isView" class="statusContainer">
+					<div v-if="contactMoment.status">
+						Status: {{ contactMoment.status }}
+					</div>
+					<div v-if="contactMoment.startDate">
+						Start datum: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
 					</div>
 				</div>
 			</div>
@@ -252,6 +270,7 @@ import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Minus from 'vue-material-design-icons/Minus.vue'
+import getValidISOstring from '../../services/getValidISOstring.js'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -473,6 +492,12 @@ export default {
 			}
 			return 'onbekend'
 		},
+		getSex(klant) {
+			if (klant.type === 'persoon') {
+				return `(${klant?.geslacht})`
+			}
+			return ''
+		},
 
 		// Tabs
 		setSelectedZaak(zaak) {
@@ -545,8 +570,12 @@ div[class='modal-container']:has(.ContactMomentenForm) {
     gap: var(--zaa-margin-10);
 }
 
-.statusAndStartDateContainer {
+.flexContainer, .statusContainer {
 	display: flex;
 	gap: var(--zaa-margin-10);
+}
+
+.statusContainer {
+	align-items: center;
 }
 </style>
