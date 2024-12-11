@@ -300,6 +300,13 @@ export default {
 			default: null,
 		},
 		/**
+		 * The ID of the klant to fetch data for
+		 */
+		klantId: {
+			type: String,
+			default: null,
+		},
+		/**
 		 * If true, the form is in view mode and no actions are shown
 		 */
 		isView: {
@@ -312,7 +319,7 @@ export default {
 			/**
 			 * determines if this modal is an edit modal or a create modal. Is unrelated to the isView property.
 			 */
-			isEdit: !!this.contactMomentId,
+			isEdit: null,
 			fetchLoading: false, // used as the loading state when editing
 			success: false,
 			loading: false,
@@ -340,8 +347,14 @@ export default {
 		}
 	},
 	mounted() {
-		if (this.contactMomentId) {
-			this.fetchData(this.contactMomentId)
+		const contactMomentId = this.contactMomentId ?? contactMomentStore.contactMomentItem?.id ?? null
+		this.isEdit = !!contactMomentId
+
+		if (this.isEdit) {
+			this.fetchData(contactMomentId)
+		} else if (this.klantId) {
+			// if it is not an edit modal but a klantId is provided, fetch the klant data
+			this.fetchKlantData(this.klantId)
 		}
 	},
 	methods: {
