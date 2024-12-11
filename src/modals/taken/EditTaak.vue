@@ -437,7 +437,7 @@ export default {
 				medewerker: medewerkerId || null,
 				status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
 				deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
-			}, { doNotRefresh: true })
+			})
 				.then(({ response }) => {
 					this.success = response.ok
 					setTimeout(this.closeModal, 2000)
