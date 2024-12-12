@@ -57,6 +57,13 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 					input-label="Archiefstatus"
 					:disabled="zaakLoading"
 					required />
+				<div>
+					<p>Uiterlijke Einddatum Afdoening</p>
+					<NcDateTimePicker
+						v-model="zaak.uiterlijkeEinddatumAfdoening"
+						:disabled="zaakLoading"
+						required />
+				</div>
 				<NcTextField :disabled="zaakLoading"
 					label="Registratiedatum"
 					maxlength="255"
@@ -90,6 +97,7 @@ import {
 	NcSelect,
 	NcTextArea,
 	NcLoadingIcon,
+	NcDateTimePicker,
 } from '@nextcloud/vue'
 
 // icons
@@ -107,6 +115,7 @@ export default {
 		NcButton,
 		NcSelect,
 		NcTextArea,
+		NcDateTimePicker,
 	},
 	props: {
 		dashboardWidget: {
@@ -136,6 +145,7 @@ export default {
 				verantwoordelijkeOrganisatie: '',
 				startdatum: '',
 				archiefstatus: '',
+				uiterlijkeEinddatumAfdoening: null,
 			},
 			loading: false,
 			success: null,
@@ -174,6 +184,7 @@ export default {
 			this.zaak = {
 				...this.zaak,
 				...zaakStore.zaakItem,
+				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem.uiterlijkeEinddatumAfdoening ? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening) : null,
 			}
 		}
 	},
@@ -181,19 +192,6 @@ export default {
 		closeModal() {
 			navigationStore.setModal(null)
 			this?.dashboardWidget && this.$emit('close')
-			this.success = null
-			this.loading = false
-			this.zaak = {
-				identificatie: '',
-				omschrijving: '',
-				zaaktype: {},
-				registratiedatum: '',
-				toelichting: '',
-				bronorganisatie: '',
-				verantwoordelijkeOrganisatie: '',
-				startdatum: '',
-				archiefstatus: '',
-			}
 		},
 		fetchZaakType() {
 			this.zaakTypeLoading = true
@@ -239,6 +237,7 @@ export default {
 				...this.zaak,
 				archiefstatus: this.archiefstatus.value?.id || '',
 				zaaktype: this.zaakType.value?.id || '',
+				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening ? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString() : null,
 				klant: this.klantId,
 			})
 
