@@ -22,7 +22,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('editContactMoment')">
+					<NcActionButton @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -46,7 +46,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 						{{ new Date(contactMoment.startDate).toLocaleString() }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('editContactMoment')">
+						<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('contactMomentenForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -112,10 +112,12 @@ export default {
 		}
 	},
 	mounted() {
-		contactMomentStore.refreshContactMomentenList().then(() => {
+		Promise.all([
+			contactMomentStore.refreshContactMomentenList(),
+			klantStore.refreshKlantenList(),
+		]).then(() => {
 			this.loading = false
 		})
-		klantStore.refreshKlantenList()
 	},
 	methods: {
 		editContactMoment(contactMoment) {

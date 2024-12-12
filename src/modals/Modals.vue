@@ -11,18 +11,25 @@ import { navigationStore } from '../store/store.js'
 		<WidgetZaakForm v-if="navigationStore.modal === 'widgetZaakForm'" />
 		<AddBerichtToZaak v-if="navigationStore.modal === 'addBerichtToZaak'" />
 		<AddTaakToZaak v-if="navigationStore.modal === 'addTaakToZaak'" />
-		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
-		<!-- ==== -->
+    <AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
+		<!-- contactmomenten -->
+		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
+		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
+		<!-- zaaktypen -->
 		<EditZaakType />
+		<!-- klanten -->
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
+		<!-- berichten -->
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
+		<!-- taken -->
 		<EditTaak v-if="navigationStore.modal === 'editTaak'" />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
+		<!-- rollen -->
 		<EditRol />
+		<!-- klant register -->
 		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
-		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
 	</div>
 </template>
@@ -44,6 +51,7 @@ import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
 import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
+import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
 import AddRolToZaak from './zaken/AddRolToZaak.vue'
 
 export default {
@@ -65,6 +73,7 @@ export default {
 		EditMedewerker,
 		AddBerichtToZaak,
 		AddTaakToZaak,
+		ContactMomentenForm,
 		AddRolToZaak,
 	},
 }

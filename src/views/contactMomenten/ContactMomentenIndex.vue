@@ -16,7 +16,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 					<CardAccountPhoneOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('editContactMoment')">
+					<NcButton type="primary" @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
 						Contact moment aanmaken
 					</NcButton>
 				</template>
