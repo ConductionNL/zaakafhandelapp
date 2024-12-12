@@ -28,7 +28,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addRol')">
+						<NcActionButton @click="navigationStore.setModal('addRolToZaak')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
