@@ -223,7 +223,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Klant taak aanmaken
 				</NcActionButton>
-				<NcActionButton :disabled="true" @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
+				<NcActionButton :disabled="!klant?.id" @click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
@@ -250,6 +250,12 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			:klant-id="klant?.id"
 			@close-modal="closeTaakForm"
 			@save-success="closeTaakForm" />
+
+		<ZaakForm v-if="zaakFormOpen"
+			:dashboard-widget="true"
+			:klant-id="klant?.id"
+			@close-modal="() => (zaakFormOpen = false)"
+			@save-success="zaakFormSaveSuccess" />
 	</NcDialog>
 </template>
 
@@ -261,6 +267,7 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -344,6 +351,7 @@ export default {
 			startingType: 'all',
 			taakFormOpen: false,
 			taakClientType: 'both',
+			zaakFormOpen: false,
 		}
 	},
 	mounted() {
@@ -453,6 +461,17 @@ export default {
 
 		closeTaakForm() {
 			this.taakFormOpen = false
+		},
+
+		// zaak functions
+		openZaakForm() {
+			zaakStore.setZaakItem(null)
+			this.zaakFormOpen = true
+		},
+
+		zaakFormSaveSuccess() {
+			this.zaakFormOpen = false
+			this.fetchKlantData(this.klant.id)
 		},
 
 		async fetchKlantData(id) {
