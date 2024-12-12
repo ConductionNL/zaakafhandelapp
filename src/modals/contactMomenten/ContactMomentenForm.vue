@@ -229,6 +229,12 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Zaak starten
 				</NcActionButton>
+				<NcActionButton :disabled="contactMoment.status === 'gesloten'" @click="() => (contactMoment.status = 'gesloten')">
+					<template #icon>
+						<BriefcaseAccountOutline :size="20" />
+					</template>
+					Sluit Contactmoment
+				</NcActionButton>
 			</NcActions>
 			<NcButton
 				v-if="!isView"
@@ -334,7 +340,7 @@ export default {
 			contactMoment: {
 				titel: '',
 				notitie: '',
-				status: null,
+				status: 'open',
 				startDate: null,
 			},
 			klantenLoading: false,
