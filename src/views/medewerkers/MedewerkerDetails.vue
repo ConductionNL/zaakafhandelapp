@@ -55,6 +55,10 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 						<b>Email adres:</b>
 						<p>{{ medewerkerStore.medewerkerItem.email }}</p>
 					</div>
+					<div>
+						<b>Telefoonnummer:</b>
+						<p>{{ medewerkerStore.medewerkerItem.telefoonnummer }}</p>
+					</div>
 				</div>
 			</div>
 		</div>

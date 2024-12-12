@@ -4,4 +4,5 @@ export type TMedewerker = {
     tussenvoegsel: string;
     achternaam: string;
     email: string;
+    telefoonnummer: string;
 }

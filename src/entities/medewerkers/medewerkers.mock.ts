@@ -8,6 +8,7 @@ export const mockMedewerkerData = (): TMedewerker[] => [
 		tussenvoegsel: 'de',
 		achternaam: 'Doe',
 		email: 'john.doe@example.com',
+		telefoonnummer: '0612345678',
 	},
 ]
 

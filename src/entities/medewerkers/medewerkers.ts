@@ -8,6 +8,7 @@ export class Medewerker implements TMedewerker {
 	public tussenvoegsel: string
 	public achternaam: string
 	public email: string
+	public telefoonnummer: string
 
 	constructor(source: TMedewerker) {
 		this.id = source.id || ''
@@ -15,7 +16,7 @@ export class Medewerker implements TMedewerker {
 		this.tussenvoegsel = source.tussenvoegsel || ''
 		this.achternaam = source.achternaam || ''
 		this.email = source.email || ''
-
+		this.telefoonnummer = source.telefoonnummer || ''
 	}
 
 	public validate(): SafeParseReturnType<TMedewerker, unknown> {
@@ -25,6 +26,7 @@ export class Medewerker implements TMedewerker {
 			tussenvoegsel: z.string(),
 			achternaam: z.string(),
 			email: z.string().email(),
+			telefoonnummer: z.string().min(1),
 		})
 
 		return schema.safeParse(this)
