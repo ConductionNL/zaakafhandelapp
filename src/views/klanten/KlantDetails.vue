@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from '../../store/store.js'
+import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contactMomentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -218,18 +218,20 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 							</NcEmptyContent>
 						</BTab>
 						<BTab title="Contact Momenten">
-							<div v-if="contactMomenten.length">
-								<NcListItem v-for="(contactMoment, key) in contactMomenten"
+							<div v-if="filteredContactMomenten.length">
+								<NcListItem v-for="(contactMoment, key) in filteredContactMomenten"
 									:key="key"
-									:name="contactMoment.title"
+									:name="getName(klantStore.klantItem)"
 									:bold="false"
-									:details="contactMoment.description"
 									:force-display-actions="true">
 									<template #icon>
-										<AccountOutline :size="44" />
+										<CardAccountPhoneOutline :size="44" />
+									</template>
+									<template #subname>
+										{{ new Date(contactMoment.startDate).toLocaleString() }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('viewContactMoment')">
+										<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setSelected('contactMomenten')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
@@ -298,6 +300,7 @@ import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountO
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
 
 export default {
 	name: 'KlantDetails',
@@ -324,11 +327,17 @@ export default {
 			zaken: [],
 			taken: [],
 			berichten: [],
-			contactMomenten: [],
 			auditTrails: [],
 		}
 	},
+	computed: {
+		filteredContactMomenten() {
+			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === klantStore.klantItem.id)
+		},
+	},
 	mounted() {
+		this.fetchContactMomenten()
+
 		if (klantStore.klantItem?.id) {
 			this.currentActiveKlant = klantStore.klantItem
 			this.fetchKlantData(klantStore.klantItem.id)
@@ -341,38 +350,47 @@ export default {
 		}
 	},
 	methods: {
-		fetchKlantData(id) {
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.zaken = data.results
-					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
-				})
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.taken = data.results
-					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
-				})
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.berichten = data.results
-					}
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`)
-				})
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data)) {
-						this.auditTrails = data
-					}
-				})
-				.catch(error => {
-					console.error('Error fetching klant data:', error)
-				})
+		async fetchKlantData(id) {
+			// when using Promise.allSettled, it will return an array of items.
+			// these items contain a status string, which is either 'fulfilled' or 'rejected'.
+			// when fulfilled, it also contains a value, which is the response from the fetch call.
+			const [zakenResult, takenResult, berichtenResult, auditTrailResult] = await Promise.allSettled([
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`).then(response => response.json()),
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`).then(response => response.json()),
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`).then(response => response.json()),
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`).then(response => response.json()),
+			])
+
+			// Handle zaken
+			if (zakenResult.status === 'fulfilled' && Array.isArray(zakenResult.value.results)) {
+				this.zaken = zakenResult.value.results
+			} else {
+				console.error('Error fetching zaken:', zakenResult.reason)
+			}
+
+			// Handle taken
+			if (takenResult.status === 'fulfilled' && Array.isArray(takenResult.value.results)) {
+				this.taken = takenResult.value.results
+			} else {
+				console.error('Error fetching taken:', takenResult.reason)
+			}
+
+			// Handle berichten
+			if (berichtenResult.status === 'fulfilled' && Array.isArray(berichtenResult.value.results)) {
+				this.berichten = berichtenResult.value.results
+			} else {
+				console.error('Error fetching berichten:', berichtenResult.reason)
+			}
+
+			// Handle audit trail
+			if (auditTrailResult.status === 'fulfilled' && Array.isArray(auditTrailResult.value)) {
+				this.auditTrails = auditTrailResult.value
+			} else {
+				console.error('Error fetching audit trail:', auditTrailResult.reason)
+			}
+		},
+		fetchContactMomenten() {
+			contactMomentStore.refreshContactMomentenList()
 		},
 
 		getName(klant) {

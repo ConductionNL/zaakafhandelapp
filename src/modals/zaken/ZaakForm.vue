@@ -123,6 +123,15 @@ export default {
 			default: false,
 			required: false,
 		},
+		/**
+		 * The id of the klant that the zaak is for.
+		 * Currently there is no dropdown for selecting a klant.
+		 * So it currently will pass the klantId with the zaak to the API.
+		 */
+		klantId: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -229,6 +238,7 @@ export default {
 				archiefstatus: this.archiefstatus.value?.id || '',
 				zaaktype: this.zaakType.value?.id || '',
 				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening ? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString() : null,
+				klant: this.klantId,
 			})
 
 			zaakStore.saveZaak(newZaak)

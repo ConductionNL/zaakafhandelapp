@@ -16,7 +16,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="navigationStore.setModal('editContactMoment')">
+						<NcActionButton @click="navigationStore.setModal('contactMomentenForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>

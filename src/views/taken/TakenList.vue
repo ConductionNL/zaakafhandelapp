@@ -37,7 +37,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					:force-display-actions="true"
 					:active="taakStore.taakItem?.id === taak?.id"
 					:details="taak.status"
-					:counter-number="taak.deadline ? new Date(taak.deadline).toLocaleDateString() : 'no deadline'"
+					:counter-number="taak.deadline ? `${Math.ceil((new Date(taak.deadline) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
 					@click="taakStore.setTaakItem(taak)">
 					<template #icon>
 						<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"

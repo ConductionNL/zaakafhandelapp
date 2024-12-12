@@ -223,11 +223,17 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Klant taak aanmaken
 				</NcActionButton>
-				<NcActionButton :disabled="true" @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
+				<NcActionButton :disabled="!klant?.id" @click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
 					Zaak starten
+				</NcActionButton>
+				<NcActionButton :disabled="contactMoment.status === 'gesloten'" @click="() => (contactMoment.status = 'gesloten')">
+					<template #icon>
+						<BriefcaseAccountOutline :size="20" />
+					</template>
+					Sluit Contactmoment
 				</NcActionButton>
 			</NcActions>
 			<NcButton
@@ -250,6 +256,12 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			:klant-id="klant?.id"
 			@close-modal="closeTaakForm"
 			@save-success="closeTaakForm" />
+
+		<ZaakForm v-if="zaakFormOpen"
+			:dashboard-widget="true"
+			:klant-id="klant?.id"
+			@close-modal="() => (zaakFormOpen = false)"
+			@save-success="zaakFormSaveSuccess" />
 	</NcDialog>
 </template>
 
@@ -261,6 +273,7 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -300,6 +313,13 @@ export default {
 			default: null,
 		},
 		/**
+		 * The ID of the klant to fetch data for
+		 */
+		klantId: {
+			type: String,
+			default: null,
+		},
+		/**
 		 * If true, the form is in view mode and no actions are shown
 		 */
 		isView: {
@@ -312,7 +332,7 @@ export default {
 			/**
 			 * determines if this modal is an edit modal or a create modal. Is unrelated to the isView property.
 			 */
-			isEdit: !!this.contactMomentId,
+			isEdit: null,
 			fetchLoading: false, // used as the loading state when editing
 			success: false,
 			loading: false,
@@ -320,7 +340,7 @@ export default {
 			contactMoment: {
 				titel: '',
 				notitie: '',
-				status: null,
+				status: 'open',
 				startDate: null,
 			},
 			klantenLoading: false,
@@ -337,11 +357,18 @@ export default {
 			startingType: 'all',
 			taakFormOpen: false,
 			taakClientType: 'both',
+			zaakFormOpen: false,
 		}
 	},
 	mounted() {
-		if (this.contactMomentId) {
-			this.fetchData(this.contactMomentId)
+		const contactMomentId = this.contactMomentId ?? contactMomentStore.contactMomentItem?.id ?? null
+		this.isEdit = !!contactMomentId
+
+		if (this.isEdit) {
+			this.fetchData(contactMomentId)
+		} else if (this.klantId) {
+			// if it is not an edit modal but a klantId is provided, fetch the klant data
+			this.fetchKlantData(this.klantId)
 		}
 	},
 	methods: {
@@ -440,6 +467,17 @@ export default {
 
 		closeTaakForm() {
 			this.taakFormOpen = false
+		},
+
+		// zaak functions
+		openZaakForm() {
+			zaakStore.setZaakItem(null)
+			this.zaakFormOpen = true
+		},
+
+		zaakFormSaveSuccess() {
+			this.zaakFormOpen = false
+			this.fetchKlantData(this.klant.id)
 		},
 
 		async fetchKlantData(id) {
