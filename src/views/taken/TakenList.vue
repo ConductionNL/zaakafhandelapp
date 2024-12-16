@@ -45,7 +45,7 @@ import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ klantStore.klantenList.find(klant => klant.id === taak.klant)?.voornaam || 'geen klant gekoppeld' }}
+						{{ getName(klantStore.klantenList.find(klant => klant.id === taak.klant)) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('editTaak')">
@@ -121,6 +121,15 @@ export default {
 	methods: {
 		clearText() {
 			this.search = ''
+		},
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
 		},
 	},
 }
