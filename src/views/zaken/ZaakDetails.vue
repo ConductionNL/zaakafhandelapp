@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore } from '../../store/store.js'
+import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -67,10 +67,20 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 						<span>{{ zaakStore.zaakItem?.omschrijving }}</span>
 					</div>
 					<div>
-						<h4>
-							Zaaktype:
-						</h4>
-						<span>{{ zaakStore.zaakItem?.zaaktype }}</span>
+						<h4>Zaaktype:</h4>
+						<span v-if="zaakType" class="flex">
+							{{ zaakType?.identificatie ?? zaakStore.zaakItem?.zaaktype }}
+							<NcActions>
+								<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaakType); navigationStore.setSelected('zaakTypen')">
+									<template #icon>
+										<OpenInApp :size="20" />
+									</template>
+								</NcActionButton>
+							</NcActions>
+						</span>
+						<span v-else>
+							{{ zaakStore.zaakItem?.zaaktype }}
+						</span>
 					</div>
 					<div>
 						<div>
@@ -188,6 +198,7 @@ import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusO
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
@@ -232,6 +243,11 @@ export default {
 			zaak: [],
 		}
 	},
+	computed: {
+		zaakType() {
+			return zaakTypeStore.zaakTypeList.find(zaakType => zaakType.id === zaakStore.zaakItem?.zaaktype)
+		},
+	},
 	mounted() {
 		this.currentActiveZaak = zaakStore.zaakItem
 		this.fetchAuditTrails(zaakStore.zaakItem.id)
@@ -262,7 +278,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.flex {
+	display: flex;
+	align-items: center;
+}
 
 h4 {
   font-weight: bold;
