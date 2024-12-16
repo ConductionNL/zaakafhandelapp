@@ -3,8 +3,7 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 </script>
 
 <template>
-	<NcDialog v-if="navigationStore.modal === 'viewKlantRegister'"
-		name="Klant Register"
+	<NcDialog name="Klant"
 		size="normal"
 		@closing="closeModalFromButton()">
 		<h1 class="h1">
@@ -226,7 +225,7 @@ import EditTaak from '../../modals/taken/EditTaak.vue'
 import WidgetZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
 
 export default {
-	name: 'ViewKlantRegister',
+	name: 'ViewKlant',
 	components: {
 		NcDialog,
 		NcButton,
@@ -367,6 +366,7 @@ export default {
 		},
 		closeModal() {
 			navigationStore.setModal(false)
+			if (this.dashboardWidget) this.$emit('close-modal')
 		},
 		openLink(url, target) {
 			window.open(url, target)

@@ -36,10 +36,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				Zoeken
 			</NcButton>
 
-			<ViewKlantRegister v-if="isModalOpen"
+			<ViewKlant v-if="isModalOpen"
 				:dashboard-widget="true"
 				:klant-id="klantStore.widgetKlantId"
-				@save-success="fetchPersonenItems" />
+				@save-success="fetchPersonenItems"
+				@close-modal="() => (isModalOpen = false)" />
 		</div>
 	</div>
 </template>
@@ -50,7 +51,7 @@ import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextc
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-import ViewKlantRegister from '../../modals/klantRegister/ViewKlantRegister.vue'
+import ViewKlant from '../../modals/klanten/ViewKlant.vue'
 
 export default {
 	name: 'PersonenWidget',
@@ -62,7 +63,7 @@ export default {
 		Search,
 		NcTextField,
 		AccountOutline,
-		ViewKlantRegister,
+		ViewKlant,
 	},
 
 	data() {
@@ -134,9 +135,8 @@ export default {
 		},
 		onShow(item) {
 			klantStore.setWidgetKlantId(item.id)
-
 			this.isModalOpen = true
-			navigationStore.setModal('viewKlantRegister')
+			navigationStore.setModal('viewKlant')
 
 		},
 	},
