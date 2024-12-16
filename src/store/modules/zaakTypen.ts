@@ -118,6 +118,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				method: 'DELETE',
 			})
 
+			this.setZaakTypeItem(null)
 			this.refreshZaakTypenList()
 
 			return { response }
