@@ -1,5 +1,5 @@
 <script setup>
-import { klantStore, navigationStore, taakStore } from '../../store/store.js'
+import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -45,7 +45,7 @@ import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ getName(klantStore.klantenList.find(klant => klant.id === taak.klant)) }}
+						{{ getName(taak) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('editTaak')">
@@ -114,6 +114,7 @@ export default {
 		Promise.all([
 			taakStore.refreshTakenList(),
 			klantStore.refreshKlantenList(),
+			medewerkerStore.refreshMedewerkersList(),
 		]).then(() => {
 			this.loading = false
 		})
@@ -122,12 +123,20 @@ export default {
 		clearText() {
 			this.search = ''
 		},
-		getName(klant) {
-			if (klant.type === 'persoon') {
-				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+		getName(taak) {
+			const medewerker = medewerkerStore.medewerkersList.find(medewerker => medewerker.id === taak.medewerker)
+			const klant = klantStore.klantenList.find(klant => klant.id === taak.klant)
+
+			if (medewerker) {
+				return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
 			}
-			if (klant.type === 'organisatie') {
-				return klant?.bedrijfsnaam ?? 'onbekend'
+			if (klant) {
+				if (klant.type === 'persoon') {
+					return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				}
+				if (klant.type === 'organisatie') {
+					return klant?.bedrijfsnaam ?? 'onbekend'
+				}
 			}
 			return 'onbekend'
 		},
