@@ -16,7 +16,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 					<AlphaTBoxOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="zaakTypeStore.setZaakTypeItem(null); navigationStore.setModal('zaakTypeForm')">
+					<NcButton type="primary" @click="zaakTypeStore.setZaakTypeItem(null); navigationStore.setModal('zaaktypeForm')">
 						Zaaktype toevoegen
 					</NcButton>
 				</template>

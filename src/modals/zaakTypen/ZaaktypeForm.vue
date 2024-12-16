@@ -5,11 +5,11 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 <template>
 	<NcModal ref="modalRef" label-id="zaaktypeForm" @close="closeModal">
 		<div class="modalContent">
-			<h2>Zaaktype {{ zaakTypeStore.zaakTypeItem.id ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>Zaaktype {{ zaaktype?.id ? 'aanpassen' : 'aanmaken' }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Zaaktype succesvol {{ zaakTypeStore.zaakTypeItem.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>Zaaktype succesvol {{ zaaktype.id ? 'aangepast' : 'aangemaakt' }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -19,167 +19,173 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 			<div v-if="success === null" class="form-group">
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.identificatie"
+					:value.sync="zaaktype.identificatie"
 					label="Identificatie"
 					maxlength="255"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.omschrijving"
+					:value.sync="zaaktype.omschrijving"
 					label="Omschrijving"
 					maxlength="255" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.omschrijvingGeneriek"
+					:value.sync="zaaktype.omschrijvingGeneriek"
 					label="omschrijvingGeneriek"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.vertrouwelijkheidaanduiding"
+					:value.sync="zaaktype.vertrouwelijkheidaanduiding"
 					label="vertrouwelijkheidaanduiding"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.doel"
+					:value.sync="zaaktype.doel"
 					label="doel"
 					maxlength="9"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.aanleiding"
+					:value.sync="zaaktype.aanleiding"
 					label="aanleiding"
 					required />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.toelichting"
+					:value.sync="zaaktype.toelichting"
 					label="toelichting"
 					maxlength="255" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.indicatieInternOfExtern"
+					:value.sync="zaaktype.indicatieInternOfExtern"
 					label="indicatieInternOfExtern" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.handelingInitiator"
+					:value.sync="zaaktype.handelingInitiator"
 					label="handelingInitiator" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.onderwerp"
+					:value.sync="zaaktype.onderwerp"
 					label="onderwerp" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.handelingBehandelaar"
+					:value.sync="zaaktype.handelingBehandelaar"
 					label="handelingBehandelaar" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.doorlooptijd"
+					:value.sync="zaaktype.doorlooptijd"
 					label="doorlooptijd" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.servicenorm"
+					:value.sync="zaaktype.servicenorm"
 					label="servicenorm" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.opschortingEnAanhoudingMogelijk"
+					:value.sync="zaaktype.opschortingEnAanhoudingMogelijk"
 					label="opschortingEnAanhoudingMogelijk" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.verlengingMogelijk"
+					:value.sync="zaaktype.verlengingMogelijk"
 					label="verlengingMogelijk" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.verlengingstermijn"
+					:value.sync="zaaktype.verlengingstermijn"
 					label="trefwoorden" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.publicatieIndicatie"
+					:value.sync="zaaktype.publicatieIndicatie"
 					label="publicatieIndicatie" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.publicatietekst"
+					:value.sync="zaaktype.publicatietekst"
 					label="publicatietekst" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.productenOfDiensten"
+					:value.sync="zaaktype.productenOfDiensten"
 					label="productenOfDiensten" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.selectielijstProcestype"
+					:value.sync="zaaktype.selectielijstProcestype"
 					label="selectielijstProcestype" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.referentieproces"
+					:value.sync="zaaktype.referentieproces"
 					label="Referentieprocesnaam" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.catalogus"
+					:value.sync="zaaktype.catalogus"
 					label="catalogus" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.beginGeldigheid"
+					:value.sync="zaaktype.beginGeldigheid"
 					label="beginGeldigheid" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.eindeGeldigheid"
+					:value.sync="zaaktype.eindeGeldigheid"
 					label="eindeGeldigheid" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.beginObject"
+					:value.sync="zaaktype.beginObject"
 					label="beginObject" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.eindeObject"
+					:value.sync="zaaktype.eindeObject"
 					label="eindeObject" />
 
 				<NcTextField
 					:disabled="loading"
-					:value.sync="zaakTypeStore.zaakTypeItem.versiedatum"
+					:value.sync="zaaktype.versiedatum"
 					label="versiedatum" />
 			</div>
 
 			<NcButton v-if="success === null"
-				:disabled="!zaakTypeStore.zaakTypeItem.title || loading"
+				:disabled="!zaaktype.identificatie
+					|| !zaaktype.omschrijvingGeneriek
+					|| !zaaktype.vertrouwelijkheidaanduiding
+					|| !zaaktype.doel
+					|| !zaaktype.aanleiding
+					|| loading"
 				type="primary"
-				@click="addAttachment()">
+				@click="saveZaakType()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-if="!loading" :size="20" />
 				</template>
-				Opslaan
+				{{ zaaktype?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</div>
 	</NcModal>
 </template>
 
 <script>
-import { NcButton, NcModal, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { NcButton, NcModal, NcTextField, NcNoteCard, NcLoadingIcon } from '@nextcloud/vue'
+import { ZaakType } from '../../entities/index.js'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
@@ -189,6 +195,7 @@ export default {
 		NcTextField,
 		NcButton,
 		NcLoadingIcon,
+		NcNoteCard,
 		// Icons
 		ContentSaveOutline,
 	},
@@ -223,109 +230,59 @@ export default {
 				eindeObject: '',
 				versiedatum: '',
 			},
+			archiefstatus: {
+				options: [
+					{ id: 'nog_te_archiveren', label: 'Nog te archiveren' },
+					{ id: 'gearchiveerd', label: 'Gearchiveerd' },
+					{ id: 'gearchiveerd_procestermijn_onbekend', label: 'Gearchiveerd procestermijn onbekend' },
+					{ id: 'overgedragen', label: 'Overgedragen' },
+				],
+				value: null,
+			},
 			success: null,
 			loading: false,
 			error: false,
+			closeModalTimeout: null,
 		}
 	},
-	updated() {
-		if (navigationStore.modal === 'editZaakType' && this.hasUpdated) {
-			if (this.zaakType === zaakTypeStore.zaakTypeItem) return
-			this.hasUpdated = false
-		}
-		if (navigationStore.modal === 'editZaakType' && !this.hasUpdated) {
-			this.zaakType = zaakTypeStore.zaakTypeItem
-			this.hasUpdated = true
+	mounted() {
+		if (zaakTypeStore.zaakTypeItem?.id) {
+			this.initZaaktype()
 		}
 	},
 	methods: {
-		editZaak() {
-			this.zaakLoading = true
-			fetch(
-				`index.php/apps/zaakafhandelapp/api/zrc/zaken/${this.zaak.uuid}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						identificatie: this.identificatie,
-						omschrijving: this.omschrijving,
-						bronorganisatie: this.bronorganisatie,
-						verantwoordelijkeOrganisatie: this.verantwoordelijkeOrganisatie,
-						startdatum: this.startdatum,
-						zaaktype: this.zaaktype.value,
-						archiefstatus: this.archiefstatus.value,
-						registratiedatum: this.registratiedatum,
-						toelichting: this.toelichting,
-					}),
-				},
-			)
-				.then((response) => {
-					this.succesMessage = true
-					this.zaakLoading = false
-					setTimeout(() => (this.succesMessage = false), 2500)
-				})
-				.catch((err) => {
-					this.zaakLoading = false
-					console.error(err)
-				})
-		},
-		setArchiefStatusOptions() {
-			const archiefStatusOptions = [
-				{
-					id: 'nog_te_archiveren',
-					label: 'Nog te archiveren',
-				},
-				{
-					id: 'gearchiveerd',
-					label: 'Gearchiveerd',
-				},
-				{
-					id: 'gearchiveerd_procestermijn_onbekend',
-					label: 'Gearchiveerd procestermijn onbekend',
-				},
-				{
-					id: 'overgedragen',
-					label: 'Overgedragen',
-				},
-			]
-
-			const selectedArchiefStatusOption = archiefStatusOptions.find((options) => options.id === this.zaak.archiefstatus)
-
-			this.archiefstatus = {
-				options: archiefStatusOptions,
-				value: {
-					id: selectedArchiefStatusOption.id ?? '',
-					label: selectedArchiefStatusOption.label ?? '',
-				},
+		initZaaktype() {
+			this.zaaktype = {
+				...this.zaaktype,
+				...zaakTypeStore.zaakTypeItem,
 			}
-		},
-		fetchZaakType() {
-			this.zaakTypeLoading = true
-			fetch('/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen', {
-				method: 'GET',
-			})
-				.then((response) => {
-					response.json().then((data) => {
-						const selectedZaakType = Object.entries(data.results).find((zaaktype) => zaaktype[1].id === this.zaak.zaaktype)
 
-						this.zaaktype = {
-							options: Object.entries(data.results).map((zaaktype) => ({
-								id: zaaktype[1].id,
-								label: zaaktype[1].name,
-							})),
-							value: {
-								id: selectedZaakType[1].id ?? '',
-								label: selectedZaakType[1].name ?? '',
-							},
-						}
-					})
-					this.zaakTypeLoading = false
+			const selectedArchiefStatus = this.archiefstatus.options.find((options) => options.id === this.zaaktype.archiefstatus)
+			this.archiefstatus.value = selectedArchiefStatus || null
+		},
+		closeModal() {
+			navigationStore.setModal(null)
+			clearTimeout(this.closeModalTimeout)
+		},
+		saveZaakType() {
+			this.loading = true
+
+			const zaakTypeItem = new ZaakType({
+				...this.zaaktype,
+				archiefstatus: this.archiefstatus.value?.id || null,
+			})
+
+			zaakTypeStore.saveZaakType(zaakTypeItem)
+				.then(({ response }) => {
+					this.success = response.ok
+					this.closeModalTimeout = setTimeout(this.closeModal, 3000)
 				})
-				.catch((err) => {
-					console.error(err)
-					this.zaakTypeLoading = false
+				.catch((e) => {
+					this.error = e
+					this.success = false
+				})
+				.finally(() => {
+					this.loading = false
 				})
 		},
 	},

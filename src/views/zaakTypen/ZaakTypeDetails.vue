@@ -14,11 +14,17 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 					<template #icon>
 						<DotsHorizontal :size="20" />
 					</template>
-					<NcActionButton @click="navigationStore.setModal('zaakTypeForm')">
+					<NcActionButton @click="navigationStore.setModal('zaaktypeForm')">
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
 						Bewerken
+					</NcActionButton>
+					<NcActionButton disabled>
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						Verwijderen
 					</NcActionButton>
 					<!-- Add more action buttons as needed -->
 				</NcActions>
@@ -40,6 +46,7 @@ import { NcLoadingIcon, NcActions, NcActionButton } from '@nextcloud/vue'
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakTypeDetails',
@@ -55,17 +62,24 @@ export default {
 	data() {
 		return {
 			loading: true,
+			currentId: null,
 		}
 	},
 	mounted() {
 		this.fetchData()
+	},
+	updated() {
+		if (zaakTypeStore.zaakTypeItem?.id && this.currentId !== zaakTypeStore.zaakTypeItem.id) {
+			this.currentId = zaakTypeStore.zaakTypeItem.id
+			this.fetchData()
+		}
 	},
 	methods: {
 		fetchData() {
 			this.loading = true
 
 			// get current zaaktype once
-			zaakTypeStore.getZaakType(zaakTypeStore.zaakTypeItem.uuid, { setZaakTypeItem: true })
+			zaakTypeStore.getZaakType(zaakTypeStore.zaakTypeItem.id, { setItem: true })
 				.then(() => {
 					this.loading = false
 				})

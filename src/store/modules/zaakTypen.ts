@@ -70,6 +70,10 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 			id: string,
 			options: TOptions = {},
 		): Promise<{ response: Response, data: TZaakType, entity: ZaakType }> {
+			if (!id || typeof id !== 'string' || id.trim() === '') {
+				throw new Error('Invalid or missing id for fetching zaaktype item')
+			}
+
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching zaaktype item with id: ' + id)
