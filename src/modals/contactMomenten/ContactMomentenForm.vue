@@ -204,32 +204,32 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</template>
 				Annuleer
 			</NcButton>
-			<NcActions v-if="!isView"
-				:disabled="loading || success || fetchLoading"
+			<NcActions :disabled="loading || success || fetchLoading"
 				:primary="true"
+				:force-name="true"
 				menu-name="Acties">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
-				<NcActionButton @click="openTaakForm('medewerker')">
+				<NcActionButton v-if="!isView" @click="openTaakForm('medewerker')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
 					Medewerker taak aanmaken
 				</NcActionButton>
-				<NcActionButton @click="openTaakForm('klant')">
+				<NcActionButton v-if="!isView" @click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
 					Klant taak aanmaken
 				</NcActionButton>
-				<NcActionButton :disabled="!klant?.id" @click="openZaakForm()">
+				<NcActionButton v-if="!isView" :disabled="!klant?.id" @click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
 					Zaak starten
 				</NcActionButton>
-				<NcActionButton :disabled="contactMoment.status === 'gesloten'" @click="() => (contactMoment.status = 'gesloten')">
+				<NcActionButton :disabled="contactMoment.status === 'gesloten'" @click="closeContactMoment">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
@@ -428,17 +428,31 @@ export default {
 						taak: this.selectedTaak ?? '',
 						product: this.selectedProduct ?? '',
 						status: this.contactMoment.status === 'gesloten' ? 'gesloten' : 'open',
-						startDate: new Date().toISOString(),
+						startDate: this.contactMoment.startDate ?? new Date().toISOString(),
 					}),
 				},
 			)
 				.then((response) => {
+					if (this.isView) {
+						response.json().then(data => {
+							this.contactMoment = data
+						})
+
+						if (this.dashboardWidget === true) {
+							this.$emit('save-success')
+						}
+
+						this.loading = false
+						return
+					}
+
 					this.succesMessage = true
 					// Get the modal to self close
 					this.success = true
 					this.loading = false
 
 					setTimeout(this.closeModal, 2000)
+
 					if (this.dashboardWidget === true) {
 						this.$emit('save-success')
 					}
@@ -478,6 +492,11 @@ export default {
 		zaakFormSaveSuccess() {
 			this.zaakFormOpen = false
 			this.fetchKlantData(this.klant.id)
+		},
+
+		closeContactMoment() {
+			this.contactMoment.status = 'gesloten'
+			if (this.isView) this.addContactMoment()
 		},
 
 		async fetchKlantData(id) {
