@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, taakStore } from '../../store/store.js'
+import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -45,7 +45,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ taak?.onderwerp }}
+						{{ klantStore.klantenList.find(klant => klant.id === taak.klant)?.voornaam || 'geen klant gekoppeld' }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('editTaak')">
@@ -111,30 +111,14 @@ export default {
 		}
 	},
 	mounted() {
-		taakStore.refreshTakenList().then(() => {
+		Promise.all([
+			taakStore.refreshTakenList(),
+			klantStore.refreshKlantenList(),
+		]).then(() => {
 			this.loading = false
 		})
 	},
 	methods: {
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.takenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
 		},
