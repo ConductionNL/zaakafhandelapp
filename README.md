@@ -65,4 +65,3 @@ Wacht totdat de app zichtbaar is in de navigatie balk en klik op de app.
 - [Icons](https://pictogrammers.com/library/mdi/)
 - [Layout](https://docs.nextcloud.com/server/latest/developer_manual/design/layout.html)-
 - [Componenten](https://nextcloud-vue-components.netlify.app/)
-
