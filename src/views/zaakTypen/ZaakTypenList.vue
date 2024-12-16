@@ -55,6 +55,12 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
+						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('deleteZaaktype')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
+						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
@@ -82,6 +88,7 @@ import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakTypenList',

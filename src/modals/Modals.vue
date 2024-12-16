@@ -17,6 +17,7 @@ import { navigationStore } from '../store/store.js'
 		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<!-- zaaktypen -->
 		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
+		<DeleteZaaktype v-if="navigationStore.modal === 'deleteZaaktype'" />
 		<!-- klanten -->
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
@@ -38,6 +39,7 @@ import { navigationStore } from '../store/store.js'
 import ZaakForm from './zaken/ZaakForm.vue'
 import WidgetZaakForm from './zaken/WidgetZaakForm.vue'
 import ZaaktypeForm from './zaakTypen/ZaaktypeForm.vue'
+import DeleteZaaktype from './zaakTypen/DeleteZaaktype.vue'
 import EditKlant from './klanten/EditKlant.vue'
 import ViewKlantAuditTrail from './klanten/ViewKlantAuditTrail.vue'
 import EditBericht from './berichten/EditBericht.vue'
@@ -60,6 +62,7 @@ export default {
 		ZaakForm,
 		WidgetZaakForm,
 		ZaaktypeForm,
+		DeleteZaaktype,
 		EditKlant,
 		ViewKlantAuditTrail,
 		EditBericht,

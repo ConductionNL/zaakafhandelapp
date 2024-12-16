@@ -118,11 +118,6 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				method: 'DELETE',
 			})
 
-			if (!response.ok) {
-				console.error(response)
-				throw new Error(`HTTP error! status: ${response.status}`)
-			}
-
 			this.refreshZaakTypenList()
 
 			return { response }

@@ -20,13 +20,12 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 						</template>
 						Bewerken
 					</NcActionButton>
-					<NcActionButton disabled>
+					<NcActionButton @click="navigationStore.setModal('deleteZaaktype')">
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
 						Verwijderen
 					</NcActionButton>
-					<!-- Add more action buttons as needed -->
 				</NcActions>
 			</div>
 
