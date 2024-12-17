@@ -96,7 +96,6 @@ class ZaakTypenController extends Controller
         // Remove the 'id' field if it exists, as we're creating a new object
         unset($data['id']);
 
-		// Add the id field from the object path
 		$data['id'] = $id;
 
         // Save the new catalog object
