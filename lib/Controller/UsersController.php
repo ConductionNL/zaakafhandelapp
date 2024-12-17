@@ -52,12 +52,19 @@ class UsersController extends Controller
 					'id' => $currentUser->getUID(),
 					'displayName' => $currentUser->getDisplayName(),
 					'email' => $currentUser->getEMailAddress(),
+					'systemEmail' => $currentUser->getSystemEMailAddress(),
+					'primaryEmail' => $currentUser->getPrimaryEMailAddress(),
 					'lastLogin' => $currentUser->getLastLogin(),
 					'quota' => $currentUser->getQuota(),
 					'home' => $currentUser->getHome(),
+					'backendClassName' => $currentUser->getBackendClassName(),
 					'avatarImage' => $currentUser->getAvatarImage(64),
+					'cloudId' => $currentUser->getCloudId(),
 					'isEnabled' => $currentUser->isEnabled(),
-					'canChangeDisplayName' => $currentUser->canChangeDisplayName()
+					'canChangeDisplayName' => $currentUser->canChangeDisplayName(),
+					'canChangePassword' => $currentUser->canChangePassword(),
+					'canChangeAvatar' => $currentUser->canChangeAvatar(),
+					'managerUids' => $currentUser->getManagerUids(),
 				],
 				'medewerker' => 'placeholder-todo'
 			];
