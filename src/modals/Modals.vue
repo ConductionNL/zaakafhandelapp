@@ -11,12 +11,13 @@ import { navigationStore } from '../store/store.js'
 		<WidgetZaakForm v-if="navigationStore.modal === 'widgetZaakForm'" />
 		<AddBerichtToZaak v-if="navigationStore.modal === 'addBerichtToZaak'" />
 		<AddTaakToZaak v-if="navigationStore.modal === 'addTaakToZaak'" />
-    <AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
+		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
 		<!-- contactmomenten -->
 		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
 		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<!-- zaaktypen -->
-		<EditZaakType />
+		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
+		<DeleteZaaktype v-if="navigationStore.modal === 'deleteZaaktype'" />
 		<!-- klanten -->
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
@@ -37,7 +38,8 @@ import { navigationStore } from '../store/store.js'
 <script>
 import ZaakForm from './zaken/ZaakForm.vue'
 import WidgetZaakForm from './zaken/WidgetZaakForm.vue'
-import EditZaakType from './zaakTypen/EditZaakType.vue'
+import ZaaktypeForm from './zaakTypen/ZaaktypeForm.vue'
+import DeleteZaaktype from './zaakTypen/DeleteZaaktype.vue'
 import EditKlant from './klanten/EditKlant.vue'
 import ViewKlantAuditTrail from './klanten/ViewKlantAuditTrail.vue'
 import EditBericht from './berichten/EditBericht.vue'
@@ -59,7 +61,8 @@ export default {
 	components: {
 		ZaakForm,
 		WidgetZaakForm,
-		EditZaakType,
+		ZaaktypeForm,
+		DeleteZaaktype,
 		EditKlant,
 		ViewKlantAuditTrail,
 		EditBericht,
