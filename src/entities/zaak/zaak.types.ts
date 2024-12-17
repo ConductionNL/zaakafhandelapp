@@ -24,4 +24,5 @@ export type TZaak = {
     selectielijstklasse: string;
     hoofdzaak: string;
     klant: string;
+    berichten: string[];
 }

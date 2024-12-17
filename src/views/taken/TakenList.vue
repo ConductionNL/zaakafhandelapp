@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, taakStore } from '../../store/store.js'
+import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -37,7 +37,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					:force-display-actions="true"
 					:active="taakStore.taakItem?.id === taak?.id"
 					:details="taak.status"
-					:counter-number="taak.deadline ? new Date(taak.deadline).toLocaleDateString() : 'no deadline'"
+					:counter-number="taak.deadline ? `${Math.ceil((new Date(taak.deadline) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
 					@click="taakStore.setTaakItem(taak)">
 					<template #icon>
 						<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
@@ -45,7 +45,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ taak?.onderwerp }}
+						{{ getName(taak) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('editTaak')">
@@ -111,32 +111,34 @@ export default {
 		}
 	},
 	mounted() {
-		taakStore.refreshTakenList().then(() => {
+		Promise.all([
+			taakStore.refreshTakenList(),
+			klantStore.refreshKlantenList(),
+			medewerkerStore.refreshMedewerkersList(),
+		]).then(() => {
 			this.loading = false
 		})
 	},
 	methods: {
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.takenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
+		},
+		getName(taak) {
+			const medewerker = medewerkerStore.medewerkersList.find(medewerker => medewerker.id === taak.medewerker)
+			const klant = klantStore.klantenList.find(klant => klant.id === taak.klant)
+
+			if (medewerker) {
+				return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
+			}
+			if (klant) {
+				if (klant.type === 'persoon') {
+					return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				}
+				if (klant.type === 'organisatie') {
+					return klant?.bedrijfsnaam ?? 'onbekend'
+				}
+			}
+			return 'onbekend'
 		},
 	},
 }

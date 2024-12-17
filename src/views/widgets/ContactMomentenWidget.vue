@@ -5,13 +5,14 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 <template>
 	<div class="contactmomentenContainer">
 		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
+			<NcDashboardWidget :items="contactMomentItems"
 				:loading="loading"
 				:item-menu="itemMenu"
 				@show="onShow"
+				@edit="onEdit"
 				@sluiten="onSluiten">
 				<template #empty-content>
-					<NcEmptyContent name="Geen contact momenten gevonden">
+					<NcEmptyContent name="Geen contactmomenten gevonden">
 						<template #icon>
 							<ChatOutline />
 						</template>
@@ -24,12 +25,13 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Contact moment starten
+			Contactmoment starten
 		</NcButton>
 
-		<ContactMomentenForm v-if="isModalOpen"
+		<ContactMomentenForm v-if="isContactMomentFormOpen"
 			:dashboard-widget="true"
 			:contact-moment-id="contactMomentId"
+			:is-view="isView"
 			@save-success="fetchContactMomentItems"
 			@close-modal="closeModal" />
 	</div>
@@ -44,6 +46,7 @@ import { getTheme } from '../../services/getTheme.js'
 import { ContactMoment } from '../../entities/index.js'
 
 // Icons
+import { iconPencil, iconProgressClose } from '../../services/icons/index.js'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
@@ -64,33 +67,34 @@ export default {
 	data() {
 		return {
 			loading: false,
-			isModalOpen: false,
-			searchKlantModalOpen: false,
+			/**
+			 * determines if the contactmoment form modal is open
+			 */
+			isContactMomentFormOpen: false,
 			contactMomentItems: [],
+			// contactmoment form props
 			contactMomentId: null,
+			isView: false,
+			// widget options
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
 					icon: 'icon-toggle',
 				},
+				edit: {
+					text: 'Bewerk',
+					icon: iconPencil,
+				},
 				sluiten: {
 					text: 'Sluit',
-					icon: this.getSluitenIcon(),
+					icon: iconProgressClose,
 				},
 			},
 		}
 	},
-
-	computed: {
-		items() {
-			return this.contactMomentItems
-		},
-	},
-
 	mounted() {
 		this.fetchContactMomentItems()
 	},
-
 	methods: {
 		fetchContactMomentItems() {
 			this.loading = true
@@ -102,11 +106,10 @@ export default {
 				.then(([contactMomentResponse, klantResponse]) => {
 					this.contactMomentItems = contactMomentResponse.entities.map(contactMoment => ({
 						id: contactMoment.id,
-						mainText: (() => { // this is a self calling function to get the klant name
+						mainText: (() => { // this is a self calling function to get the klant name, which is why you don't see it being called anywhere
 							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
 							if (klant) {
-								const tussenvoegsel = klant.tussenvoegsel ? klant.tussenvoegsel + ' ' : ''
-								return `${klant.voornaam} ${tussenvoegsel}${klant.achternaam}`
+								return klant.type === 'persoon' ? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` : `${klant.bedrijfsnaam}`
 							}
 							return ''
 						})(),
@@ -118,6 +121,7 @@ export default {
 					this.loading = false
 				})
 		},
+		// === ICONS ===
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -129,33 +133,51 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
 		},
-		getSluitenIcon() {
-			const theme = getTheme()
-
-			return theme === 'light' ? 'icon-progress-close-dark' : 'icon-progress-close-light'
-		},
+		// === MODAL CONTROL ===
+		/**
+		 * Opens the contactmoment form modal in create/add mode
+		 */
 		openModal() {
-			this.isModalOpen = true
+			this.isContactMomentFormOpen = true
 			this.contactMomentId = null
 			contactMomentStore.setContactMomentItem(null)
-			navigationStore.setModal('contactMomentenForm')
 		},
+		/**
+		 * runs when the contact form modal closes
+		 */
 		closeModal() {
-			this.isModalOpen = false
+			this.isContactMomentFormOpen = false
+			this.isView = false
 			navigationStore.setModal(null)
 		},
-
+		// === EVENTS ===
+		/**
+		 * runs when the user clicks on the show button, and opens the contactmoment form modal in view mode
+		 * @param {{id: number}} event - the contactmoment item received from the widget
+		 */
 		onShow(event) {
 			this.contactMomentId = event.id
-			this.isModalOpen = true
-			navigationStore.setModal('contactMomentenForm')
+			this.isContactMomentFormOpen = true
+			this.isView = true
 		},
+		/**
+		 * runs when the user clicks on the edit button, and opens the contactmoment form modal in edit mode
+		 * @param {{id: number}} event - the contactmoment item received from the widget
+		 */
+		onEdit(event) {
+			this.contactMomentId = event.id
+			this.isContactMomentFormOpen = true
+			this.isView = false
+		},
+		/**
+		 * runs when the user clicks on the "sluiten" button, and changes the status of the contactmoment to 'gesloten'
+		 * @param {{id: number}} event - the contactmoment item received from the widget
+		 */
 		async onSluiten(event) {
-			// change status to 'gesloten'
 			const { data } = await contactMomentStore.getContactMoment(event.id)
 
 			if (data?.status === 'gesloten') {
-				console.info('Contact moment is already closed')
+				console.info('Contactmoment is already closed')
 				return
 			}
 
@@ -175,16 +197,6 @@ export default {
 
 }
 </script>
-<style>
-.icon-progress-close-dark {
-	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+DQogICAgPHBhdGgNCiAgICAgICAgZD0iTTEzIDIuMDNWNC4wNUMxNy4zOSA0LjU5IDIwLjUgOC41OCAxOS45NiAxMi45N0MxOS41IDE2LjYxIDE2LjY0IDE5LjUgMTMgMTkuOTNWMjEuOTNDMTguNSAyMS4zOCAyMi41IDE2LjUgMjEuOTUgMTFDMjEuNSA2LjI1IDE3LjczIDIuNSAxMyAyLjAzTTExIDIuMDZDOS4wNSAyLjI1IDcuMTkgMyA1LjY3IDQuMjZMNy4xIDUuNzRDOC4yMiA0Ljg0IDkuNTcgNC4yNiAxMSA0LjA2VjIuMDZNNC4yNiA1LjY3QzMgNy4xOSAyLjI1IDkuMDQgMi4wNSAxMUg0LjA1QzQuMjQgOS41OCA0LjggOC4yMyA1LjY5IDcuMUw0LjI2IDUuNjdNMi4wNiAxM0MyLjI2IDE0Ljk2IDMuMDMgMTYuODEgNC4yNyAxOC4zM0w1LjY5IDE2LjlDNC44MSAxNS43NyA0LjI0IDE0LjQyIDQuMDYgMTNIMi4wNk03LjEgMTguMzdMNS42NyAxOS43NEM3LjE4IDIxIDkuMDQgMjEuNzkgMTEgMjJWMjBDOS41OCAxOS44MiA4LjIzIDE5LjI1IDcuMSAxOC4zN00xNC41OSA4TDEyIDEwLjU5TDkuNDEgOEw4IDkuNDFMMTAuNTkgMTJMOCAxNC41OUw5LjQxIDE2TDEyIDEzLjQxTDE0LjU5IDE2TDE2IDE0LjU5TDEzLjQxIDEyTDE2IDkuNDFMMTQuNTkgOFoiDQogICAgICAgIHN0eWxlPSJmaWxsLW9wYWNpdHk6LjU7ZmlsbC1ydWxlOm5vbnplcm8iIGZpbGw9IiMwMDAwMDAiIC8+DQo8L3N2Zz4=);
-}
-
-.icon-progress-close-light {
-	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+DQogICAgPHBhdGgNCiAgICAgICAgZD0iTTEzIDIuMDNWNC4wNUMxNy4zOSA0LjU5IDIwLjUgOC41OCAxOS45NiAxMi45N0MxOS41IDE2LjYxIDE2LjY0IDE5LjUgMTMgMTkuOTNWMjEuOTNDMTguNSAyMS4zOCAyMi41IDE2LjUgMjEuOTUgMTFDMjEuNSA2LjI1IDE3LjczIDIuNSAxMyAyLjAzTTExIDIuMDZDOS4wNSAyLjI1IDcuMTkgMyA1LjY3IDQuMjZMNy4xIDUuNzRDOC4yMiA0Ljg0IDkuNTcgNC4yNiAxMSA0LjA2VjIuMDZNNC4yNiA1LjY3QzMgNy4xOSAyLjI1IDkuMDQgMi4wNSAxMUg0LjA1QzQuMjQgOS41OCA0LjggOC4yMyA1LjY5IDcuMUw0LjI2IDUuNjdNMi4wNiAxM0MyLjI2IDE0Ljk2IDMuMDMgMTYuODEgNC4yNyAxOC4zM0w1LjY5IDE2LjlDNC44MSAxNS43NyA0LjI0IDE0LjQyIDQuMDYgMTNIMi4wNk03LjEgMTguMzdMNS42NyAxOS43NEM3LjE4IDIxIDkuMDQgMjEuNzkgMTEgMjJWMjBDOS41OCAxOS44MiA4LjIzIDE5LjI1IDcuMSAxOC4zN00xNC41OSA4TDEyIDEwLjU5TDkuNDEgOEw4IDkuNDFMMTAuNTkgMTJMOCAxNC41OUw5LjQxIDE2TDEyIDEzLjQxTDE0LjU5IDE2TDE2IDE0LjU5TDEzLjQxIDEyTDE2IDkuNDFMMTQuNTkgOFoiDQogICAgICAgIHN0eWxlPSJmaWxsLXJ1bGU6bm9uemVybyIgZmlsbD0iI2ZmZmZmZiIgLz4NCjwvc3ZnPg==);
-}
-
-</style>
 <style scoped>
 .contactmomentenContainer{
     display: flex;

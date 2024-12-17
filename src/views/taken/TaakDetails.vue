@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, taakStore, klantStore } from '../../store/store.js'
+import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -35,7 +35,24 @@ import { navigationStore, taakStore, klantStore } from '../../store/store.js'
 							<b>Sammenvatting:</b>
 							<span>{{ taakStore.taakItem.onderwerp }}</span>
 						</div>
-						<div>
+						<div v-if="taakStore.taakItem.medewerker">
+							<b>Medewerker:</b>
+							<span v-if="medewerkerLoading">Loading...</span>
+							<div v-if="!medewerkerLoading" class="buttonLinkContainer">
+								<span>{{ getMedewerkerName(medewerker) }}</span>
+								<NcActions>
+									<NcActionLink :aria-label="`ga naar ${getMedewerkerName(medewerker)}`"
+										:name="getMedewerkerName(medewerker)"
+										@click="goToMedewerker()">
+										<template #icon>
+											<OpenInApp :size="20" />
+										</template>
+										{{ getMedewerkerName(medewerker) }}
+									</NcActionLink>
+								</NcActions>
+							</div>
+						</div>
+						<div v-if="taakStore.taakItem.klant">
 							<b>Klant:</b>
 							<span v-if="klantLoading">Loading...</span>
 							<div v-if="!klantLoading" class="buttonLinkContainer">
@@ -125,22 +142,26 @@ export default {
 		return {
 			currentActiveTaak: null,
 			auditTrails: [],
-			klant: [],
+			klant: null,
+			medewerker: null,
 			klantLoading: false,
+			medewerkerLoading: false,
 		}
 	},
 	mounted() {
 		if (taakStore.taakItem?.id) {
 			this.currentActiveTaak = taakStore.taakItem
 			this.fetchAuditTrails(taakStore.taakItem.id)
-			this.fetchKlant(taakStore.taakItem.klant)
+			if (taakStore.taakItem.klant) this.fetchKlant(taakStore.taakItem.klant)
+			if (taakStore.taakItem.medewerker) this.fetchMedewerker(taakStore.taakItem.medewerker)
 		}
 	},
 	updated() {
 		if (taakStore.taakItem?.id && JSON.stringify(this.currentActiveTaak) !== JSON.stringify(taakStore.taakItem)) {
 			this.currentActiveTaak = taakStore.taakItem
 			this.fetchAuditTrails(taakStore.taakItem.id)
-			this.fetchKlant(taakStore.taakItem.klant)
+			if (taakStore.taakItem.klant) this.fetchKlant(taakStore.taakItem.klant)
+			if (taakStore.taakItem.medewerker) this.fetchMedewerker(taakStore.taakItem.medewerker)
 		}
 	},
 	methods: {
@@ -156,9 +177,16 @@ export default {
 		getKlantName(klant) {
 			return klant?.type === 'persoon' ? `${klant?.voornaam} ${klant?.tussenvoegsel} ${klant?.achternaam}` : klant?.bedrijfsnaam
 		},
+		getMedewerkerName(medewerker) {
+			return `${medewerker?.voornaam} ${medewerker?.tussenvoegsel} ${medewerker?.achternaam}`
+		},
 		goToKlant() {
 			klantStore.setKlantItem(this.klant)
 			navigationStore.setSelected('klanten')
+		},
+		goToMedewerker() {
+			medewerkerStore.setMedewerkerItem(this.medewerker)
+			navigationStore.setSelected('medewerkers')
 		},
 		fetchKlant(klant) {
 			this.klantLoading = true
@@ -175,6 +203,24 @@ export default {
 				.catch((err) => {
 					console.error(err)
 					this.klantLoading = false
+				})
+
+		},
+		fetchMedewerker(medewerker) {
+			this.medewerkerLoading = true
+
+			fetch(`/index.php/apps/zaakafhandelapp/api/medewerkers/${medewerker}`, {
+				method: 'GET',
+			})
+				.then((response) => {
+					response.json().then((data) => {
+						this.medewerker = data
+					})
+					this.medewerkerLoading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.medewerkerLoading = false
 				})
 
 		},

@@ -96,9 +96,11 @@ class ZaakTypenController extends Controller
         // Remove the 'id' field if it exists, as we're creating a new object
         unset($data['id']);
 
+		$data['id'] = $id;
+
         // Save the new catalog object
         $object = $this->objectService->saveObject('zaaktypen', $data);
-        
+
         // Return the created object as a JSON response
         return new JSONResponse($object);
 	}

@@ -14,7 +14,7 @@ export class Taak implements TTaak {
 	public toelichting: string
 	public actie: string
 	public klant: string
-
+	public medewerker: string
 	constructor(source: TTaak) {
 		this.id = source.id || ''
 		this.title = source.title || ''
@@ -26,6 +26,7 @@ export class Taak implements TTaak {
 		this.toelichting = source.toelichting || ''
 		this.actie = source.actie || ''
 		this.klant = source.klant || ''
+		this.medewerker = source.medewerker || ''
 	}
 
 	public validate(): SafeParseReturnType<TTaak, unknown> {
@@ -40,6 +41,7 @@ export class Taak implements TTaak {
 			toelichting: z.string(),
 			actie: z.string(),
 			klant: z.string(),
+			medewerker: z.string(),
 		})
 
 		return schema.safeParse(this)

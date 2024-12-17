@@ -1,5 +1,5 @@
 <script setup>
-import { taakStore, navigationStore, zaakStore, klantStore } from '../../store/store.js'
+import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -133,15 +133,17 @@ import { taakStore, navigationStore, zaakStore, klantStore } from '../../store/s
 					</NcEmptyContent>
 				</BTab>
 				<BTab title="Contact Momenten">
-					<div v-if="contactMomenten?.length">
-						<NcListItem v-for="(contactMoment, key) in contactMomenten"
+					<div v-if="filteredContactMomenten?.length">
+						<NcListItem v-for="(contactMoment, key) in filteredContactMomenten"
 							:key="key"
-							:name="contactMoment.title"
+							:name="getName(klant)"
 							:bold="false"
-							:details="contactMoment.description"
 							:force-display-actions="true">
 							<template #icon>
-								<AccountOutline :size="44" />
+								<CardAccountPhoneOutline :size="44" />
+							</template>
+							<template #subname>
+								{{ new Date(contactMoment.startDate).toLocaleString() }}
 							</template>
 						</NcListItem>
 					</div>
@@ -194,7 +196,7 @@ import { taakStore, navigationStore, zaakStore, klantStore } from '../../store/s
 			:selected-klant-from-widget="klant"
 			@save-success="fetchZaakItems" />
 
-		<WidgetTaakForm v-if="taakModalOpen"
+		<EditTaakForm v-if="taakModalOpen"
 			:dashboard-widget="true"
 			:selected-klant-from-widget="klant"
 			@save-success="fetchTaakItems" />
@@ -217,10 +219,10 @@ import Cancel from 'vue-material-design-icons/Cancel.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
-import WidgetTaakForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 import WidgetZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
 
 export default {
@@ -237,10 +239,9 @@ export default {
 		BriefcaseAccountOutline,
 		CalendarMonthOutline,
 		ChatOutline,
-		AccountOutline,
 		Eye,
 		DotsHorizontal,
-		WidgetTaakForm,
+		EditTaakForm: EditTaak,
 		WidgetZaakForm,
 	},
 	props: {
@@ -268,7 +269,14 @@ export default {
 			currentActiveKlant: {},
 		}
 	},
+	computed: {
+		filteredContactMomenten() {
+			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === this.klant?.id)
+		},
+	},
 	mounted() {
+		contactMomentStore.refreshContactMomentenList()
+
 		if (klantStore.widgetKlantId) {
 			this.currentActiveKlant = klantStore.widgetKlantId
 			this.fetchKlantData(klantStore.widgetKlantId)
@@ -340,6 +348,16 @@ export default {
 				.then(data => {
 					this.zaken = data.results
 				})
+		},
+
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
 		},
 
 		closeModalFromButton() {

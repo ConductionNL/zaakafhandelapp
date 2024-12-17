@@ -36,12 +36,12 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 					:key="`${zaak}${i}`"
 					:name="zaak?.identificatie"
 					:force-display-actions="true"
-					:active="zaakStore.zaakItem?.uuid === zaak?.uuid"
+					:active="zaakStore.zaakItem?.id === zaak?.id"
 					:details="'1h'"
-					:counter-number="44"
+					:counter-number="zaak.uiterlijkeEinddatumAfdoening ? `${Math.ceil((new Date(zaak.uiterlijkeEinddatumAfdoening) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
 					@click="zaakStore.setZaakItem(zaak)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.uuid === zaak?.uuid && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>

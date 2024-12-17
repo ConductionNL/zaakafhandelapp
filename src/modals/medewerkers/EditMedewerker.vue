@@ -3,8 +3,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog v-if="navigationStore.modal === 'editMedewerker'"
-		name="Medewerker"
+	<NcDialog name="Medewerker"
 		size="normal"
 		:can-close="false">
 		<NcNoteCard v-if="success" type="success">
@@ -33,7 +32,14 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 			<NcTextField :disabled="loading"
 				label="Email adres"
 				maxlength="255"
-				:value.sync="medewerkerItem.emailadres" />
+				:value.sync="medewerkerItem.email" />
+
+			<NcTextField :disabled="loading"
+				label="Telefoonnummer"
+				minlength="10"
+				maxlength="11"
+				placeholder="06 12345678"
+				:value.sync="medewerkerItem.telefoonnummer" />
 		</div>
 
 		<template #actions>
@@ -99,7 +105,6 @@ export default {
 			success: false,
 			loading: false,
 			error: false,
-			hasUpdated: false,
 			countryOptions: {
 				options: countries.map((country) => ({
 					id: country.code,
@@ -111,42 +116,25 @@ export default {
 				tussenvoegsel: '',
 				achternaam: '',
 				email: '',
+				telefoonnummer: '',
 			},
 		}
 	},
-	computed: {
-		items() {
-			return this.medewerkerItems
-		},
-	},
-	updated() {
-		if (navigationStore.modal === 'editMedewerker' && !this.hasUpdated) {
-
-			if (medewerkerStore.medewerkerItem?.id) {
-				this.medewerkerItem = {
-					...medewerkerStore.medewerkerItem,
-					voornaam: medewerkerStore.medewerkerItem.voornaam || '',
-					tussenvoegsel: medewerkerStore.medewerkerItem.tussenvoegsel || '',
-					achternaam: medewerkerStore.medewerkerItem.achternaam || '',
-					email: medewerkerStore.medewerkerItem.email || '',
-				}
+	mounted() {
+		if (medewerkerStore.medewerkerItem?.id) {
+			this.medewerkerItem = {
+				...medewerkerStore.medewerkerItem,
+				voornaam: medewerkerStore.medewerkerItem.voornaam || '',
+				tussenvoegsel: medewerkerStore.medewerkerItem.tussenvoegsel || '',
+				achternaam: medewerkerStore.medewerkerItem.achternaam || '',
+				email: medewerkerStore.medewerkerItem.email || '',
+				telefoonnummer: medewerkerStore.medewerkerItem.telefoonnummer || '',
 			}
-			this.hasUpdated = true
 		}
 	},
 	methods: {
 		closeModal() {
 			navigationStore.setModal(false)
-			this.success = false
-			this.loading = false
-			this.error = false
-			this.hasUpdated = false
-			this.medewerkerItem = {
-				voornaam: '',
-				tussenvoegsel: '',
-				achternaam: '',
-				email: '',
-			}
 		},
 		async editMedewerker() {
 			this.loading = true
