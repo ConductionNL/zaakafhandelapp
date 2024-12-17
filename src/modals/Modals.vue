@@ -32,6 +32,9 @@ import { navigationStore } from '../store/store.js'
 		<!-- klant register -->
 		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
+		<!-- resultaat -->
+		<ResultaatForm v-if="navigationStore.modal === 'resultaatForm'" />
+		<DeleteResultaat v-if="navigationStore.modal === 'deleteResultaat'" />
 	</div>
 </template>
 
@@ -55,6 +58,8 @@ import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
 import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
 import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
 import AddRolToZaak from './zaken/AddRolToZaak.vue'
+import ResultaatForm from './resultaten/ResultaatForm.vue'
+import DeleteResultaat from './resultaten/DeleteResultaat.vue'
 
 export default {
 	name: 'Modals',
@@ -78,6 +83,8 @@ export default {
 		AddTaakToZaak,
 		ContactMomentenForm,
 		AddRolToZaak,
+		ResultaatForm,
+		DeleteResultaat,
 	},
 }
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore } from '../../store/store.js'
+import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -58,6 +58,12 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Status wijzigen
 						</NcActionButton>
+						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); navigationStore.setModal('resultaatForm')">
+							<template #icon>
+								<FileChartCheckOutline :size="20" />
+							</template>
+							Resultaat toevoegen
+						</NcActionButton>
 					</NcActions>
 				</div>
 
@@ -115,6 +121,9 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 						</BTab>
 						<BTab title="Documenten">
 							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
+						</BTab>
+						<BTab title="Resultaten">
+							<ZaakResultaten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Rollen">
 							<ZaakRollen :zaak-id="zaakStore.zaakItem?.id" />
@@ -188,6 +197,7 @@ import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusO
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import FileChartCheckOutline from 'vue-material-design-icons/FileChartCheckOutline.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
@@ -197,6 +207,7 @@ import ZaakTaken from '../taken/ZaakTaken.vue'
 import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
 import ZakenZaken from '../zaken/ZakenZaken.vue'
+import ZaakResultaten from '../resultaten/ZaakResultaten.vue'
 
 export default {
 	name: 'ZaakDetails',
@@ -214,6 +225,7 @@ export default {
 		ZaakBesluiten,
 		ZaakDocumenten,
 		ZakenZaken,
+		ZaakResultaten,
 		// Icons
 		DotsHorizontal,
 		Pencil,
