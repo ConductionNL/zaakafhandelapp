@@ -97,7 +97,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 							</div>
 							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
 								<template #description>
-									Er is geen audit trail gevonden voor deze bericht.
+									Er is geen audit trail gevonden voor dit contactmoment.
 								</template>
 							</NcEmptyContent>
 						</BTab>
