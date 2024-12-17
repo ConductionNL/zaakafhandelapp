@@ -76,6 +76,7 @@ export default {
 			loading: false,
 			isModalOpen: false,
 			taakItems: [],
+			userId: null,
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
@@ -100,13 +101,26 @@ export default {
 	},
 
 	mounted() {
-		this.fetchTaakItems()
+		this.fetchUser()
 	},
 
 	methods: {
+		async fetchUser() {
+			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
+			const user = await getUser.json()
+
+			const medewerkerList = await fetch('/index.php/apps/zaakafhandelapp/api/medewerkers')
+			const medewerkers = await medewerkerList.json()
+
+			const medewerker = medewerkers.results.find((medewerker) => medewerker.email === user.user.email)
+
+			this.userId = medewerker.id
+			this.fetchTaakItems()
+		},
 		fetchTaakItems() {
+
 			this.loading = true
-			taakStore.refreshTakenList(null, true)
+			taakStore.refreshTakenList(null, true, this.userId)
 				.then(() => {
 
 					this.taakItems = taakStore.takenList.map(taak => ({
