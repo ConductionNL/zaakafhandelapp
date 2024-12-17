@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js'
+import { navigationStore, zaakStore, resultaatStore, besluitStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -58,11 +58,17 @@ import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js
 							</template>
 							Status wijzigen
 						</NcActionButton>
-						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); navigationStore.setModal('resultaatForm')">
+						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); resultaatStore.setResultaatItem(null); navigationStore.setModal('resultaatForm')">
 							<template #icon>
 								<FileChartCheckOutline :size="20" />
 							</template>
 							Resultaat toevoegen
+						</NcActionButton>
+						<NcActionButton @click="(besluitStore.zaakId = zaakStore.zaakItem?.id); besluitStore.setBesluitItem(null); navigationStore.setModal('besluitForm')">
+							<template #icon>
+								<FileChartCheckOutline :size="20" />
+							</template>
+							Besluit toevoegen
 						</NcActionButton>
 					</NcActions>
 				</div>

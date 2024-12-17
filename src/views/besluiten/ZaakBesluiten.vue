@@ -1,41 +1,46 @@
 <script setup>
-import { zaakStore } from '../../store/store.js'
+import { navigationStore, besluitStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<div v-if="!loading">
-			<NcListItem v-for="(zaak, i) in zakenList"
-				:key="`${zaak}${i}`"
-				:name="zaak?.name"
-				:active="zaakStore.zaakItem?.id === zaak?.id"
-				:details="'1h'"
-				:counter-number="44"
+		<div v-if="besluiten[zaakId]?.besluiten?.length">
+			<NcListItem v-for="(besluit, i) in besluiten[zaakId]?.besluiten"
+				:key="`${besluit}${i}`"
+				:name="besluit?.name || besluit?.besluit"
+				:bold="true"
+				:active="besluitStore.besluitItem?.id === besluit?.id"
 				:force-display-actions="true"
-				@click="toggleBesluit(zaak)">
+				@click="toggleBesluit(besluit)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak.id && 'selectedZaakIcon'"
-						disable-menu
+					<BriefcaseAccountOutline disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaak?.summary }}
+					{{ besluit?.summary }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="(besluitStore.zaakId = zaakId); besluitStore.setBesluitItem(besluit); navigationStore.setModal('besluitForm')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						Bewerken
 					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
+					<NcActionButton @click="(besluitStore.zaakId = zaakId); besluitStore.setBesluitItem(besluit); navigationStore.setModal('deleteBesluit')">
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						Verwijderen van zaak
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<div v-if="!besluiten[zaakId]?.besluiten?.length && !loading">
+			Geen besluiten gevonden.
+		</div>
+
+		<NcLoadingIcon v-if="!besluiten[zaakId]?.besluiten?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -43,16 +48,19 @@ import { zaakStore } from '../../store/store.js'
 	</div>
 </template>
 <script>
+// Components
 import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+
+// Icons
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ZaakBesluiten',
 	components: {
 		NcListItem,
 		NcActionButton,
-		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
 	props: {
@@ -63,41 +71,42 @@ export default {
 	},
 	data() {
 		return {
+			// this is saved in a cache like system for easier navigation between zaken and to avoid unnecessary wait time for the end user
+			// eg. besluiten[zaakId] = { besluiten: [], loading: false }
+			besluiten: {},
 			search: '',
 			loading: true,
-			zakenList: [],
 		}
 	},
 	watch: {
 		zaakId(newVal) {
-			this.fetchData(newVal)
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(this.zaakId)
+		this.fetchData()
 	},
 	methods: {
-		fetchData(zaakId) {
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId + '/besluiten',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data.results
-					})
-					this.loading = false
+
+			besluitStore.getBesluiten(this.zaakId)
+				.then(({ data }) => {
+					this.besluiten[this.zaakId] = {
+						besluiten: data,
+						loading: false,
+					}
 				})
-				.catch((err) => {
-					console.error(err)
+				.finally(() => {
 					this.loading = false
 				})
 		},
 		toggleBesluit(besluit) {
-			// TODO: toggle besluit
+			if (besluitStore.besluitItem?.id === besluit.id) {
+				besluitStore.setBesluitItem(null)
+			} else {
+				besluitStore.setBesluitItem(besluit)
+			}
 		},
 		clearText() {
 			this.search = ''
@@ -105,6 +114,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .listHeader {
     position: sticky;

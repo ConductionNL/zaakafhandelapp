@@ -35,6 +35,9 @@ import { navigationStore } from '../store/store.js'
 		<!-- resultaat -->
 		<ResultaatForm v-if="navigationStore.modal === 'resultaatForm'" />
 		<DeleteResultaat v-if="navigationStore.modal === 'deleteResultaat'" />
+		<!-- besluiten -->
+		<BesluitForm v-if="navigationStore.modal === 'besluitForm'" />
+		<DeleteBesluit v-if="navigationStore.modal === 'deleteBesluit'" />
 	</div>
 </template>
 
@@ -60,6 +63,8 @@ import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
 import AddRolToZaak from './zaken/AddRolToZaak.vue'
 import ResultaatForm from './resultaten/ResultaatForm.vue'
 import DeleteResultaat from './resultaten/DeleteResultaat.vue'
+import BesluitForm from './besluiten/BesluitForm.vue'
+import DeleteBesluit from './besluiten/DeleteBesluit.vue'
 
 export default {
 	name: 'Modals',
@@ -85,6 +90,8 @@ export default {
 		AddRolToZaak,
 		ResultaatForm,
 		DeleteResultaat,
+		BesluitForm,
+		DeleteBesluit,
 	},
 }
 </script>
