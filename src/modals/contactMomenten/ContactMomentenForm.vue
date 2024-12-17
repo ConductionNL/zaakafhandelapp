@@ -14,6 +14,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				<BTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
 					:title="'Contactmoment ' + `${contactMomenten[i].klant ? getName(contactMomenten[i].klant) : i}`"
+					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
 					<NcNoteCard v-if="success" type="success">
 						<p>Contactmoment succesvol opgeslagen</p>
@@ -115,18 +116,15 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
-								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
-									<div v-if="klantContactmomenten.length">
-										<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
+								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
+									<div v-if="contactMomenten[i].klantContactmomenten?.length">
+										<NcListItem v-for="(klantContactmoment, key) in contactMomenten[i].klantContactmomenten"
 											:key="key"
 											:name="getName(contactMomenten[i].klant)"
 											:bold="false"
-											:details="klantContactmoment.startDate"
 											:disabled="loading"
 											:loading="fetchLoading"
-											:active="selectedContactMoment === klantContactmoment.id"
-											:force-display-actions="true"
-											@click="setSelectedContactMoment(klantContactmoment.id)">
+											:force-display-actions="true">
 											<template #icon>
 												<BriefcaseAccountOutline :size="44" />
 											</template>
@@ -141,18 +139,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Zaken ${contactMomenten[i].klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
-									<div v-if="zaken.length">
-										<NcListItem v-for="(zaak, key) in zaken"
+								<BTab :title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
+									<div v-if="contactMomenten[i].zaken?.length">
+										<NcListItem v-for="(zaak, key) in contactMomenten[i].zaken"
 											:key="key"
 											:name="zaak.identificatie"
 											:bold="false"
 											:details="zaak.startdatum"
 											:disabled="loading"
 											:loading="fetchLoading"
-											:active="selectedZaak === zaak.id"
+											:active="contactMomenten[i].selectedZaak === zaak.id"
 											:force-display-actions="true"
-											@click="setSelectedZaak(zaak.id)">
+											@click="setSelectedZaak(i, zaak.id)">
 											<template #icon>
 												<BriefcaseAccountOutline :size="44" />
 											</template>
@@ -167,18 +165,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Taken ${contactMomenten[i].klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
-									<div v-if="taken.length">
-										<NcListItem v-for="(taak, key) in taken"
+								<BTab :title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
+									<div v-if="contactMomenten[i].taken?.length">
+										<NcListItem v-for="(taak, key) in contactMomenten[i].taken"
 											:key="key"
 											:name="taak.title"
 											:bold="false"
 											:details="taak.status"
 											:disabled="loading"
 											:loading="fetchLoading"
-											:active="selectedTaak === taak.id"
+											:active="contactMomenten[i].selectedTaak === taak.id"
 											:force-display-actions="true"
-											@click="setSelectedTaak(taak.id)">
+											@click="setSelectedTaak(i, taak.id)">
 											<template #icon>
 												<CalendarMonthOutline :size="44" />
 											</template>
@@ -203,7 +201,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											:details="product.omschrijving ?? 'N/A'"
 											:disabled="loading"
 											:loading="fetchLoading"
-											:active="selectedProduct === product.id"
+											:active="contactMomenten[i].selectedProduct === product.id"
 											:force-display-actions="true"
 											@click="setSelectedProduct(product.id)">
 											<template #icon>
@@ -227,7 +225,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							@close-modal="closeSearchKlantModal" />
 					</div>
 					<NcButton
-						v-if="tabs.length > 1"
+						v-if="tabs.length > 1 && !success"
 						@click="closeTab(i)">
 						Close tab
 					</NcButton>
@@ -239,12 +237,6 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						@click.prevent="newTab">
 						<Plus :size="20" /> Nieuw contactmoment
 					</BNavItem>
-				</template>
-				<template #empty>
-					<div class="text-center text-muted">
-						There are no open tabs<br>
-						Open a new tab using the <b>+</b> button above.
-					</div>
 				</template>
 			</BTabs>
 		</div>
@@ -357,23 +349,12 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:bold="false"
 									:details="klantContactmoment.startDate"
 									:disabled="loading"
-									:loading="fetchLoading"
-									:active="selectedContactMoment === klantContactmoment.id"
-									:force-display-actions="true"
-									@click="setSelectedContactMoment(klantContactmoment.id)">
+									:force-display-actions="true">
 									<template #icon>
 										<BriefcaseAccountOutline :size="44" />
 									</template>
 									<template #subname>
 										{{ new Date(klantContactmoment.startDate).toLocaleString() }}
-									</template>
-									<template #actions>
-										<NcActionButton @click="closeContactMoment">
-											<template #icon>
-												<ProgressClose :size="20" />
-											</template>
-											Sluiten
-										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
@@ -393,8 +374,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedZaak === zaak.id"
-									:force-display-actions="true"
-									@click="setSelectedZaak(zaak.id)">
+									:force-display-actions="true">
 									<template #icon>
 										<BriefcaseAccountOutline :size="44" />
 									</template>
@@ -419,8 +399,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedTaak === taak.id"
-									:force-display-actions="true"
-									@click="setSelectedTaak(taak.id)">
+									:force-display-actions="true">
 									<template #icon>
 										<CalendarMonthOutline :size="44" />
 									</template>
@@ -446,8 +425,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedProduct === product.id"
-									:force-display-actions="true"
-									@click="setSelectedProduct(product.id)">
+									:force-display-actions="true">
 									<template #icon>
 										<BriefcaseAccountOutline :size="44" />
 									</template>
@@ -504,9 +482,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Zaak starten
 				</NcActionButton>
-				<NcActionButton v-if="isView" :disabled="contactMoment.status === 'gesloten'" @click="() => (contactMoment.status = 'gesloten')">
+				<NcActionButton v-if="isView" :disabled="contactMoment.status === 'gesloten'" @click="closeContactMoment(contactMoment.id)">
 					<template #icon>
-						<BriefcaseAccountOutline :size="20" />
+						<ProgressClose :size="20" />
 					</template>
 					Sluit Contactmoment
 				</NcActionButton>
@@ -544,12 +522,16 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 // Components
 import { BTabs, BTab, BNavItem } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
+import _ from 'lodash'
 
 import getValidISOstring from '../../services/getValidISOstring.js'
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
 import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+
+// Entities
+import { ContactMoment } from '../../entities/index.js'
 
 // Icons
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -640,6 +622,11 @@ export default {
 					selectedZaak: null,
 					selectedTaak: null,
 					selectedProduct: null,
+					selectedKlantContactMoment: null,
+					zaken: [],
+					taken: [],
+					berichten: [],
+					klantContactmomenten: [],
 				},
 			},
 			selectedContactMoment: 1,
@@ -649,6 +636,7 @@ export default {
 			selectedZaak: null,
 			selectedTaak: null,
 			selectedProduct: null,
+			selectedKlantContactMoment: null,
 			startingType: 'all',
 			taakFormOpen: false,
 			taakClientType: 'both',
@@ -679,7 +667,6 @@ export default {
 			}
 		},
 		newTab() {
-			console.log(this.tabCounter + 1)
 			const index = this.tabCounter + 1
 			this.contactMomenten = {
 				...this.contactMomenten,
@@ -691,6 +678,7 @@ export default {
 					selectedZaak: null,
 					selectedTaak: null,
 					selectedProduct: null,
+					selectedKlantContactMoment: null,
 				},
 			}
 			this.tabs.push(index)
@@ -719,31 +707,6 @@ export default {
 			this.fetchLoading = false
 		},
 
-		test(contactmoment) {
-			console.log(contactmoment)
-		},
-
-		test1(event) {
-			this.selectedContactMoment = Object.keys(this.contactMomenten).length + 1
-			this.contactMomenten = {
-				...this.contactMomenten,
-				[Object.keys(this.contactMomenten).length + 1]: {
-					notitie: '',
-					status: 'open',
-					startDate: null,
-					klant: null,
-					selectedZaak: null,
-					selectedTaak: null,
-					selectedProduct: null,
-				},
-			}
-		},
-
-		test2(i) {
-			this.selectedContactMoment = i
-			this.contactMoment = this.contactMomenten[i]
-		},
-
 		// Modal functions
 		closeModalFromButton() {
 			setTimeout(() => {
@@ -767,6 +730,14 @@ export default {
 			const endpoint = this.contactMomentId ? `contactmomenten/${this.contactMomentId}` : 'contactmomenten'
 			const method = this.contactMomentId ? 'PUT' : 'POST'
 
+			const contactMomentCopy = _.cloneDeep(this.contactMoment)
+
+			delete contactMomentCopy.taken
+			delete contactMomentCopy.zaken
+			delete contactMomentCopy.berichten
+			delete contactMomentCopy.klantContactmomenten
+			delete contactMomentCopy.auditTrails
+
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/${endpoint}`,
 				{
@@ -775,14 +746,14 @@ export default {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						...this.contactMoment,
-						notitie: this.contactMoment.notitie,
-						klant: this.klant?.id ?? '',
-						zaak: this.selectedZaak ?? '',
-						taak: this.selectedTaak ?? '',
-						product: this.selectedProduct ?? '',
-						status: this.contactMoment.status === 'gesloten' ? 'gesloten' : 'open',
-						startDate: this.contactMoment.startDate ?? new Date().toISOString(),
+						...contactMomentCopy,
+						notitie: contactMomentCopy.notitie,
+						klant: contactMomentCopy.klant?.id ?? '',
+						zaak: contactMomentCopy.selectedZaak ?? '',
+						taak: contactMomentCopy.selectedTaak ?? '',
+						product: contactMomentCopy.selectedProduct ?? '',
+						status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
+						startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 					}),
 				},
 			)
@@ -805,10 +776,25 @@ export default {
 					this.success = true
 					this.loading = false
 
-					setTimeout(this.closeModal, 2000)
+					if (!this.dashboardWidget) {
+						setTimeout(() => {
+							this.closeModal()
+						}, 2000)
+					}
 
 					if (this.dashboardWidget === true) {
-						this.$emit('save-success')
+						setTimeout(() => {
+							this.closeTab(this.selectedContactMoment)
+							this.selectedContactMoment = 1
+							this.success = false
+							this.succesMessage = false
+						}, 2000)
+						if (this.tabs.length === 1) {
+							this.$emit('save-success')
+							setTimeout(() => {
+								this.closeModal()
+							}, 2000)
+						}
 					}
 				})
 				.catch((err) => {
@@ -848,9 +834,25 @@ export default {
 			this.fetchKlantData(this.klant.id)
 		},
 
-		closeContactMoment() {
-			this.contactMoment.status = 'gesloten'
-			if (this.isView) this.addContactMoment()
+		async closeContactMoment(id) {
+			const { data } = await contactMomentStore.getContactMoment(id)
+
+			if (data?.status === 'gesloten') {
+				console.info('Contactmoment is already closed')
+				return
+			}
+			const newContactMoment = new ContactMoment({
+				...data,
+				status: 'gesloten',
+			})
+
+			contactMomentStore.saveContactMoment(newContactMoment)
+				.then(({ response }) => {
+					if (response.ok) {
+						this.closeModal()
+						this.$emit('save-success')
+					}
+				})
 		},
 
 		async fetchKlantData(id) {
@@ -883,19 +885,39 @@ export default {
 
 				// set data
 				if (Array.isArray(zakenData.results)) {
-					this.zaken = zakenData.results
+					if (this.isView) {
+						this.zaken = zakenData.results
+					} else {
+						this.contactMomenten[this.selectedContactMoment].zaken = zakenData.results
+					}
 				}
 				if (Array.isArray(takenData.results)) {
-					this.taken = takenData.results
+					if (this.isView) {
+						this.taken = takenData.results
+					} else {
+						this.contactMomenten[this.selectedContactMoment].taken = takenData.results
+					}
 				}
 				if (Array.isArray(berichtenData.results)) {
-					this.berichten = berichtenData.results
+					if (this.isView) {
+						this.berichten = berichtenData.results
+					} else {
+						this.contactMomenten[this.selectedContactMoment].berichten = berichtenData.results
+					}
 				}
 				if (Array.isArray(auditTrailData)) {
-					this.auditTrails = auditTrailData
+					if (this.isView) {
+						this.auditTrails = auditTrailData
+					} else {
+						this.contactMomenten[this.selectedContactMoment].auditTrails = auditTrailData
+					}
 				}
 				if (Array.isArray(contactMomentenData.results)) {
-					this.klantContactmomenten = contactMomentenData.results
+					if (this.isView) {
+						this.klantContactmomenten = contactMomentenData.results
+					} else {
+						this.contactMomenten[this.selectedContactMoment].klantContactmomenten = contactMomentenData.results
+					}
 				}
 
 			} catch (error) {
@@ -923,22 +945,22 @@ export default {
 		},
 
 		// Tabs
-		setSelectedZaak(zaak) {
-			if (this.selectedZaak === zaak) {
-				this.selectedZaak = null
-			} else { this.selectedZaak = zaak }
+		setSelectedZaak(id, zaak) {
+			if (this.contactMomenten[id].selectedZaak === zaak) {
+				this.contactMomenten[id].selectedZaak = null
+			} else { this.contactMomenten[id].selectedZaak = zaak }
 		},
 
-		setSelectedTaak(taak) {
-			if (this.selectedTaak === taak) {
-				this.selectedTaak = null
-			} else { this.selectedTaak = taak }
+		setSelectedTaak(id, taak) {
+			if (this.contactMomenten[id].selectedTaak === taak) {
+				this.contactMomenten[id].selectedTaak = null
+			} else { this.contactMomenten[id].selectedTaak = taak }
 		},
 
-		setSelectedProduct(product) {
-			if (this.selectedProduct === product) {
-				this.selectedProduct = null
-			} else { this.selectedProduct = product }
+		setSelectedProduct(id, product) {
+			if (this.contactMomenten[id].selectedProduct === product) {
+				this.contactMomenten[id].selectedProduct = null
+			} else { this.contactMomenten[id].selectedProduct = product }
 		},
 	},
 }
