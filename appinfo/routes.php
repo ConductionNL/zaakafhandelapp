@@ -26,7 +26,7 @@ return [
 	 	'berichten' => ['url' => 'api/berichten'],
 		'contactmomenten' => ['url' => 'api/contactmomenten'],
 		'medewerkers' => ['url' => 'api/medewerkers'],
-		
+
 	 ],
 	'routes' => [
 		// Audit trail routes
@@ -34,13 +34,13 @@ return [
 		['name' => 'klanten#getAuditTrail', 'url' => '/api/klanten/{id}/audit_trail', 'verb' => 'GET'],
 		['name' => 'berichten#getAuditTrail', 'url' => '/api/berichten/{id}/audit_trail', 'verb' => 'GET'],
 		['name' => 'taken#getAuditTrail', 'url' => '/api/taken/{id}/audit_trail', 'verb' => 'GET'],
-		
+
 		// Overige klant routes
 		['name' => 'klanten#getContactmomenten', 'url' => '/api/klanten/{id}/contactmomenten', 'verb' => 'GET'],
 		['name' => 'klanten#getTaken', 'url' => '/api/klanten/{id}/taken', 'verb' => 'GET'],
 		['name' => 'klanten#getBerichten', 'url' => '/api/klanten/{id}/berichten', 'verb' => 'GET'],
-		['name' => 'klanten#getZaken', 'url' => '/api/klanten/{id}/zaken', 'verb' => 'GET'],	
-			
+		['name' => 'klanten#getZaken', 'url' => '/api/klanten/{id}/zaken', 'verb' => 'GET'],
+
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
@@ -48,7 +48,7 @@ return [
 		['name' => 'zaken#page', 'url' => '/zaken', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],
 		['name' => 'statussen#page', 'url' => '/statussen', 'verb' => 'GET'],
-		['name' => 'zaakinformatieobjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],		
+		['name' => 'zaakinformatieobjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','url' => '/zaak_typen', 'verb' => 'GET'],
 		['name' => 'taken#page','url' => '/taken', 'verb' => 'GET'],
 		['name' => 'klanten#page','url' => '/klanten', 'verb' => 'GET'],
@@ -56,5 +56,7 @@ return [
 		// user Settings
 		['name' => 'settings#index','url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#create', 'url' => '/settings', 'verb' => 'POST'],
+		// User
+		['name' => 'users#me', 'url' => '/me', 'verb' => 'GET'],
 	]
 ];
