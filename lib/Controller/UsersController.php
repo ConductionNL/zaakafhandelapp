@@ -34,7 +34,7 @@ class UsersController extends Controller
 	}
 
 	/**
-	 * Gets info about the currently active/logged in user.
+	 * Gets info about the currently active/logged-in user.
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
