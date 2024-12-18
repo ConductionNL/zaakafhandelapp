@@ -105,7 +105,10 @@ class SettingsController extends Controller
 			'contactmomenten_register' => '',
 			'medewerkers_source' => 'internal',
 			'medewerkers_schema' => '',
-			'medewerkers_register' => ''
+			'medewerkers_register' => '',
+			'producten_source' => 'internal',
+			'producten_schema' => '',
+			'producten_register' => '',
 		];
 
 		// Get the current values for the object types from the configuration
