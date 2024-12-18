@@ -31,9 +31,9 @@ export const useNavigationStore = defineStore('ui', {
 			this.modal = modal
 			console.log('Active modal set to ' + modal)
 		},
-		setViewModal(modal: NavigationStoreState['modal']) {
-			this.viewModal = modal
-			console.log('Active modal set to ' + modal)
+		setViewModal(viewModal: NavigationStoreState['viewModal']) {
+			this.viewModal = viewModal
+			console.log('Active view modal set to ' + viewModal)
 		},
 		setDialog(dialog: NavigationStoreState['dialog']) {
 			this.dialog = dialog
