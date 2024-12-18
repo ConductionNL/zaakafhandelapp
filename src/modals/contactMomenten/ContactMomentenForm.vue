@@ -13,7 +13,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<BTabs card>
 				<BTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
-					:title="'Contactmoment ' + `${contactMomenten[i].klant ? getName(contactMomenten[i].klant) : i}`"
+					:title="contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg'"
 					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
 					<NcNoteCard v-if="success" type="success">
@@ -238,7 +238,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</BTabs>
 						</div>
 
-						<SearchKlantModal v-if="searchKlantModalOpen"
+						<SearchKlantModal v-if="searchKlantModalOpen && i === selectedContactMoment"
 							:dashboard-widget="true"
 							:starting-type="startingType"
 							@selected-klant="fetchKlantData($event)"
@@ -248,13 +248,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						Close tab
 					</NcButton>
 				</BTab>
+
 				<template #tabs-end>
-					<BNavItem class="newTabButton"
-						role="presentation"
-						href="#"
-						@click.prevent="newTab">
-						<Plus :size="20" /> Nieuw contactmoment
-					</BNavItem>
+					<NcButton @click="newTab">
+						<Plus :size="20" />
+					</NcButton>
 				</template>
 			</BTabs>
 		</div>
@@ -554,7 +552,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 <script>
 // Components
-import { BTabs, BTab, BNavItem } from 'bootstrap-vue'
+import { BTabs, BTab } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
 import _ from 'lodash'
 
@@ -593,7 +591,6 @@ export default {
 		EditTaakForm: EditTaak,
 		BTabs,
 		BTab,
-		BNavItem,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
@@ -709,6 +706,7 @@ export default {
 					this.tabs.splice(i, 1)
 				}
 			}
+			this.selectedContactMoment = 1
 		},
 		newTab() {
 			const index = this.tabCounter + 1
@@ -843,7 +841,6 @@ export default {
 					if (this.dashboardWidget === true) {
 						setTimeout(() => {
 							this.closeTab(this.selectedContactMoment)
-							this.selectedContactMoment = 1
 							this.success = false
 							this.succesMessage = false
 						}, 2000)
@@ -1046,11 +1043,24 @@ export default {
 			}
 		},
 
+		getInitials(klant) {
+			if (!klant) return
+
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam?.charAt(0)}.${klant.tweedeVoornaam ? klant.tweedeVoornaam?.charAt(0) + '.' : ''} ${klant.tussenvoegsel} ${klant.achternaam}`
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+
+		},
+
 		getName(klant) {
 			if (!klant) return
 
 			if (klant.type === 'persoon') {
-				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				return `${klant.voornaam} ${klant.tweedeVoornaam ?? ''} ${klant.tussenvoegsel ?? ''} ${klant.achternaam}` ?? 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'
