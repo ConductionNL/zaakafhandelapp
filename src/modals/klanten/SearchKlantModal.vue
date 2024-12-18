@@ -3,8 +3,7 @@ import { klantStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog
-		:name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
+	<NcDialog :name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
 		size="normal"
 		label-id="searchKlantModal"
 		dialog-classes="SearchKlantModal"
@@ -65,9 +64,7 @@ import { klantStore } from '../../store/store.js'
 			<div class="searchInputContainer">
 				<p>{{ searchLabel }}</p>
 				<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
-					<NcDateTimePicker v-model="searchQuery[0]"
-						:disabled="loading"
-						class="date-picker" />
+					<NcDateTimePicker v-model="searchQuery[0]" :disabled="loading" class="date-picker" />
 
 					<NcTextField :disabled="loading"
 						label="achternaam"
@@ -145,18 +142,13 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton
-				type="secondary"
-				@click="closeModal()">
+			<NcButton type="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				Annuleer
 			</NcButton>
-			<NcButton
-				type="primary"
-				:disabled="!selectedKlant"
-				@click="addKlant()">
+			<NcButton type="primary" :disabled="!selectedKlant" @click="addKlant()">
 				<template #icon>
 					<Plus :size="20" />
 				</template>
@@ -354,9 +346,7 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
 
 <style scoped>
 .listContainer {
@@ -372,12 +362,15 @@ export default {
 	align-items: end;
 	gap: 10px;
 }
+
 .searchInputContainer :deep(.input-field) {
 	margin-block-end: 3px;
 }
+
 .searchField {
 	width: auto;
 }
+
 .searchButton {
 	margin-block-start: 3px;
 	margin-block-end: 3px;

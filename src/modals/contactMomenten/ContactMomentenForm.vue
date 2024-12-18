@@ -29,21 +29,28 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<NcNoteCard type="info" class="noteCard">
 									<template #default>
 										<div v-if="contactMomenten[i].klant">
-											{{ `${getSex(contactMomenten[i].klant)} ${getName(contactMomenten[i].klant)}` }}
-											<div v-if="contactMomenten[i].klant?.type === 'persoon'" class="flexContainer">
+											{{ `${getSex(contactMomenten[i].klant)}
+											${getName(contactMomenten[i].klant)}` }}
+											<div v-if="contactMomenten[i].klant?.type === 'persoon'"
+												class="flexContainer">
 												<div>
-													Geboortedatum: {{ getValidISOstring(contactMomenten[i].klant?.geboortedatum) ? new Date(contactMomenten[i].klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+													Geboortedatum: {{
+														getValidISOstring(contactMomenten[i].klant?.geboortedatum) ? new
+															Date(contactMomenten[i].klant?.geboortedatum).toLocaleDateString() :
+														'N/A' }}
 												</div>
 												<div>
 													Geboorteplaats: {{ contactMomenten[i].klant?.plaats ?? 'N/A' }}
 												</div>
 											</div>
-											<div v-if="contactMomenten[i].klant?.type === 'organisatie'" class="flexContainer">
+											<div v-if="contactMomenten[i].klant?.type === 'organisatie'"
+												class="flexContainer">
 												<div>
 													KVK: {{ contactMomenten[i].klant?.kvkNummer ?? 'N/A' }}
 												</div>
 												<div>
-													Locatie: {{ contactMomenten[i].klant?.postcode ?? 'N/A' }} {{ contactMomenten[i].klant?.straatnaam ?? 'N/A' }}
+													Locatie: {{ contactMomenten[i].klant?.postcode ?? 'N/A' }} {{
+														contactMomenten[i].klant?.straatnaam ?? 'N/A' }}
 												</div>
 											</div>
 										</div>
@@ -55,8 +62,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</div>
 							<div v-if="!contactMomenten[i].klant" class="buttonsContainer">
 								<div>
-									<NcButton
-										:disabled="loading"
+									<NcButton :disabled="loading"
 										:loading="fetchLoading"
 										type="primary"
 										@click="openSearchKlantModal('persoon')">
@@ -70,8 +76,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									of
 								</div>
 								<div>
-									<NcButton
-										:disabled="loading"
+									<NcButton :disabled="loading"
 										:loading="fetchLoading"
 										type="primary"
 										@click="openSearchKlantModal('organisatie')">
@@ -85,8 +90,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 							<div v-if="contactMomenten[i].klant && !isView" class="buttonsContainer">
 								<div>
-									<NcButton
-										:disabled="loading"
+									<NcButton :disabled="loading"
 										:loading="fetchLoading"
 										type="primary"
 										@click="removeKlant(i)">
@@ -116,9 +120,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
-								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
+								<BTab
+									:title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].klantContactmomenten?.length">
-										<NcListItem v-for="(klantContactmoment, key) in contactMomenten[i].klantContactmomenten"
+										<NcListItem
+											v-for="(klantContactmoment, key) in contactMomenten[i].klantContactmomenten"
 											:key="key"
 											:name="getName(contactMomenten[i].klant)"
 											:bold="false"
@@ -147,7 +153,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
+								<BTab
+									:title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].zaken?.length">
 										<NcListItem v-for="(zaak, key) in contactMomenten[i].zaken"
 											:key="key"
@@ -173,7 +180,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
+								<BTab
+									:title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].taken?.length">
 										<NcListItem v-for="(taak, key) in contactMomenten[i].taken"
 											:key="key"
@@ -200,9 +208,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Producten ${contactMomenten[selectedContactMoment].klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
+								<BTab
+									:title="`Producten ${contactMomenten[selectedContactMoment].klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[selectedContactMoment].klant?.producten?.length">
-										<NcListItem v-for="(product, key) in contactMomenten[selectedContactMoment].klant.producten"
+										<NcListItem
+											v-for="(product, key) in contactMomenten[selectedContactMoment].klant.producten"
 											:key="key"
 											:name="product.naam ?? 'N/A'"
 											:bold="false"
@@ -232,9 +242,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							@selected-klant="fetchKlantData($event)"
 							@close-modal="closeSearchKlantModal" />
 					</div>
-					<NcButton
-						v-if="tabs.length > 1 && !success"
-						@click="closeTab(i)">
+					<NcButton v-if="tabs.length > 1 && !success" @click="closeTab(i)">
 						Close tab
 					</NcButton>
 				</BTab>
@@ -265,7 +273,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ `${getSex(klant)} ${getName(klant)}` }}
 									<div v-if="klant?.type === 'persoon'" class="flexContainer">
 										<div>
-											Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+											Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new
+												Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
 										</div>
 										<div>
 											Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
@@ -288,8 +297,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</div>
 					<div v-if="!klant" class="buttonsContainer">
 						<div>
-							<NcButton
-								:disabled="loading"
+							<NcButton :disabled="loading"
 								:loading="fetchLoading"
 								type="primary"
 								@click="openSearchKlantModal('persoon')">
@@ -303,8 +311,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							of
 						</div>
 						<div>
-							<NcButton
-								:disabled="loading"
+							<NcButton :disabled="loading"
 								:loading="fetchLoading"
 								type="primary"
 								@click="openSearchKlantModal('organisatie')">
@@ -318,8 +325,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 					<div v-if="klant && !isView" class="buttonsContainer">
 						<div>
-							<NcButton
-								:disabled="loading"
+							<NcButton :disabled="loading"
 								:loading="fetchLoading"
 								type="primary"
 								@click="klant = null">
@@ -349,7 +355,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab :title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
+						<BTab
+							:title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
 							<div v-if="klantContactmomenten.length">
 								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
 									:key="key"
@@ -423,7 +430,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab :title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
+						<BTab
+							:title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
 							<div v-if="klant?.producten?.length">
 								<NcListItem v-for="(product, key) in klant.producten"
 									:key="key"
@@ -456,10 +464,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</div>
 		</div>
 		<template #actions>
-			<NcButton
-				:disabled="loading || success"
-				type="secondary"
-				@click="closeModal()">
+			<NcButton :disabled="loading || success" type="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
@@ -490,15 +495,16 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Zaak starten
 				</NcActionButton>
-				<NcActionButton v-if="isView" :disabled="contactMoment.status === 'gesloten'" @click="closeContactMoment(contactMoment.id)">
+				<NcActionButton v-if="isView"
+					:disabled="contactMoment.status === 'gesloten'"
+					@click="closeContactMoment(contactMoment.id)">
 					<template #icon>
 						<ProgressClose :size="20" />
 					</template>
 					Sluit Contactmoment
 				</NcActionButton>
 			</NcActions>
-			<NcButton
-				v-if="!isView"
+			<NcButton v-if="!isView"
 				type="primary"
 				:disabled="!contactMomenten[selectedContactMoment].klant || loading || success || fetchLoading"
 				:loading="loading"
@@ -1051,54 +1057,55 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 
 <style scoped>
 .rolDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
+	margin-inline-start: var(--zaa-margin-20);
+	margin-inline-end: var(--zaa-margin-20);
 }
 
 .success {
-    color: green;
+	color: green;
 }
 
 .headerContainer {
-    display: flex;
-    gap: 200px;
+	display: flex;
+	gap: 200px;
 }
 
 .noteCard {
-    min-width: 350px;
+	min-width: 350px;
 }
 
 .orContainer {
-    margin-inline: var(--zaa-margin-10);
+	margin-inline: var(--zaa-margin-10);
 }
 
 .buttonsContainer {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .form-group {
-    margin-block-end: 100px;
+	margin-block-end: 100px;
 }
 
 .tabContainer {
-    margin-block-end: var(--zaa-margin-20);
+	margin-block-end: var(--zaa-margin-20);
 }
 
-.newTabButton > a {
+.newTabButton>a {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
 .modalButtonsContainer {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--zaa-margin-10);
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--zaa-margin-10);
 }
 
-.flexContainer, .statusContainer {
+.flexContainer,
+.statusContainer {
 	display: flex;
 	gap: var(--zaa-margin-10);
 }
