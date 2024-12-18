@@ -126,39 +126,39 @@ export default {
 
 <style>
 .detailContainer {
-    padding: 0.5rem;
+	padding: 0.5rem;
 }
 
 .h1 {
-  display: block !important;
-  font-size: 2em !important;
-  margin-block-start: 0.67em !important;
-  margin-block-end: 0.67em !important;
-  margin-inline-start: 0px !important;
-  margin-inline-end: 0px !important;
-  font-weight: bold !important;
-  unicode-bidi: isolate !important;
+	display: block !important;
+	font-size: 2em !important;
+	margin-block-start: 0.67em !important;
+	margin-block-end: 0.67em !important;
+	margin-inline-start: 0px !important;
+	margin-inline-end: 0px !important;
+	font-weight: bold !important;
+	unicode-bidi: isolate !important;
 }
 
 .grid {
-  display: grid;
-  grid-gap: 1rem 24px !important;
-  grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ) !important;
-  margin-block-start: var(--zaa-margin-50);
-  margin-block-end: var(--zaa-margin-50);
+	display: grid;
+	grid-gap: 1rem 24px !important;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+	margin-block-start: var(--zaa-margin-50);
+	margin-block-end: var(--zaa-margin-50);
 }
 
 .gridContent {
-  display: flex;
-  flex-direction: column;
-  gap: 2px !important;
+	display: flex;
+	flex-direction: column;
+	gap: 2px !important;
 }
-.gridContent > h5 {
-    margin-top: 12px !important;
+
+.gridContent>h5 {
+	margin-top: 12px !important;
 }
 
 .gridFullWidth {
-    grid-column: 1 / -1;
+	grid-column: 1 / -1;
 }
-
 </style>
