@@ -489,7 +489,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Klant taak aanmaken
 				</NcActionButton>
-				<NcActionButton v-if="!isView" :disabled="!contactMomenten[selectedContactMoment].klant?.id" @click="openZaakForm()">
+				<NcActionButton v-if="!isView"
+					:disabled="!contactMomenten[selectedContactMoment].klant?.id"
+					@click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
