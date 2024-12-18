@@ -238,7 +238,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</BTabs>
 						</div>
 
-						<SearchKlantModal v-if="searchKlantModalOpen"
+						<SearchKlantModal v-if="searchKlantModalOpen && i === selectedContactMoment"
 							:dashboard-widget="true"
 							:starting-type="startingType"
 							@selected-klant="fetchKlantData($event)"
