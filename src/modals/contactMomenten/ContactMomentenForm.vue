@@ -13,7 +13,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<BTabs card>
 				<BTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
-					:title="'Contactmoment ' + `${contactMomenten[i].klant ? getName(contactMomenten[i].klant) : i}`"
+					:title="contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg'"
 					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
 					<NcNoteCard v-if="success" type="success">
@@ -1043,11 +1043,24 @@ export default {
 			}
 		},
 
+		getInitials(klant) {
+			if (!klant) return
+
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam?.charAt(0)}.${klant.tweedeVoornaam ? klant.tweedeVoornaam?.charAt(0) + '.' : ''} ${klant.tussenvoegsel} ${klant.achternaam}`
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+
+		},
+
 		getName(klant) {
 			if (!klant) return
 
 			if (klant.type === 'persoon') {
-				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				return `${klant.voornaam} ${klant.tweedeVoornaam ?? ''} ${klant.tussenvoegsel ?? ''} ${klant.achternaam}` ?? 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'

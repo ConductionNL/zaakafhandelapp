@@ -28,6 +28,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:value.sync="klantItem.voornaam" />
 
 			<NcTextField :disabled="loading"
+				label="Tweede voornaam"
+				maxlength="255"
+				:value.sync="klantItem.tweedeVoornaam" />
+
+			<NcTextField :disabled="loading"
 				label="Tussenvoegsel"
 				maxlength="255"
 				:value.sync="klantItem.tussenvoegsel" />
@@ -224,6 +229,7 @@ export default {
 			},
 			klantItem: {
 				voornaam: '',
+				tweedeVoornaam: '',
 				type: 'persoon',
 				tussenvoegsel: '',
 				achternaam: '',
@@ -281,6 +287,7 @@ export default {
 				this.klantItem = {
 					...klantStore.klantItem,
 					voornaam: klantStore.klantItem.voornaam || '',
+					tweedeVoornaam: klantStore.klantItem.tweedeVoornaam || '',
 					type: klantType || { value: 'persoon', label: 'Persoon' },
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
@@ -319,6 +326,7 @@ export default {
 			this.hasUpdated = false
 			this.klantItem = {
 				voornaam: '',
+				tweedeVoornaam: '',
 				type: { value: 'persoon', label: 'Persoon' },
 				tussenvoegsel: '',
 				achternaam: '',

@@ -7,8 +7,10 @@ export class Klant implements TKlant {
 	public type: TKlantType
 
 	public voornaam: string
+	public tweedeVoornaam: string
 	public tussenvoegsel: string
 	public achternaam: string
+	public naam: string
 	public bsn: string
 	public geboortedatum: string
 	public geslacht: 'man' | 'vrouw' | 'overige'
