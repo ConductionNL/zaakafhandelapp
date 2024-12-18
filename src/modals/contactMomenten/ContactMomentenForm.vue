@@ -248,13 +248,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						Close tab
 					</NcButton>
 				</BTab>
+
 				<template #tabs-end>
-					<BNavItem class="newTabButton"
-						role="presentation"
-						href="#"
-						@click.prevent="newTab">
-						<Plus :size="20" /> Nieuw contactmoment
-					</BNavItem>
+					<NcButton @click="newTab">
+						<Plus :size="20" />
+					</NcButton>
 				</template>
 			</BTabs>
 		</div>
@@ -554,7 +552,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 <script>
 // Components
-import { BTabs, BTab, BNavItem } from 'bootstrap-vue'
+import { BTabs, BTab } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
 import _ from 'lodash'
 
@@ -593,7 +591,6 @@ export default {
 		EditTaakForm: EditTaak,
 		BTabs,
 		BTab,
-		BNavItem,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
@@ -709,6 +706,7 @@ export default {
 					this.tabs.splice(i, 1)
 				}
 			}
+			this.selectedContactMoment = 1
 		},
 		newTab() {
 			const index = this.tabCounter + 1
@@ -843,7 +841,6 @@ export default {
 					if (this.dashboardWidget === true) {
 						setTimeout(() => {
 							this.closeTab(this.selectedContactMoment)
-							this.selectedContactMoment = 1
 							this.success = false
 							this.succesMessage = false
 						}, 2000)
