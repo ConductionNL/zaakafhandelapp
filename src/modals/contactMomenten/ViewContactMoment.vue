@@ -114,9 +114,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
-									:name="selectedZaak"
+									:name="zaak.identificatie"
 									:bold="false"
-									:details="zaak.id"
+									:details="zaak.startdatum"
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedZaak === zaak.id"
@@ -139,9 +139,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							<div v-if="taken.length">
 								<NcListItem v-for="(taak, key) in taken"
 									:key="key"
-									:name="selectedTaak"
+									:name="taak.title"
 									:bold="false"
-									:details="taak.id"
+									:details="taak.status"
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedTaak === taak.id"
