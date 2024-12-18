@@ -730,6 +730,7 @@ export default {
 			}
 			this.tabs.push(index)
 			this.tabCounter = this.tabCounter + 1
+			this.selectedContactMoment = index
 		},
 
 		async fetchData(id) {
