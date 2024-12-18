@@ -207,19 +207,20 @@ export default {
 }
 </script>
 <style scoped>
-.takenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.takenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
-.itemContainer{
+
+.itemContainer {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
- }
+}
 
- .buttonContainer{
+.buttonContainer {
 	display: flex;
 	gap: 10px;
- }
+}
 </style>

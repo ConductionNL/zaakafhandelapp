@@ -22,7 +22,8 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
+					<NcActionButton
+						@click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -38,7 +39,8 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 					:force-display-actions="true"
 					@click="contactMomentStore.setContactMomentItem(contactMoment)">
 					<template #icon>
-						<CardAccountPhoneOutline :class="contactMomentStore.contactMomentItem?.id === contactMoment.id && 'selectedZaakIcon'"
+						<CardAccountPhoneOutline
+							:class="contactMomentStore.contactMomentItem?.id === contactMoment.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -46,13 +48,15 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 						{{ new Date(contactMoment.startDate).toLocaleString() }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('contactMomentenForm')">
+						<NcActionButton
+							@click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('contactMomentenForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('deleteContactMoment')">
+						<NcActionButton
+							@click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('deleteContactMoment')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -165,26 +169,25 @@ export default {
 }
 </script>
 <style>
-
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedZaakIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
 }
 </style>

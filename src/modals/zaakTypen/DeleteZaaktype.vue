@@ -3,11 +3,10 @@ import { zaakTypeStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Zaaktype verwijderen"
-		size="normal"
-		:can-close="false">
+	<NcDialog name="Zaaktype verwijderen" size="normal" :can-close="false">
 		<p v-if="success === null">
-			Weet u zeker dat u <b>{{ zaakTypeStore.zaakTypeItem?.identificatie }}</b> permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+			Weet u zeker dat u <b>{{ zaakTypeStore.zaakTypeItem?.identificatie }}</b> permanent wilt verwijderen? Deze
+			actie kan niet ongedaan worden gemaakt.
 		</p>
 
 		<div v-if="success !== null">
