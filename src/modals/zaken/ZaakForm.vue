@@ -244,9 +244,14 @@ export default {
 			zaakStore.saveZaak(newZaak)
 				.then(({ response }) => {
 					this.success = response.ok
-					setTimeout(this.closeModal, 2500)
 
-					this?.dashboardWidget && this.$emit('save-success')
+					setTimeout(() => {
+						this?.dashboardWidget && this.$emit('save-success')
+					}, 2000)
+					setTimeout(() => {
+						this.closeModal()
+					}, 2500)
+
 				})
 				.catch((err) => {
 					console.error(err)
