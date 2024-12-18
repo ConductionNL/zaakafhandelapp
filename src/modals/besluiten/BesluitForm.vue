@@ -19,36 +19,20 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null">
-				<!-- Stage 1: Select a zaak (This should only be visible when creating a new besluit) -->
-				<div v-if="!zaak.value?.id && !IS_EDIT">
-					<p>Selecteer een zaak om het besluit aan te maken.</p>
-					<NcSelect v-bind="zaak"
-						v-model="zaak.value"
-						input-label="Zaak"
-						:loading="zaakLoading"
-						:disabled="zaakLoading"
+				<p>Selecteer een zaak om het besluit aan te maken.</p>
+				<NcSelect v-bind="zaak"
+					v-model="zaak.value"
+					input-label="Zaak"
+					:loading="zaakLoading"
+					:disabled="zaakLoading"
+					required />
+
+				<div class="form-group">
+					<NcTextField :disabled="zaakLoading"
+						label="Besluit"
+						maxlength="1000"
+						:value.sync="besluit.besluit"
 						required />
-				</div>
-
-				<!-- Stage 2: Zaak is selected, show the besluit form -->
-				<div v-if="zaak.value?.id || IS_EDIT">
-					<NcButton v-if="!IS_EDIT"
-						aria-label="Terug gaan om zaak te kiezen"
-						type="secondary"
-						@click="zaak.value = null">
-						<template #icon>
-							<ArrowLeft :size="20" />
-						</template>
-						Zaak kiezen
-					</NcButton>
-
-					<div class="form-group">
-						<NcTextField :disabled="zaakLoading"
-							label="Besluit"
-							maxlength="1000"
-							:value.sync="besluit.besluit"
-							required />
-					</div>
 				</div>
 			</div>
 
@@ -82,7 +66,6 @@ import {
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-import ArrowLeft from 'vue-material-design-icons/ArrowLeft.vue'
 
 // entities
 import { Besluit } from '../../entities/index.js'
@@ -106,6 +89,7 @@ export default {
 		return {
 			besluit: {
 				besluit: '',
+				zaak: '',
 			},
 			IS_EDIT: false,
 			zaak_id: null,
@@ -120,14 +104,6 @@ export default {
 		}
 	},
 	mounted() {
-		// zaakId is required to create a new besluit, if it is not set, show error and close modal
-		if (!besluitStore.zaakId) {
-			this.error = 'Developer error: Er is geen zaak geselecteerd om een besluit voor aan te maken.'
-			this.success = false
-			setTimeout(this.closeModal, 2500)
-			return
-		}
-
 		// If zaakItem in the store is set. apply it to zaak in this modal.
 		if (besluitStore.besluitItem?.id) {
 			this.IS_EDIT = true
@@ -150,17 +126,8 @@ export default {
 
 			zaakStore.refreshZakenList()
 				.then(({ entities }) => {
-					const selectedZaak = entities.find((zaak) => zaak.id === besluitStore.zaakId)
-
-					// In edit mode, if zaak not found, show error and close modal
-					// It is absolutely critical that a zaak can be found.
-					if (this.IS_EDIT && !selectedZaak) {
-						this.error = `De zaak behorend bij dit Besluit (Zaak ID: ${besluitStore.zaakId}) kan niet gevonden worden.`
-						this.success = false
-						setTimeout(this.closeModal, 2500)
-						zaakStore.refreshZakenList()
-						return
-					}
+					const compareId = this.besluit?.zaak || besluitStore.zaakId
+					const selectedZaak = entities.find((zaak) => zaak.id === compareId)
 
 					this.zaak = {
 						options: entities.map((zaak) => ({
@@ -186,7 +153,10 @@ export default {
 				...this.besluit,
 			})
 
-			besluitStore.saveBesluit(this.zaak.value.id, newBesluit)
+			besluitStore.saveBesluit({
+				...newBesluit,
+				zaak: this.zaak.value.id,
+			})
 				.then(({ response }) => {
 					this.success = response.ok
 					setTimeout(this.closeModal, 2500)

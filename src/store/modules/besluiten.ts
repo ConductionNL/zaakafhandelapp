@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { TBesluit, Besluit } from '../../entities/index.js'
 
-const getApiEndpoint = (zaakId: string) => `/index.php/apps/zaakafhandelapp/api/zrc/zaken/${zaakId}/besluiten`
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/besluiten'
 
 type TOptions = {
 	/**
@@ -30,13 +30,16 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * @return { Promise<{ response: Response, data: TBesluit, entity: Besluit }> } The response, raw data, and entity.
 		 */
 		async getBesluit(
-			zaakId: string,
 			id: string,
 			options: TOptions = {},
 		): Promise<{ response: Response, data: TBesluit, entity: Besluit }> {
-			const endpoint = `${getApiEndpoint(zaakId)}/${id}`
+			if (!id) {
+				throw new Error('No besluit item to fetch')
+			}
 
-			console.info('Fetching besluit item with id: ' + id + ' from zaak: ' + zaakId)
+			const endpoint = `${apiEndpoint}/${id}`
+
+			console.info('Fetching besluit item with id: ' + id)
 
 			const response = await fetch(endpoint, {
 				method: 'GET',
@@ -55,18 +58,24 @@ export const useBesluitStore = defineStore('besluiten', {
 			return { response, data, entity }
 		},
 		/**
-		 * Fetch all besluiten for a zaak.
+		 * Fetch all besluiten.
 		 *
-		 * @param zaakId - The ID of the zaak to fetch besluiten for
+		 * @param zaakId - Optional ID of the zaak to filter besluiten by
 		 * @throws If the HTTP request fails.
 		 * @return { Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> } The response, raw data array, and entity array.
 		 */
-		async getBesluiten(
-			zaakId: string,
-		): Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> {
-			const endpoint = getApiEndpoint(zaakId)
+		async getBesluiten(zaakId: string = null): Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> {
+			const params = new URLSearchParams()
+			if (zaakId) {
+				params.append('zaak', zaakId)
+			}
 
-			console.info('Fetching besluiten for zaak: ' + zaakId)
+			const queryString = params.toString()
+			const endpoint = queryString
+				? `${apiEndpoint}?${queryString}`
+				: apiEndpoint
+
+			console.info('Fetching besluiten')
 
 			const response = await fetch(endpoint, {
 				method: 'GET',
@@ -77,24 +86,7 @@ export const useBesluitStore = defineStore('besluiten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const _data = (await response.json()).results as { [key: string]: TBesluit }
-
-			/*
-            As of now (17/12/2024) the data gets send back in this format
-            {
-                "results": {
-                    "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f": {
-                        "id": "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-                        "name": "Zaakt type 1",
-                        "summary": "summary for one"
-                    },
-                }
-            }
-            Instead of the expected array of objects.
-            So some processing is needed to get the data in the expected format.
-            */
-
-			const data = Object.values(_data)
+			const data = (await response.json()).results as TBesluit[]
 			const entities = data.map((item: TBesluit) => new Besluit(item))
 
 			return { response, data, entities }
@@ -102,19 +94,18 @@ export const useBesluitStore = defineStore('besluiten', {
 		/**
 		 * Delete a besluit item from the store.
 		 *
-		 * @param zaakId - The ID of the zaak the besluit belongs to
 		 * @param besluitId - The ID of the besluit item to delete.
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response }>} The response from the delete request.
 		 */
-		async deleteBesluit(zaakId: string, besluitId: string): Promise<{ response: Response }> {
+		async deleteBesluit(besluitId: string): Promise<{ response: Response }> {
 			if (!besluitId) {
 				throw new Error('No besluit item to delete')
 			}
 
-			const endpoint = `${getApiEndpoint(zaakId)}/${besluitId}`
+			const endpoint = `${apiEndpoint}/${besluitId}`
 
-			console.info('Deleting besluit item with id: ' + besluitId + ' from zaak: ' + zaakId)
+			console.info('Deleting besluit item with id: ' + besluitId)
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
@@ -126,14 +117,12 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * Save a besluit item to the store. If the besluit item does not have a uuid, it will be created.
 		 * Otherwise, it will be updated.
 		 *
-		 * @param zaakId - The ID of the zaak the besluit belongs to
 		 * @param besluitItem - The besluit item to save.
 		 * @param options - Options for saving the besluit item. (default: `{ setItem: true }`)
 		 * @throws If there is no besluit item to save or if the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TBesluit, entity: Besluit }>} The response, raw data, and entity.
 		 */
 		async saveBesluit(
-			zaakId: string,
 			besluitItem: Besluit | TBesluit,
 			options: TOptions = { setItem: true },
 		): Promise<{ response: Response, data: TBesluit, entity: Besluit }> {
@@ -143,11 +132,11 @@ export const useBesluitStore = defineStore('besluiten', {
 
 			const isNewBesluit = !besluitItem?.id
 			const endpoint = isNewBesluit
-				? getApiEndpoint(zaakId)
-				: `${getApiEndpoint(zaakId)}/${besluitItem?.id}`
+				? apiEndpoint
+				: `${apiEndpoint}/${besluitItem?.id}`
 			const method = isNewBesluit ? 'POST' : 'PUT'
 
-			console.info('Saving besluit item with id: ' + besluitItem?.id + ' to zaak: ' + zaakId)
+			console.info('Saving besluit item with id: ' + besluitItem?.id)
 
 			const response = await fetch(
 				endpoint,

@@ -1,5 +1,6 @@
 export type TBesluit = {
-    id: string;
-    url: string;
-    besluit: string;
+	id: string
+	url: string
+	besluit: string
+	zaak: string
 }

@@ -4,10 +4,14 @@ import { navigationStore, besluitStore } from '../../store/store.js'
 
 <template>
 	<div>
+		{{ zaakId }} -
+		{{ besluiten }} -
+		{{ JSON.stringify(besluiten[zaakId]?.besluiten) }}
+		{{ besluiten[zaakId]?.besluiten?.length }}
 		<div v-if="besluiten[zaakId]?.besluiten?.length">
 			<NcListItem v-for="(besluit, i) in besluiten[zaakId]?.besluiten"
 				:key="`${besluit}${i}`"
-				:name="besluit?.name || besluit?.besluit"
+				:name="besluit?.besluit"
 				:bold="true"
 				:active="besluitStore.besluitItem?.id === besluit?.id"
 				:force-display-actions="true"
@@ -17,7 +21,7 @@ import { navigationStore, besluitStore } from '../../store/store.js'
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ besluit?.summary }}
+					{{ besluit?.zaak }}
 				</template>
 				<template #actions>
 					<NcActionButton @click="(besluitStore.zaakId = zaakId); besluitStore.setBesluitItem(besluit); navigationStore.setModal('besluitForm')">
@@ -36,11 +40,11 @@ import { navigationStore, besluitStore } from '../../store/store.js'
 			</NcListItem>
 		</div>
 
-		<div v-if="!besluiten[zaakId]?.besluiten?.length && !loading">
+		<div v-if="!besluiten[zaakId]?.besluiten?.length && !besluiten[zaakId]?.loading">
 			Geen besluiten gevonden.
 		</div>
 
-		<NcLoadingIcon v-if="!besluiten[zaakId]?.besluiten?.length && loading"
+		<NcLoadingIcon v-if="!besluiten[zaakId]?.besluiten?.length && besluiten[zaakId]?.loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -73,7 +77,7 @@ export default {
 		return {
 			// this is saved in a cache like system for easier navigation between zaken and to avoid unnecessary wait time for the end user
 			// eg. besluiten[zaakId] = { besluiten: [], loading: false }
-			besluiten: {},
+			besluiten: { 1: { besluiten: [], loading: false } },
 			search: '',
 			loading: true,
 		}
@@ -82,23 +86,31 @@ export default {
 		zaakId(newVal) {
 			this.fetchData()
 		},
+		besluiten: {
+			deep: true,
+			handler(newVal) {
+				console.log(newVal)
+			},
+		},
 	},
 	mounted() {
 		this.fetchData()
 	},
 	methods: {
 		fetchData() {
-			this.loading = true
+			this.besluiten[this.zaakId] = {
+				...this.besluiten[this.zaakId],
+				loading: true,
+			}
 
 			besluitStore.getBesluiten(this.zaakId)
 				.then(({ data }) => {
-					this.besluiten[this.zaakId] = {
-						besluiten: data,
-						loading: false,
-					}
+					this.besluiten[this.zaakId].besluiten = data
+					console.log(this.besluiten[this.zaakId])
 				})
 				.finally(() => {
-					this.loading = false
+					this.besluiten[this.zaakId].loading = false
+					console.log(this.besluiten)
 				})
 		},
 		toggleBesluit(besluit) {

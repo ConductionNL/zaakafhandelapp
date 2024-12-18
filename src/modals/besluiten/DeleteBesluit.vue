@@ -75,23 +75,16 @@ export default {
 			closeModalTimeout: null,
 		}
 	},
-	mounted() {
-		// zaakId is required to delete a besluit, if it is not set, show error and close modal
-		if (!besluitStore.zaakId) {
-			this.error = 'Developer error: Er is geen zaak geselecteerd om een besluit te verwijderen.'
-			this.success = false
-			setTimeout(this.closeDialog, 2500)
-		}
-	},
 	methods: {
 		closeDialog() {
 			navigationStore.setModal(null)
+			besluitStore.zaakId = null
 			clearTimeout(this.closeModalTimeout)
 		},
 		async deleteBesluit() {
 			this.loading = true
 
-			besluitStore.deleteBesluit(besluitStore.zaakId, besluitStore.besluitItem.id)
+			besluitStore.deleteBesluit(besluitStore.besluitItem.id)
 				.then(({ response }) => {
 					this.success = response.ok
 					response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
