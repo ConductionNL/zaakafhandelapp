@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore } from '../../store/store.js'
+import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -46,7 +46,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ zaak?.zaaktype }}
+						{{ zaakTypeStore.zaakTypeList.find(zaakType => zaakType.id === zaak.zaaktype)?.identificatie ?? zaak.zaaktype }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="zaakStore.setZaakItem(zaak); navigationStore.setModal('zaakForm')">
@@ -116,10 +116,12 @@ export default {
 	mounted() {
 		this.loading = true
 
-		zaakStore.refreshZakenList()
-			.then(() => {
-				this.loading = false
-			})
+		Promise.all([
+			zaakStore.refreshZakenList(),
+			zaakTypeStore.refreshZaakTypenList(),
+		]).then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
 		clearText() {
