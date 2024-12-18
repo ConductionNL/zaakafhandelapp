@@ -6,8 +6,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 	<NcAppContentList>
 		<ul>
 			<div class="listHeader">
-				<NcTextField
-					:value.sync="search"
+				<NcTextField :value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
@@ -22,7 +21,8 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="medewerkerStore.setMedewerkerItem(null); navigationStore.setModal('editMedewerker')">
+					<NcActionButton
+						@click="medewerkerStore.setMedewerkerItem(null); navigationStore.setModal('editMedewerker')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -47,7 +47,8 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 						{{ medewerker.email }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="medewerkerStore.setMedewerkerItem(medewerker); navigationStore.setModal('editMedewerker')">
+						<NcActionButton
+							@click="medewerkerStore.setMedewerkerItem(medewerker); navigationStore.setModal('editMedewerker')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -166,24 +167,24 @@ export default {
 </script>
 <style>
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedZaakIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
 }
 </style>

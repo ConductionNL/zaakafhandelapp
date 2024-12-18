@@ -11,7 +11,7 @@ export class Klant implements TKlant {
 	public achternaam: string
 	public bsn: string
 	public geboortedatum: string
-	public geslacht: "man" | "vrouw" | "overige"
+	public geslacht: 'man' | 'vrouw' | 'overige'
 	public land: string
 
 	public telefoonnummer: string
@@ -71,7 +71,7 @@ export class Klant implements TKlant {
 			achternaam: z.string(),
 			bsn: z.string(),
 			geboortedatum: z.string(),
-			geslacht: z.enum(["man", "vrouw", "overige"]).or(z.null()),
+			geslacht: z.enum(['man', 'vrouw', 'overige']).or(z.null()),
 			land: z.string(),
 			telefoonnummer: z.string(),
 			emailadres: z.string().email(),

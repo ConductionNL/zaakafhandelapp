@@ -8,7 +8,8 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 			<ContactMomentenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!contactMomentStore.contactMomentItem?.id || navigationStore.selected !== 'contactMomenten'"
+			<NcEmptyContent
+				v-if="!contactMomentStore.contactMomentItem?.id || navigationStore.selected !== 'contactMomenten'"
 				class="detailContainer"
 				name="Geen contact moment"
 				description="Nog geen contact moment geselecteerd">
@@ -16,12 +17,15 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 					<CardAccountPhoneOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
+					<NcButton type="primary"
+						@click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
 						Contact moment aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ContactMomentDetails v-if="contactMomentStore.contactMomentItem?.id && navigationStore.selected === 'contactMomenten'" :contact-moment-id="contactMomentStore.contactMomentItem?.id" />
+			<ContactMomentDetails
+				v-if="contactMomentStore.contactMomentItem?.id && navigationStore.selected === 'contactMomenten'"
+				:contact-moment-id="contactMomentStore.contactMomentItem?.id" />
 		</template>
 	</NcAppContent>
 </template>

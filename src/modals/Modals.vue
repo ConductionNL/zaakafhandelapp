@@ -14,6 +14,7 @@ import { navigationStore } from '../store/store.js'
 		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
 		<!-- contactmomenten -->
 		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
+		<ViewContactMoment v-if="navigationStore.viewModal === 'viewContactMoment'" />
 		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<!-- zaaktypen -->
 		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
@@ -65,6 +66,7 @@ import ResultaatForm from './resultaten/ResultaatForm.vue'
 import DeleteResultaat from './resultaten/DeleteResultaat.vue'
 import BesluitForm from './besluiten/BesluitForm.vue'
 import DeleteBesluit from './besluiten/DeleteBesluit.vue'
+import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
 
 export default {
 	name: 'Modals',
@@ -92,6 +94,7 @@ export default {
 		DeleteResultaat,
 		BesluitForm,
 		DeleteBesluit,
+		ViewContactMoment,
 	},
 }
 </script>

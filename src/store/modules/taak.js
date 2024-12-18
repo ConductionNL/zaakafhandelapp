@@ -35,7 +35,7 @@ export const useTaakStore = defineStore('taken', {
 			console.log('Active widget taak Id set to ' + widgetTaakId)
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null, notClosed = false) {
+		async refreshTakenList(search = null, notClosed = false, user = null) {
 			let endpoint = apiEndpoint
 
 			const params = new URLSearchParams()
@@ -44,6 +44,9 @@ export const useTaakStore = defineStore('taken', {
 			}
 			if (notClosed) {
 				params.append('status', 'open')
+			}
+			if (user) {
+				params.append('medewerker', user)
 			}
 
 			if (params.toString()) {

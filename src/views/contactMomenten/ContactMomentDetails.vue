@@ -79,14 +79,14 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 									:counter-number="Object.keys(auditTrail.changed).length"
 									:force-display-actions="true">
 									<template #icon>
-										<TimelineQuestionOutline disable-menu
-											:size="44" />
+										<TimelineQuestionOutline disable-menu :size="44" />
 									</template>
 									<template #subname>
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="contactMomentStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewContactMomentAuditTrail')">
+										<NcActionButton
+											@click="contactMomentStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewContactMomentAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
@@ -97,7 +97,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 							</div>
 							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
 								<template #description>
-									Er is geen audit trail gevonden voor deze bericht.
+									Er is geen audit trail gevonden voor dit contactmoment.
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -187,38 +187,38 @@ export default {
 
 <style>
 h4 {
-  font-weight: bold
+	font-weight: bold
 }
 
 .h1 {
-  display: block !important;
-  font-size: 2em !important;
-  margin-block-start: 0.67em !important;
-  margin-block-end: 0.67em !important;
-  margin-inline-start: 0px !important;
-  margin-inline-end: 0px !important;
-  font-weight: bold !important;
-  unicode-bidi: isolate !important;
+	display: block !important;
+	font-size: 2em !important;
+	margin-block-start: 0.67em !important;
+	margin-block-end: 0.67em !important;
+	margin-inline-start: 0px !important;
+	margin-inline-end: 0px !important;
+	font-weight: bold !important;
+	unicode-bidi: isolate !important;
 }
 
 .grid {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: 1fr 1fr;
-  margin-block-start: var(--zaa-margin-50);
-  margin-block-end: var(--zaa-margin-50);
+	display: grid;
+	grid-gap: 24px;
+	grid-template-columns: 1fr 1fr;
+	margin-block-start: var(--zaa-margin-50);
+	margin-block-end: var(--zaa-margin-50);
 }
 
 .gridContent {
-  display: flex;
-  gap: 25px;
+	display: flex;
+	gap: 25px;
 }
 
 .tabPanel {
-  padding: 20px 10px;
-  min-height: 100%;
-  max-height: 100%;
-  height: 100%;
-  overflow: auto;
+	padding: 20px 10px;
+	min-height: 100%;
+	max-height: 100%;
+	height: 100%;
+	overflow: auto;
 }
 </style>
