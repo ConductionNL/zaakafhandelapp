@@ -735,8 +735,6 @@ export default {
 				startDate: data.startDate ?? null,
 			}
 
-			console.log({data})
-
 			this.selectedZaak = data.zaak
 			this.selectedTaak = data.taak
 			this.selectedProduct = data.product
