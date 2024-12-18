@@ -130,7 +130,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											:bold="false"
 											:disabled="loading"
 											:loading="fetchLoading"
-											:force-display-actions="true">
+											:active="contactMomenten[i].selectedKlantContactMoment === klantContactmoment.id"
+											:force-display-actions="true"
+											@click="setSelectedContactMoment(i, klantContactmoment.id)">
 											<template #icon>
 												<BriefcaseAccountOutline :size="44" />
 											</template>
@@ -364,6 +366,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:bold="false"
 									:details="klantContactmoment.startDate"
 									:disabled="loading"
+									:active="selectedKlantContactMoment === klantContactmoment.id"
 									:force-display-actions="true">
 									<template #icon>
 										<BriefcaseAccountOutline :size="44" />
@@ -632,6 +635,7 @@ export default {
 				selectedZaak: null,
 				selectedTaak: null,
 				selectedProduct: null,
+				selectedKlantContactMoment: null,
 			},
 			klantenLoading: false,
 			zaken: [],
@@ -660,9 +664,9 @@ export default {
 			klant: null,
 			searchKlantModalOpen: false,
 			selectedZaak: null,
+			selectedKlantContactMoment: null,
 			selectedTaak: null,
 			selectedProduct: null,
-			selectedKlantContactMoment: null,
 			startingType: 'all',
 			taakFormOpen: false,
 			taakClientType: 'both',
@@ -736,6 +740,7 @@ export default {
 			}
 
 			this.selectedZaak = data.zaak
+			this.selectedKlantContactMoment = data.contactmoment
 			this.selectedTaak = data.taak
 			this.selectedProduct = data.product
 
@@ -779,6 +784,7 @@ export default {
 				zaak: contactMomentCopy.selectedZaak ?? '',
 				taak: contactMomentCopy.selectedTaak ?? '',
 				product: contactMomentCopy.selectedProduct ?? '',
+				contactmoment: contactMomentCopy.selectedKlantContactMoment,
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 			})
@@ -1051,6 +1057,11 @@ export default {
 		},
 
 		// Tabs
+		setSelectedContactMoment(id, contactMoment) {
+			if (this.contactMomenten[id].selectedKlantContactMoment === contactMoment) {
+				this.contactMomenten[id].selectedKlantContactMoment = null
+			} else { this.contactMomenten[id].selectedKlantContactMoment = contactMoment }
+		},
 		setSelectedZaak(id, zaak) {
 			if (this.contactMomenten[id].selectedZaak === zaak) {
 				this.contactMomenten[id].selectedZaak = null

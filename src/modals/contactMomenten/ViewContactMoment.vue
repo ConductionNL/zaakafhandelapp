@@ -110,6 +110,28 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
+						<BTab
+							:title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
+							<div v-if="klantContactmomenten.length">
+								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
+									:key="key"
+									:name="getName(klant)"
+									:bold="false"
+									:details="new Date(klantContactmoment.startDate).toLocaleString()"
+									:disabled="loading"
+									:active="selectedKlantContactMoment === klantContactmoment.id"
+									:force-display-actions="true">
+									<template #icon>
+										<BriefcaseAccountOutline :size="44" />
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-folder" title="Geen contactmomenten gevonden">
+								<template #description>
+									Er zijn geen contactmomenten gevonden voor deze klant.
+								</template>
+							</NcEmptyContent>
+						</BTab>
 						<BTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
@@ -414,6 +436,7 @@ export default {
 			}
 
 			this.selectedZaak = data.zaak
+			this.selectedKlantContactMoment = data.contactmoment
 			this.selectedTaak = data.taak
 			this.selectedProduct = data.product
 
