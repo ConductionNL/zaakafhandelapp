@@ -198,15 +198,14 @@ export default {
 }
 </script>
 <style scoped>
-.contactmomentenContainer {
-	display: flex;
-	justify-content: space-between;
-	flex-direction: column;
-	height: 100%;
+.contactmomentenContainer{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
 }
-
-.itemContainer {
+.itemContainer{
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
-}
+ }
 </style>

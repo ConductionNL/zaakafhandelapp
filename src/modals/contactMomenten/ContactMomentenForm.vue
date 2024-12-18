@@ -498,6 +498,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Zaak starten
 				</NcActionButton>
 				<NcActionButton v-if="isView"
+					:close-after-click="true"
 					:disabled="contactMoment.status === 'gesloten'"
 					@click="closeContactMoment(contactMoment.id)">
 					<template #icon>
@@ -651,6 +652,7 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
+					addedTaken: [],
 				},
 			},
 			selectedContactMoment: 1,
@@ -668,6 +670,9 @@ export default {
 			viewContactMomentIsView: false,
 			viewContactMomentId: null,
 			isContactMomentFormOpen: false,
+
+			klantTaakHover: false,
+			zaakHover: false,
 
 			tabs: [1],
 			tabCounter: 1,
@@ -706,6 +711,11 @@ export default {
 					selectedTaak: null,
 					selectedProduct: null,
 					selectedKlantContactMoment: null,
+					zaken: [],
+					taken: [],
+					berichten: [],
+					klantContactmomenten: [],
+					addedTaken: [],
 				},
 			}
 			this.tabs.push(index)
@@ -724,6 +734,8 @@ export default {
 				status: data.status ?? null,
 				startDate: data.startDate ?? null,
 			}
+
+			console.log({data})
 
 			this.selectedZaak = data.zaak
 			this.selectedTaak = data.taak
@@ -745,7 +757,6 @@ export default {
 
 			this.$emit('close-modal')
 		},
-
 		// Contactmoment functions
 		addContactMoment(i) {
 
@@ -754,9 +765,6 @@ export default {
 
 			this.loading = true
 
-			const endpoint = this.contactMomentId ? `contactmomenten/${this.contactMomentId}` : 'contactmomenten'
-			const method = this.contactMomentId ? 'PUT' : 'POST'
-
 			const contactMomentCopy = _.cloneDeep(this.contactMoment)
 
 			delete contactMomentCopy.taken
@@ -764,27 +772,38 @@ export default {
 			delete contactMomentCopy.berichten
 			delete contactMomentCopy.klantContactmomenten
 			delete contactMomentCopy.auditTrails
+			delete contactMomentCopy.addedTaken
 
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/${endpoint}`,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						...contactMomentCopy,
-						notitie: contactMomentCopy.notitie,
-						klant: contactMomentCopy.klant?.id ?? '',
-						zaak: contactMomentCopy.selectedZaak ?? '',
-						taak: contactMomentCopy.selectedTaak ?? '',
-						product: contactMomentCopy.selectedProduct ?? '',
-						status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
-						startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
-					}),
-				},
-			)
+			contactMomentStore.saveContactMoment({
+				...contactMomentCopy,
+				notitie: contactMomentCopy.notitie,
+				klant: contactMomentCopy.klant?.id ?? '',
+				zaak: contactMomentCopy.selectedZaak ?? '',
+				taak: contactMomentCopy.selectedTaak ?? '',
+				product: contactMomentCopy.selectedProduct ?? '',
+				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
+				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
+			})
 				.then((response) => {
+					this.contactMoment.addedTaken.forEach(taak => {
+						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
+							method: 'GET',
+						})
+							.then(response => response.json())
+							.then(data => {
+								fetch(`/index.php/apps/zaakafhandelapp/api/taken/${data.id}`, {
+									method: 'PUT',
+									headers: {
+										'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({
+										...data,
+										contactmoment: response.data.id,
+									}),
+								})
+							})
+					})
+
 					if (this.isView) {
 						response.json().then(data => {
 							this.contactMoment = data
@@ -827,6 +846,7 @@ export default {
 				.catch((err) => {
 					console.error(err)
 				})
+
 		},
 
 		// Search functions
@@ -846,9 +866,12 @@ export default {
 			taakStore.setTaakItem(null)
 		},
 
-		closeTaakForm() {
+		closeTaakForm(e) {
+			if (e) {
+				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
+				this.contactMomenten[this.selectedContactMoment].klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
+			}
 			this.taakFormOpen = false
-			this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
 		},
 
 		viewContactMoment(id) {
@@ -860,7 +883,7 @@ export default {
 
 		closeViewContactMomentModal() {
 			this.isContactMomentFormOpen = false
-			navigationStore.setViewModal(null)
+			navigationStore.setViewModal(false)
 		},
 
 		removeKlant(i) {
