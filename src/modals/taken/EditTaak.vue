@@ -22,11 +22,12 @@ import { taakStore, navigationStore, klantStore, medewerkerStore, contactMomentS
 				label="Titel"
 				maxlength="255" />
 
-			<NcTextField
-				:disabled="loading"
-				:value.sync="taakItem.type"
-				label="Type"
-				maxlength="255" />
+			<NcSelect v-bind="taakType"
+				v-model="taakType.value"
+				input-label="Type"
+				:clearable="false"
+				:loading="klantenLoading"
+				:disabled="loading" />
 
 			<div>
 				<p>Deadline</p>
@@ -338,6 +339,12 @@ export default {
 					},
 				],
 			},
+			taakType: {
+				options: [
+					{ id: 'terugbel', label: 'Terugbel verzoek' },
+				],
+				value: { id: 'terugbel', label: 'Terugbel verzoek' },
+			},
 			viewContactMomentIsView: false,
 			viewContactMomentId: null,
 			isContactMomentFormOpen: false,
@@ -388,6 +395,8 @@ export default {
 				if (this.clientType === 'both') {
 					this.useMedewerkerInsteadOfKlant = !!taakEntity?.medewerker
 				}
+
+				this.taakType.value = this.taakType.options.find(type => type.id === taakEntity.type || 'terugbel')
 			}
 
 			if (this.clientType !== 'medewerker') this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
@@ -538,6 +547,7 @@ export default {
 
 			taakStore.saveTaak({
 				...this.taakItem,
+				type: this.taakType.value.id,
 				klant: klantId || null,
 				medewerker: medewerkerId || null,
 				status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
