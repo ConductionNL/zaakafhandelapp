@@ -36,7 +36,7 @@ class ObjectsController extends Controller
         }
 
         $objectType = $requestParams['_objectType'];
-        
+
         try {
             // This will throw an exception if object type is not properly configured
             $this->objectService->getMapper($objectType);
@@ -63,6 +63,8 @@ class ObjectsController extends Controller
         try {
             // Validate object type configuration
             $objectType = $this->validateObjectType($requestParams);
+
+			unset($requestParams['_objectType']);
 
             // Fetch objects based on filters and order using provided objectType
             $data = $this->objectService->getResultArrayForRequest(
@@ -132,10 +134,11 @@ class ObjectsController extends Controller
             // Remove the 'id' field if it exists, as we're creating a new object
             unset($data['id']);
             unset($data['_objectType']);
+            unset($data['_route']);
 
             // Save the new object
             $object = $this->objectService->saveObject($objectType, $data);
-            
+
             // Return the created object as a JSON response
             return new JSONResponse($object);
         } catch (Exception $e) {
@@ -164,10 +167,11 @@ class ObjectsController extends Controller
             // Ensure ID in data matches URL parameter
             $data['id'] = $id;
             unset($data['_objectType']);
+			unset($data['_route']);
 
             // Save the updated object
             $object = $this->objectService->saveObject($objectType, $data);
-            
+
             // Return the updated object as a JSON response
             return new JSONResponse($object);
         } catch (Exception $e) {
