@@ -4,10 +4,6 @@ import { navigationStore, besluitStore } from '../../store/store.js'
 
 <template>
 	<div>
-		{{ zaakId }} -
-		{{ besluiten }} -
-		{{ JSON.stringify(besluiten[zaakId]?.besluiten) }}
-		{{ besluiten[zaakId]?.besluiten?.length }}
 		<div v-if="besluiten[zaakId]?.besluiten?.length">
 			<NcListItem v-for="(besluit, i) in besluiten[zaakId]?.besluiten"
 				:key="`${besluit}${i}`"
@@ -86,31 +82,26 @@ export default {
 		zaakId(newVal) {
 			this.fetchData()
 		},
-		besluiten: {
-			deep: true,
-			handler(newVal) {
-				console.log(newVal)
-			},
-		},
 	},
 	mounted() {
 		this.fetchData()
 	},
 	methods: {
 		fetchData() {
-			this.besluiten[this.zaakId] = {
-				...this.besluiten[this.zaakId],
-				loading: true,
+			this.besluiten = {
+				...this.besluiten,
+				[this.zaakId]: {
+					besluiten: [],
+					loading: true,
+				},
 			}
 
 			besluitStore.getBesluiten(this.zaakId)
 				.then(({ data }) => {
 					this.besluiten[this.zaakId].besluiten = data
-					console.log(this.besluiten[this.zaakId])
 				})
 				.finally(() => {
 					this.besluiten[this.zaakId].loading = false
-					console.log(this.besluiten)
 				})
 		},
 		toggleBesluit(besluit) {
