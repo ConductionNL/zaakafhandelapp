@@ -730,6 +730,7 @@ export default {
 			}
 			this.tabs.push(index)
 			this.tabCounter = this.tabCounter + 1
+			this.selectedContactMoment = index
 		},
 
 		async fetchData(id) {
@@ -770,7 +771,13 @@ export default {
 		addContactMoment(i) {
 
 			this.selectedContactMoment = i
-			this.contactMoment = this.contactMomenten[i]
+
+			this.contactMoment = {
+				...this.contactMoment,
+				...this.contactMomenten[i],
+				id: this.contactMoment.id,
+				startDate: this.contactMoment.startDate,
+			}
 
 			this.loading = true
 
@@ -782,6 +789,10 @@ export default {
 			delete contactMomentCopy.klantContactmomenten
 			delete contactMomentCopy.auditTrails
 			delete contactMomentCopy.addedTaken
+			delete contactMomentCopy.selectedKlantContactMoment
+			delete contactMomentCopy.selectedProduct
+			delete contactMomentCopy.selectedTaak
+			delete contactMomentCopy.selectedZaak
 
 			contactMomentStore.saveContactMoment({
 				...contactMomentCopy,
