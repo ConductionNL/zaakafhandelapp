@@ -14,6 +14,7 @@ import { navigationStore } from '../store/store.js'
 		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
 		<!-- contactmomenten -->
 		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
+		<ViewContactMoment v-if="navigationStore.viewModal === 'viewContactMoment'" />
 		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<!-- zaaktypen -->
 		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
@@ -55,6 +56,7 @@ import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
 import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
 import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
 import AddRolToZaak from './zaken/AddRolToZaak.vue'
+import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
 
 export default {
 	name: 'Modals',
@@ -78,6 +80,7 @@ export default {
 		AddTaakToZaak,
 		ContactMomentenForm,
 		AddRolToZaak,
+		ViewContactMoment,
 	},
 }
 </script>

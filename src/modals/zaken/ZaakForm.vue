@@ -191,7 +191,7 @@ export default {
 	methods: {
 		closeModal() {
 			navigationStore.setModal(null)
-			this?.dashboardWidget && this.$emit('close')
+			this?.dashboardWidget && this.$emit('close-modal')
 		},
 		fetchZaakType() {
 			this.zaakTypeLoading = true

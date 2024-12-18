@@ -131,14 +131,6 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											<template #subname>
 												{{ new Date(klantContactmoment.startDate).toLocaleString() }}
 											</template>
-											<template #actions>
-												<NcButton @click="viewContactMoment(klantContactmoment.id)">
-													<template #icon>
-														<Eye :size="20" />
-													</template>
-													View
-												</NcButton>
-											</template>
 										</NcListItem>
 									</div>
 									<NcEmptyContent v-else icon="icon-folder" title="Geen contactmomenten gevonden">
@@ -349,7 +341,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab :title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
+						<!-- <BTab :title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
 							<div v-if="klantContactmomenten.length">
 								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
 									:key="key"
@@ -371,7 +363,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									Er zijn geen contactmomenten gevonden voor deze klant.
 								</template>
 							</NcEmptyContent>
-						</BTab>
+						</BTab> -->
 						<BTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
@@ -490,12 +482,6 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Zaak starten
 				</NcActionButton>
-				<NcActionButton v-if="isView" :disabled="contactMoment.status === 'gesloten'" @click="closeContactMoment(contactMoment.id)">
-					<template #icon>
-						<ProgressClose :size="20" />
-					</template>
-					Sluit Contactmoment
-				</NcActionButton>
 			</NcActions>
 			<NcButton
 				v-if="!isView"
@@ -510,12 +496,6 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
-
-		<ViewContactMoment v-if="isContactMomentFormOpen"
-			:dashboard-widget="true"
-			:contact-moment-id="viewContactMomentId"
-			:is-view="viewContactMomentIsView"
-			@close-modal="closeViewContactMomentModal" />
 
 		<EditTaakForm v-if="taakFormOpen"
 			:dashboard-widget="true"
@@ -543,7 +523,6 @@ import getValidISOstring from '../../services/getValidISOstring.js'
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
 import ZaakForm from '../../modals/zaken/ZaakForm.vue'
-import ViewContactMoment from '../../modals/contactMomenten/ViewContactMoment.vue'
 
 // Entities
 import { ContactMoment } from '../../entities/index.js'
@@ -556,11 +535,9 @@ import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Minus from 'vue-material-design-icons/Minus.vue'
-import ProgressClose from 'vue-material-design-icons/ProgressClose.vue'
-import Eye from 'vue-material-design-icons/Eye.vue'
 
 export default {
-	name: 'ContactMomentenForm',
+	name: 'ViewContactMoment',
 	components: {
 		NcDialog,
 		NcTextArea,
@@ -657,9 +634,6 @@ export default {
 			taakFormOpen: false,
 			taakClientType: 'both',
 			zaakFormOpen: false,
-			viewContactMomentIsView: false,
-			viewContactMomentId: null,
-			isContactMomentFormOpen: false,
 
 			tabs: [1],
 			tabCounter: 1,
@@ -841,18 +815,6 @@ export default {
 		closeTaakForm() {
 			this.taakFormOpen = false
 			this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
-		},
-
-		viewContactMoment(id) {
-			this.isContactMomentFormOpen = true
-			this.viewContactMomentIsView = true
-			this.viewContactMomentId = id
-			navigationStore.setViewModal('viewContactMoment')
-		},
-
-		closeViewContactMomentModal() {
-			this.isContactMomentFormOpen = false
-			navigationStore.setViewModal(null)
 		},
 
 		removeKlant(i) {
