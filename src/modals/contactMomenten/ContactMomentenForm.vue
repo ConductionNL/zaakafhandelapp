@@ -477,19 +477,27 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
-				<NcActionButton v-if="!isView" @click="openTaakForm('medewerker')">
+				<NcActionButton v-if="!isView" :close-after-click="true" @click="openTaakForm('medewerker')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
 					Medewerker taak aanmaken
 				</NcActionButton>
-				<NcActionButton v-if="!isView" @click="openTaakForm('klant')">
+				<NcActionButton v-if="!isView"
+					v-tooltip="'Een klant taak kan alleen worden aangemaakt als er een klant is geselecteerd.'"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment].klant?.id }"
+					:close-after-click="true"
+					:disabled="!contactMomenten[selectedContactMoment].klant?.id"
+					@click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
 					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
+					v-tooltip="'Een zaak kan alleen worden gestart als er een klant is geselecteerd.'"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment].klant?.id }"
+					:close-after-click="true"
 					:disabled="!contactMomenten[selectedContactMoment].klant?.id"
 					@click="openZaakForm()">
 					<template #icon>
@@ -1055,6 +1063,11 @@ export default {
 div[class='modal-container']:has(.ContactMomentenForm) {
 	width: clamp(1000px, 100%, 1200px) !important;
 }
+
+.actionButtonDisabled > button > span {
+	cursor: default !important;
+  }
+
 </style>
 
 <style scoped>
@@ -1115,4 +1128,9 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 .statusContainer {
 	align-items: center;
 }
+
+.actionButtonDisabled {
+	pointer-events: all !important;
+}
+
 </style>
