@@ -49,7 +49,7 @@ class ObjectService
 	 * @throws NotFoundExceptionInterface|ContainerExceptionInterface If OpenRegister service is not available or if register/schema is not configured.
 	 * @throws Exception
 	 */
-	private function getMapper(string $objectType): mixed
+	public function getMapper(string $objectType): mixed
 	{
 		$objectTypeLower = strtolower($objectType);
 
