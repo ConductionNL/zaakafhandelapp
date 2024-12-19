@@ -8,7 +8,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			<ZakenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!zaakStore.zaakItem || navigationStore.selected != 'zaken' "
+			<NcEmptyContent v-if="!id || navigationStore.selected != 'zaken' "
 				class="detailContainer"
 				name="Geen Zaak"
 				description="Nog geen zaak geselecteerd">
@@ -21,7 +21,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ZaakDetails v-if="zaakStore.zaakItem && navigationStore.selected === 'zaken'" />
+			<ZaakDetails v-if="id && navigationStore.selected === 'zaken'" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
@@ -41,6 +41,11 @@ export default {
 		ZakenList,
 		ZaakDetails,
 		BriefcaseAccountOutline,
+	},
+	data() {
+		return {
+			id: this.$route.params.id,
+		}
 	},
 }
 </script>

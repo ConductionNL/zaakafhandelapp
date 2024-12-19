@@ -222,25 +222,30 @@ export default {
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			// state
 			loading: true,
-			currentActiveZaak: null,
 			// data
 			auditTrails: [],
 			zaak: [],
 		}
 	},
-	mounted() {
-		this.currentActiveZaak = zaakStore.zaakItem
-		this.fetchAuditTrails(zaakStore.zaakItem.id)
+	watch: {
+		id(newId) {
+			zaakStore.getZaak(newId, { setItem: true })
+			this.fetchAuditTrails(newId)
+		},
 	},
-	updated() {
-		if (zaakStore.zaakItem?.id && JSON.stringify(this.currentActiveZaak) !== JSON.stringify(zaakStore.zaakItem)) {
-			this.currentActiveZaak = zaakStore.zaakItem
-			this.fetchAuditTrails(zaakStore.zaakItem.id)
-		}
+	mounted() {
+		zaakStore.getZaak(this.id, { setItem: true })
+		this.fetchAuditTrails(zaakStore.zaakItem.id)
 	},
 	methods: {
 		fetchData() {

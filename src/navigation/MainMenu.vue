@@ -12,22 +12,26 @@ import { navigationStore } from '../store/store.js'
 					<Plus :size="20" />
 				</template>
 			</NcAppNavigationNew>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'dashboard'"
-				name="Dashboard"
-				@click="navigationStore.setSelected('dashboard')">
-				<template #icon>
-					<Finance :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'zaken'"
-				name="Zaken"
-				@click="navigationStore.setSelected('zaken')">
-				<template #icon>
-					<BriefcaseAccountOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
+			<router-link to="/">
+				<NcAppNavigationItem
+					:active="navigationStore.selected === 'dashboard'"
+					name="Dashboard"
+					@click="navigationStore.setSelected('dashboard')">
+					<template #icon>
+						<Finance :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/zaken">
+				<NcAppNavigationItem
+					:active="navigationStore.selected === 'zaken'"
+					name="Zaken"
+					@click="() => {}">
+					<template #icon>
+						<BriefcaseAccountOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
 			<NcAppNavigationItem
 				:active="navigationStore.selected === 'taken'"
 				name="Taken"

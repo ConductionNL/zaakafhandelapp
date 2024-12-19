@@ -39,7 +39,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 					:active="zaakStore.zaakItem?.id === zaak?.id"
 					:details="'1h'"
 					:counter-number="zaak.uiterlijkeEinddatumAfdoening ? `${Math.ceil((new Date(zaak.uiterlijkeEinddatumAfdoening) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
-					@click="zaakStore.setZaakItem(zaak)">
+					@click="openZaak(zaak.id)">
 					<template #icon>
 						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak?.id && 'selectedZaakIcon'"
 							disable-menu
@@ -124,6 +124,10 @@ export default {
 	methods: {
 		clearText() {
 			this.search = ''
+		},
+		openZaak(zaak) {
+			zaakStore.setZaakItem(zaak)
+			this.$router.push({ params: { id: zaak.id } })
 		},
 	},
 }
