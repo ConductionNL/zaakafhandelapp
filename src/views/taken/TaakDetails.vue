@@ -38,19 +38,9 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 						</div>
 						<div v-if="taakStore.taakItem.medewerker">
 							<b>Medewerker:</b>
-							<span v-if="medewerkerLoading">Loading...</span>
-							<div v-if="!medewerkerLoading" class="buttonLinkContainer">
-								<span>{{ getMedewerkerName(medewerker) }}</span>
-								<NcActions>
-									<NcActionLink :aria-label="`ga naar ${getMedewerkerName(medewerker)}`"
-										:name="getMedewerkerName(medewerker)"
-										@click="goToMedewerker()">
-										<template #icon>
-											<OpenInApp :size="20" />
-										</template>
-										{{ getMedewerkerName(medewerker) }}
-									</NcActionLink>
-								</NcActions>
+							<span v-if="medewerkerLoading || !medewerker">Loading...</span>
+							<div v-if="!medewerkerLoading && medewerker" class="buttonLinkContainer">
+								<span>{{ medewerker.displayname }}</span>
 							</div>
 						</div>
 						<div v-if="taakStore.taakItem.klant">
@@ -224,19 +214,22 @@ export default {
 		fetchMedewerker(medewerker) {
 			this.medewerkerLoading = true
 
-			fetch(`/index.php/apps/zaakafhandelapp/api/medewerkers/${medewerker}`, {
+			const host = window.location.host
+
+			fetch(`http://${host}/ocs/v1.php/cloud/users/details`, {
 				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
+
+				this.medewerker = Object.values(data.ocs.data.users).find(user => user.email === medewerker)
+			}).catch(err => {
+				console.error(err)
+			}).finally(() => {
+				this.medewerkerLoading = false
 			})
-				.then((response) => {
-					response.json().then((data) => {
-						this.medewerker = data
-					})
-					this.medewerkerLoading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.medewerkerLoading = false
-				})
 
 		},
 	},
