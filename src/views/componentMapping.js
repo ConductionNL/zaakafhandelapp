@@ -12,6 +12,8 @@ import ZaakTypenIndex from './zaakTypen/ZakenTypenIndex.vue'
 import ZakenIndex from './zaken/ZakenIndex.vue'
 import ContactMomentenIndex from './contactMomenten/ContactMomentenIndex.vue'
 
+// the keys in this object are the names of the routes in the router
+// a.k.a. will be used in the url `/klanten/id`
 export const viewComponents = {
 	berichten: BerichtenIndex,
 	besluiten: BesluitenIndex,
@@ -25,5 +27,5 @@ export const viewComponents = {
 	taken: TakenIndex,
 	zaakTypen: ZaakTypenIndex,
 	zaken: ZakenIndex,
-	contactMomenten: ContactMomentenIndex,
+	contactmomenten: ContactMomentenIndex,
 }

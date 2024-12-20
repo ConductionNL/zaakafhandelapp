@@ -5,8 +5,9 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!contactMomentStore.contactMomentItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="contactMomentStore.contactMomentItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ contactMomentStore.contactMomentItem.titel }}
@@ -110,7 +111,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
 // Entities
@@ -130,10 +131,17 @@ export default {
 		// Components
 		NcActions,
 		NcActionButton,
+		NcLoadingIcon,
 		// Icons
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -141,19 +149,23 @@ export default {
 			auditTrails: [],
 		}
 	},
-	mounted() {
-		if (contactMomentStore.contactMomentItem?.id) {
-			this.currentActiveContactMoment = contactMomentStore.contactMomentItem
-			// this.fetchAuditTrails(contactMomentStore.contactMomentItem.id)
-		}
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
-	updated() {
-		if (contactMomentStore.contactMomentItem?.id && JSON.stringify(this.currentActiveContactMoment) !== JSON.stringify(contactMomentStore.contactMomentItem)) {
-			this.currentActiveContactMoment = contactMomentStore.contactMomentItem
-			// this.fetchAuditTrails(contactMomentStore.contactMomentItem.id)
-		}
+	mounted() {
+		this.fetchData(this.id)
 	},
 	methods: {
+		fetchData(id) {
+			this.loading = true
+
+			contactMomentStore.getContactMoment(id)
+				.finally(() => {
+					this.loading = false
+				})
+		},
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/contact_momenten/${id}/audit_trail`)
 				.then(response => response.json())

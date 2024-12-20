@@ -45,6 +45,8 @@ return [
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
 		['name' => 'configuration#create', 'url' => '/api/configuration', 'verb' => 'POST'],
+		['name' => 'contactMomenten#page', 'url' => '/contactmomenten', 'verb' => 'GET'],
+		['name' => 'contactMomenten#page', 'postfix' => 'details', 'url' => '/contactmomenten/{id}', 'verb' => 'GET'],
 		['name' => 'zaken#page', 'url' => '/zaken', 'verb' => 'GET'],
 		['name' => 'zaken#page', 'postfix'  => 'details', 'url' => '/zaken/{id}', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],

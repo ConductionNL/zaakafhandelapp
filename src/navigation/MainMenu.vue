@@ -58,9 +58,9 @@ import { navigationStore } from '../store/store.js'
 					</template>
 				</NcAppNavigationItem>
 			</router-link>
-			<router-link to="/contactMomenten">
+			<router-link to="/contactmomenten">
 				<NcAppNavigationItem
-					:active="$route.path.startsWith('/contactMomenten')"
+					:active="$route.path.startsWith('/contactmomenten')"
 					name="Contact momenten">
 					<template #icon>
 						<CardAccountPhoneOutline :size="20" />
