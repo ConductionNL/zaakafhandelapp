@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, berichtStore } from '../../store/store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			<BerichtenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!berichtStore.berichtItem?.id|| navigationStore.selected !== 'berichten'"
+			<NcEmptyContent v-if="!id"
 				class="detailContainer"
 				name="Geen bericht"
 				description="Nog geen bericht geselecteerd">
@@ -21,7 +21,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<BerichDetails v-if="berichtStore.berichtItem?.id && navigationStore.selected === 'berichten'" :bericht-id="berichtStore.berichtItem?.id" />
+			<BerichtDetails v-if="id" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
@@ -29,7 +29,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 <script>
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import BerichtenList from './BerichtenList.vue'
-import BerichDetails from './BerichtDetails.vue'
+import BerichtDetails from './BerichtDetails.vue'
 // eslint-disable-next-line n/no-missing-import
 import ChatOutline from 'vue-material-design-icons/ChatOutline'
 
@@ -40,8 +40,13 @@ export default {
 		NcEmptyContent,
 		NcButton,
 		BerichtenList,
-		BerichDetails,
+		BerichtDetails,
 		ChatOutline,
+	},
+	data() {
+		return {
+			id: this.$route.params.id,
+		}
 	},
 }
 </script>
