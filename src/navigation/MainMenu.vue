@@ -88,9 +88,9 @@ import { navigationStore } from '../store/store.js'
 		</NcAppNavigationList>
 
 		<NcAppNavigationSettings>
-			<router-link to="/zaakTypen">
+			<router-link to="/zaaktypen">
 				<NcAppNavigationItem
-					:active="$route.path.startsWith('/zaakTypen')"
+					:active="$route.path.startsWith('/zaaktypen')"
 					name="Zaak Typen">
 					<template #icon>
 						<AlphaTBoxOutline :size="20" />

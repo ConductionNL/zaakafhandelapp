@@ -25,7 +25,7 @@ export const viewComponents = {
 	rollen: RollenIndex,
 	statussen: StatusssenIndex,
 	taken: TakenIndex,
-	zaakTypen: ZaakTypenIndex,
+	zaaktypen: ZaakTypenIndex,
 	zaken: ZakenIndex,
 	contactmomenten: ContactMomentenIndex,
 }

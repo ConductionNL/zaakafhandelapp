@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { TZaakType, ZaakType } from '../../entities/index.js'
+import router from '../../router/router'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen'
 
@@ -120,6 +121,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 
 			this.setZaakTypeItem(null)
 			this.refreshZaakTypenList()
+			router.push({ name: 'dynamic-view', params: { view: 'zaaktypen' } })
 
 			return { response }
 		},
@@ -169,6 +171,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 
 			options.setItem && this.setZaakTypeItem(data)
 			this.refreshZaakTypenList()
+			router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: entity.id } })
 
 			return { response, data, entity }
 		},
