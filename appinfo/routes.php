@@ -52,6 +52,7 @@ return [
 		['name' => 'zaakinformatieobjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','url' => '/zaak_typen', 'verb' => 'GET'],
 		['name' => 'taken#page','url' => '/taken', 'verb' => 'GET'],
+		['name' => 'taken#page','postfix' => 'details', 'url' => '/taken/{id}', 'verb' => 'GET'],
 		['name' => 'klanten#page','url' => '/klanten', 'verb' => 'GET'],
 		['name' => 'berichten#index','url' => '/berichten', 'verb' => 'GET'],
 		// user Settings
