@@ -2,7 +2,6 @@
 import { defineStore } from 'pinia'
 
 interface NavigationStoreState {
-    selected: 'dashboard' | 'berichten' | 'klanten' | 'rollen' | 'taken' | 'zaken' | 'zaakTypen' | 'search' | 'auditTrail' | 'contactMomenten' | 'medewerkers';
     modal: string;
     viewModal: string;
     dialog: string;
@@ -11,8 +10,6 @@ interface NavigationStoreState {
 
 export const useNavigationStore = defineStore('ui', {
 	state: () => ({
-		// The currently active menu item, defaults to '' which triggers the dashboard
-		selected: '',
 		// The currently active modal, managed trough the state to ensure that only one modal can be active at the same time
 		modal: null,
 		// The currently active view modal, managed trough the state to ensure that only one view modal can be active at the same time
@@ -21,13 +18,8 @@ export const useNavigationStore = defineStore('ui', {
 		dialog: null,
 		// Any data needed in various models, dialogs, views which cannot be transferred through normal means or without writing bad/excessive code
 		transferData: null,
-	}),
-	// } as NavigationStoreState),
+	} as NavigationStoreState),
 	actions: {
-		setSelected(selected: NavigationStoreState['selected']) {
-			this.selected = selected
-			console.log('Active menu item set to ' + selected)
-		},
 		setModal(modal: NavigationStoreState['modal']) {
 			this.modal = modal
 			console.log('Active modal set to ' + modal)

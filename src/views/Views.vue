@@ -3,7 +3,7 @@
 	<NcAppContent>
 		<template #default>
 			<RouterView />
-			<component :is="currentViewComponent" />
+			<component :is="currentViewComponent" :key="$route.params[$route.meta.watchParam]" />
 		</template>
 	</NcAppContent>
 </template>

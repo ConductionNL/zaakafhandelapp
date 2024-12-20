@@ -46,6 +46,7 @@ return [
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
 		['name' => 'configuration#create', 'url' => '/api/configuration', 'verb' => 'POST'],
 		['name' => 'zaken#page', 'url' => '/zaken', 'verb' => 'GET'],
+		['name' => 'zaken#page', 'postfix'  => 'details', 'url' => '/zaken/{id}', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],
 		['name' => 'statussen#page', 'url' => '/statussen', 'verb' => 'GET'],
 		['name' => 'zaakinformatieobjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],

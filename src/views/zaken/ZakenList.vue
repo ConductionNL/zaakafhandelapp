@@ -31,15 +31,15 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 
-			<div v-if="zaakStore.zakenList?.length && !loading">
+			<div v-if="zaakStore.zakenList?.length">
 				<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
 					:key="`${zaak}${i}`"
 					:name="zaak?.identificatie"
 					:force-display-actions="true"
-					:active="zaakStore.zaakItem?.id === zaak?.id"
+					:active="$route.params?.id === zaak?.id"
 					:details="'1h'"
 					:counter-number="zaak.uiterlijkeEinddatumAfdoening ? `${Math.ceil((new Date(zaak.uiterlijkeEinddatumAfdoening) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
-					@click="openZaak(zaak.id)">
+					@click="openZaak(zaak)">
 					<template #icon>
 						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak?.id && 'selectedZaakIcon'"
 							disable-menu
@@ -70,7 +70,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			Geen zaken gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!zaakStore.zakenList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"

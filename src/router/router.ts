@@ -13,10 +13,8 @@ import Router from 'vue-router'
 import Vue from 'vue'
 
 // Pages
-import App from '../App.vue'
-import DashboardIndex from '../views/dashboard/DashboardIndex.vue'
-// Pages > views
 import Views from '../views/Views.vue'
+import DashboardIndex from '../views/dashboard/DashboardIndex.vue'
 
 // Prevent router from throwing errors when we're already on the page we're trying to go to
 const originalPush = Router.prototype.push as (to: any, onComplete?: any, onAbort?: any) => Promise<Route>
@@ -37,7 +35,6 @@ const router = new Router({
 
 	routes: [
 		{
-
 			path: '/',
 			component: Views,
 			children: [
@@ -62,6 +59,9 @@ const router = new Router({
 						// But let's assume Views.vue will have the <router-view />.
 						render(h: any) { return h('div', [h('router-view')]) },
 					},
+					// used to watch for changes in the views modal
+					// otherwise it wont reload the component
+					meta: { watchParam: 'id' },
 				},
 			],
 
