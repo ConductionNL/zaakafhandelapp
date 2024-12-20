@@ -54,6 +54,7 @@ return [
 		['name' => 'taken#page','url' => '/taken', 'verb' => 'GET'],
 		['name' => 'taken#page','postfix' => 'details', 'url' => '/taken/{id}', 'verb' => 'GET'],
 		['name' => 'klanten#page','url' => '/klanten', 'verb' => 'GET'],
+		['name' => 'klanten#page','postfix' => 'details', 'url' => '/klanten/{id}', 'verb' => 'GET'],
 		['name' => 'berichten#index','url' => '/berichten', 'verb' => 'GET'],
 		// user Settings
 		['name' => 'settings#index','url' => '/settings', 'verb' => 'GET'],

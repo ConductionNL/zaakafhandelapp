@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Klant } from '../../entities/index.js'
+import router from '../../router/router.ts'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/klanten'
 
@@ -168,6 +169,7 @@ export const useKlantStore = defineStore('klanten', {
 			}
 
 			this.refreshKlantenList()
+			router.push({ name: 'dynamic-view', params: { view: 'klanten' } })
 
 			return { response }
 		},
@@ -204,6 +206,7 @@ export const useKlantStore = defineStore('klanten', {
 
 			this.setKlantItem(data)
 			this.refreshKlantenList()
+			router.push({ name: 'dynamic-view', params: { view: 'klanten', id: entity.id } })
 
 			return { response, data, entity }
 		},
