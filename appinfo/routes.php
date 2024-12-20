@@ -61,6 +61,7 @@ return [
 		['name' => 'medewerkers#page','postfix' => 'details', 'url' => '/medewerkers/{id}', 'verb' => 'GET'],
 		['name' => 'berichten#page','url' => '/berichten', 'verb' => 'GET'],
 		['name' => 'berichten#page','postfix' => 'details', 'url' => '/berichten/{id}', 'verb' => 'GET'],
+		['name' => 'dashboard#page', 'postfix' => 'search', 'url' => '/zoeken', 'verb' => 'GET'],
 		// user Settings
 		['name' => 'settings#index','url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#create', 'url' => '/settings', 'verb' => 'POST'],

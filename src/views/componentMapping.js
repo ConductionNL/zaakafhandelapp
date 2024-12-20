@@ -17,7 +17,7 @@ import ContactMomentenIndex from './contactMomenten/ContactMomentenIndex.vue'
 export const viewComponents = {
 	berichten: BerichtenIndex,
 	besluiten: BesluitenIndex,
-	search: SearchIndex,
+	zoeken: SearchIndex,
 	documenten: DocumentenIndex,
 	klanten: KlantenIndex,
 	medewerkers: MedewerkerIndex,
