@@ -5,8 +5,9 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!medewerkerStore.medewerkerItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="medewerkerStore.medewerkerItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ getName(medewerkerStore.medewerkerItem) }}
@@ -67,7 +68,7 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 
 <script>
 // Components
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
 // Icons
@@ -91,28 +92,39 @@ export default {
 		BriefcaseAccountOutline,
 		TrashCanOutline,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
-			currentActiveKlant: undefined, // whole klant object
 			zaken: [],
 			taken: [],
 			berichten: [],
 			contactMomenten: [],
 			auditTrails: [],
+			loading: true,
 		}
+	},
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
 	mounted() {
-		if (medewerkerStore.medewerkerItem?.id) {
-			this.currentActiveMedewerker = medewerkerStore.medewerkerItem
-		}
-	},
-	updated() {
-		if (medewerkerStore.medewerkerItem?.id && JSON.stringify(this.currentActiveMedewerker) !== JSON.stringify(medewerkerStore.medewerkerItem)) {
-			this.currentActiveMedewerker = medewerkerStore.medewerkerItem
-		}
+		this.fetchData(this.id)
 	},
 	methods: {
+		fetchData(id) {
+			this.loading = true
 
+			medewerkerStore.getMedewerker(id)
+				.finally(() => {
+					this.loading = false
+				})
+		},
 		getName(medewerker) {
 			return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
 		},

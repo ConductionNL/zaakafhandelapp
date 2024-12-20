@@ -30,18 +30,16 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="medewerkerStore.medewerkersList?.length && !loading">
+			<div v-if="medewerkerStore.medewerkersList?.length">
 				<NcListItem v-for="(medewerker, i) in medewerkerStore.medewerkersList"
 					:key="`${medewerker}${i}`"
 					:name="getName(medewerker)"
-					:active="medewerkerStore.medewerkerItem?.id === medewerker?.id"
+					:active="$route.params?.id === medewerker?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(medewerker.type)"
-					@click="medewerkerStore.setMedewerkerItem(medewerker)">
+					@click="openMedewerker(medewerker)">
 					<template #icon>
-						<AccountOutline :class="medewerkerStore.medewerkerItem === medewerker.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AccountOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ medewerker.email }}
@@ -63,7 +61,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 			Geen medewerkers gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!medewerkerStore.medewerkersList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -109,6 +107,10 @@ export default {
 		})
 	},
 	methods: {
+		openMedewerker(medewerker) {
+			medewerkerStore.setMedewerkerItem(medewerker)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: medewerker.id } })
+		},
 		fullName(medewerker) {
 			let name = medewerker.achternaam
 			if (medewerker.tussenvoegsel) {

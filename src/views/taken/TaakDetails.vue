@@ -5,8 +5,9 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!taakStore.taakItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="taakStore.taakItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ taakStore.taakItem.title }}
@@ -105,7 +106,7 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 
 <script>
 // Components
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcActionLink } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcActionLink, NcLoadingIcon } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
@@ -120,6 +121,7 @@ export default {
 	name: 'TaakDetails',
 	components: {
 		NcActionLink,
+		NcLoadingIcon,
 		// Icons
 		Pencil,
 		DotsHorizontal,
@@ -128,33 +130,46 @@ export default {
 		TimelineQuestionOutline,
 		Eye,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
-			currentActiveTaak: null,
 			auditTrails: [],
 			klant: null,
 			medewerker: null,
 			klantLoading: false,
 			medewerkerLoading: false,
+			loading: false,
 		}
+	},
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
 	mounted() {
-		if (taakStore.taakItem?.id) {
-			this.currentActiveTaak = taakStore.taakItem
-			this.fetchAuditTrails(taakStore.taakItem.id)
-			if (taakStore.taakItem.klant) this.fetchKlant(taakStore.taakItem.klant)
-			if (taakStore.taakItem.medewerker) this.fetchMedewerker(taakStore.taakItem.medewerker)
-		}
-	},
-	updated() {
-		if (taakStore.taakItem?.id && JSON.stringify(this.currentActiveTaak) !== JSON.stringify(taakStore.taakItem)) {
-			this.currentActiveTaak = taakStore.taakItem
-			this.fetchAuditTrails(taakStore.taakItem.id)
-			if (taakStore.taakItem.klant) this.fetchKlant(taakStore.taakItem.klant)
-			if (taakStore.taakItem.medewerker) this.fetchMedewerker(taakStore.taakItem.medewerker)
-		}
+		this.fetchData(this.id)
 	},
 	methods: {
+		async fetchData(id) {
+			this.loading = true
+
+			const [{ data: taakData }] = await Promise.all([
+				taakStore.getTaak(id, { setItem: true }),
+				this.fetchAuditTrails(id),
+			])
+
+			this.loading = false
+
+			Promise.all([
+				...(taakData.klant ? [this.fetchKlant(taakData.klant)] : []),
+				...(taakData.medewerker ? [this.fetchMedewerker(taakData.medewerker)] : []),
+			])
+		},
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}/audit_trail`)
 				.then(response => response.json())
@@ -172,11 +187,11 @@ export default {
 		},
 		goToKlant() {
 			klantStore.setKlantItem(this.klant)
-			navigationStore.setSelected('klanten')
+			this.$router.push({ name: 'dynamic-view', params: { view: 'klanten', id: this.klant.id } })
 		},
 		goToMedewerker() {
 			medewerkerStore.setMedewerkerItem(this.medewerker)
-			navigationStore.setSelected('medewerkers')
+			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: this.medewerker.id } })
 		},
 		fetchKlant(klant) {
 			this.klantLoading = true

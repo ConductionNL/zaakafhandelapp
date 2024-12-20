@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, medewerkerStore } from '../../store/store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 			<MedewerkerList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!medewerkerStore.medewerkerItem?.id || navigationStore.selected != 'medewerkers' "
+			<NcEmptyContent v-if="!id"
 				class="detailContainer"
 				name="Geen medewerker"
 				description="Nog geen medewerker geselecteerd">
@@ -21,7 +21,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<MedewerkerDetails v-if="medewerkerStore.medewerkerItem?.id && navigationStore.selected === 'medewerkers'" :medewerker-id="medewerkerStore.medewerkerItem.id" />
+			<MedewerkerDetails v-if="id" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
@@ -44,8 +44,7 @@ export default {
 	},
 	data() {
 		return {
-			activeMetaData: false,
-			medewerkerId: undefined,
+			id: this.$route.params.id,
 		}
 	},
 }

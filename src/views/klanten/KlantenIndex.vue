@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, klantStore } from '../../store/store.js'
+import { navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 			<KlantenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!klantStore.klantItem?.id || navigationStore.selected != 'klanten' "
+			<NcEmptyContent v-if="!id"
 				class="detailContainer"
 				name="Geen klant"
 				description="Nog geen klant geselecteerd">
@@ -21,7 +21,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<KlantDetails v-if="klantStore.klantItem?.id && navigationStore.selected === 'klanten'" :klant-id="klantStore.klantItem.id" />
+			<KlantDetails v-if="id" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
@@ -44,8 +44,7 @@ export default {
 	},
 	data() {
 		return {
-			activeMetaData: false,
-			klantId: undefined,
+			id: this.$route.params.id,
 		}
 	},
 }

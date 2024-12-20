@@ -8,8 +8,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 			<ContactMomentenList />
 		</template>
 		<template #default>
-			<NcEmptyContent
-				v-if="!contactMomentStore.contactMomentItem?.id || navigationStore.selected !== 'contactMomenten'"
+			<NcEmptyContent v-if="!id"
 				class="detailContainer"
 				name="Geen contact moment"
 				description="Nog geen contact moment geselecteerd">
@@ -23,9 +22,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ContactMomentDetails
-				v-if="contactMomentStore.contactMomentItem?.id && navigationStore.selected === 'contactMomenten'"
-				:contact-moment-id="contactMomentStore.contactMomentItem?.id" />
+			<ContactMomentDetails v-if="id" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
@@ -45,6 +42,11 @@ export default {
 		ContactMomentenList,
 		ContactMomentDetails,
 		CardAccountPhoneOutline,
+	},
+	data() {
+		return {
+			id: this.$route.params.id,
+		}
 	},
 }
 </script>

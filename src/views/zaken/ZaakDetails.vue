@@ -5,8 +5,9 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!zaakStore.zaakItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="zaakStore.zaakItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ zaakStore.zaakItem?.identificatie }}
@@ -176,7 +177,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -206,6 +207,7 @@ export default {
 		NcActionButton,
 		BTabs,
 		BTab,
+		NcLoadingIcon,
 		// Views
 		ZaakEigenschappen,
 		ZaakRollen,
@@ -222,29 +224,39 @@ export default {
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			// state
 			loading: true,
-			currentActiveZaak: null,
 			// data
 			auditTrails: [],
 			zaak: [],
 		}
 	},
-	mounted() {
-		this.currentActiveZaak = zaakStore.zaakItem
-		this.fetchAuditTrails(zaakStore.zaakItem.id)
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
-	updated() {
-		if (zaakStore.zaakItem?.id && JSON.stringify(this.currentActiveZaak) !== JSON.stringify(zaakStore.zaakItem)) {
-			this.currentActiveZaak = zaakStore.zaakItem
-			this.fetchAuditTrails(zaakStore.zaakItem.id)
-		}
+	mounted() {
+		this.fetchData(this.id)
 	},
 	methods: {
-		fetchData() {
+		fetchData(id) {
 			this.loading = true
+
+			Promise.all([
+				zaakStore.getZaak(id, { setItem: true }),
+				this.fetchAuditTrails(id),
+			]).finally(() => {
+				this.loading = false
+			})
 		},
 		fetchAuditTrails(id) {
 
