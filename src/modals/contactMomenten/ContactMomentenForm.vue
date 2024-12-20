@@ -783,27 +783,16 @@ export default {
 
 			const contactMomentCopy = _.cloneDeep(this.contactMoment)
 
-			delete contactMomentCopy.taken
-			delete contactMomentCopy.zaken
-			delete contactMomentCopy.berichten
-			delete contactMomentCopy.klantContactmomenten
-			delete contactMomentCopy.auditTrails
-			delete contactMomentCopy.addedTaken
-			delete contactMomentCopy.selectedKlantContactMoment
-			delete contactMomentCopy.selectedProduct
-			delete contactMomentCopy.selectedTaak
-			delete contactMomentCopy.selectedZaak
-
 			contactMomentStore.saveContactMoment({
-				...contactMomentCopy,
+				id: contactMomentCopy.id,
 				notitie: contactMomentCopy.notitie,
 				klant: contactMomentCopy.klant?.id ?? '',
 				zaak: contactMomentCopy.selectedZaak ?? '',
 				taak: contactMomentCopy.selectedTaak ?? '',
 				product: contactMomentCopy.selectedProduct ?? '',
-				contactmoment: contactMomentCopy.selectedKlantContactMoment,
-				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
+				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
+				contactmoment: contactMomentCopy.selectedKlantContactMoment,
 			})
 				.then((response) => {
 					this.contactMoment.addedTaken.forEach(taak => {
@@ -843,25 +832,18 @@ export default {
 					this.success = true
 					this.loading = false
 
-					if (!this.dashboardWidget) {
+					setTimeout(() => {
+						this.closeTab(this.selectedContactMoment)
+						this.success = false
+						this.succesMessage = false
+					}, 2000)
+					if (this.tabs.length === 1) {
+						if (this.dashboardWidget) this.$emit('save-success')
 						setTimeout(() => {
 							this.closeModal()
 						}, 2000)
 					}
 
-					if (this.dashboardWidget === true) {
-						setTimeout(() => {
-							this.closeTab(this.selectedContactMoment)
-							this.success = false
-							this.succesMessage = false
-						}, 2000)
-						if (this.tabs.length === 1) {
-							this.$emit('save-success')
-							setTimeout(() => {
-								this.closeModal()
-							}, 2000)
-						}
-					}
 				})
 				.catch((err) => {
 					console.error(err)

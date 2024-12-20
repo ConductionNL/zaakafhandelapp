@@ -1,5 +1,5 @@
 <script setup>
-import { taakStore, navigationStore, klantStore, medewerkerStore, contactMomentStore } from '../../store/store.js'
+import { taakStore, navigationStore, klantStore, contactMomentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -59,7 +59,6 @@ import { taakStore, navigationStore, klantStore, medewerkerStore, contactMomentS
 					<NcSelect v-if="(clientType !== 'medewerker' && (clientType !== 'both' || clientType === 'both' && !useMedewerkerInsteadOfKlant))"
 						v-bind="klanten"
 						v-model="klanten.value"
-						:user-select="true"
 						input-label="Klant*"
 						:loading="klantenLoading"
 						:disabled="loading" />
@@ -67,7 +66,6 @@ import { taakStore, navigationStore, klantStore, medewerkerStore, contactMomentS
 					<NcSelect v-if="(clientType !== 'klant' && (clientType !== 'both' || clientType === 'both' && useMedewerkerInsteadOfKlant))"
 						v-bind="medewerkers"
 						v-model="medewerkers.value"
-						:user-select="true"
 						input-label="Medewerker*"
 						:loading="medewerkersLoading"
 						:disabled="loading" />
@@ -352,6 +350,7 @@ export default {
 	},
 	mounted() {
 		this.fetchData()
+		this.fetchMedewerkers()
 	},
 	methods: {
 		closeModalFromButton() {
@@ -400,7 +399,6 @@ export default {
 			}
 
 			if (this.clientType !== 'medewerker') this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
-			if (this.clientType !== 'klant') this.fetchMedewerkers(taakEntity?.medewerker)
 			this.fetchContactMomentItems()
 		},
 		/**
@@ -419,6 +417,7 @@ export default {
 					const selectedKlant = data.find((klant) => klant?.id.toString() === searchId) || null
 
 					this.klanten = {
+						userSelect: true,
 						options: data.map((klant) => ({
 							id: klant.id,
 							displayName: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
@@ -499,38 +498,42 @@ export default {
 		 *                                If none are provided the default selected medewerker will be `null`.
 		 */
 		fetchMedewerkers(medewerkerId = null) {
-			medewerkerStore.refreshMedewerkersList()
-				.then(({ data }) => {
+			fetch('/ocs/v1.php/cloud/users/details', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
 
-					const taakMedewerkerId = taakStore.taakItem?.medewerker
-					const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
+				const userData = data.ocs.data.users
 
-					const selectedMedewerker = data.find((medewerker) => medewerker?.id.toString() === searchId) || null
+				const taakMedewerkerId = taakStore.taakItem?.medewerker
+				const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
 
-					this.medewerkers = {
-						options: data.map((medewerker) => ({
-							id: medewerker.id,
-							displayName: `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}`,
-							subName: medewerker.email,
-							icon: medewerker.icon ?? '',
+				const selectedMedewerker = Object.values(userData).find((medewerker) => medewerker?.email?.toString() === searchId) || null
 
-						})),
-						value: selectedMedewerker
-							? {
-								id: selectedMedewerker?.id,
-								displayName: `${selectedMedewerker.voornaam} ${selectedMedewerker.tussenvoegsel} ${selectedMedewerker.achternaam}`,
-								subName: selectedMedewerker.email,
-								icon: selectedMedewerker.icon ?? '',
-							}
-							: null,
-					}
-				})
-				.catch((err) => {
-					console.error(err)
-				})
-				.finally(() => {
-					this.medewerkersLoading = false
-				})
+				this.medewerkers = {
+					userSelect: true,
+					options: Object.values(userData).map((medewerker) => ({
+						id: medewerker.email,
+						displayName: medewerker.displayname,
+						subname: medewerker.email,
+						user: medewerker.id,
+
+					})),
+					value: selectedMedewerker
+						? {
+							id: selectedMedewerker?.email,
+							displayName: selectedMedewerker.displayname,
+							subname: selectedMedewerker.email,
+							user: selectedMedewerker.id,
+						}
+						: null,
+				}
+
+			})
+
 		},
 		async editTaak() {
 			this.loading = true
