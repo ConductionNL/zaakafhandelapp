@@ -832,25 +832,18 @@ export default {
 					this.success = true
 					this.loading = false
 
-					if (!this.dashboardWidget) {
+					setTimeout(() => {
+						this.closeTab(this.selectedContactMoment)
+						this.success = false
+						this.succesMessage = false
+					}, 2000)
+					if (this.tabs.length === 1) {
+						if (this.dashboardWidget) this.$emit('save-success')
 						setTimeout(() => {
 							this.closeModal()
 						}, 2000)
 					}
 
-					if (this.dashboardWidget === true) {
-						setTimeout(() => {
-							this.closeTab(this.selectedContactMoment)
-							this.success = false
-							this.succesMessage = false
-						}, 2000)
-						if (this.tabs.length === 1) {
-							this.$emit('save-success')
-							setTimeout(() => {
-								this.closeModal()
-							}, 2000)
-						}
-					}
 				})
 				.catch((err) => {
 					console.error(err)
