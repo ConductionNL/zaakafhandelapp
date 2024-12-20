@@ -498,8 +498,7 @@ export default {
 		 *                                If none are provided the default selected medewerker will be `null`.
 		 */
 		fetchMedewerkers(medewerkerId = null) {
-			const host = window.location.host
-			fetch(`http://${host}/ocs/v1.php/cloud/users/details`, {
+			fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
 				headers: {
 					Accept: 'application/json',
@@ -512,7 +511,7 @@ export default {
 				const taakMedewerkerId = taakStore.taakItem?.medewerker
 				const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
 
-				const selectedMedewerker = Object.values(userData).find((medewerker) => medewerker?.email.toString() === searchId) || null
+				const selectedMedewerker = Object.values(userData).find((medewerker) => medewerker?.email?.toString() === searchId) || null
 
 				this.medewerkers = {
 					userSelect: true,

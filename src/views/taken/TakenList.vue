@@ -125,9 +125,7 @@ export default {
 			this.search = ''
 		},
 		getUsers() {
-			const host = window.location.host
-
-			fetch(`http://${host}/ocs/v1.php/cloud/users/details`, {
+			fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
 				headers: {
 					Accept: 'application/json',
