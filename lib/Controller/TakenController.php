@@ -2,6 +2,7 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
+use OCA\ZaakAfhandelApp\Service\MailService;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
@@ -12,6 +13,7 @@ class TakenController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
+		private readonly MailService $mailService,
         private readonly ObjectService $objectService,
     ) {
         parent::__construct($appName, $request);
@@ -33,7 +35,7 @@ class TakenController extends Controller
 
 		 // Fetch catalog objects based on filters and order
 		 $data = $this->objectService->getResultArrayForRequest('taken', $requestParams);
- 
+
 		 // Return JSON response
 		 return new JSONResponse($data);
 	}
@@ -74,7 +76,9 @@ class TakenController extends Controller
 
         // Save the new catalog object
         $object = $this->objectService->saveObject('taken', $data);
-        
+
+		$this->mailService->sendMail([], is_array($object) === true ? $object : $object->jsonSerialize());
+
         // Return the created object as a JSON response
         return new JSONResponse($object);
 	}
@@ -91,10 +95,16 @@ class TakenController extends Controller
 	{
         // Get all parameters from the request
         $data = $this->request->getParams();
-		
+
+		$oldObject = $this->objectService->getObject('taken', $id);
+
+		$data['id'] = $id;
+
         // Save the new catalog object
         $object = $this->objectService->saveObject('taken', $data);
-        
+
+		$this->mailService->sendMail(is_array($oldObject) === true ? $oldObject : $oldObject->jsonSerialize(), is_array($object) === true ? $object : $object->jsonSerialize());
+
         // Return the created object as a JSON response
         return new JSONResponse($object);
 	}
@@ -114,8 +124,8 @@ class TakenController extends Controller
 
         // Return the result as a JSON response
 		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
-	}    
-	
+	}
+
 	/**
 	* Get audit trail for a specific klant
 	*
