@@ -783,27 +783,16 @@ export default {
 
 			const contactMomentCopy = _.cloneDeep(this.contactMoment)
 
-			delete contactMomentCopy.taken
-			delete contactMomentCopy.zaken
-			delete contactMomentCopy.berichten
-			delete contactMomentCopy.klantContactmomenten
-			delete contactMomentCopy.auditTrails
-			delete contactMomentCopy.addedTaken
-			delete contactMomentCopy.selectedKlantContactMoment
-			delete contactMomentCopy.selectedProduct
-			delete contactMomentCopy.selectedTaak
-			delete contactMomentCopy.selectedZaak
-
 			contactMomentStore.saveContactMoment({
-				...contactMomentCopy,
+				id: contactMomentCopy.id,
 				notitie: contactMomentCopy.notitie,
 				klant: contactMomentCopy.klant?.id ?? '',
 				zaak: contactMomentCopy.selectedZaak ?? '',
 				taak: contactMomentCopy.selectedTaak ?? '',
 				product: contactMomentCopy.selectedProduct ?? '',
-				contactmoment: contactMomentCopy.selectedKlantContactMoment,
-				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
+				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
+				contactmoment: contactMomentCopy.selectedKlantContactMoment,
 			})
 				.then((response) => {
 					this.contactMoment.addedTaken.forEach(taak => {

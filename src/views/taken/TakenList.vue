@@ -1,5 +1,5 @@
 <script setup>
-import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../store/store.js'
+import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -30,7 +30,7 @@ import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../s
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="taakStore.takenList?.length && !loading">
+			<div v-if="taakStore.takenList?.length && users && !loading">
 				<NcListItem v-for="(taak, i) in taakStore.takenList"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
@@ -108,13 +108,14 @@ export default {
 			search: '',
 			loading: true,
 			takenList: [],
+			users: null,
 		}
 	},
 	mounted() {
 		Promise.all([
+			this.getUsers(),
 			taakStore.refreshTakenList(),
 			klantStore.refreshKlantenList(),
-			medewerkerStore.refreshMedewerkersList(),
 		]).then(() => {
 			this.loading = false
 		})
@@ -123,12 +124,26 @@ export default {
 		clearText() {
 			this.search = ''
 		},
+		getUsers() {
+			const host = window.location.host
+
+			fetch(`http://${host}/ocs/v1.php/cloud/users/details`, {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
+
+				this.users = Object.values(data.ocs.data.users)
+			})
+		},
 		getName(taak) {
-			const medewerker = medewerkerStore.medewerkersList.find(medewerker => medewerker.id === taak.medewerker)
+			const medewerker = this.users.find(user => user.email === taak.medewerker)
 			const klant = klantStore.klantenList.find(klant => klant.id === taak.klant)
 
 			if (medewerker) {
-				return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
+				return medewerker.displayname ?? 'onbekend'
 			}
 			if (klant) {
 				if (klant.type === 'persoon') {

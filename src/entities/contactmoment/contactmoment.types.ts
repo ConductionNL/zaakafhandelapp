@@ -8,4 +8,5 @@ export type TContactMoment = {
     product: string;
     startDate: string;
     status: string;
+    contactmoment: string;
 }
