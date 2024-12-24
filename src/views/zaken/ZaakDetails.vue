@@ -61,7 +61,7 @@ import { navigationStore, zaakStore, resultaatStore, besluitStore } from '../../
 						</NcActionButton>
 						<NcActionButton @click="(besluitStore.zaakId = zaakStore.zaakItem?.id); besluitStore.setBesluitItem(null); navigationStore.setModal('besluitForm')">
 							<template #icon>
-								<FileChartCheckOutline :size="20" />
+								<BriefcaseAccountOutline :size="20" />
 							</template>
 							Besluit toevoegen
 						</NcActionButton>
@@ -199,6 +199,7 @@ import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 import FileChartCheckOutline from 'vue-material-design-icons/FileChartCheckOutline.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
