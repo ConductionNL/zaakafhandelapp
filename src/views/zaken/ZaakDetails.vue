@@ -59,7 +59,7 @@ import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js
 							</template>
 							Status wijzigen
 						</NcActionButton>
-						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); navigationStore.setModal('resultaatForm')">
+						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); resultaatStore.setResultaatItem(null); navigationStore.setModal('resultaatForm')">
 							<template #icon>
 								<FileChartCheckOutline :size="20" />
 							</template>
