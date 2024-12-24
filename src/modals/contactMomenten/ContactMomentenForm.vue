@@ -120,8 +120,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
-								<BTab
-									:title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
+								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].klantContactmomenten?.length">
 										<NcListItem
 											v-for="(klantContactmoment, key) in contactMomenten[i].klantContactmomenten"
@@ -144,7 +143,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 													<template #icon>
 														<Eye :size="20" />
 													</template>
-													View
+													Bekijken
 												</NcButton>
 											</template>
 										</NcListItem>
@@ -155,8 +154,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab
-									:title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
+								<BTab :title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].zaken?.length">
 										<NcListItem v-for="(zaak, key) in contactMomenten[i].zaken"
 											:key="key"
@@ -174,6 +172,14 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											<template #subname>
 												{{ zaak.omschrijving }}
 											</template>
+											<template #actions>
+												<NcButton @click="viewZaak(zaak.id)">
+													<template #icon>
+														<Eye :size="20" />
+													</template>
+													Bekijken
+												</NcButton>
+											</template>
 										</NcListItem>
 									</div>
 									<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
@@ -182,8 +188,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab
-									:title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
+								<BTab :title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].taken?.length">
 										<NcListItem v-for="(taak, key) in contactMomenten[i].taken"
 											:key="key"
@@ -198,9 +203,16 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											<template #icon>
 												<CalendarMonthOutline :size="44" />
 											</template>
-
 											<template #subname>
 												{{ taak.omschrijving }}
+											</template>
+											<template #actions>
+												<NcButton @click="viewTaak(taak.id)">
+													<template #icon>
+														<Eye :size="20" />
+													</template>
+													Bekijken
+												</NcButton>
 											</template>
 										</NcListItem>
 									</div>
@@ -210,8 +222,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab
-									:title="`Producten ${contactMomenten[selectedContactMoment].klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
+								<BTab :title="`Producten ${contactMomenten[selectedContactMoment].klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[selectedContactMoment].klant?.producten?.length">
 										<NcListItem
 											v-for="(product, key) in contactMomenten[selectedContactMoment].klant.producten"
@@ -576,6 +587,8 @@ import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Minus from 'vue-material-design-icons/Minus.vue'
 import ProgressClose from 'vue-material-design-icons/ProgressClose.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
+import router from '../../router/router.ts'
+import { generateUrl } from '@nextcloud/router';
 
 export default {
 	name: 'ContactMomentenForm',
@@ -881,6 +894,24 @@ export default {
 			this.viewContactMomentIsView = true
 			this.viewContactMomentId = id
 			navigationStore.setViewModal('viewContactMoment')
+		},
+
+		viewZaak(id) {
+			if (this.dashboardWidget) {
+				window.location.href = `${generateUrl('/apps/zaakafhandelapp')}/zaken/${id}`
+			} else {
+				router.push({ name: 'dynamic-view', params: { view: 'zaken', id } })
+				navigationStore.setModal(false)
+			}
+		},
+
+		viewTaak(id) {
+			if (this.dashboardWidget) {
+				window.location.href = `${generateUrl('/apps/zaakafhandelapp')}/taken/${id}`
+			} else {
+				router.push({ name: 'dynamic-view', params: { view: 'taken', id } })
+				navigationStore.setModal(false)
+			}
 		},
 
 		closeViewContactMomentModal() {
