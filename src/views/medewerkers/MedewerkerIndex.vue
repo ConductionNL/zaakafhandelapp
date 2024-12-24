@@ -1,14 +1,10 @@
-<script setup>
-import { navigationStore, medewerkerStore } from '../../store/store.js'
-</script>
-
 <template>
 	<NcAppContent>
 		<template #list>
 			<MedewerkerList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!medewerkerStore.medewerkerItem?.id || navigationStore.selected != 'medewerkers' "
+			<NcEmptyContent v-if="!id"
 				class="detailContainer"
 				name="Geen medewerker"
 				description="Nog geen medewerker geselecteerd">
@@ -16,20 +12,29 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 					<AccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="navigationStore.setModal('editMedewerker')">
+					<NcButton type="primary" @click="medewerkerStore.setMedewerkerItem(null); navigationStore.setModal('editMedewerker')">
 						Medewerker toevoegen
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<MedewerkerDetails v-if="medewerkerStore.medewerkerItem?.id && navigationStore.selected === 'medewerkers'" :medewerker-id="medewerkerStore.medewerkerItem.id" />
+			<MedewerkerDetails v-if="id" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
+// vue
+import { getCurrentInstance, ref, watch } from 'vue'
+
+// store
+import { navigationStore, medewerkerStore } from '../../store/store.js'
+
+// components
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import MedewerkerList from './MedewerkerList.vue'
 import MedewerkerDetails from './MedewerkerDetails.vue'
+
+// icons
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 
 export default {
@@ -42,10 +47,25 @@ export default {
 		MedewerkerDetails,
 		AccountOutline,
 	},
-	data() {
+	setup() {
+		// get a proxy instance, this simulates the `this` keyword in a vue component, which is not available in the setup function
+		const { proxy } = getCurrentInstance()
+
+		// create a ref, which is a reactive reference to the id
+		// this is needed since the component wont be re-rendered when the id changes otherwise
+		const id = ref(proxy.$route.params.id || null)
+
+		// watch the id, and update the ref when the id changes
+		watch(() => proxy.$route.params.id, (newId) => {
+			id.value = newId
+		})
+
+		// return the id and the navigationStore and zaakStore
+		// the store is still required throughout the component, and not exporting them would break it
 		return {
-			activeMetaData: false,
-			medewerkerId: undefined,
+			navigationStore,
+			medewerkerStore,
+			id,
 		}
 	},
 }

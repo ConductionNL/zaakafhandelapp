@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Taak } from '../../entities/index.js'
+import router from '../../router/router.ts'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/taken'
 
@@ -35,7 +36,7 @@ export const useTaakStore = defineStore('taken', {
 			console.log('Active widget taak Id set to ' + widgetTaakId)
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null, notClosed = false) {
+		async refreshTakenList(search = null, notClosed = false, user = null) {
 			let endpoint = apiEndpoint
 
 			const params = new URLSearchParams()
@@ -44,6 +45,9 @@ export const useTaakStore = defineStore('taken', {
 			}
 			if (notClosed) {
 				params.append('status', 'open')
+			}
+			if (user) {
+				params.append('medewerker', user)
 			}
 
 			if (params.toString()) {
@@ -104,6 +108,8 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			this.refreshTakenList()
+			// go back to taken list
+			router.replace({ name: 'dynamic-view', params: { view: 'taken' } })
 
 			return { response }
 		},
@@ -142,6 +148,8 @@ export const useTaakStore = defineStore('taken', {
 			if (!options.doNotRefresh) {
 				this.refreshTakenList()
 			}
+			// go to new item with this id
+			router.push({ name: 'dynamic-view', params: { view: 'taken', id: entity.id } })
 
 			return { response, data, entity }
 		},

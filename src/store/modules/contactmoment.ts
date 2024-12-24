@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { ContactMoment, TContactMoment } from '../../entities/index.js'
+import router from '../../router/router'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/contactmomenten'
 
@@ -124,6 +125,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 			}
 
 			this.refreshContactMomentenList()
+			router.push({ name: 'dynamic-view', params: { view: 'contactmomenten' } })
 
 			return { response }
 		},
@@ -167,6 +169,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 
 			this.setContactMomentItem(data)
 			this.refreshContactMomentenList()
+			router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: entity.id } })
 
 			return { response, data, entity }
 		},

@@ -12,89 +12,100 @@ import { navigationStore } from '../store/store.js'
 					<Plus :size="20" />
 				</template>
 			</NcAppNavigationNew>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'dashboard'"
-				name="Dashboard"
-				@click="navigationStore.setSelected('dashboard')">
-				<template #icon>
-					<Finance :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'zaken'"
-				name="Zaken"
-				@click="navigationStore.setSelected('zaken')">
-				<template #icon>
-					<BriefcaseAccountOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'taken'"
-				name="Taken"
-				@click="navigationStore.setSelected('taken')">
-				<template #icon>
-					<CalendarMonthOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'klanten'"
-				name="Klanten"
-				@click="navigationStore.setSelected('klanten')">
-				<template #icon>
-					<AccountGroupOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'medewerkers'"
-				name="Medewerkers"
-				@click="navigationStore.setSelected('medewerkers')">
-				<template #icon>
-					<AccountGroupOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'contactMomenten'"
-				name="Contact momenten"
-				@click="navigationStore.setSelected('contactMomenten')">
-				<template #icon>
-					<CardAccountPhoneOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'berichten'"
-				name="Berichten"
-				@click="navigationStore.setSelected('berichten')">
-				<template #icon>
-					<ChatOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'search'"
-				name="Zoeken"
-				@click="navigationStore.setSelected('search')">
-				<template #icon>
-					<Magnify :size="20" />
-				</template>
-			</NcAppNavigationItem>
+
+			<router-link to="/">
+				<NcAppNavigationItem
+					:active="$route.path === '/'"
+					name="Dashboard">
+					<template #icon>
+						<Finance :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/zaken">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/zaken')"
+					name="Zaken">
+					<template #icon>
+						<BriefcaseAccountOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/taken">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/taken')"
+					name="Taken">
+					<template #icon>
+						<CalendarMonthOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/klanten">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/klanten')"
+					name="Klanten">
+					<template #icon>
+						<AccountGroupOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/medewerkers">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/medewerkers')"
+					name="Medewerkers">
+					<template #icon>
+						<AccountGroupOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/contactmomenten">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/contactmomenten')"
+					name="Contact momenten">
+					<template #icon>
+						<CardAccountPhoneOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/berichten">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/berichten')"
+					name="Berichten">
+					<template #icon>
+						<ChatOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/zoeken">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/zoeken')"
+					name="Zoeken">
+					<template #icon>
+						<Magnify :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
 		</NcAppNavigationList>
 
 		<NcAppNavigationSettings>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'zaakTypen'"
-				name="Zaak Typen"
-				@click="navigationStore.setSelected('zaakTypen')">
-				<template #icon>
-					<AlphaTBoxOutline :size="20" />
-				</template>
-			</NcAppNavigationItem>
-			<NcAppNavigationItem
-				:active="navigationStore.selected === 'auditTrail'"
-				name="Audit trail"
-				@click="navigationStore.setSelected('auditTrail')">
-				<template #icon>
-					<SortVariantLock :size="20" />
-				</template>
-			</NcAppNavigationItem>
+			<router-link to="/zaaktypen">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/zaaktypen')"
+					name="Zaak Typen">
+					<template #icon>
+						<AlphaTBoxOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
+			<router-link to="/auditTrail">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/auditTrail')"
+					name="Audit trail">
+					<template #icon>
+						<SortVariantLock :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
 			<Configuration />
 		</NcAppNavigationSettings>
 	</NcAppNavigation>
