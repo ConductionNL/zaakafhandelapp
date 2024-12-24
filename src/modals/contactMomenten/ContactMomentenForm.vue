@@ -144,7 +144,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 													<template #icon>
 														<Eye :size="20" />
 													</template>
-													View
+													Bekijken
 												</NcButton>
 											</template>
 										</NcListItem>
