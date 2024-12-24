@@ -47,12 +47,6 @@ import { navigationStore, zaakStore, resultaatStore, besluitStore } from '../../
 							</template>
 							Bericht toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addBesluit')">
-							<template #icon>
-								<MessagePlus :size="20" />
-							</template>
-							Besluit toevoegen
-						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
