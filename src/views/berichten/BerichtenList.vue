@@ -30,19 +30,17 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="berichtStore.berichtenList?.length && !loading">
+			<div v-if="berichtStore.berichtenList?.length">
 				<NcListItem v-for="(bericht, i) in berichtStore.berichtenList"
 					:key="`${bericht}${i}`"
 					:name="bericht?.onderwerp || bericht?.title || 'onbekend'"
-					:active="berichtStore.berichtItem?.id === bericht?.id"
+					:active="$route.params.id === bericht?.id"
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
-					@click="berichtStore.setBerichtItem(bericht)">
+					@click="openBericht(bericht)">
 					<template #icon>
-						<ChatOutline :class="berichtStore.berichtItem?.id === bericht.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<ChatOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ bericht?.berichttekst }}
@@ -69,7 +67,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			Geen berichten gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="berichtStore.berichtenList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -119,6 +117,10 @@ export default {
 		})
 	},
 	methods: {
+		openBericht(bericht) {
+			berichtStore.setBerichtItem(bericht)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'berichten', id: bericht.id } })
+		},
 		editBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
 			navigationStore.setModal('editBericht')

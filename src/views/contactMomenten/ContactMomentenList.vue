@@ -31,18 +31,15 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="contactMomentStore.contactMomentenList?.length && !loading">
+			<div v-if="contactMomentStore.contactMomentenList?.length">
 				<NcListItem v-for="(contactMoment, i) in contactMomentStore.contactMomentenList"
 					:key="`${contactMoment}${i}`"
 					:name="getKlantName(contactMoment.klant) || 'onbekend'"
-					:active="contactMomentStore.contactMomentItem?.id === contactMoment?.id"
+					:active="$route.params?.id === contactMoment?.id"
 					:force-display-actions="true"
-					@click="contactMomentStore.setContactMomentItem(contactMoment)">
+					@click="openContactMoment(contactMoment)">
 					<template #icon>
-						<CardAccountPhoneOutline
-							:class="contactMomentStore.contactMomentItem?.id === contactMoment.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<CardAccountPhoneOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ new Date(contactMoment.startDate).toLocaleString() }}
@@ -71,7 +68,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			Geen contact momenten gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!contactMomentStore.contactMomentenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -124,6 +121,10 @@ export default {
 		})
 	},
 	methods: {
+		openContactMoment(contactMoment) {
+			contactMomentStore.setContactMomentItem(contactMoment)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: contactMoment.id } })
+		},
 		editContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
 			navigationStore.setModal('editContactMoment')
@@ -133,6 +134,9 @@ export default {
 		},
 		getKlantName(klantId) {
 			const klant = klantStore.klantenList.find(klant => klant.id === klantId)
+			if (!klant) {
+				return 'onbekend'
+			}
 			if (klant.type === 'persoon') {
 				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
 			}

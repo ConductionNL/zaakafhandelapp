@@ -31,19 +31,17 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 				</NcActions>
 			</div>
 
-			<div v-if="zaakTypeStore.zaakTypeList?.length && !loading">
+			<div v-if="zaakTypeStore.zaakTypeList?.length">
 				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypeList"
 					:key="`${zaaktype}${i}`"
 					:name="zaaktype?.identificatie"
 					:force-display-actions="true"
-					:active="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id"
+					:active="$route.params.id === zaaktype?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="zaakTypeStore.setZaakTypeItem(zaaktype)">
+					@click="openZaakType(zaaktype)">
 					<template #icon>
-						<AlphaTBoxOutline :class="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AlphaTBoxOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ zaaktype?.omschrijvingGeneriek }}
@@ -70,7 +68,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 			Geen zaaktypen gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!zaakTypeStore.zaakTypeList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -125,6 +123,10 @@ export default {
 			})
 	},
 	methods: {
+		openZaakType(zaaktype) {
+			zaakTypeStore.setZaakTypeItem(zaaktype)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: zaaktype.id } })
+		},
 		clearText() {
 			this.search = ''
 		},

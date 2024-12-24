@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { TResultaat, Resultaat } from '../../entities/index.js'
 
-const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/resultaten'
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/resultaten'
 
 type TOptions = {
 	/**

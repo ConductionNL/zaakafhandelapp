@@ -7,6 +7,7 @@ export class Klant implements TKlant {
 	public type: TKlantType
 
 	public voornaam: string
+	public tweedeVoornaam: string
 	public tussenvoegsel: string
 	public achternaam: string
 	public bsn: string
@@ -38,6 +39,7 @@ export class Klant implements TKlant {
 		this.id = source.id || ''
 		this.type = source.type || 'persoon'
 		this.voornaam = source.voornaam || ''
+		this.tweedeVoornaam = source.tweedeVoornaam || ''
 		this.tussenvoegsel = source.tussenvoegsel || ''
 		this.achternaam = source.achternaam || ''
 		this.bsn = source.bsn || ''
@@ -67,6 +69,7 @@ export class Klant implements TKlant {
 		const schema = z.object({
 			id: z.string().optional(),
 			voornaam: z.string().min(1),
+			tweedeVoornaam: z.string(),
 			tussenvoegsel: z.string(),
 			achternaam: z.string(),
 			bsn: z.string(),
