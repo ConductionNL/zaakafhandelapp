@@ -72,7 +72,7 @@ export default {
 		fetchData(id) {
 			this.rolLoading = true
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/rollen/${id}`,
+				`/index.php/apps/zaakafhandelapp/api/objects/rollen/${id}`,
 				{
 					method: 'GET',
 				},
@@ -101,7 +101,7 @@ export default {
 		},
 		editRol() {
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/rollen/${store.rolId}`,
+				`/index.php/apps/zaakafhandelapp/api/objects/rollen/${store.rolId}`,
 				{
 					method: 'PUT',
 					headers: {

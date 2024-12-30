@@ -66,7 +66,7 @@ export default {
 		addRol() {
 			this.$emit('rol', this.onderwerp)
 			fetch(
-				'/index.php/apps/zaakafhandelapp/rollen/api',
+				'/index.php/apps/zaakafhandelapp/api/objects/rollen',
 				{
 					method: 'POST',
 					headers: {
