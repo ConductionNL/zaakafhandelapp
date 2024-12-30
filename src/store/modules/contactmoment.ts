@@ -134,10 +134,15 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Otherwise, it will be updated.
 		 *
 		 * @param contactMomentItem - The contact moment item to save.
+		 * @param options - The options to save the contact moment.
+		 * @param options.redirect - Whether to redirect to the contact moment after saving. (default: `true`)
 		 * @throws If there is no contact moment item to save or if the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
 		 */
-		async saveContactMoment(contactMomentItem: TContactMoment | ContactMoment): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
+		async saveContactMoment(
+			contactMomentItem: TContactMoment | ContactMoment,
+			options: { redirect?: boolean } = { redirect: true },
+		): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
 			if (!contactMomentItem) {
 				throw new Error('No contactmoment item to save')
 			}
@@ -169,7 +174,9 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 
 			this.setContactMomentItem(data)
 			this.refreshContactMomentenList()
-			router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: entity.id } })
+			if (options.redirect) {
+				router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: entity.id } })
+			}
 
 			return { response, data, entity }
 		},
