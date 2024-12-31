@@ -1,12 +1,13 @@
 <script setup>
-import { navigationStore, taakStore, klantStore } from '../../store/store.js'
+import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!taakStore.taakItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="taakStore.taakItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ taakStore.taakItem.title }}
@@ -35,7 +36,14 @@ import { navigationStore, taakStore, klantStore } from '../../store/store.js'
 							<b>Sammenvatting:</b>
 							<span>{{ taakStore.taakItem.onderwerp }}</span>
 						</div>
-						<div>
+						<div v-if="taakStore.taakItem.medewerker">
+							<b>Medewerker:</b>
+							<span v-if="medewerkerLoading || !medewerker">Loading...</span>
+							<div v-if="!medewerkerLoading && medewerker" class="buttonLinkContainer">
+								<span>{{ medewerker.displayname }}</span>
+							</div>
+						</div>
+						<div v-if="taakStore.taakItem.klant">
 							<b>Klant:</b>
 							<span v-if="klantLoading">Loading...</span>
 							<div v-if="!klantLoading" class="buttonLinkContainer">
@@ -98,7 +106,7 @@ import { navigationStore, taakStore, klantStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcActionLink } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcActionLink, NcLoadingIcon } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
@@ -113,6 +121,7 @@ export default {
 	name: 'TaakDetails',
 	components: {
 		NcActionLink,
+		NcLoadingIcon,
 		// Icons
 		Pencil,
 		DotsHorizontal,
@@ -121,29 +130,46 @@ export default {
 		TimelineQuestionOutline,
 		Eye,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
-			currentActiveTaak: null,
 			auditTrails: [],
-			klant: [],
+			klant: null,
+			medewerker: null,
 			klantLoading: false,
+			medewerkerLoading: false,
+			loading: false,
 		}
+	},
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
 	mounted() {
-		if (taakStore.taakItem?.id) {
-			this.currentActiveTaak = taakStore.taakItem
-			this.fetchAuditTrails(taakStore.taakItem.id)
-			this.fetchKlant(taakStore.taakItem.klant)
-		}
-	},
-	updated() {
-		if (taakStore.taakItem?.id && JSON.stringify(this.currentActiveTaak) !== JSON.stringify(taakStore.taakItem)) {
-			this.currentActiveTaak = taakStore.taakItem
-			this.fetchAuditTrails(taakStore.taakItem.id)
-			this.fetchKlant(taakStore.taakItem.klant)
-		}
+		this.fetchData(this.id)
 	},
 	methods: {
+		async fetchData(id) {
+			this.loading = true
+
+			const [{ data: taakData }] = await Promise.all([
+				taakStore.getTaak(id, { setItem: true }),
+				this.fetchAuditTrails(id),
+			])
+
+			this.loading = false
+
+			Promise.all([
+				...(taakData.klant ? [this.fetchKlant(taakData.klant)] : []),
+				...(taakData.medewerker ? [this.fetchMedewerker(taakData.medewerker)] : []),
+			])
+		},
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}/audit_trail`)
 				.then(response => response.json())
@@ -156,9 +182,16 @@ export default {
 		getKlantName(klant) {
 			return klant?.type === 'persoon' ? `${klant?.voornaam} ${klant?.tussenvoegsel} ${klant?.achternaam}` : klant?.bedrijfsnaam
 		},
+		getMedewerkerName(medewerker) {
+			return `${medewerker?.voornaam} ${medewerker?.tussenvoegsel} ${medewerker?.achternaam}`
+		},
 		goToKlant() {
 			klantStore.setKlantItem(this.klant)
-			navigationStore.setSelected('klanten')
+			this.$router.push({ name: 'dynamic-view', params: { view: 'klanten', id: this.klant.id } })
+		},
+		goToMedewerker() {
+			medewerkerStore.setMedewerkerItem(this.medewerker)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: this.medewerker.id } })
 		},
 		fetchKlant(klant) {
 			this.klantLoading = true
@@ -176,6 +209,27 @@ export default {
 					console.error(err)
 					this.klantLoading = false
 				})
+
+		},
+		fetchMedewerker(medewerker) {
+			this.medewerkerLoading = true
+
+			const host = window.location.host
+
+			fetch(`http://${host}/ocs/v1.php/cloud/users/details`, {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
+
+				this.medewerker = Object.values(data.ocs.data.users).find(user => user.email === medewerker)
+			}).catch(err => {
+				console.error(err)
+			}).finally(() => {
+				this.medewerkerLoading = false
+			})
 
 		},
 	},

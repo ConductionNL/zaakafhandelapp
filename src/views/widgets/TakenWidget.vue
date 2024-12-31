@@ -9,7 +9,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				:loading="loading"
 				:item-menu="itemMenu"
 				@show="onShow"
-				@sluiten="onSluiten">
+				@statusClose="onCloseStatus"
+				@statusHandled="onHandledStatus">
 				<template #empty-content>
 					<NcEmptyContent name="Geen open taken">
 						<template #icon>
@@ -35,10 +36,10 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			</NcButton>
 		</div>
 
-		<TakenForm v-if="isModalOpen"
+		<EditTaakForm v-if="isModalOpen"
 			:dashboard-widget="true"
 			:taak-id="taakId"
-			@save-success="closeModal"
+			@save-success="fetchTaakItems"
 			@close-modal="closeModal" />
 	</div>
 </template>
@@ -51,10 +52,13 @@ import { getTheme } from '../../services/getTheme.js'
 // Entities
 import { Taak } from '../../entities/index.js'
 
+// Icons
+import { iconProgressClose, iconCalendarCheckOutline } from '../../services/icons/index.js'
+
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
-import TakenForm from '../../modals/taken/WidgetTaakForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 
 export default {
 	name: 'TakenWidget',
@@ -64,6 +68,7 @@ export default {
 		NcEmptyContent,
 		NcButton,
 		Plus,
+		EditTaakForm: EditTaak,
 	},
 
 	data() {
@@ -71,14 +76,19 @@ export default {
 			loading: false,
 			isModalOpen: false,
 			taakItems: [],
+			userEmail: null,
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
 					icon: 'icon-toggle',
 				},
-				sluiten: {
+				statusClose: {
 					text: 'Sluiten',
-					icon: this.getSluitenIcon(),
+					icon: iconProgressClose,
+				},
+				statusHandled: {
+					text: 'Taak Afhandelen',
+					icon: iconCalendarCheckOutline,
 				},
 			},
 		}
@@ -91,13 +101,28 @@ export default {
 	},
 
 	mounted() {
-		this.fetchTaakItems()
+		this.fetchUser()
 	},
 
 	methods: {
-		fetchTaakItems() {
+		async fetchUser() {
 			this.loading = true
-			taakStore.refreshTakenList(null, true)
+
+			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
+			const user = await getUser.json()
+
+			const medewerkerList = await fetch('/index.php/apps/zaakafhandelapp/api/medewerkers')
+			const medewerkers = await medewerkerList.json()
+
+			const medewerker = medewerkers.results.find((medewerker) => medewerker.email === user.user.email)
+
+			this.userEmail = medewerker.email
+			this.fetchTaakItems()
+		},
+		fetchTaakItems() {
+
+			this.loading = true
+			taakStore.refreshTakenList(null, true, this.userEmail)
 				.then(() => {
 
 					this.taakItems = taakStore.takenList.map(taak => ({
@@ -130,22 +155,14 @@ export default {
 		closeModal() {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
-			this.fetchTaakItems()
 		},
 
 		onShow(event) {
 			this.taakId = event.id
 			this.isModalOpen = true
-			navigationStore.setModal('widgetTaakForm')
 		},
 
-		getSluitenIcon() {
-			const theme = getTheme()
-
-			return theme === 'light' ? 'icon-progress-close-dark' : 'icon-progress-close-light'
-		},
-
-		async onSluiten(event) {
+		async onCloseStatus(event) {
 			// change status to 'gesloten'
 			const { data } = await taakStore.getTaak(event.id)
 
@@ -166,24 +183,46 @@ export default {
 					}
 				})
 		},
+		async onHandledStatus(event) {
+			// change status to 'afgerond'
+			const { data } = await taakStore.getTaak(event.id)
+
+			if (data?.status === 'afgerond') {
+				console.info('Taak is already handled')
+				return
+			}
+
+			const newTaak = new Taak({
+				...data,
+				status: 'afgerond',
+			})
+
+			taakStore.saveTaak(newTaak)
+				.then(({ response }) => {
+					if (response.ok) {
+						this.fetchTaakItems(null, true)
+					}
+				})
+		},
 	},
 
 }
 </script>
 <style scoped>
-.takenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.takenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
-.itemContainer{
+
+.itemContainer {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
- }
+}
 
- .buttonContainer{
+.buttonContainer {
 	display: flex;
 	gap: 10px;
- }
+}
 </style>

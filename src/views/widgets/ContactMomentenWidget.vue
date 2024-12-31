@@ -109,8 +109,7 @@ export default {
 						mainText: (() => { // this is a self calling function to get the klant name, which is why you don't see it being called anywhere
 							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
 							if (klant) {
-								const tussenvoegsel = klant.tussenvoegsel ? klant.tussenvoegsel + ' ' : ''
-								return `${klant.voornaam} ${tussenvoegsel}${klant.achternaam}`
+								return klant.type === 'persoon' ? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` : `${klant.bedrijfsnaam}`
 							}
 							return ''
 						})(),
@@ -199,14 +198,15 @@ export default {
 }
 </script>
 <style scoped>
-.contactmomentenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.contactmomentenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
-.itemContainer{
+
+.itemContainer {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
- }
+}
 </style>

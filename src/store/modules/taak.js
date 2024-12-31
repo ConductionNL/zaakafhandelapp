@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Taak } from '../../entities/index.js'
+import router from '../../router/router.ts'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/taken'
 
@@ -35,19 +36,22 @@ export const useTaakStore = defineStore('taken', {
 			console.log('Active widget taak Id set to ' + widgetTaakId)
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null, notClosed = false) {
+		async refreshTakenList(search = null, notClosed = false, user = null) {
 			let endpoint = apiEndpoint
 
-			if (search !== null && search !== '') {
-				endpoint = endpoint + '?_search=' + search
+			const params = new URLSearchParams()
+			if (search) {
+				params.append('_search', search)
+			}
+			if (notClosed) {
+				params.append('status', 'open')
+			}
+			if (user) {
+				params.append('medewerker', user)
 			}
 
-			if (notClosed) {
-				if (search !== null && search !== '') {
-					endpoint = endpoint + '&status=open'
-				} else {
-					endpoint = endpoint + '?status=open'
-				}
+			if (params.toString()) {
+				endpoint += `?${params.toString()}`
 			}
 
 			const response = await fetch(endpoint, {
@@ -104,11 +108,13 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			this.refreshTakenList()
+			// go back to taken list
+			router.replace({ name: 'dynamic-view', params: { view: 'taken' } })
 
 			return { response }
 		},
 		// Create or save a taak from store
-		async saveTaak(taakItem, widget = false) {
+		async saveTaak(taakItem, options = {}) {
 			if (!taakItem) {
 				throw new Error('No taak item to save')
 			}
@@ -139,9 +145,11 @@ export const useTaakStore = defineStore('taken', {
 			const entity = new Taak(data)
 
 			this.setTaakItem(data)
-			if (!widget) {
+			if (!options.doNotRefresh) {
 				this.refreshTakenList()
 			}
+			// go to new item with this id
+			router.push({ name: 'dynamic-view', params: { view: 'taken', id: entity.id } })
 
 			return { response, data, entity }
 		},

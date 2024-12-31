@@ -6,8 +6,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 	<NcAppContentList>
 		<ul>
 			<div class="listHeader">
-				<NcTextField
-					:value.sync="search"
+				<NcTextField :value.sync="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"
@@ -22,7 +21,8 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="medewerkerStore.setMedewerkerItem(null); navigationStore.setModal('editMedewerker')">
+					<NcActionButton
+						@click="medewerkerStore.setMedewerkerItem(null); navigationStore.setModal('editMedewerker')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -30,24 +30,23 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="medewerkerStore.medewerkersList?.length && !loading">
+			<div v-if="medewerkerStore.medewerkersList?.length">
 				<NcListItem v-for="(medewerker, i) in medewerkerStore.medewerkersList"
 					:key="`${medewerker}${i}`"
 					:name="getName(medewerker)"
-					:active="medewerkerStore.medewerkerItem?.id === medewerker?.id"
+					:active="$route.params?.id === medewerker?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(medewerker.type)"
-					@click="medewerkerStore.setMedewerkerItem(medewerker)">
+					@click="openMedewerker(medewerker)">
 					<template #icon>
-						<AccountOutline :class="medewerkerStore.medewerkerItem === medewerker.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AccountOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
-						{{ getSubname(medewerker) }}
+						{{ medewerker.email }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="medewerkerStore.setMedewerkerItem(medewerker); navigationStore.setModal('editMedewerker')">
+						<NcActionButton
+							@click="medewerkerStore.setMedewerkerItem(medewerker); navigationStore.setModal('editMedewerker')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -62,7 +61,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 			Geen medewerkers gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!medewerkerStore.medewerkersList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -108,6 +107,10 @@ export default {
 		})
 	},
 	methods: {
+		openMedewerker(medewerker) {
+			medewerkerStore.setMedewerkerItem(medewerker)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: medewerker.id } })
+		},
 		fullName(medewerker) {
 			let name = medewerker.achternaam
 			if (medewerker.tussenvoegsel) {
@@ -119,12 +122,7 @@ export default {
 			return name
 		},
 		getName(medewerker) {
-			return medewerker?.voornaam ?? 'onbekend'
-
-		},
-		getSubname(medewerker) {
-			return medewerker?.tussenvoegsel ? `${medewerker.tussenvoegsel} ${medewerker.achternaam}` : medewerker?.achternaam ? `${medewerker.achternaam}` : 'onbekend'
-
+			return `${medewerker?.voornaam} ${medewerker?.tussenvoegsel} ${medewerker?.achternaam}`
 		},
 		deleteKlant() {
 			fetch(
@@ -171,24 +169,24 @@ export default {
 </script>
 <style>
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedZaakIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
 }
 </style>

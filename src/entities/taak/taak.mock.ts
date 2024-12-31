@@ -13,6 +13,8 @@ export const mockTaakData = (): TTaak[] => [
 		toelichting: 'Deze taak omvat het uitvoeren van een gedetailleerde interne audit van de bedrijfsprocessen om te controleren of alle afdelingen voldoen aan de vastgestelde kwaliteitsnormen. De bevindingen worden gedocumenteerd en er worden aanbevelingen gedaan voor verbeteringen.',
 		actie: 'Voorbereiden van auditchecklist, uitvoeren van audits, rapporteren van bevindingen, aanbevelen van verbeteringen.',
 		klant: 'urn:uuid:6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b',
+		medewerker: 'urn:uuid:6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b',
+		contactmoment: 'urn:uuid:6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b',
 	},
 ]
 

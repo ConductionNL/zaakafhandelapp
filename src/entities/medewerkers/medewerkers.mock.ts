@@ -8,7 +8,9 @@ export const mockMedewerkerData = (): TMedewerker[] => [
 		tussenvoegsel: 'de',
 		achternaam: 'Doe',
 		email: 'john.doe@example.com',
+		telefoonnummer: '0612345678',
 	},
 ]
 
-export const mockMedewerker = (data: TMedewerker[] = mockMedewerkerData()): TMedewerker[] => data.map(item => new Medewerker(item))
+export const mockMedewerker = (data: TMedewerker[] = mockMedewerkerData()): TMedewerker[] =>
+	data.map((item) => new Medewerker(item))

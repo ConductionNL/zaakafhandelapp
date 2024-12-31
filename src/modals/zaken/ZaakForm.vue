@@ -57,6 +57,13 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 					input-label="Archiefstatus"
 					:disabled="zaakLoading"
 					required />
+				<div>
+					<p>Uiterlijke Einddatum Afdoening</p>
+					<NcDateTimePicker
+						v-model="zaak.uiterlijkeEinddatumAfdoening"
+						:disabled="zaakLoading"
+						required />
+				</div>
 				<NcTextField :disabled="zaakLoading"
 					label="Registratiedatum"
 					maxlength="255"
@@ -90,6 +97,7 @@ import {
 	NcSelect,
 	NcTextArea,
 	NcLoadingIcon,
+	NcDateTimePicker,
 } from '@nextcloud/vue'
 
 // icons
@@ -107,12 +115,22 @@ export default {
 		NcButton,
 		NcSelect,
 		NcTextArea,
+		NcDateTimePicker,
 	},
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			default: false,
 			required: false,
+		},
+		/**
+		 * The id of the klant that the zaak is for.
+		 * Currently there is no dropdown for selecting a klant.
+		 * So it currently will pass the klantId with the zaak to the API.
+		 */
+		klantId: {
+			type: String,
+			default: null,
 		},
 	},
 	data() {
@@ -127,6 +145,7 @@ export default {
 				verantwoordelijkeOrganisatie: '',
 				startdatum: '',
 				archiefstatus: '',
+				uiterlijkeEinddatumAfdoening: null,
 			},
 			loading: false,
 			success: null,
@@ -165,26 +184,14 @@ export default {
 			this.zaak = {
 				...this.zaak,
 				...zaakStore.zaakItem,
+				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem.uiterlijkeEinddatumAfdoening ? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening) : null,
 			}
 		}
 	},
 	methods: {
 		closeModal() {
 			navigationStore.setModal(null)
-			this?.dashboardWidget && this.$emit('close')
-			this.success = null
-			this.loading = false
-			this.zaak = {
-				identificatie: '',
-				omschrijving: '',
-				zaaktype: {},
-				registratiedatum: '',
-				toelichting: '',
-				bronorganisatie: '',
-				verantwoordelijkeOrganisatie: '',
-				startdatum: '',
-				archiefstatus: '',
-			}
+			this?.dashboardWidget && this.$emit('close-modal')
 		},
 		fetchZaakType() {
 			this.zaakTypeLoading = true
@@ -230,14 +237,21 @@ export default {
 				...this.zaak,
 				archiefstatus: this.archiefstatus.value?.id || '',
 				zaaktype: this.zaakType.value?.id || '',
+				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening ? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString() : null,
+				klant: this.klantId,
 			})
 
 			zaakStore.saveZaak(newZaak)
 				.then(({ response }) => {
 					this.success = response.ok
-					setTimeout(this.closeModal, 2500)
 
-					this?.dashboardWidget && this.$emit('save-success')
+					setTimeout(() => {
+						this?.dashboardWidget && this.$emit('save-success')
+					}, 2000)
+					setTimeout(() => {
+						this.closeModal()
+					}, 2500)
+
 				})
 				.catch((err) => {
 					console.error(err)

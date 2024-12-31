@@ -5,8 +5,9 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!medewerkerStore.medewerkerItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="medewerkerStore.medewerkerItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ getName(medewerkerStore.medewerkerItem) }}
@@ -16,7 +17,7 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="navigationStore.setModal('editKlant')">
+						<NcActionButton @click="navigationStore.setModal('editMedewerker')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -40,7 +41,7 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 							</template>
 							Zaak starten
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setDialog('deleteKlant')">
+						<NcActionButton @click="navigationStore.setDialog('deleteMedewerker')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -51,8 +52,14 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 				<span> {{ medewerkerStore.medewerkerItem.subject }} </span>
 
 				<div class="gridContent">
-					<b>Email adres:</b>
-					<p>{{ medewerkerStore.medewerkerItem.emailadres }}</p>
+					<div>
+						<b>Email adres:</b>
+						<p>{{ medewerkerStore.medewerkerItem.email }}</p>
+					</div>
+					<div>
+						<b>Telefoonnummer:</b>
+						<p>{{ medewerkerStore.medewerkerItem.telefoonnummer }}</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -61,7 +68,7 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 
 <script>
 // Components
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
 // Icons
@@ -85,28 +92,39 @@ export default {
 		BriefcaseAccountOutline,
 		TrashCanOutline,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
-			currentActiveKlant: undefined, // whole klant object
 			zaken: [],
 			taken: [],
 			berichten: [],
 			contactMomenten: [],
 			auditTrails: [],
+			loading: true,
 		}
+	},
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
 	mounted() {
-		if (medewerkerStore.medewerkerItem?.id) {
-			this.currentActiveMedewerker = medewerkerStore.medewerkerItem
-		}
-	},
-	updated() {
-		if (medewerkerStore.medewerkerItem?.id && JSON.stringify(this.currentActiveMedewerker) !== JSON.stringify(medewerkerStore.medewerkerItem)) {
-			this.currentActiveMedewerker = medewerkerStore.medewerkerItem
-		}
+		this.fetchData(this.id)
 	},
 	methods: {
+		fetchData(id) {
+			this.loading = true
 
+			medewerkerStore.getMedewerker(id)
+				.finally(() => {
+					this.loading = false
+				})
+		},
 		getName(medewerker) {
 			return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
 		},
@@ -120,39 +138,39 @@ export default {
 
 <style>
 .detailContainer {
-    padding: 0.5rem;
+	padding: 0.5rem;
 }
 
 .h1 {
-  display: block !important;
-  font-size: 2em !important;
-  margin-block-start: 0.67em !important;
-  margin-block-end: 0.67em !important;
-  margin-inline-start: 0px !important;
-  margin-inline-end: 0px !important;
-  font-weight: bold !important;
-  unicode-bidi: isolate !important;
+	display: block !important;
+	font-size: 2em !important;
+	margin-block-start: 0.67em !important;
+	margin-block-end: 0.67em !important;
+	margin-inline-start: 0px !important;
+	margin-inline-end: 0px !important;
+	font-weight: bold !important;
+	unicode-bidi: isolate !important;
 }
 
 .grid {
-  display: grid;
-  grid-gap: 1rem 24px !important;
-  grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ) !important;
-  margin-block-start: var(--zaa-margin-50);
-  margin-block-end: var(--zaa-margin-50);
+	display: grid;
+	grid-gap: 1rem 24px !important;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+	margin-block-start: var(--zaa-margin-50);
+	margin-block-end: var(--zaa-margin-50);
 }
 
 .gridContent {
-  display: flex;
-  flex-direction: column;
-  gap: 2px !important;
+	display: flex;
+	flex-direction: column;
+	gap: 2px !important;
 }
-.gridContent > h5 {
-    margin-top: 12px !important;
+
+.gridContent>h5 {
+	margin-top: 12px !important;
 }
 
 .gridFullWidth {
-    grid-column: 1 / -1;
+	grid-column: 1 / -1;
 }
-
 </style>

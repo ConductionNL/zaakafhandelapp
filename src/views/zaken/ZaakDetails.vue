@@ -5,8 +5,9 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!zaakStore.zaakItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="zaakStore.zaakItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ zaakStore.zaakItem?.identificatie }}
@@ -28,31 +29,31 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addRol')">
+						<NcActionButton @click="navigationStore.setModal('addRolToZaak')">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
 							Rol toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addTaak')">
+						<NcActionButton @click="navigationStore.setModal('addTaakToZaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
 							Taak toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addBericht')">
+						<NcActionButton @click="navigationStore.setModal('addBerichtToZaak')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
 							Bericht toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('addBesluit')">
+						<NcActionButton @click="navigationStore.setModal('addBesluit')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
 							Besluit toevoegen
 						</NcActionButton>
-						<NcActionButton @click="store.setModal('updateZaakStatus')">
+						<NcActionButton @click="navigationStore.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
 							</template>
@@ -170,17 +171,13 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
-			:size="100"
-			appearance="dark"
-			name="Zaak details aan het laden" />
 	</div>
 </template>
 
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcLoadingIcon, NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -206,11 +203,11 @@ export default {
 	name: 'ZaakDetails',
 	components: {
 		// Components
-		NcLoadingIcon,
 		NcActions,
 		NcActionButton,
 		BTabs,
 		BTab,
+		NcLoadingIcon,
 		// Views
 		ZaakEigenschappen,
 		ZaakRollen,
@@ -227,44 +224,50 @@ export default {
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
-			currentActiveZaak: null,
+			// state
+			loading: true,
+			// data
 			auditTrails: [],
 			zaak: [],
-			loading: true,
 		}
+	},
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
 	mounted() {
-		if (zaakStore.zaakItem?.id) {
-			this.currentActiveZaak = zaakStore.zaakItem
-			this.fetchAuditTrails(zaakStore.zaakItem.id)
-		}
-		this.fetchData()
-	},
-	updated() {
-		if (zaakStore.zaakItem?.id && JSON.stringify(this.currentActiveZaak) !== JSON.stringify(zaakStore.zaakItem)) {
-			this.currentActiveZaak = zaakStore.zaakItem
-			this.fetchAuditTrails(zaakStore.zaakItem.id)
-		}
+		this.fetchData(this.id)
 	},
 	methods: {
-		fetchData() {
+		fetchData(id) {
 			this.loading = true
 
-			// get current zaak once
-			zaakStore.getZaak(zaakStore.zaakItem.id, { setItem: true })
-				.then(() => {
-					this.loading = false
-				})
+			Promise.all([
+				zaakStore.getZaak(id, { setItem: true }),
+				this.fetchAuditTrails(id),
+			]).finally(() => {
+				this.loading = false
+			})
 		},
 		fetchAuditTrails(id) {
+
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
 				.then(response => response.json())
 				.then(data => {
 					if (Array.isArray(data)) {
 						this.auditTrails = data
 					}
+				})
+				.finally(() => {
 				})
 		},
 	},

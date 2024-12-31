@@ -22,7 +22,8 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('editContactMoment')">
+					<NcActionButton
+						@click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
@@ -30,29 +31,29 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="contactMomentStore.contactMomentenList?.length && !loading">
+			<div v-if="contactMomentStore.contactMomentenList?.length">
 				<NcListItem v-for="(contactMoment, i) in contactMomentStore.contactMomentenList"
 					:key="`${contactMoment}${i}`"
 					:name="getKlantName(contactMoment.klant) || 'onbekend'"
-					:active="contactMomentStore.contactMomentItem?.id === contactMoment?.id"
+					:active="$route.params?.id === contactMoment?.id"
 					:force-display-actions="true"
-					@click="contactMomentStore.setContactMomentItem(contactMoment)">
+					@click="openContactMoment(contactMoment)">
 					<template #icon>
-						<CardAccountPhoneOutline :class="contactMomentStore.contactMomentItem?.id === contactMoment.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<CardAccountPhoneOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ new Date(contactMoment.startDate).toLocaleString() }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('editContactMoment')">
+						<NcActionButton
+							@click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('contactMomentenForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('deleteContactMoment')">
+						<NcActionButton
+							@click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('deleteContactMoment')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
@@ -67,7 +68,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			Geen contact momenten gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!contactMomentStore.contactMomentenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -112,12 +113,18 @@ export default {
 		}
 	},
 	mounted() {
-		contactMomentStore.refreshContactMomentenList().then(() => {
+		Promise.all([
+			contactMomentStore.refreshContactMomentenList(),
+			klantStore.refreshKlantenList(),
+		]).then(() => {
 			this.loading = false
 		})
-		klantStore.refreshKlantenList()
 	},
 	methods: {
+		openContactMoment(contactMoment) {
+			contactMomentStore.setContactMomentItem(contactMoment)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: contactMoment.id } })
+		},
 		editContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
 			navigationStore.setModal('editContactMoment')
@@ -127,6 +134,9 @@ export default {
 		},
 		getKlantName(klantId) {
 			const klant = klantStore.klantenList.find(klant => klant.id === klantId)
+			if (!klant) {
+				return 'onbekend'
+			}
 			if (klant.type === 'persoon') {
 				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
 			}
@@ -163,26 +173,25 @@ export default {
 }
 </script>
 <style>
-
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedZaakIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
 }
 </style>

@@ -5,8 +5,9 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!contactMomentStore.contactMomentItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="contactMomentStore.contactMomentItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ contactMomentStore.contactMomentItem.titel }}
@@ -16,7 +17,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
-						<NcActionButton @click="navigationStore.setModal('editContactMoment')">
+						<NcActionButton @click="navigationStore.setModal('contactMomentenForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
@@ -79,14 +80,14 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 									:counter-number="Object.keys(auditTrail.changed).length"
 									:force-display-actions="true">
 									<template #icon>
-										<TimelineQuestionOutline disable-menu
-											:size="44" />
+										<TimelineQuestionOutline disable-menu :size="44" />
 									</template>
 									<template #subname>
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="contactMomentStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewContactMomentAuditTrail')">
+										<NcActionButton
+											@click="contactMomentStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewContactMomentAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
@@ -97,7 +98,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 							</div>
 							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
 								<template #description>
-									Er is geen audit trail gevonden voor deze bericht.
+									Er is geen audit trail gevonden voor dit contactmoment.
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -110,7 +111,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
 // Entities
@@ -130,10 +131,17 @@ export default {
 		// Components
 		NcActions,
 		NcActionButton,
+		NcLoadingIcon,
 		// Icons
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -141,19 +149,23 @@ export default {
 			auditTrails: [],
 		}
 	},
-	mounted() {
-		if (contactMomentStore.contactMomentItem?.id) {
-			this.currentActiveContactMoment = contactMomentStore.contactMomentItem
-			// this.fetchAuditTrails(contactMomentStore.contactMomentItem.id)
-		}
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
-	updated() {
-		if (contactMomentStore.contactMomentItem?.id && JSON.stringify(this.currentActiveContactMoment) !== JSON.stringify(contactMomentStore.contactMomentItem)) {
-			this.currentActiveContactMoment = contactMomentStore.contactMomentItem
-			// this.fetchAuditTrails(contactMomentStore.contactMomentItem.id)
-		}
+	mounted() {
+		this.fetchData(this.id)
 	},
 	methods: {
+		fetchData(id) {
+			this.loading = true
+
+			contactMomentStore.getContactMoment(id)
+				.finally(() => {
+					this.loading = false
+				})
+		},
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/contact_momenten/${id}/audit_trail`)
 				.then(response => response.json())
@@ -187,38 +199,38 @@ export default {
 
 <style>
 h4 {
-  font-weight: bold
+	font-weight: bold
 }
 
 .h1 {
-  display: block !important;
-  font-size: 2em !important;
-  margin-block-start: 0.67em !important;
-  margin-block-end: 0.67em !important;
-  margin-inline-start: 0px !important;
-  margin-inline-end: 0px !important;
-  font-weight: bold !important;
-  unicode-bidi: isolate !important;
+	display: block !important;
+	font-size: 2em !important;
+	margin-block-start: 0.67em !important;
+	margin-block-end: 0.67em !important;
+	margin-inline-start: 0px !important;
+	margin-inline-end: 0px !important;
+	font-weight: bold !important;
+	unicode-bidi: isolate !important;
 }
 
 .grid {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: 1fr 1fr;
-  margin-block-start: var(--zaa-margin-50);
-  margin-block-end: var(--zaa-margin-50);
+	display: grid;
+	grid-gap: 24px;
+	grid-template-columns: 1fr 1fr;
+	margin-block-start: var(--zaa-margin-50);
+	margin-block-end: var(--zaa-margin-50);
 }
 
 .gridContent {
-  display: flex;
-  gap: 25px;
+	display: flex;
+	gap: 25px;
 }
 
 .tabPanel {
-  padding: 20px 10px;
-  min-height: 100%;
-  max-height: 100%;
-  height: 100%;
-  overflow: auto;
+	padding: 20px 10px;
+	min-height: 100%;
+	max-height: 100%;
+	height: 100%;
+	overflow: auto;
 }
 </style>

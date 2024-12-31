@@ -22,43 +22,53 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
+					<NcActionButton @click="zaakTypeStore.setZaakTypeItem(null); navigationStore.setModal('zaaktypeForm')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Zaaktype toevoegen
+					</NcActionButton>
 				</NcActions>
 			</div>
 
-			<div v-if="zaakTypeStore.zaakTypenList?.length && !loading">
-				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypenList"
+			<div v-if="zaakTypeStore.zaakTypeList?.length">
+				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypeList"
 					:key="`${zaaktype}${i}`"
-					:name="zaaktype?.name"
+					:name="zaaktype?.identificatie"
 					:force-display-actions="true"
-					:active="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id"
+					:active="$route.params.id === zaaktype?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="zaakTypeStore.setZaakTypeItem(zaaktype)">
+					@click="openZaakType(zaaktype)">
 					<template #icon>
-						<AlphaTBoxOutline :class="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AlphaTBoxOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
-						{{ zaaktype?.summary }}
+						{{ zaaktype?.omschrijvingGeneriek }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('zaakTypeForm')">
+						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('zaaktypeForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
 							Bewerken
+						</NcActionButton>
+						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('deleteZaaktype')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
 						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<div v-if="!zaakTypeStore.zaakTypenList?.length && !loading">
+		<div v-if="!zaakTypeStore.zaakTypeList?.length && !loading">
 			Geen zaaktypen gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!zaakTypeStore.zaakTypeList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -75,6 +85,8 @@ import Magnify from 'vue-material-design-icons/Magnify.vue'
 import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakTypenList',
@@ -111,6 +123,10 @@ export default {
 			})
 	},
 	methods: {
+		openZaakType(zaaktype) {
+			zaakTypeStore.setZaakTypeItem(zaaktype)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: zaaktype.id } })
+		},
 		clearText() {
 			this.search = ''
 		},

@@ -3,7 +3,7 @@ import { klantStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="modalType.singular + ' zoeken'"
+	<NcDialog :name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
 		size="normal"
 		label-id="searchKlantModal"
 		dialog-classes="SearchKlantModal"
@@ -61,30 +61,41 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<div class="searchContainer">
-			<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
-				<NcDateTimePicker v-model="searchQuery_geboortedatum"
-					:disabled="loading"
-					class="date-picker" />
+			<div class="searchInputContainer">
+				<p>{{ searchLabel }}</p>
+				<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
+					<NcDateTimePicker v-model="searchQuery[0]" :disabled="loading" class="date-picker" />
 
-				<NcTextField :disabled="loading"
-					label="achternaam"
-					maxlength="255"
-					class="searchField"
-					:value.sync="searchQuery" />
-			</div>
-			<div v-else>
-				<NcTextField :disabled="loading"
-					:label="searchLabel"
-					maxlength="255"
-					class="searchField"
-					:value.sync="searchQuery" />
+					<NcTextField :disabled="loading"
+						label="achternaam"
+						maxlength="255"
+						class="searchField"
+						:value.sync="searchQuery[1]" />
+				</div>
+				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
+					<NcTextField :disabled="loading"
+						maxlength="255"
+						class="searchField"
+						:value.sync="searchQuery[0]" />
+
+					<NcTextField :disabled="loading"
+						maxlength="255"
+						class="searchField"
+						:value.sync="searchQuery[1]" />
+				</div>
+				<div v-else>
+					<NcTextField :disabled="loading"
+						maxlength="255"
+						class="searchField"
+						:value.sync="searchQuery[0]" />
+				</div>
 			</div>
 
 			<NcButton type="primary"
 				:disabled="loading
-					|| !searchQuery
-					// If the search type is geboortedatum_achternaam, the geboortedatum is required
-					|| (klantenSearchType === 'geboortedatum_achternaam' && !searchQuery_geboortedatum)"
+					|| !searchQuery[0]
+					|| klantenSearchType === 'geboortedatum_achternaam' && !searchQuery[1]
+					|| klantenSearchType === 'postcode_huisnummer' && !searchQuery[1]"
 				class="searchButton"
 				@click="search">
 				<template #icon>
@@ -131,9 +142,7 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton
-				type="secondary"
-				@click="closeModal()">
+			<NcButton type="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
@@ -225,8 +234,7 @@ export default {
 			error: false,
 			hasUpdated: false,
 			klanten: [],
-			searchQuery: '',
-			searchQuery_geboortedatum: null,
+			searchQuery: ['', ''], // an array of 2 items to act as the search query
 			selectedKlant: null,
 			klantenSearchType: 'emailadres',
 		}
@@ -266,6 +274,15 @@ export default {
 			return label
 		},
 	},
+	watch: {
+		klantenSearchType(newVal) {
+			if (newVal === 'geboortedatum_achternaam') {
+				this.searchQuery = [new Date(), '']
+			} else {
+				this.searchQuery = ['', '']
+			}
+		},
+	},
 	methods: {
 		closeModalFromButton() {
 			setTimeout(() => {
@@ -287,22 +304,18 @@ export default {
 
 			this.selectedKlant = null
 
-			let queryParams = { [this.klantenSearchType]: this.searchQuery }
-			const newQuery = this.searchQuery.trim()
-			const splitQuery = newQuery.split(/ +/g)
+			let queryParams = { [this.klantenSearchType]: this.searchQuery[0] }
+			const refinedQuery = this.searchQuery.map(item => typeof item === 'string' ? item.trim() : item)
 
 			switch (this.klantenSearchType) {
 			case 'postcode_huisnummer':
-				queryParams = { postcode: splitQuery[0], huisnummer: splitQuery[1] }
+				queryParams = { postcode: refinedQuery[0], huisnummer: refinedQuery[1] }
 				break
 			case 'geboortedatum_achternaam':
 				queryParams = {
-					geboortedatum: this.searchQuery_geboortedatum && this.searchQuery_geboortedatum.toISOString() ? this.searchQuery_geboortedatum.toISOString() : '',
-					achternaam: newQuery,
+					geboortedatum: refinedQuery[0].toISOString() ? refinedQuery[0].toISOString() : '',
+					achternaam: refinedQuery[1],
 				}
-				break
-			case 'kvkNummer':
-				queryParams = { kvkNummer: newQuery }
 				break
 			default:
 				break
@@ -375,9 +388,7 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
 
 <style scoped>
 .listContainer {
@@ -390,14 +401,21 @@ export default {
 
 .searchContainer {
 	display: flex;
-	align-items: center;
+	align-items: end;
 	gap: 10px;
 }
+
+.searchInputContainer :deep(.input-field) {
+	margin-block-end: 3px;
+}
+
 .searchField {
 	width: auto;
 }
+
 .searchButton {
 	margin-block-start: 3px;
+	margin-block-end: 3px;
 	min-width: min-content !important;
 }
 

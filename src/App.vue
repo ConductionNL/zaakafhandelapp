@@ -1,7 +1,7 @@
 <template>
 	<NcContent app-name="zaakafhandelapp">
 		<MainMenu />
-		<Views />
+		<RouterView />
 		<SideBars />
 		<Modals />
 		<Dialogs />
@@ -9,12 +9,11 @@
 </template>
 
 <script>
-
 import { NcContent } from '@nextcloud/vue'
+import { RouterView } from 'vue-router'
 import MainMenu from './navigation/MainMenu.vue'
 import Modals from './modals/Modals.vue'
 import Dialogs from './dialogs/Dialogs.vue'
-import Views from './views/Views.vue'
 import SideBars from './sidebars/SideBars.vue'
 
 export default {
@@ -22,9 +21,9 @@ export default {
 	components: {
 		NcContent,
 		MainMenu,
+		RouterView,
 		Modals,
 		Dialogs,
-		Views,
 		SideBars,
 	},
 }

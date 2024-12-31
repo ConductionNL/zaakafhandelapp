@@ -19,7 +19,7 @@
 					</NcButton>
 				</div>
 
-				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister' || settingsData.medewerkers_source === 'openregister')">
+				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister' || settingsData.medewerkers_source === 'openregister' || settingsData.rollen_source === 'openregister')">
 					<NcNoteCard type="warning">
 						Het lijkt erop dat je een open register hebt geselecteerd maar dat deze nog niet geïnstalleerd is. Dit kan problemen geven. Wil je de instelling resetten?
 					</NcNoteCard>
@@ -212,6 +212,13 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+			rollen: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
@@ -232,6 +239,7 @@ export default {
 				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
 				{ id: 'contactmomenten', title: 'Contactmomenten', description: 'Configureer de opslag voor contactmomenten', helpLink: 'https://example.com/help/contactmomenten' },
 				{ id: 'medewerkers', title: 'Medewerkers', description: 'Configureer de opslag voor medewerkers', helpLink: 'https://example.com/help/medewerkers' },
+				{ id: 'rollen', title: 'Rollen', description: 'Configureer de opslag voor rollen', helpLink: 'https://example.com/help/rollen' }
 			],
 		}
 	},
@@ -511,6 +519,25 @@ export default {
 			},
 			deep: true,
 		},
+		'rollen.selectedSource': {
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+					this.rollen.selectedRegister = ''
+					this.rollen.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'rollen.selectedRegister': {
+			handler(newValue, oldValue) {
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'rollen')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.rollen.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
 
 	},
 	mounted() {
@@ -676,6 +703,9 @@ export default {
 						contactmomenten_register: this.contactmomenten.selectedRegister?.value ?? '',
 						contactmomenten_schema: this.contactmomenten.selectedSchema?.value ?? '',
 						contactmomenten_source: this.contactmomenten.selectedSource?.value ?? 'internal',
+						rollen_register: this.rollen.selectedRegister?.value ?? '',
+						rollen_schema: this.rollen.selectedSchema?.value ?? '',
+						rollen_source: this.rollen.selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -723,6 +753,9 @@ export default {
 							contactmomenten_register: data.contactmomenten_register,
 							contactmomenten_schema: data.contactmomenten_schema,
 							contactmomenten_source: data.contactmomenten_source,
+							rollen_register: data.rollen_register,
+							rollen_schema: data.rollen_schema,
+							rollen_source: data.rollen_source,
 						}
 
 					})
@@ -784,6 +817,9 @@ export default {
 						contactmomenten_register: '',
 						contactmomenten_schema: '',
 						contactmomenten_source: 'internal',
+						rollen_register: '',
+						rollen_schema: '',
+						rollen_source: 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',

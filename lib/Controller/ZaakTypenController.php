@@ -6,6 +6,8 @@ use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 
 class ZaakTypenController extends Controller
 {
@@ -38,6 +40,42 @@ class ZaakTypenController extends Controller
 		 // Return JSON response
 		 return new JSONResponse($data);
 	}
+
+    /**
+     * Render no page.
+     *
+     * @param string|null $getParameter Optional GET parameter
+     * @return TemplateResponse The rendered template response
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function page(?string $getParameter): TemplateResponse
+    {
+        try {
+            // Create a new TemplateResponse for the index page
+            $response = new TemplateResponse(
+                $this->appName,
+                'index',
+                []
+            );
+            
+            // Set up Content Security Policy
+            $csp = new ContentSecurityPolicy();
+            $csp->addAllowedConnectDomain('*');
+            $response->setContentSecurityPolicy($csp);
+
+            return $response;
+        } catch (\Exception $e) {
+            // Return an error template response if an exception occurs
+            return new TemplateResponse(
+                $this->appName,
+                'error',
+                ['error' => $e->getMessage()],
+                '500'
+            );
+        }
+    }
 
 	/**
 	 * Read a single object
@@ -96,9 +134,11 @@ class ZaakTypenController extends Controller
         // Remove the 'id' field if it exists, as we're creating a new object
         unset($data['id']);
 
+		$data['id'] = $id;
+
         // Save the new catalog object
         $object = $this->objectService->saveObject('zaaktypen', $data);
-        
+
         // Return the created object as a JSON response
         return new JSONResponse($object);
 	}

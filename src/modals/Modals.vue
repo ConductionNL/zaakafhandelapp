@@ -5,20 +5,33 @@ import { navigationStore } from '../store/store.js'
 <template>
 	<!-- Placeholder -->
 	<div>
+		<!-- zaak -->
 		<ZaakForm v-if="navigationStore.modal === 'zaakForm'" />
+		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
 		<WidgetZaakForm v-if="navigationStore.modal === 'widgetZaakForm'" />
-		<EditZaakType />
+		<AddBerichtToZaak v-if="navigationStore.modal === 'addBerichtToZaak'" />
+		<AddTaakToZaak v-if="navigationStore.modal === 'addTaakToZaak'" />
+		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
+		<!-- contactmomenten -->
+		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
+		<ViewContactMoment v-if="navigationStore.viewModal === 'viewContactMoment'" />
+		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
+		<!-- zaaktypen -->
+		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
+		<DeleteZaaktype v-if="navigationStore.modal === 'deleteZaaktype'" />
+		<!-- klanten -->
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
+		<!-- berichten -->
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
+		<!-- taken -->
 		<EditTaak v-if="navigationStore.modal === 'editTaak'" />
-		<WidgetTaakForm v-if="navigationStore.modal === 'widgetTaakForm'" />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
+		<!-- rollen -->
 		<EditRol />
-		<ViewZaakAuditTrail v-if="navigationStore.modal === 'viewZaakAuditTrail'" />
+		<!-- klant register -->
 		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
-		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
 	</div>
 </template>
@@ -26,37 +39,48 @@ import { navigationStore } from '../store/store.js'
 <script>
 import ZaakForm from './zaken/ZaakForm.vue'
 import WidgetZaakForm from './zaken/WidgetZaakForm.vue'
-import EditZaakType from './zaakTypen/EditZaakType.vue'
+import ZaaktypeForm from './zaakTypen/ZaaktypeForm.vue'
+import DeleteZaaktype from './zaakTypen/DeleteZaaktype.vue'
 import EditKlant from './klanten/EditKlant.vue'
 import ViewKlantAuditTrail from './klanten/ViewKlantAuditTrail.vue'
 import EditBericht from './berichten/EditBericht.vue'
 import ViewBerichtAuditTrail from './berichten/ViewBerichtAuditTrail.vue'
 import EditTaak from './taken/EditTaak.vue'
 import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
-import WidgetTaakForm from './taken/WidgetTaakForm.vue'
 import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
+import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
+import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
+import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
+import AddRolToZaak from './zaken/AddRolToZaak.vue'
+import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
+
 export default {
 	name: 'Modals',
 	components: {
 		ZaakForm,
 		WidgetZaakForm,
-		EditZaakType,
+		ZaaktypeForm,
+		DeleteZaaktype,
 		EditKlant,
 		ViewKlantAuditTrail,
 		EditBericht,
 		ViewBerichtAuditTrail,
 		EditTaak,
-		WidgetTaakForm,
 		ViewTaakAuditTrail,
 		EditRol,
 		ViewZaakAuditTrail,
 		ViewKlantRegister,
 		DeleteContactMoment,
 		EditMedewerker,
+		AddBerichtToZaak,
+		AddTaakToZaak,
+		ContactMomentenForm,
+		AddRolToZaak,
+		ViewContactMoment,
 	},
 }
 </script>

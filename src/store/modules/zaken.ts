@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { TZaak, Zaak } from '../../entities/index.js'
+import router from '../../router/router'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/zaken'
 
@@ -124,6 +125,7 @@ export const useZaakStore = defineStore('zaken', {
 			}
 
 			this.refreshZakenList()
+			router.push({ name: 'dynamic-view', params: { view: 'zaken' } })
 
 			return { response }
 		},
@@ -144,13 +146,13 @@ export const useZaakStore = defineStore('zaken', {
 				throw new Error('No zaak item to save')
 			}
 
-			const isNewZaak = !zaakItem.uuid
+			const isNewZaak = !zaakItem.id
 			const endpoint = isNewZaak
 				? `${apiEndpoint}`
-				: `${apiEndpoint}/${zaakItem.uuid}`
+				: `${apiEndpoint}/${zaakItem.id}`
 			const method = isNewZaak ? 'POST' : 'PUT'
 
-			console.info('Saving zaak item with id: ' + zaakItem.uuid)
+			console.info('Saving zaak item with id: ' + zaakItem.id)
 
 			const response = await fetch(
 				endpoint,
@@ -173,6 +175,7 @@ export const useZaakStore = defineStore('zaken', {
 
 			options.setItem && this.setZaakItem(data)
 			this.refreshZakenList()
+			router.push({ name: 'dynamic-view', params: { view: 'zaken', id: entity.id } })
 
 			return { response, data, entity }
 		},

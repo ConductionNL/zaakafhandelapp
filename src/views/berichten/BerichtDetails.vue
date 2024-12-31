@@ -5,8 +5,9 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!berichtStore.berichtItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="berichtStore.berichtItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ berichtStore.berichtItem.onderwerp }}
@@ -120,7 +121,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
 import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
@@ -136,30 +137,44 @@ export default {
 		// Components
 		NcActions,
 		NcActionButton,
+		NcLoadingIcon,
 		// Icons
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			currentActiveBericht: null,
 			auditTrails: [],
+			loading: false,
 		}
+	},
+	watch: {
+		id(newId) {
+			this.fetchData(newId)
+		},
 	},
 	mounted() {
-		if (berichtStore.berichtItem?.id) {
-			this.currentActiveBericht = berichtStore.berichtItem
-			this.fetchAuditTrails(berichtStore.berichtItem.id)
-		}
-	},
-	updated() {
-		if (berichtStore.berichtItem?.id && JSON.stringify(this.currentActiveBericht) !== JSON.stringify(berichtStore.berichtItem)) {
-			this.currentActiveBericht = berichtStore.berichtItem
-			this.fetchAuditTrails(berichtStore.berichtItem.id)
-		}
+		this.fetchData(this.id)
 	},
 	methods: {
+		fetchData(id) {
+			this.loading = true
+
+			berichtStore.getBericht(id)
+				.finally(() => {
+					this.loading = false
+				})
+
+			this.fetchAuditTrails(id)
+		},
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/berichten/${id}/audit_trail`)
 				.then(response => response.json())
