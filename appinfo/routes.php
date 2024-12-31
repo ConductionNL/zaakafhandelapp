@@ -68,11 +68,14 @@ return [
 		['name' => 'settings#create', 'url' => '/settings', 'verb' => 'POST'],
 		// User
 		['name' => 'users#me', 'url' => '/me', 'verb' => 'GET'],
-		['name' => 'objects#index', 'url' => '/api/objects/{_objectType}', 'verb' => 'GET', 'requirements' => ['_objectType' => '[^/]+']],
-		['name' => 'objects#show', 'url' => '/api/objects/{_objectType}/{id}', 'verb' => 'GET', 'requirements' => ['_objectType' => '[^/]+', 'id' => '[^/]+']],
-		['name' => 'objects#getAuditTrail', 'url' => '/api/objects/{_objectType}/{id}/audit_trail', 'verb' => 'GET', 'requirements' => ['_objectType' => '[^/]+', 'id' => '[^/]+']],
-		['name' => 'objects#create', 'url' => '/api/objects/{_objectType}', 'verb' => 'POST', 'requirements' => ['_objectType' => '[^/]+', 'id' => '[^/]+']],
-		['name' => 'objects#update', 'url' => '/api/objects/{_objectType}/{id}', 'verb' => 'PUT', 'requirements' => ['_objectType' => '[^/]+', 'id' => '[^/]+']],
-		['name' => 'objects#destroy', 'url' => '/api/objects/{_objectType}/{id}', 'verb' => 'DELETE', 'requirements' => ['_objectType' => '[^/]+', 'id' => '[^/]+']]
+		// Object API routes	
+		['name' => 'objects#index', 'url' => 'api/objects/{objectType}', 'verb' => 'GET'],
+		['name' => 'objects#create', 'url' => 'api/objects/{objectType}', 'verb' => 'POST'],
+		['name' => 'objects#show', 'url' => 'api/objects/{objectType}/{id}', 'verb' => 'GET'],
+		['name' => 'objects#update', 'url' => 'api/objects/{objectType}/{id}', 'verb' => 'PUT'],
+		['name' => 'objects#delete', 'url' => 'api/objects/{objectType}/{id}', 'verb' => 'DELETE'],
+		['name' => 'objects#getAuditTrail', 'url' => 'api/objects/{objectType}/{id}/audit', 'verb' => 'GET'],
+		['name' => 'objects#getRelations', 'url' => 'api/objects/{objectType}/{id}/relations', 'verb' => 'GET'],
+		['name' => 'objects#getUses', 'url' => 'api/objects/{objectType}/{id}/uses', 'verb' => 'GET']
 	]
 ];

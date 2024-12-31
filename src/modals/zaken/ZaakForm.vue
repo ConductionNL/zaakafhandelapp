@@ -203,12 +203,12 @@ export default {
 					this.zaakType = {
 						options: entities.map((zaakType) => ({
 							id: zaakType.id,
-							label: zaakType.name,
+							label: zaakType.identificatie,
 						})),
 						value: selectedZaakType
 							? {
 								id: selectedZaakType.id,
-								label: selectedZaakType.name,
+								label: selectedZaakType.identificatie,
 							  }
 							: null,
 					}
