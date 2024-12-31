@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
+import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore, documentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -23,7 +23,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addDocument')">
+						<NcActionButton @click="(documentStore.zaakId = zaakStore.zaakItem?.id); documentStore.setDocumentItem(null); navigationStore.setModal('documentForm')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>
@@ -47,17 +47,23 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 							</template>
 							Bericht toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addBesluit')">
-							<template #icon>
-								<MessagePlus :size="20" />
-							</template>
-							Besluit toevoegen
-						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
 							</template>
 							Status wijzigen
+						</NcActionButton>
+						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); resultaatStore.setResultaatItem(null); navigationStore.setModal('resultaatForm')">
+							<template #icon>
+								<FileChartCheckOutline :size="20" />
+							</template>
+							Resultaat toevoegen
+						</NcActionButton>
+						<NcActionButton @click="(besluitStore.zaakId = zaakStore.zaakItem?.id); besluitStore.setBesluitItem(null); navigationStore.setModal('besluitForm')">
+							<template #icon>
+								<BriefcaseAccountOutline :size="20" />
+							</template>
+							Besluit toevoegen
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -124,6 +130,9 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						</BTab>
 						<BTab title="Documenten">
 							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
+						</BTab>
+						<BTab title="Resultaten">
+							<ZaakResultaten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Rollen">
 							<ZaakRollen :zaak-id="zaakStore.zaakItem?.id" />
@@ -198,6 +207,8 @@ import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
+import FileChartCheckOutline from 'vue-material-design-icons/FileChartCheckOutline.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
@@ -207,6 +218,7 @@ import ZaakTaken from '../taken/ZaakTaken.vue'
 import ZaakBesluiten from '../besluiten/ZaakBesluiten.vue'
 import ZaakDocumenten from '../documenten/ZaakDocumenten.vue'
 import ZakenZaken from '../zaken/ZakenZaken.vue'
+import ZaakResultaten from '../resultaten/ZaakResultaten.vue'
 
 export default {
 	name: 'ZaakDetails',
@@ -226,6 +238,7 @@ export default {
 		ZaakBesluiten,
 		ZaakDocumenten,
 		ZakenZaken,
+		ZaakResultaten,
 		// Icons
 		DotsHorizontal,
 		Pencil,

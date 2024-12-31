@@ -22,64 +22,29 @@ class ObjectsController extends Controller
         parent::__construct($appName, $request);
     }
 
-    /**
-     * Validates if an object type is present in request and properly configured
-     *
-     * @param array $requestParams Request parameters to check
-     * @throws Exception If object type is missing or not properly configured
-     * @return string The validated object type
-     */
-    private function validateObjectType(array $requestParams): string {
-        // Check if objectType is provided in request parameters
-        if (!isset($requestParams['_objectType'])) {
-            throw new Exception('Missing required parameter _objectType');
-        }
-
-        $objectType = $requestParams['_objectType'];
-
-        try {
-            // This will throw an exception if object type is not properly configured
-            $this->objectService->getMapper($objectType);
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return $objectType;
-    }
-
 	/**
 	 * Return (and search) all objects
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+     * 
+     * @param string $objectType The type of object to return
 	 *
 	 * @return JSONResponse
 	 */
-	public function index(): JSONResponse
+	public function index(string $objectType): JSONResponse
 	{
-		// Retrieve all request parameters
-		$requestParams = $this->request->getParams();
+        // Retrieve all request parameters
+        $requestParams = $this->request->getParams();
 
-        try {
-            // Validate object type configuration
-            $objectType = $this->validateObjectType($requestParams);
+        unset($requestParams['_route']);
+        unset($requestParams['objectType']); // Nextcloud automatically adds this from the route so we need to remove it
 
-			unset($requestParams['_objectType']);
+        // Fetch catalog objects based on filters and order
+        $data = $this->objectService->getResultArrayForRequest($objectType, $requestParams);
 
-            // Fetch objects based on filters and order using provided objectType
-            $data = $this->objectService->getResultArrayForRequest(
-                objectType: $objectType,
-                requestParams: $requestParams
-            );
-
-            // Return JSON response
-            return new JSONResponse($data);
-        } catch (Exception $e) {
-            return new JSONResponse(
-                ['error' => $e->getMessage()],
-                400
-            );
-        }
+        // Return JSON response
+        return new JSONResponse($data);
 	}
 
 	/**
@@ -90,13 +55,9 @@ class ObjectsController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function show(string $id): JSONResponse
+	public function show(string $objectType, string $id): JSONResponse
 	{
         try {
-            // Get request parameters and validate object type
-            $requestParams = $this->request->getParams();
-            $objectType = $this->validateObjectType($requestParams);
-
             // Get extend parameter if present
             $extend = $requestParams['extend'] ?? $requestParams['_extend'] ?? [];
             if (is_string($extend)) {
@@ -124,21 +85,23 @@ class ObjectsController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function create(): JSONResponse
+	public function create(string $objectType): JSONResponse
 	{
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
-            $objectType = $this->validateObjectType($data);
 
             // Remove the 'id' field if it exists, as we're creating a new object
             unset($data['id']);
-            unset($data['_objectType']);
-            unset($data['_route']);
+
+            // Small bit of custom logic for characters
+            if ($objectType === 'character') {
+                $data = $this->characterService->calculateCharacter($data);
+            }
 
             // Save the new object
             $object = $this->objectService->saveObject($objectType, $data);
-
+            
             // Return the created object as a JSON response
             return new JSONResponse($object);
         } catch (Exception $e) {
@@ -157,21 +120,23 @@ class ObjectsController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function update(string $id): JSONResponse
+	public function update(string $objectType, string $id): JSONResponse
 	{
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
-            $objectType = $this->validateObjectType($data);
 
             // Ensure ID in data matches URL parameter
             $data['id'] = $id;
-            unset($data['_objectType']);
-			unset($data['_route']);
+
+            // Small bit of custom logic for characters
+            if ($objectType === 'character') {
+                $data = $this->characterService->calculateCharacter($data);
+            }
 
             // Save the updated object
             $object = $this->objectService->saveObject($objectType, $data);
-
+            
             // Return the updated object as a JSON response
             return new JSONResponse($object);
         } catch (Exception $e) {
@@ -190,13 +155,9 @@ class ObjectsController extends Controller
 	 *
 	 * @return JSONResponse
 	 */
-	public function destroy(string $id): JSONResponse
+	public function destroy(string $objectType, string $id): JSONResponse
 	{
         try {
-            // Get request parameters and validate object type
-            $requestParams = $this->request->getParams();
-            $objectType = $this->validateObjectType($requestParams);
-
             // Delete the object
             $result = $this->objectService->deleteObject($objectType, $id);
 
@@ -218,12 +179,9 @@ class ObjectsController extends Controller
 	 *
 	 * @return JSONResponse
      */
-    public function getAuditTrail(string $id): JSONResponse
+    public function getAuditTrail(string $objectType, string $id): JSONResponse
     {
         try {
-            // Get request parameters and validate object type
-            $requestParams = $this->request->getParams();
-            $objectType = $this->validateObjectType($requestParams);
 
             $auditTrail = $this->objectService->getAuditTrail($objectType, $id);
             return new JSONResponse($auditTrail);
@@ -233,5 +191,43 @@ class ObjectsController extends Controller
                 400
             );
         }
+    }
+
+    /**
+     * Get all relations for a specific object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     */
+    public function getRelations(string $objectType, string $id): JSONResponse
+    {
+        try {
+            // Fetch the object by its ID
+            $relations = $this->objectService->getRelations($objectType, $id);
+
+            // Return the object as a JSON response
+            return new JSONResponse($relations);
+        } catch (Exception $e) {
+            return new JSONResponse(
+                ['error' => $e->getMessage()],
+                400
+            );
+        } 
+    }
+
+    /**
+     * Get all uses for a specific object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     */
+    public function getUses(string $objectType, string $id): JSONResponse
+    {
+        $uses = $this->objectService->getUses($objectType, $id);
+        return new JSONResponse($uses);
     }
 }
