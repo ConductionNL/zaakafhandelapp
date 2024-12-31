@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore, resultaatStore, besluitStore } from '../../store/store.js'
+import { navigationStore, zaakStore, resultaatStore, besluitStore, documentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -23,7 +23,7 @@ import { navigationStore, zaakStore, resultaatStore, besluitStore } from '../../
 							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addDocument')">
+						<NcActionButton @click="(documentStore.zaakId = zaakStore.zaakItem?.id); documentStore.setDocumentItem(null); navigationStore.setModal('documentForm')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>

@@ -1,63 +1,69 @@
 <script setup>
-import { zaakStore } from '../../store/store.js'
+import { navigationStore, documentStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<div v-if="!loading">
-			<NcListItem v-for="(zaak, i) in zakenList"
-				:key="`${zaak}${i}`"
-				:name="zaak?.name"
-				:active="zaakStore.zaakItem === zaak?.id"
-				:details="'1h'"
-				:counter-number="44"
+		<div v-if="documenten[zaakId]?.documenten?.length">
+			<NcListItem v-for="(document, i) in documenten[zaakId]?.documenten"
+				:key="`${document}${i}`"
+				:name="document?.titel"
+				:active="documentStore.documentItem?.id === document?.id"
 				:force-display-actions="true"
-				@click="toggleDocument(zaak)">
+				@click="toggleDocument(document)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="zaakStore.zaakItem === zaak.id && 'selectedZaakIcon'"
+					<FileDocumentOutline :class="documentStore.documentItem?.id === document.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaak?.summary }}
+					{{ document?.beschrijving }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="(documentStore.zaakId = zaakId); documentStore.setDocumentItem(document); navigationStore.setModal('documentForm')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						Bewerken
 					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
+					<NcActionButton @click="(documentStore.zaakId = zaakId); documentStore.setDocumentItem(document); navigationStore.setModal('deleteDocument')">
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						Verwijderen van zaak
 					</NcActionButton>
 				</template>
 			</NcListItem>
-
-			<div v-if="!zakenList?.length && !loading">
-				Geen documenten gevonden.
-			</div>
-
-			<NcLoadingIcon v-if="loading"
-				class="loadingIcon"
-				:size="64"
-				appearance="dark"
-				name="Documenten aan het laden" />
 		</div>
+
+		<div v-if="!documenten[zaakId]?.documenten?.length && !documenten[zaakId]?.loading">
+			Geen documenten gevonden.
+		</div>
+
+		<NcLoadingIcon v-if="!documenten[zaakId]?.documenten?.length && documenten[zaakId]?.loading"
+			class="loadingIcon"
+			:size="64"
+			appearance="dark"
+			name="Documenten aan het laden" />
 	</div>
 </template>
+
 <script>
 import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 // eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 export default {
 	name: 'ZaakDocumenten',
 	components: {
 		NcListItem,
 		NcActionButton,
-		BriefcaseAccountOutline,
+		FileDocumentOutline,
 		NcLoadingIcon,
+		TrashCanOutline,
+		Pencil,
 	},
 	props: {
 		zaakId: {
@@ -67,9 +73,10 @@ export default {
 	},
 	data() {
 		return {
+			// this is saved in a cache like system for easier navigation between zaken and to avoid unnecessary wait time for the end user
+			// eg. documenten[zaakId] = { documenten: [], loading: false }
+			documenten: {},
 			search: '',
-			loading: true,
-			zakenList: [],
 		}
 	},
 	watch: {
@@ -81,27 +88,29 @@ export default {
 		this.fetchData(this.zaakId)
 	},
 	methods: {
-		fetchData(zaakId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaakobjecten',
-				{
-					method: 'GET',
+		fetchData() {
+			this.documenten = {
+				...this.documenten,
+				[this.zaakId]: {
+					documenten: [],
+					loading: true,
 				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data.results
-					})
-					this.loading = false
+			}
+
+			documentStore.getDocumenten(this.zaakId)
+				.then(({ data }) => {
+					this.documenten[this.zaakId].documenten = data
 				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
+				.finally(() => {
+					this.documenten[this.zaakId].loading = false
 				})
 		},
 		toggleDocument(document) {
-			// TODO: toggle document
+			if (documentStore.documentItem?.id === document.id) {
+				documentStore.setDocumentItem(null)
+			} else {
+				documentStore.setDocumentItem(document)
+			}
 		},
 		clearText() {
 			this.search = ''
@@ -109,26 +118,27 @@ export default {
 	},
 }
 </script>
+
 <style>
 .listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .searchField {
-    padding-inline-start: 65px;
-    padding-inline-end: 20px;
-    margin-block-end: 6px;
+	padding-inline-start: 65px;
+	padding-inline-end: 20px;
+	margin-block-end: 6px;
 }
 
 .selectedZaakIcon>svg {
-    fill: white;
+	fill: white;
 }
 
 .loadingIcon {
-    margin-block-start: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
 }
 </style>

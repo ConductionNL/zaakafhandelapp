@@ -39,6 +39,9 @@ import { navigationStore } from '../store/store.js'
 		<!-- besluiten -->
 		<BesluitForm v-if="navigationStore.modal === 'besluitForm'" />
 		<DeleteBesluit v-if="navigationStore.modal === 'deleteBesluit'" />
+		<!-- documenten -->
+		<DocumentForm v-if="navigationStore.modal === 'documentForm'" />
+		<DeleteDocument v-if="navigationStore.modal === 'deleteDocument'" />
 	</div>
 </template>
 
@@ -67,6 +70,8 @@ import DeleteResultaat from './resultaten/DeleteResultaat.vue'
 import BesluitForm from './besluiten/BesluitForm.vue'
 import DeleteBesluit from './besluiten/DeleteBesluit.vue'
 import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
+import DocumentForm from './documenten/DocumentForm.vue'
+import DeleteDocument from './documenten/DeleteDocument.vue'
 
 export default {
 	name: 'Modals',
@@ -95,6 +100,8 @@ export default {
 		BesluitForm,
 		DeleteBesluit,
 		ViewContactMoment,
+		DocumentForm,
+		DeleteDocument,
 	},
 }
 </script>
