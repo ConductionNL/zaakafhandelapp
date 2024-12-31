@@ -36,22 +36,26 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 *
 		 * @param search - Optional search query to filter the contact moments list. (default: `null`)
 		 * @param notClosed - Optional boolean to filter out closed contact moments from the contact moments list. (default: `false`)
+		 * @param user
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
 		 */
-		async refreshContactMomentenList(search: string = null, notClosed: boolean = false): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
+		async refreshContactMomentenList(search: string = null, notClosed: boolean = false, user: string = null): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
 			let endpoint = apiEndpoint
 
-			if (search !== null && search !== '') {
-				endpoint = endpoint + '?_search=' + search
+			const params = new URLSearchParams()
+			if (search) {
+				params.append('_search', search)
+			}
+			if (notClosed) {
+				params.append('status', 'open')
+			}
+			if (user) {
+				params.append('medewerker', user)
 			}
 
-			if (notClosed) {
-				if (search !== null && search !== '') {
-					endpoint = endpoint + '&status=open'
-				} else {
-					endpoint = endpoint + '?status=open'
-				}
+			if (params.toString()) {
+				endpoint += `?${params.toString()}`
 			}
 
 			const response = await fetch(endpoint, {

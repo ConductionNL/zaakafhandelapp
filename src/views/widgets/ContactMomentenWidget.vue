@@ -71,6 +71,7 @@ export default {
 			 * determines if the contactmoment form modal is open
 			 */
 			isContactMomentFormOpen: false,
+			userEmail: null,
 			contactMomentItems: [],
 			// contactmoment form props
 			contactMomentId: null,
@@ -93,14 +94,28 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchContactMomentItems()
+		this.fetchUser()
 	},
 	methods: {
+		async fetchUser() {
+			this.loading = true
+
+			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
+			const user = await getUser.json()
+
+			const medewerkerList = await fetch('/index.php/apps/zaakafhandelapp/api/medewerkers')
+			const medewerkers = await medewerkerList.json()
+
+			const medewerker = medewerkers.results.find((medewerker) => medewerker.email === user.user.email)
+
+			this.userEmail = medewerker.email
+			this.fetchContactMomentItems()
+		},
 		fetchContactMomentItems() {
 			this.loading = true
 
 			Promise.all([
-				contactMomentStore.refreshContactMomentenList(null, true),
+				contactMomentStore.refreshContactMomentenList(null, true, this.userEmail),
 				klantStore.refreshKlantenList(),
 			])
 				.then(([contactMomentResponse, klantResponse]) => {

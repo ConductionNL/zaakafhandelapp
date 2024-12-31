@@ -1,5 +1,5 @@
 <script setup>
-import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
+import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -117,6 +117,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								:disabled="loading"
 								:loading="fetchLoading"
 								placeholder="Notitie" />
+
+							<NcSelect v-bind="medewerkers"
+								v-model="medewerkers.values[i-1]"
+								input-label="Medewerker"
+								:user-select="true" />
 						</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
@@ -564,7 +569,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
+import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcSelect } from '@nextcloud/vue'
 import _ from 'lodash'
 
 import getValidISOstring from '../../services/getValidISOstring.js'
@@ -588,7 +593,7 @@ import Minus from 'vue-material-design-icons/Minus.vue'
 import ProgressClose from 'vue-material-design-icons/ProgressClose.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import router from '../../router/router.ts'
-import { generateUrl } from '@nextcloud/router';
+import { generateUrl } from '@nextcloud/router'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -604,6 +609,7 @@ export default {
 		EditTaakForm: EditTaak,
 		BTabs,
 		BTab,
+		NcSelect,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,
@@ -698,6 +704,11 @@ export default {
 
 			tabs: [1],
 			tabCounter: 1,
+
+			medewerkers: {
+				options: [],
+				values: [], // used to store the selected medewerker for each contactmoment
+			},
 		}
 	},
 	mounted() {
@@ -709,6 +720,8 @@ export default {
 		} else if (this.klantId) {
 			// if it is not an edit modal but a klantId is provided, fetch the klant data
 			this.fetchKlantData(this.klantId)
+		} else {
+			this.fetchMedewerkers()
 		}
 	},
 	methods: {
@@ -717,6 +730,7 @@ export default {
 			for (let i = 0; i < this.tabs.length; i++) {
 				if (this.tabs[i] === x) {
 					this.tabs.splice(i, 1)
+					this.medewerkers.values.splice(i, 1)
 				}
 			}
 			this.selectedContactMoment = 1
@@ -764,9 +778,65 @@ export default {
 			this.selectedTaak = data.taak
 			this.selectedProduct = data.product
 
-			await this.fetchKlantData(data.klant)
+			await Promise.all([
+				this.fetchKlantData(data.klant),
+				this.fetchMedewerkers(data.medewerker),
+			])
 
 			this.fetchLoading = false
+		},
+
+		async fetchMedewerkers(medewerkerEmail = null) {
+			return Promise.all([
+				medewerkerStore.refreshMedewerkersList(),
+				fetch('/index.php/apps/zaakafhandelapp/me').then(response => response.json()),
+			])
+				.then(([{ data }, { user }]) => {
+					const medewerkerToSelect = medewerkerEmail ?? data.find(medewerker => medewerker.email === user.email)?.email
+					const selectedMedewerker = data.find(medewerker => medewerker.email === medewerkerToSelect) || null
+
+					this.medewerkers = {
+						options: data.map(medewerker => ({
+							id: medewerker.id,
+							displayName: `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}`,
+							subname: medewerker.email,
+							email: medewerker.email,
+							isNoUser: false,
+							icon: null,
+							user: medewerker.id,
+							// if it is the current user show online status, there is currently no way of knowing other user statuses
+							...(medewerker.email === user.email && {
+								preloadedUserStatus: {
+									icon: null,
+									status: 'online',
+									message: 'I am online',
+								},
+							}),
+						})),
+						values: [selectedMedewerker
+							? {
+								id: selectedMedewerker.id,
+								displayName: `${selectedMedewerker.voornaam} ${selectedMedewerker.tussenvoegsel} ${selectedMedewerker.achternaam}`,
+								subname: selectedMedewerker.email,
+								email: selectedMedewerker.email,
+								isNoUser: false,
+								icon: null,
+								user: selectedMedewerker.id,
+								// if it is the current user show online status, there is currently no way of knowing other user statuses
+								...(selectedMedewerker.email === user.email && {
+									preloadedUserStatus: {
+										icon: null,
+										status: 'online',
+										message: 'I am online',
+									},
+								}),
+							}
+							: null],
+					}
+				})
+				.catch((err) => {
+					console.error(err)
+				})
 		},
 
 		// Modal functions
@@ -806,6 +876,7 @@ export default {
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
+				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].email,
 			})
 				.then((response) => {
 					this.contactMoment.addedTaken.forEach(taak => {

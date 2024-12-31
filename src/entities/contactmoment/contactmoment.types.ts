@@ -9,4 +9,5 @@ export type TContactMoment = {
     startDate: string;
     status: string;
     contactmoment: string;
+    medewerker: string;
 }
