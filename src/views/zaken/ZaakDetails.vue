@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js'
+import { navigationStore, zaakStore, resultaatStore, besluitStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -47,12 +47,6 @@ import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js
 							</template>
 							Bericht toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addBesluit')">
-							<template #icon>
-								<MessagePlus :size="20" />
-							</template>
-							Besluit toevoegen
-						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
@@ -64,6 +58,12 @@ import { navigationStore, zaakStore, resultaatStore } from '../../store/store.js
 								<FileChartCheckOutline :size="20" />
 							</template>
 							Resultaat toevoegen
+						</NcActionButton>
+						<NcActionButton @click="(besluitStore.zaakId = zaakStore.zaakItem?.id); besluitStore.setBesluitItem(null); navigationStore.setModal('besluitForm')">
+							<template #icon>
+								<BriefcaseAccountOutline :size="20" />
+							</template>
+							Besluit toevoegen
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -199,6 +199,7 @@ import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 import FileChartCheckOutline from 'vue-material-design-icons/FileChartCheckOutline.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'

@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js'
+import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,41 +7,41 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Resultaat {{ IS_EDIT ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>Besluit {{ IS_EDIT ? 'aanpassen' : 'aanmaken' }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Resultaat succesvol {{ IS_EDIT ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>Besluit succesvol {{ IS_EDIT ? 'aangepast' : 'aangemaakt' }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
 				</NcNoteCard>
 			</div>
 
-			<div v-if="success === null" class="form-group">
+			<div v-if="success === null">
+				<p>Selecteer een zaak om het besluit aan te maken.</p>
 				<NcSelect v-bind="zaak"
 					v-model="zaak.value"
 					input-label="Zaak"
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
-				<NcTextField :disabled="zaakLoading"
-					label="Resultaat type"
-					maxlength="1000"
-					:value.sync="resultaat.resultaattype"
-					required />
-				<NcTextField :disabled="zaakLoading"
-					label="Toelichting"
-					maxlength="255"
-					:value.sync="resultaat.toelichting" />
+
+				<div class="form-group">
+					<NcTextField :disabled="zaakLoading"
+						label="Besluit"
+						maxlength="1000"
+						:value.sync="besluit.besluit"
+						required />
+				</div>
 			</div>
 
 			<NcButton v-if="success === null"
 				:disabled="loading
 					|| !zaak.value?.id
-					|| !resultaat.resultaattype"
+					|| !besluit.besluit"
 				type="primary"
-				@click="saveResultaat()">
+				@click="saveBesluit()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else-if="!loading && IS_EDIT" :size="20" />
@@ -59,8 +59,8 @@ import {
 	NcNoteCard,
 	NcButton,
 	NcTextField,
-	NcSelect,
 	NcLoadingIcon,
+	NcSelect,
 } from '@nextcloud/vue'
 
 // icons
@@ -68,10 +68,10 @@ import Plus from 'vue-material-design-icons/Plus.vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 // entities
-import { Resultaat } from '../../entities/index.js'
+import { Besluit } from '../../entities/index.js'
 
 export default {
-	name: 'ResultaatForm',
+	name: 'BesluitForm',
 	components: {
 		NcModal,
 		NcTextField,
@@ -84,23 +84,15 @@ export default {
 			default: false,
 			required: false,
 		},
-		/**
-		 * The id of the zaak that the resultaat is for.
-		 */
-		zaakId: {
-			type: String,
-			default: null,
-		},
 	},
 	data() {
 		return {
-			resultaat: {
-				url: '',
+			besluit: {
+				besluit: '',
 				zaak: '',
-				resultaattype: '',
-				toelichting: '',
 			},
 			IS_EDIT: false,
+			zaak_id: null,
 			loading: false,
 			success: null,
 			error: null,
@@ -113,11 +105,11 @@ export default {
 	},
 	mounted() {
 		// If zaakItem in the store is set. apply it to zaak in this modal.
-		if (resultaatStore.resultaatItem?.id) {
+		if (besluitStore.besluitItem?.id) {
 			this.IS_EDIT = true
-			this.resultaat = {
-				...this.resultaat,
-				...resultaatStore.resultaatItem,
+			this.besluit = {
+				...this.besluit,
+				...besluitStore.besluitItem,
 			}
 		}
 
@@ -126,7 +118,7 @@ export default {
 	methods: {
 		closeModal() {
 			navigationStore.setModal(null)
-			resultaatStore.zaakId = null
+			besluitStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
 		fetchZaak() {
@@ -134,39 +126,37 @@ export default {
 
 			zaakStore.refreshZakenList()
 				.then(({ entities }) => {
-					// the priority list of id's to find is zaakId inside resultaat (edit modal only), zaakId prop, and zaakId set in store (used when creating a new resultaat)
-					const idToFind = this.resultaat.zaak || this.zaakId || resultaatStore.zaakId
-					const selectedZaak = entities.find((zaak) => zaak.id === idToFind)
+					const compareId = this.besluit?.zaak || besluitStore.zaakId
+					const selectedZaak = entities.find((zaak) => zaak.id === compareId)
 
 					this.zaak = {
 						options: entities.map((zaak) => ({
-							id: zaak.id,
 							label: zaak.identificatie,
+							id: zaak.id,
 						})),
 						value: selectedZaak
 							? {
-								id: selectedZaak.id,
 								label: selectedZaak.identificatie,
-							  }
+								id: selectedZaak.id,
+							}
 							: null,
 					}
-				})
-				.catch((err) => {
-					console.error(err)
 				})
 				.finally(() => {
 					this.zaakLoading = false
 				})
 		},
-		saveResultaat() {
+		saveBesluit() {
 			this.loading = true
 
-			const newResultaat = new Resultaat({
-				...this.resultaat,
-				zaak: this.zaak.value?.id || null,
+			const newBesluit = new Besluit({
+				...this.besluit,
 			})
 
-			resultaatStore.saveResultaat(newResultaat)
+			besluitStore.saveBesluit({
+				...newBesluit,
+				zaak: this.zaak.value.id,
+			})
 				.then(({ response }) => {
 					this.success = response.ok
 					setTimeout(this.closeModal, 2500)
@@ -175,7 +165,7 @@ export default {
 				})
 				.catch((err) => {
 					console.error(err)
-					this.error = err.message || 'Er is iets fout gegaan bij het opslaan van het resultaat.'
+					this.error = err.message || 'Er is iets fout gegaan bij het opslaan van het besluit.'
 					this.success = false
 				})
 				.finally(() => {

@@ -2,8 +2,8 @@
 import { defineStore } from 'pinia'
 
 interface NavigationStoreState {
-    modal: string;
-    viewModal: string;
+    modal: 'zaakForm' | 'viewZaakAuditTrail' | 'widgetZaakForm' | 'addBerichtToZaak' | 'addTaakToZaak' | 'addRolToZaak' | 'contactMomentenForm' | 'deleteContactMoment' | 'zaaktypeForm' | 'deleteZaaktype' | 'viewKlantAuditTrail' | 'viewBerichtAuditTrail' | 'editTaak' | 'viewTaakAuditTrail' | 'viewKlantRegister' | 'editMedewerker' | 'resultaatForm' | 'deleteResultaat' | 'besluitForm' | 'deleteBesluit' | null;
+    viewModal: 'viewContactMoment';
     dialog: string;
     transferData: string;
 }
