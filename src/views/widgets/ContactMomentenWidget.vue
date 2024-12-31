@@ -129,7 +129,20 @@ export default {
 							return ''
 						})(),
 						subText: new Date(contactMoment.startDate).toLocaleString(),
-						avatarUrl: this.getItemIcon(),
+						avatarUrl: (() => {
+							switch (contactMoment.kanaal) {
+							case 'telefoon':
+								return this.getItemPhoneIcon()
+							case 'email':
+								return this.getItemEmailIcon()
+							case 'brief':
+								return this.getItemMailboxIcon()
+							case 'balie':
+								return this.getItemAgentIcon()
+							default:
+								return this.getItemIcon()
+							}
+						})(),
 					}))
 				})
 				.finally(() => {
@@ -147,6 +160,50 @@ export default {
 			}
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
+		},
+		getItemPhoneIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/phone-dark.svg` : `${appLocation}/zaakafhandelapp/img/phone.svg`
+		},
+		getItemEmailIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/email-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/email-outline.svg`
+		},
+		getItemMailboxIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/mailbox-open-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/mailbox-open-outline.svg`
+		},
+		getItemAgentIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/face-agent-dark.svg` : `${appLocation}/zaakafhandelapp/img/face-agent.svg`
 		},
 		// === MODAL CONTROL ===
 		/**
