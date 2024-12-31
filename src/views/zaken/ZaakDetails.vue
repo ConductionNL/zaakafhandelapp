@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore, resultaatStore, besluitStore, documentStore } from '../../store/store.js'
+import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore, documentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -77,7 +77,15 @@ import { navigationStore, zaakStore, resultaatStore, besluitStore, documentStore
 						<h4>
 							Zaaktype:
 						</h4>
-						<span>{{ zaakStore.zaakItem?.zaaktype }}</span>
+						<span v-if="zaakStore.zaakItem.zaaktype" class="zaakType">
+							{{ zaakType?.identificatie }}
+							<NcButton v-tooltip="'bekijken'" type="tertiary-no-background" @click="goToZaakType(zaakType)">
+								<template #icon>
+									<OpenInApp :size="20" />
+								</template>
+							</NcButton>
+						</span>
+						<span v-else>geen zaaktype gevonden</span>
 					</div>
 					<div>
 						<div>
@@ -186,7 +194,7 @@ import { navigationStore, zaakStore, resultaatStore, besluitStore, documentStore
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -198,6 +206,7 @@ import FileDocumentPlusOutline from 'vue-material-design-icons/FileDocumentPlusO
 import VectorPolylineEdit from 'vue-material-design-icons/VectorPolylineEdit.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
 import FileChartCheckOutline from 'vue-material-design-icons/FileChartCheckOutline.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
@@ -217,6 +226,7 @@ export default {
 		// Components
 		NcActions,
 		NcActionButton,
+		NcButton,
 		BTabs,
 		BTab,
 		NcLoadingIcon,
@@ -252,6 +262,11 @@ export default {
 			zaak: [],
 		}
 	},
+	computed: {
+		zaakType() {
+			return zaakTypeStore.zaakTypeList.find((zaakType) => zaakType.id === zaakStore.zaakItem.zaaktype || Symbol('no zaaktype id'))
+		},
+	},
 	watch: {
 		id(newId) {
 			this.fetchData(newId)
@@ -259,6 +274,7 @@ export default {
 	},
 	mounted() {
 		this.fetchData(this.id)
+		zaakTypeStore.refreshZaakTypenList()
 	},
 	methods: {
 		fetchData(id) {
@@ -282,6 +298,10 @@ export default {
 				})
 				.finally(() => {
 				})
+		},
+		goToZaakType(zaakType) {
+			zaakTypeStore.setZaakTypeItem(zaakType)
+			this.$router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: zaakType.id } })
 		},
 	},
 }
@@ -318,4 +338,11 @@ h4 {
   flex-direction: column;
 }
 
+</style>
+
+<style scoped>
+.zaakType {
+	display: flex;
+	align-items: center;
+}
 </style>
