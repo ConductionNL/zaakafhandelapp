@@ -536,7 +536,7 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 					</template>
 					Zaak starten
 				</NcActionButton>
-				<NcActionButton v-if="isView"
+				<NcActionButton v-if="isView || isEdit"
 					:close-after-click="true"
 					:disabled="contactMoment.status === 'gesloten'"
 					@click="closeContactMoment(contactMoment.id)">
@@ -587,8 +587,8 @@ import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, N
 import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'
 import router from '../../router/router.ts'
-
 import getValidISOstring from '../../services/getValidISOstring.js'
+
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
@@ -908,7 +908,7 @@ export default {
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
 				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].email,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
-			})
+			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
 					this.contactMoment.addedTaken.forEach(taak => {
 						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
@@ -1042,7 +1042,18 @@ export default {
 		},
 
 		async closeContactMoment(id) {
-			const { data } = await contactMomentStore.getContactMoment(id)
+			let data
+
+			if (this.isEdit) {
+				data = {
+					...this.contactMoment,
+					...this.contactMomenten[this.selectedContactMoment],
+				}
+			} else if (this.isView) {
+				data = (await contactMomentStore.getContactMoment(id))?.data
+			} else {
+				return
+			}
 
 			if (data?.status === 'gesloten') {
 				console.info('Contactmoment is already closed')
@@ -1053,13 +1064,14 @@ export default {
 				status: 'gesloten',
 			})
 
-			contactMomentStore.saveContactMoment(newContactMoment)
+			contactMomentStore.saveContactMoment(newContactMoment, { redirect: !this.dashboardWidget })
 				.then(({ response }) => {
 					if (response.ok) {
 						this.closeModal()
 						this.$emit('save-success')
 					}
 				})
+
 		},
 
 		async fetchKlantData(id) {
