@@ -250,6 +250,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						</div>
 
 						<SearchKlantModal v-if="searchKlantModalOpen && i === selectedContactMoment"
+							class="higher-index"
 							:dashboard-widget="true"
 							:starting-type="startingType"
 							@selected-klant="fetchKlantData($event)"
@@ -469,6 +470,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</div>
 
 				<SearchKlantModal v-if="searchKlantModalOpen"
+					class="higher-index"
 					:dashboard-widget="true"
 					:starting-type="startingType"
 					@selected-klant="fetchKlantData($event)"
@@ -541,12 +543,14 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		</template>
 
 		<ViewContactMoment v-if="isContactMomentFormOpen"
+			class="higher-index"
 			:dashboard-widget="true"
 			:contact-moment-id="viewContactMomentId"
 			:is-view="viewContactMomentIsView"
 			@close-modal="closeViewContactMomentModal" />
 
 		<EditTaakForm v-if="taakFormOpen"
+			class="higher-index"
 			:dashboard-widget="true"
 			:client-type="taakClientType"
 			:klant-id="contactMomenten[selectedContactMoment].klant?.id"
@@ -554,6 +558,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			@save-success="closeTaakForm" />
 
 		<ZaakForm v-if="zaakFormOpen"
+			class="higher-index"
 			:dashboard-widget="true"
 			:klant-id="contactMomenten[selectedContactMoment].klant?.id"
 			@close-modal="() => (zaakFormOpen = false)"
@@ -719,7 +724,7 @@ export default {
 					this.tabs.splice(i, 1)
 				}
 			}
-			this.selectedContactMoment = 1
+			this.selectedContactMoment = this.tabs[0]
 		},
 		newTab() {
 			const index = this.tabCounter + 1
@@ -1211,4 +1216,7 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 	pointer-events: all !important;
 }
 
+.higher-index {
+	z-index: 10000 !important;
+}
 </style>
