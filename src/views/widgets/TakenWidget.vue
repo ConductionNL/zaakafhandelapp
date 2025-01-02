@@ -76,6 +76,7 @@ export default {
 			loading: false,
 			isModalOpen: false,
 			taakItems: [],
+			userEmail: null,
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
@@ -100,13 +101,28 @@ export default {
 	},
 
 	mounted() {
-		this.fetchTaakItems()
+		this.fetchUser()
 	},
 
 	methods: {
-		fetchTaakItems() {
+		async fetchUser() {
 			this.loading = true
-			taakStore.refreshTakenList(null, true)
+
+			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
+			const user = await getUser.json()
+
+			const medewerkerList = await fetch('/index.php/apps/zaakafhandelapp/api/medewerkers')
+			const medewerkers = await medewerkerList.json()
+
+			const medewerker = medewerkers.results.find((medewerker) => medewerker.email === user.user.email)
+
+			this.userEmail = medewerker.email
+			this.fetchTaakItems()
+		},
+		fetchTaakItems() {
+
+			this.loading = true
+			taakStore.refreshTakenList(null, true, this.userEmail)
 				.then(() => {
 
 					this.taakItems = taakStore.takenList.map(taak => ({
@@ -193,19 +209,20 @@ export default {
 }
 </script>
 <style scoped>
-.takenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.takenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
-.itemContainer{
+
+.itemContainer {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
- }
+}
 
- .buttonContainer{
+.buttonContainer {
 	display: flex;
 	gap: 10px;
- }
+}
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../store/store.js'
+import { taakStore, navigationStore, klantStore, contactMomentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 		size="normal"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>Taak succesvol aangepast</p>
+			<p>{{ taakItem.id ? 'Taak succesvol aangepast' : 'Taak succesvol aangemaakt' }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -22,11 +22,12 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 				label="Titel"
 				maxlength="255" />
 
-			<NcTextField
-				:disabled="loading"
-				:value.sync="taakItem.type"
-				label="Type"
-				maxlength="255" />
+			<NcSelect v-bind="taakType"
+				v-model="taakType.value"
+				input-label="Type"
+				:clearable="false"
+				:loading="klantenLoading"
+				:disabled="loading" />
 
 			<div>
 				<p>Deadline</p>
@@ -58,7 +59,6 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 					<NcSelect v-if="(clientType !== 'medewerker' && (clientType !== 'both' || clientType === 'both' && !useMedewerkerInsteadOfKlant))"
 						v-bind="klanten"
 						v-model="klanten.value"
-						:user-select="true"
 						input-label="Klant*"
 						:loading="klantenLoading"
 						:disabled="loading" />
@@ -66,10 +66,36 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 					<NcSelect v-if="(clientType !== 'klant' && (clientType !== 'both' || clientType === 'both' && useMedewerkerInsteadOfKlant))"
 						v-bind="medewerkers"
 						v-model="medewerkers.value"
-						:user-select="true"
 						input-label="Medewerker*"
 						:loading="medewerkersLoading"
 						:disabled="loading" />
+				</div>
+			</div>
+			<div v-if="taakItem.id">
+				<span>Contactmoment</span>
+				<div v-if="taakItem.contactmoment">
+					<NcListItem v-for="(contactMoment, key) in contactMomentItems"
+						:key="key"
+						:name="contactMoment.mainText"
+						:bold="false"
+						:details="contactMoment.subText"
+						:disabled="loading"
+						:force-display-actions="true">
+						<template #icon>
+							<BriefcaseAccountOutline :size="44" />
+						</template>
+						<template #actions>
+							<NcButton @click="viewContactMoment(contactMoment.id)">
+								<template #icon>
+									<Eye :size="20" />
+								</template>
+								View
+							</NcButton>
+						</template>
+					</NcListItem>
+				</div>
+				<div v-else>
+					<p>Geen contactmoment gevonden</p>
 				</div>
 			</div>
 		</div>
@@ -106,6 +132,12 @@ import { taakStore, navigationStore, klantStore, medewerkerStore } from '../../s
 				{{ taakStore.taakItem?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
+
+		<ViewContactMoment v-if="isContactMomentFormOpen"
+			:dashboard-widget="true"
+			:contact-moment-id="viewContactMomentId"
+			:is-view="viewContactMomentIsView"
+			@close-modal="closeViewContactMomentModal" />
 	</NcDialog>
 </template>
 
@@ -120,11 +152,18 @@ import {
 	NcCheckboxRadioSwitch,
 	NcLoadingIcon,
 	NcNoteCard,
+	NcListItem,
 } from '@nextcloud/vue'
+import { getTheme } from '../../services/getTheme.js'
+
+import ViewContactMoment from '../contactMomenten/ViewContactMoment.vue'
+
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Help from 'vue-material-design-icons/Help.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
 
 /**
  * EditTaak component
@@ -152,11 +191,13 @@ export default {
 		NcCheckboxRadioSwitch,
 		NcLoadingIcon,
 		NcNoteCard,
+		NcListItem,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
 		Plus,
 		Help,
+		BriefcaseAccountOutline,
 	},
 	props: {
 		/**
@@ -235,6 +276,11 @@ export default {
 			type: String,
 			default: null,
 		},
+
+		isView: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -248,6 +294,7 @@ export default {
 			klantenLoading: false,
 			medewerkers: [],
 			medewerkersLoading: false,
+			contactMomentItems: [],
 			// item
 			taakItem: {
 				title: '',
@@ -256,6 +303,7 @@ export default {
 				deadline: new Date(),
 				onderwerp: '',
 				toelichting: '',
+				contactmoment: null,
 			},
 			executorOptions: {
 				options: [
@@ -289,10 +337,20 @@ export default {
 					},
 				],
 			},
+			taakType: {
+				options: [
+					{ id: 'terugbel', label: 'Terugbel verzoek' },
+				],
+				value: { id: 'terugbel', label: 'Terugbel verzoek' },
+			},
+			viewContactMomentIsView: false,
+			viewContactMomentId: null,
+			isContactMomentFormOpen: false,
 		}
 	},
 	mounted() {
 		this.fetchData()
+		this.fetchMedewerkers()
 	},
 	methods: {
 		closeModalFromButton() {
@@ -330,15 +388,18 @@ export default {
 					toelichting: taakEntity.toelichting || '',
 					klant: taakEntity?.klant || '',
 					medewerker: taakEntity?.medewerker || '',
+					contactmoment: taakEntity?.contactmoment || null,
 				}
 
 				if (this.clientType === 'both') {
 					this.useMedewerkerInsteadOfKlant = !!taakEntity?.medewerker
 				}
+
+				this.taakType.value = this.taakType.options.find(type => type.id === taakEntity.type || 'terugbel')
 			}
 
 			if (this.clientType !== 'medewerker') this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
-			if (this.clientType !== 'klant') this.fetchMedewerkers(taakEntity?.medewerker)
+			this.fetchContactMomentItems()
 		},
 		/**
 		 * @param {string} klantId - Optional ID of the klant to select. Will take precedence over the ID present in `taakStore.taakItem`.
@@ -356,6 +417,7 @@ export default {
 					const selectedKlant = data.find((klant) => klant?.id.toString() === searchId) || null
 
 					this.klanten = {
+						userSelect: true,
 						options: data.map((klant) => ({
 							id: klant.id,
 							displayName: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
@@ -380,43 +442,98 @@ export default {
 					this.klantenLoading = false
 				})
 		},
+		fetchContactMomentItems() {
+			this.loading = true
+
+			Promise.all([
+				contactMomentStore.refreshContactMomentenList(),
+				klantStore.refreshKlantenList(),
+			])
+				.then(([contactMomentResponse, klantResponse]) => {
+					const test = contactMomentResponse.entities.map(contactMoment => ({
+						id: contactMoment.id,
+						mainText: (() => { // this is a self calling function to get the klant name, which is why you don't see it being called anywhere
+							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
+							if (klant) {
+								return klant.type === 'persoon' ? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` : `${klant.bedrijfsnaam}`
+							}
+							return ''
+						})(),
+						subText: new Date(contactMoment.startDate).toLocaleString(),
+						avatarUrl: this.getItemIcon(),
+					}))
+
+					this.contactMomentItems = test.filter(contactMoment => contactMoment.id === this.taakItem.contactmoment)
+				})
+				.finally(() => {
+					this.loading = false
+				})
+		},
+
+		viewContactMoment(id) {
+			this.isContactMomentFormOpen = true
+			this.viewContactMomentIsView = true
+			this.viewContactMomentId = id
+			navigationStore.setViewModal('viewContactMoment')
+		},
+
+		closeViewContactMomentModal() {
+			this.isContactMomentFormOpen = false
+			navigationStore.setViewModal(null)
+		},
+		// === ICONS ===
+		getItemIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
+		},
 		/**
 		 * @param {string} medewerkerId - Optional ID of the medewerker to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                                If none are provided the default selected medewerker will be `null`.
 		 */
 		fetchMedewerkers(medewerkerId = null) {
-			medewerkerStore.refreshMedewerkersList()
-				.then(({ data }) => {
+			fetch('/ocs/v1.php/cloud/users/details', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
 
-					const taakMedewerkerId = taakStore.taakItem?.medewerker
-					const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
+				const userData = data.ocs.data.users
 
-					const selectedMedewerker = data.find((medewerker) => medewerker?.id.toString() === searchId) || null
+				const taakMedewerkerId = taakStore.taakItem?.medewerker
+				const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
 
-					this.medewerkers = {
-						options: data.map((medewerker) => ({
-							id: medewerker.id,
-							displayName: `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}`,
-							subName: medewerker.email,
-							icon: medewerker.icon ?? '',
+				const selectedMedewerker = Object.values(userData).find((medewerker) => medewerker?.email?.toString() === searchId) || null
 
-						})),
-						value: selectedMedewerker
-							? {
-								id: selectedMedewerker?.id,
-								displayName: `${selectedMedewerker.voornaam} ${selectedMedewerker.tussenvoegsel} ${selectedMedewerker.achternaam}`,
-								subName: selectedMedewerker.email,
-								icon: selectedMedewerker.icon ?? '',
-							}
-							: null,
-					}
-				})
-				.catch((err) => {
-					console.error(err)
-				})
-				.finally(() => {
-					this.medewerkersLoading = false
-				})
+				this.medewerkers = {
+					userSelect: true,
+					options: Object.values(userData).map((medewerker) => ({
+						id: medewerker.email,
+						displayName: medewerker.displayname,
+						subname: medewerker.email,
+						user: medewerker.id,
+
+					})),
+					value: selectedMedewerker
+						? {
+							id: selectedMedewerker?.email,
+							displayName: selectedMedewerker.displayname,
+							subname: selectedMedewerker.email,
+							user: selectedMedewerker.id,
+						}
+						: null,
+				}
+
+			})
+
 		},
 		async editTaak() {
 			this.loading = true
@@ -433,18 +550,24 @@ export default {
 
 			taakStore.saveTaak({
 				...this.taakItem,
+				type: this.taakType.value.id,
 				klant: klantId || null,
 				medewerker: medewerkerId || null,
 				status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
 				deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
 			})
-				.then(({ response }) => {
-					this.success = response.ok
-					setTimeout(this.closeModal, 2000)
+				.then((response) => {
+					this.success = response.response.ok
 
-					if (this.dashboardWidget === true && response.ok) {
-						this.$emit('save-success')
-					}
+					setTimeout(() => {
+						if (this.dashboardWidget === true && response.response.ok) {
+							this.$emit('save-success', response.data.id)
+						}
+					}, 2000)
+					setTimeout(() => {
+						this.closeModal()
+					}, 2500)
+
 				})
 				.catch((err) => {
 					this.error = err.message || 'An error occurred while saving the taak'

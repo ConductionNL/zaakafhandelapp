@@ -116,7 +116,8 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 								<ChatOutline :size="44" />
 							</template>
 							<template #actions>
-								<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('viewBericht')">
+								<NcActionButton
+									@click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('viewBericht')">
 									<template #icon>
 										<Eye :size="20" />
 									</template>
@@ -379,59 +380,59 @@ export default {
 </script>
 <style>
 .detailContainer {
-  margin-block-start: var(--zaa-margin-20);
-  margin-inline-start: var(--zaa-margin-20);
-  margin-inline-end: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
+	margin-inline-start: var(--zaa-margin-20);
+	margin-inline-end: var(--zaa-margin-20);
 }
 
-.tabContainer > * ul > li {
-  display: flex;
-  flex: 1;
+.tabContainer>* ul>li {
+	display: flex;
+	flex: 1;
 }
 
-.tabContainer > * ul > li:hover {
-  background-color: var(--color-background-hover);
+.tabContainer>* ul>li:hover {
+	background-color: var(--color-background-hover);
 }
 
-.tabContainer > * ul > li > a {
-  flex: 1;
-  text-align: center;
+.tabContainer>* ul>li>a {
+	flex: 1;
+	text-align: center;
 }
 
-.tabContainer > * ul > li > .active {
-  background: transparent !important;
-  color: var(--color-main-text) !important;
-  border-bottom: var(--default-grid-baseline) solid var(--color-primary-element) !important;
+.tabContainer>* ul>li>.active {
+	background: transparent !important;
+	color: var(--color-main-text) !important;
+	border-bottom: var(--default-grid-baseline) solid var(--color-primary-element) !important;
 }
 
-.tabContainer > * ul[role="tablist"] {
-  display: flex;
-  margin: 10px 8px 0 8px;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--color-border);
+.tabContainer>* ul[role="tablist"] {
+	display: flex;
+	margin: 10px 8px 0 8px;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--color-border);
 }
 
-.tabContainer > * ul[role="tablist"] > * a[role="tab"] {
-  padding-inline-start: 10px;
-  padding-inline-end: 10px;
-  padding-block-start: 10px;
-  padding-block-end: 10px;
+.tabContainer>* ul[role="tablist"]>* a[role="tab"] {
+	padding-inline-start: 10px;
+	padding-inline-end: 10px;
+	padding-block-start: 10px;
+	padding-block-end: 10px;
 }
 
-.tabContainer > * div[role="tabpanel"] {
-  margin-block-start: var(--zaa-margin-10);
+.tabContainer>* div[role="tabpanel"] {
+	margin-block-start: var(--zaa-margin-10);
 }
 
 .tabPanel {
-  padding: 20px 10px;
-  min-height: 100%;
-  max-height: 100%;
-  height: 100%;
-  overflow: auto;
+	padding: 20px 10px;
+	min-height: 100%;
+	max-height: 100%;
+	height: 100%;
+	overflow: auto;
 }
 
 .detailGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 }
 </style>

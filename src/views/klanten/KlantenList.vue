@@ -30,18 +30,16 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="klantStore.klantenList?.length && !loading">
+			<div v-if="klantStore.klantenList?.length">
 				<NcListItem v-for="(klant, i) in klantStore.klantenList"
 					:key="`${klant}${i}`"
 					:name="getName(klant)"
-					:active="klantStore.klantItem?.id === klant?.id"
+					:active="$route.params?.id === klant?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(klant.type)"
-					@click="klantStore.setKlantItem(klant)">
+					@click="openKlant(klant)">
 					<template #icon>
-						<AccountOutline :class="klantStore.klantItem === klant.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AccountOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ getSubname(klant) }}
@@ -62,7 +60,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 			Geen klanten gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!klantStore.klantenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -108,6 +106,10 @@ export default {
 		})
 	},
 	methods: {
+		openKlant(klant) {
+			klantStore.setKlantItem(klant)
+			this.$router.push({ params: { id: klant.id } })
+		},
 		fullName(klant) {
 			let name = klant.achternaam
 			if (klant.tussenvoegsel) {

@@ -1,5 +1,5 @@
 <script setup>
-import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../store/store.js'
+import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -30,19 +30,17 @@ import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../s
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="taakStore.takenList?.length && !loading">
+			<div v-if="taakStore.takenList?.length && users && !loading">
 				<NcListItem v-for="(taak, i) in taakStore.takenList"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
 					:force-display-actions="true"
-					:active="taakStore.taakItem?.id === taak?.id"
+					:active="$route.params?.id === taak?.id"
 					:details="taak.status"
 					:counter-number="taak.deadline ? `${Math.ceil((new Date(taak.deadline) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
-					@click="taakStore.setTaakItem(taak)">
+					@click="openTaak(taak)">
 					<template #icon>
-						<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<CalendarMonthOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ getName(taak) }}
@@ -69,7 +67,7 @@ import { klantStore, medewerkerStore, navigationStore, taakStore } from '../../s
 			Geen taken gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!taakStore.takenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -108,13 +106,14 @@ export default {
 			search: '',
 			loading: true,
 			takenList: [],
+			users: null,
 		}
 	},
 	mounted() {
 		Promise.all([
+			this.getUsers(),
 			taakStore.refreshTakenList(),
 			klantStore.refreshKlantenList(),
-			medewerkerStore.refreshMedewerkersList(),
 		]).then(() => {
 			this.loading = false
 		})
@@ -123,12 +122,28 @@ export default {
 		clearText() {
 			this.search = ''
 		},
+		getUsers() {
+			fetch('/ocs/v1.php/cloud/users/details', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
+
+				this.users = Object.values(data.ocs.data.users)
+			})
+		},
+		openTaak(taak) {
+			taakStore.setTaakItem(taak)
+			this.$router.push({ params: { id: taak.id } })
+		},
 		getName(taak) {
-			const medewerker = medewerkerStore.medewerkersList.find(medewerker => medewerker.id === taak.medewerker)
+			const medewerker = this.users.find(user => user.email === taak.medewerker)
 			const klant = klantStore.klantenList.find(klant => klant.id === taak.klant)
 
 			if (medewerker) {
-				return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
+				return medewerker.displayname ?? 'onbekend'
 			}
 			if (klant) {
 				if (klant.type === 'persoon') {

@@ -3,9 +3,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Medewerker"
-		size="normal"
-		:can-close="false">
+	<NcDialog name="Medewerker" size="normal" :can-close="false">
 		<NcNoteCard v-if="success" type="success">
 			<p>Medewerker succesvol aangepast</p>
 		</NcNoteCard>
@@ -49,7 +47,8 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 				</template>
 				{{ success ? 'Sluiten' : 'Annuleer' }}
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
 					<Help :size="20" />
 				</template>

@@ -3,9 +3,7 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef"
-		label-id="addBerichtToZaak"
-		@close="closeModal">
+	<NcModal ref="modalRef" label-id="addBerichtToZaak" @close="closeModal">
 		<div class="modalContent">
 			<h2>Bericht toevoegen aan {{ zaakStore.zaakItem.title }}</h2>
 
@@ -140,7 +138,7 @@ export default {
 
 <style scoped>
 .modalContent {
-    margin: var(--zaa-margin-50, 12px);
-    text-align: center;
+	margin: var(--zaa-margin-50, 12px);
+	text-align: center;
 }
 </style>
