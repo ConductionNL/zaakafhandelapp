@@ -517,7 +517,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					Zaak starten
 				</NcActionButton>
-				<NcActionButton v-if="isView"
+				<NcActionButton v-if="isView || isEdit"
 					:close-after-click="true"
 					:disabled="contactMoment.status === 'gesloten'"
 					@click="closeContactMoment(contactMoment.id)">
@@ -565,9 +565,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
+import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'
-
 import getValidISOstring from '../../services/getValidISOstring.js'
+
 // Forms
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
@@ -588,7 +589,6 @@ import Minus from 'vue-material-design-icons/Minus.vue'
 import ProgressClose from 'vue-material-design-icons/ProgressClose.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import router from '../../router/router.ts'
-import { generateUrl } from '@nextcloud/router';
 
 export default {
 	name: 'ContactMomentenForm',
@@ -806,7 +806,7 @@ export default {
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
-			})
+			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
 					this.contactMoment.addedTaken.forEach(taak => {
 						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
@@ -940,7 +940,18 @@ export default {
 		},
 
 		async closeContactMoment(id) {
-			const { data } = await contactMomentStore.getContactMoment(id)
+			let data
+
+			if (this.isEdit) {
+				data = {
+					...this.contactMoment,
+					...this.contactMomenten[this.selectedContactMoment],
+				}
+			} else if (this.isView) {
+				data = (await contactMomentStore.getContactMoment(id))?.data
+			} else {
+				return
+			}
 
 			if (data?.status === 'gesloten') {
 				console.info('Contactmoment is already closed')
@@ -951,13 +962,14 @@ export default {
 				status: 'gesloten',
 			})
 
-			contactMomentStore.saveContactMoment(newContactMoment)
+			contactMomentStore.saveContactMoment(newContactMoment, { redirect: !this.dashboardWidget })
 				.then(({ response }) => {
 					if (response.ok) {
 						this.closeModal()
 						this.$emit('save-success')
 					}
 				})
+
 		},
 
 		async fetchKlantData(id) {
