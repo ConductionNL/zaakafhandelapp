@@ -823,50 +823,36 @@ export default {
 			this.fetchLoading = false
 		},
 
-		async fetchMedewerkers(medewerkerEmail = null) {
+		async fetchMedewerkers(medewerkerId = null) {
 			return Promise.all([
-				medewerkerStore.refreshMedewerkersList(),
+				fetch('/ocs/v1.php/cloud/users/details', {
+					method: 'GET',
+					headers: {
+						Accept: 'application/json',
+						'OCS-APIRequest': 'true',
+					},
+				}).then(response => response.json()),
 				fetch('/index.php/apps/zaakafhandelapp/me').then(response => response.json()),
 			])
-				.then(([{ data }, { user }]) => {
-					const medewerkerToSelect = medewerkerEmail ?? data.find(medewerker => medewerker.email === user.email)?.email
-					const selectedMedewerker = data.find(medewerker => medewerker.email === medewerkerToSelect) || null
+				.then(([usersData, { user: currentUser }]) => {
+					const users = Object.values(usersData.ocs.data.users)
+
+					const medewerkerToSelect = medewerkerId ?? users.find(medewerker => medewerker.id === currentUser.id)?.id
+					const selectedMedewerker = users.find(medewerker => medewerker.id === medewerkerToSelect) || null
 
 					this.medewerkers = {
-						options: data.map(medewerker => ({
-							id: medewerker.id,
-							displayName: `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}`,
+						options: Object.values(users).map((medewerker) => ({
+							id: medewerker.email,
+							displayName: medewerker.displayname,
 							subname: medewerker.email,
-							email: medewerker.email,
-							isNoUser: false,
-							icon: null,
 							user: medewerker.id,
-							// if it is the current user show online status, there is currently no way of knowing other user statuses
-							...(medewerker.email === user.email && {
-								preloadedUserStatus: {
-									icon: null,
-									status: 'online',
-									message: 'I am online',
-								},
-							}),
 						})),
 						values: [selectedMedewerker
 							? {
-								id: selectedMedewerker.id,
-								displayName: `${selectedMedewerker.voornaam} ${selectedMedewerker.tussenvoegsel} ${selectedMedewerker.achternaam}`,
+								id: selectedMedewerker?.email,
+								displayName: selectedMedewerker.displayname,
 								subname: selectedMedewerker.email,
-								email: selectedMedewerker.email,
-								isNoUser: false,
-								icon: null,
 								user: selectedMedewerker.id,
-								// if it is the current user show online status, there is currently no way of knowing other user statuses
-								...(selectedMedewerker.email === user.email && {
-									preloadedUserStatus: {
-										icon: null,
-										status: 'online',
-										message: 'I am online',
-									},
-								}),
 							}
 							: null],
 					}
