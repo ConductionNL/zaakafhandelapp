@@ -5,35 +5,35 @@ import { klantStore, navigationStore } from '../../store/store.js'
 <template>
 	<div class="personenContainer">
 		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
-				:loading="loading"
+			<NcDashboardWidget :items="personenItems"
 				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent name="Geen personen gevonden">
-						<template #icon>
-							<AccountOutline />
-						</template>
-					</NcEmptyContent>
+					<div>
+						<NcEmptyContent v-if="loading" name="Persoon laden...">
+							<template #icon>
+								<NcLoadingIcon />
+							</template>
+						</NcEmptyContent>
+						<NcEmptyContent v-if="!loading" name="Geen personen gevonden">
+							<template #icon>
+								<AccountOutline />
+							</template>
+						</NcEmptyContent>
+					</div>
 				</template>
 			</NcDashboardWidget>
 		</div>
 
 		<div class="searchContainer">
-			<NcTextField :disabled="loading"
-				label="Zoeken op voornaam"
-				maxlength="255"
-				class="searchField"
-				:value.sync="searchPerson" />
-
 			<NcButton type="primary"
 				:disabled="loading"
 				class="searchButton"
-				@click="search">
+				@click="() => (searchKlantModalOpen = true)">
 				<template #icon>
 					<Search :size="20" />
 				</template>
-				Zoeken
+				Zoek
 			</NcButton>
 
 			<ViewKlant v-if="isModalOpen"
@@ -41,17 +41,24 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:klant-id="klantStore.widgetKlantId"
 				@save-success="fetchPersonenItems"
 				@close-modal="() => (isModalOpen = false)" />
+
+			<SearchKlantModal v-if="searchKlantModalOpen"
+				:dashboard-widget="true"
+				starting-type="persoon"
+				@selected-klant="createKlantItems($event)"
+				@close-modal="() => (searchKlantModalOpen = false)" />
 		</div>
 	</div>
 </template>
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextcloud/vue'
+import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nextcloud/vue'
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
+import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 
 export default {
 	name: 'PersonenWidget',
@@ -61,9 +68,10 @@ export default {
 		NcEmptyContent,
 		NcButton,
 		Search,
-		NcTextField,
 		AccountOutline,
 		ViewKlant,
+		SearchKlantModal,
+		NcLoadingIcon,
 	},
 
 	data() {
@@ -73,6 +81,7 @@ export default {
 			personenItems: [],
 			searchPerson: '',
 			selectedKlantId: '',
+			searchKlantModalOpen: false,
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
@@ -82,45 +91,14 @@ export default {
 		}
 	},
 
-	computed: {
-		items() {
-			return this.personenItems
-		},
-	},
-
-	mounted() {
-		this.fetchPersonenItems()
-	},
-
 	methods: {
-		fetchPersonenItems() {
-			this.loading = true
-			klantStore.searchPersons()
-				.then(() => {
-					this.personenItems = klantStore.klantenList.map(person => ({
-						id: person.id,
-						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
-						subText: person.emailadres,
-						avatarUrl: this.getItemIcon(),
-					}))
-					this.loading = false
-				})
-		},
-		search() {
-			this.loading = true
-			klantStore.searchPersons(this.searchPerson)
-				.then(() => {
-					this.personenItems = klantStore.klantenList.map(person => ({
-						id: person.id,
-						mainText: `${person.voornaam} ${person.tussenvoegsel} ${person.achternaam}`,
-						subText: person.emailadres,
-						avatarUrl: this.getItemIcon(),
-					}))
-					this.loading = false
-				})
-				.finally(() => {
-					this.loading = false
-				})
+		createKlantItems(klant) {
+			this.personenItems = [{
+				id: klant.id,
+				mainText: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
+				subText: klant.emailadres,
+				avatarUrl: this.getItemIcon(),
+			}]
 		},
 		getItemIcon() {
 			const theme = getTheme()
@@ -132,6 +110,12 @@ export default {
 			}
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/account-outline.svg`
+		},
+		openSearchKlantModal() {
+			this.searchKlantModalOpen = true
+		},
+		closeSearchKlantModal() {
+			this.searchKlantModalOpen = false
 		},
 		onShow(item) {
 			klantStore.setWidgetKlantId(item.id)
