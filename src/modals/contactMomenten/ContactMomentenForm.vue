@@ -479,6 +479,13 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 					@selected-klant="fetchKlantData($event)"
 					@close-modal="closeSearchKlantModal" />
 			</div>
+
+			<SearchKlantModal v-if="searchKlantModalOpen"
+				:dashboard-widget="true"
+				:starting-type="startingType"
+				select-button-label="Koppelen"
+				@selected-klant="fetchKlantData($event?.id)"
+				@close-modal="closeSearchKlantModal" />
 		</div>
 		<template #actions>
 			<NcButton :disabled="loading || success" type="secondary" @click="closeModal()">
