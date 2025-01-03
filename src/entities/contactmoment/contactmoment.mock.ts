@@ -13,6 +13,8 @@ export const mockContactMomentData = (): TContactMoment[] => [
 		startDate: new Date().toISOString(),
 		status: 'open',
 		contactmoment: 'Contactmoment 3',
+		medewerker: 'Medewerker 3',
+		kanaal: 'Telefoon',
 	},
 ]
 

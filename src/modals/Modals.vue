@@ -22,6 +22,7 @@ import { navigationStore } from '../store/store.js'
 		<!-- klanten -->
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
+		<ViewKlant v-if="navigationStore.modal === 'viewKlant'" />
 		<!-- berichten -->
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
@@ -30,8 +31,7 @@ import { navigationStore } from '../store/store.js'
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<!-- rollen -->
 		<EditRol />
-		<!-- klant register -->
-		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
+		<!-- medewerkers -->
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
 		<!-- resultaat -->
 		<ResultaatForm v-if="navigationStore.modal === 'resultaatForm'" />
@@ -58,7 +58,7 @@ import EditTaak from './taken/EditTaak.vue'
 import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
 import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
-import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
+import ViewKlant from './klanten/ViewKlant.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
@@ -88,7 +88,7 @@ export default {
 		ViewTaakAuditTrail,
 		EditRol,
 		ViewZaakAuditTrail,
-		ViewKlantRegister,
+		ViewKlant,
 		DeleteContactMoment,
 		EditMedewerker,
 		AddBerichtToZaak,
