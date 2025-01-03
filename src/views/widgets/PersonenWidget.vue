@@ -36,9 +36,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				Zoek
 			</NcButton>
 
-			<ViewKlantRegister v-if="isModalOpen"
+			<ViewKlant v-if="isModalOpen"
 				:dashboard-widget="true"
-				:klant-id="klantStore.widgetKlantId" />
+				:klant-id="klantStore.widgetKlantId"
+				@save-success="fetchPersonenItems"
+				@close-modal="() => (isModalOpen = false)" />
 
 			<SearchKlantModal v-if="searchKlantModalOpen"
 				:dashboard-widget="true"
@@ -55,7 +57,7 @@ import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nex
 import { getTheme } from '../../services/getTheme.js'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-import ViewKlantRegister from '../../modals/klantRegister/ViewKlantRegister.vue'
+import ViewKlant from '../../modals/klanten/ViewKlant.vue'
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 
 export default {
@@ -67,7 +69,8 @@ export default {
 		NcButton,
 		Search,
 		AccountOutline,
-		ViewKlantRegister,
+		ViewKlant,
+		SearchKlantModal,
 		NcLoadingIcon,
 	},
 
@@ -116,9 +119,8 @@ export default {
 		},
 		onShow(item) {
 			klantStore.setWidgetKlantId(item.id)
-
 			this.isModalOpen = true
-			navigationStore.setModal('viewKlantRegister')
+			navigationStore.setModal('viewKlant')
 
 		},
 	},
