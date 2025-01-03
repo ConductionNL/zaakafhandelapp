@@ -118,10 +118,16 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 								:loading="fetchLoading"
 								placeholder="Notitie" />
 
-							<NcSelect v-bind="medewerkers"
-								v-model="medewerkers.values[i-1]"
-								input-label="Medewerker"
-								:user-select="true" />
+							<div class="flexContainer">
+								<NcSelect v-bind="channels"
+									v-model="channels.values[i-1]"
+									input-label="Kanaal" />
+
+								<NcSelect v-bind="medewerkers"
+									v-model="medewerkers.values[i-1]"
+									input-label="Medewerker"
+									:user-select="true" />
+							</div>
 						</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
@@ -138,7 +144,11 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 											:force-display-actions="true"
 											@click="setSelectedContactMoment(i, klantContactmoment.id)">
 											<template #icon>
-												<BriefcaseAccountOutline :size="44" />
+												<Phone v-if="klantContactmoment.kanaal === 'telefoon'" :size="44" />
+												<EmailOutline v-else-if="klantContactmoment.kanaal === 'email'" :size="44" />
+												<FaceAgent v-else-if="klantContactmoment.kanaal === 'balie'" :size="44" />
+												<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'brief'" :size="44" />
+												<BriefcaseAccountOutline v-else :size="44" />
 											</template>
 											<template #subname>
 												{{ new Date(klantContactmoment.startDate).toLocaleString() }}
@@ -383,7 +393,11 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 									:active="selectedKlantContactMoment === klantContactmoment.id"
 									:force-display-actions="true">
 									<template #icon>
-										<BriefcaseAccountOutline :size="44" />
+										<Phone v-if="klantContactmoment.kanaal === 'Telefoon'" :size="44" />
+										<EmailOutline v-else-if="klantContactmoment.kanaal === 'E-mail'" :size="44" />
+										<FaceAgent v-else-if="klantContactmoment.kanaal === 'Balie'" :size="44" />
+										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'Brief'" :size="44" />
+										<BriefcaseAccountOutline v-else :size="44" />
 									</template>
 									<template #subname>
 										{{ new Date(klantContactmoment.startDate).toLocaleString() }}
@@ -579,6 +593,7 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcSelect } from '@nextcloud/vue'
 import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'
+import router from '../../router/router.ts'
 import getValidISOstring from '../../services/getValidISOstring.js'
 
 // Forms
@@ -600,7 +615,10 @@ import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Minus from 'vue-material-design-icons/Minus.vue'
 import ProgressClose from 'vue-material-design-icons/ProgressClose.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
-import router from '../../router/router.ts'
+import Phone from 'vue-material-design-icons/Phone.vue'
+import EmailOutline from 'vue-material-design-icons/EmailOutline.vue'
+import FaceAgent from 'vue-material-design-icons/FaceAgent.vue'
+import MailboxOpenOutline from 'vue-material-design-icons/MailboxOpenOutline.vue'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -716,6 +734,15 @@ export default {
 				options: [],
 				values: [], // used to store the selected medewerker for each contactmoment
 			},
+			channels: {
+				options: [
+					{ label: 'Telefoon', value: 'telefoon' },
+					{ label: 'E-mail', value: 'email' },
+					{ label: 'Balie', value: 'balie' },
+					{ label: 'Brief', value: 'brief' },
+				],
+				values: [],
+			},
 		}
 	},
 	mounted() {
@@ -738,6 +765,7 @@ export default {
 				if (this.tabs[i] === x) {
 					this.tabs.splice(i, 1)
 					this.medewerkers.values.splice(i, 1)
+					this.channels.values.splice(i, 1)
 				}
 			}
 			this.selectedContactMoment = 1
@@ -784,6 +812,8 @@ export default {
 			this.selectedKlantContactMoment = data.contactmoment
 			this.selectedTaak = data.taak
 			this.selectedProduct = data.product
+
+			this.channels.values[0] = this.channels.options.find(channel => channel.value === data.kanaal)
 
 			await Promise.all([
 				this.fetchKlantData(data.klant),
@@ -884,6 +914,7 @@ export default {
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
 				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].email,
+				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
 					this.contactMoment.addedTaken.forEach(taak => {

@@ -14,6 +14,7 @@ export const mockContactMomentData = (): TContactMoment[] => [
 		status: 'open',
 		contactmoment: 'Contactmoment 3',
 		medewerker: 'Medewerker 3',
+		kanaal: 'Telefoon',
 	},
 ]
 

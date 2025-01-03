@@ -10,4 +10,5 @@ export type TContactMoment = {
     status: string;
     contactmoment: string;
     medewerker: string;
+    kanaal: string;
 }
