@@ -1,5 +1,5 @@
 <script setup>
-import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
+import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -121,12 +121,14 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 							<div class="flexContainer">
 								<NcSelect v-bind="channels"
 									v-model="channels.values[i-1]"
-									input-label="Kanaal" />
+									input-label="Kanaal"
+									required />
 
 								<NcSelect v-bind="medewerkers"
 									v-model="medewerkers.values[i-1]"
 									input-label="Medewerker"
-									:user-select="true" />
+									:user-select="true"
+									required />
 							</div>
 						</div>
 						<div class="tabContainer">
@@ -557,7 +559,7 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 			</NcActions>
 			<NcButton v-if="!isView"
 				type="primary"
-				:disabled="!contactMomenten[selectedContactMoment].klant || loading || success || fetchLoading"
+				:disabled="!contactMomenten[selectedContactMoment].klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment(selectedContactMoment)">
 				<template #icon>
@@ -904,7 +906,7 @@ export default {
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
-				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].email,
+				medewerker: this.medewerkers.options[this.selectedContactMoment - 1].id,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
@@ -984,7 +986,7 @@ export default {
 		closeTaakForm(e) {
 			if (e) {
 				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
-				this.contactMomenten[this.selectedContactMoment].klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
+				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
 			}
 			this.taakFormOpen = false
 		},
@@ -1072,9 +1074,9 @@ export default {
 
 		},
 
-		async fetchKlantData(id) {
+		async fetchKlantData(klant) {
 			try {
-				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
+				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}`)
 				// ifselectedContactMoment
 				if (this.isView) {
 					this.klant = await klantResponse.json()
@@ -1109,11 +1111,11 @@ export default {
 				 */
 				// #1
 				const results = await Promise.allSettled([
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/contactmomenten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/zaken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/taken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/berichten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/audit_trail`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/contactmomenten`),
 				])
 
 				// #2 & #3

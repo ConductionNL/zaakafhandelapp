@@ -221,6 +221,7 @@ export default {
 			this.isContactMomentFormOpen = false
 			this.isView = false
 			navigationStore.setModal(null)
+			this.fetchContactMomentItems()
 		},
 		// === EVENTS ===
 		/**
