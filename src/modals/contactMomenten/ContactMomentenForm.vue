@@ -907,7 +907,7 @@ export default {
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
-				medewerker: this.medewerkers.options[this.selectedContactMoment - 1].id,
+				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].id,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
