@@ -199,7 +199,8 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 		<EditTaakForm v-if="taakModalOpen"
 			:dashboard-widget="true"
 			:selected-klant-from-widget="klant"
-			@save-success="fetchTaakItems" />
+			@save-success="fetchTaakItems"
+			@close-modal="() => (taakModalOpen = false)" />
 	</NcDialog>
 </template>
 

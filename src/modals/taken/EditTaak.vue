@@ -361,7 +361,7 @@ export default {
 		closeModal() {
 			navigationStore.setModal(null)
 
-			if (this.dashboardWidget === true) {
+			if (this.dashboardWidget) {
 				this.$emit('close-modal')
 			}
 		},
