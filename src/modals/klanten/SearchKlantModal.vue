@@ -69,24 +69,24 @@ import { klantStore } from '../../store/store.js'
 					<NcTextField :disabled="loading"
 						label="achternaam"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[1]" />
 				</div>
 				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
 					<NcTextField :disabled="loading"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[0]" />
 
 					<NcTextField :disabled="loading"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[1]" />
 				</div>
 				<div v-else>
 					<NcTextField :disabled="loading"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[0]" />
 				</div>
 			</div>
@@ -409,7 +409,7 @@ export default {
 	margin-block-end: 3px;
 }
 
-.searchField {
+.klantSearchField {
 	width: auto;
 }
 
