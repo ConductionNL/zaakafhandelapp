@@ -117,12 +117,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:key="key"
 									:name="getName(klant)"
 									:bold="false"
-									:details="new Date(klantContactmoment.startDate).toLocaleString()"
 									:disabled="loading"
 									:active="selectedKlantContactMoment === klantContactmoment.id"
 									:force-display-actions="true">
 									<template #icon>
-										<BriefcaseAccountOutline :size="44" />
+										<Phone v-if="klantContactmoment.kanaal === 'telefoon'" :size="44" />
+										<EmailOutline v-else-if="klantContactmoment.kanaal === 'email'" :size="44" />
+										<FaceAgent v-else-if="klantContactmoment.kanaal === 'balie'" :size="44" />
+										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'brief'" :size="44" />
+										<BriefcaseAccountOutline v-else :size="44" />
+									</template>
+									<template #subname>
+										{{ new Date(klantContactmoment.startDate).toLocaleString() }}
 									</template>
 								</NcListItem>
 							</div>
@@ -281,6 +287,10 @@ import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Minus from 'vue-material-design-icons/Minus.vue'
+import Phone from 'vue-material-design-icons/Phone.vue'
+import EmailOutline from 'vue-material-design-icons/EmailOutline.vue'
+import FaceAgent from 'vue-material-design-icons/FaceAgent.vue'
+import MailboxOpenOutline from 'vue-material-design-icons/MailboxOpenOutline.vue'
 
 export default {
 	name: 'ViewContactMoment',
@@ -603,9 +613,10 @@ export default {
 				})
 		},
 
-		async fetchKlantData(id) {
+		async fetchKlantData(klant) {
+			const klantId = klant.id ?? klant
 			try {
-				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
+				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}`)
 				// ifselectedContactMoment
 				if (this.isView) {
 					this.klant = await klantResponse.json()
@@ -613,56 +624,94 @@ export default {
 					this.contactMomenten[this.selectedContactMoment].klant = await klantResponse.json()
 				}
 
-				// fetch all data in parallel
-				const [zakenRes, takenRes, berichtenRes, auditTrailRes, contactMomentenRes] = await Promise.all([
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/contactmomenten`),
+				/**
+				 * This code block handles parallel fetching and parsing of multiple API endpoints in a fault-tolerant way.
+				 * Here's what happens step by step:
+				 *
+				 * 1. First, we initiate 5 parallel fetch requests using Promise.allSettled():
+				 *    - This allows all requests to run simultaneously rather than sequentially
+				 *    - Unlike Promise.all(), allSettled() won't fail if some requests fail
+				 *    - Each request fetches different data for the same klant ID (cases, tasks, messages etc)
+				 *
+				 * 2. Once all fetches complete (successfully or not), we process the responses:
+				 *    - results contains an array of 5 promise results
+				 *    - Each result is either {status: 'fulfilled', value: Response} or {status: 'rejected', reason: Error}
+				 *
+				 * 3. We then parse the JSON from successful responses using another Promise.allSettled():
+				 *    - For each fulfilled fetch with ok status, we parse the JSON asynchronously
+				 *    - For failed fetches or non-ok responses, we return null
+				 *    - This creates another layer of fault tolerance during JSON parsing
+				 *
+				 * 4. Finally, we destructure the parsed results into separate variables:
+				 *    - Each variable gets either the parsed JSON data or null if any step failed
+				 *    - This gives us clean variables to work with, regardless of failures
+				 *
+				 * The end result is we get all our data in parallel, with proper error handling,
+				 * and clean null values for any failed requests rather than thrown exceptions.
+				 */
+				// #1
+				const results = await Promise.allSettled([
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/zaken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/taken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/berichten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/audit_trail`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/contactmomenten`),
 				])
 
-				// parse all data
-				const [zakenData, takenData, berichtenData, auditTrailData, contactMomentenData] = await Promise.all([
-					zakenRes.json(),
-					takenRes.json(),
-					berichtenRes.json(),
-					auditTrailRes.json(),
-					contactMomentenRes.json(),
-				])
+				// #2 & #3
+				const parsedResults = await Promise.allSettled(
+					results.map(async (result) => {
+						if (result.status === 'fulfilled' && result.value.ok) {
+							return await result.value.json()
+						}
+						return null
+					}),
+				)
 
-				// set data
-				if (Array.isArray(zakenData.results)) {
+				// #4
+				const [zakenData, takenData, berichtenData, auditTrailData, contactMomentenData] = parsedResults.map(result =>
+					result.status === 'fulfilled' ? result.value : null,
+				)
+
+				// set data, checking for null values
+				if (zakenData?.results && Array.isArray(zakenData.results)) {
 					if (this.isView) {
 						this.zaken = zakenData.results
 					} else {
 						this.contactMomenten[this.selectedContactMoment].zaken = zakenData.results
 					}
 				}
-				if (Array.isArray(takenData.results)) {
+
+				if (takenData?.results && Array.isArray(takenData.results)) {
 					if (this.isView) {
 						this.taken = takenData.results
 					} else {
 						this.contactMomenten[this.selectedContactMoment].taken = takenData.results
 					}
 				}
-				if (Array.isArray(berichtenData.results)) {
+
+				if (berichtenData?.results && Array.isArray(berichtenData.results)) {
 					if (this.isView) {
 						this.berichten = berichtenData.results
 					} else {
 						this.contactMomenten[this.selectedContactMoment].berichten = berichtenData.results
 					}
 				}
-				if (Array.isArray(auditTrailData)) {
+
+				if (auditTrailData && Array.isArray(auditTrailData)) {
 					if (this.isView) {
 						this.auditTrails = auditTrailData
 					} else {
 						this.contactMomenten[this.selectedContactMoment].auditTrails = auditTrailData
 					}
 				}
-				if (Array.isArray(contactMomentenData.results)) {
+
+				if (contactMomentenData?.results && Array.isArray(contactMomentenData.results)) {
 					if (this.isView) {
-						this.klantContactmomenten = contactMomentenData.results
+						const filteredResults = contactMomentenData.results.filter((contactMoment) =>
+							contactMoment.id !== this.contactMoment.id,
+						)
+						this.klantContactmomenten = filteredResults
 					} else {
 						this.contactMomenten[this.selectedContactMoment].klantContactmomenten = contactMomentenData.results
 					}
@@ -670,7 +719,8 @@ export default {
 
 			} catch (error) {
 				console.error('Error in fetchKlantData:', error)
-				throw error
+				// Don't throw the error, as we want the component to continue working
+				// even if some data failed to load
 			}
 		},
 

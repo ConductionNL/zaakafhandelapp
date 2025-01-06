@@ -302,8 +302,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ `${getSex(klant)} ${getName(klant)}` }}
 									<div v-if="klant?.type === 'persoon'" class="flexContainer">
 										<div>
-											Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new
-												Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+											Geboortedatum: {{
+												getValidISOstring(klant?.geboortedatum) ? new
+													Date(klant?.geboortedatum).toLocaleDateString() :
+												'N/A' }}
 										</div>
 										<div>
 											Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
@@ -391,15 +393,14 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									:key="key"
 									:name="getName(klant)"
 									:bold="false"
-									:details="klantContactmoment.startDate"
 									:disabled="loading"
 									:active="selectedKlantContactMoment === klantContactmoment.id"
 									:force-display-actions="true">
 									<template #icon>
-										<Phone v-if="klantContactmoment.kanaal === 'Telefoon'" :size="44" />
-										<EmailOutline v-else-if="klantContactmoment.kanaal === 'E-mail'" :size="44" />
-										<FaceAgent v-else-if="klantContactmoment.kanaal === 'Balie'" :size="44" />
-										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'Brief'" :size="44" />
+										<Phone v-if="klantContactmoment.kanaal === 'telefoon'" :size="44" />
+										<EmailOutline v-else-if="klantContactmoment.kanaal === 'email'" :size="44" />
+										<FaceAgent v-else-if="klantContactmoment.kanaal === 'balie'" :size="44" />
+										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'brief'" :size="44" />
 										<BriefcaseAccountOutline v-else :size="44" />
 									</template>
 									<template #subname>
@@ -1075,8 +1076,9 @@ export default {
 		},
 
 		async fetchKlantData(klant) {
+			const klantId = klant.id ?? klant
 			try {
-				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}`)
+				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}`)
 				// ifselectedContactMoment
 				if (this.isView) {
 					this.klant = await klantResponse.json()
@@ -1111,11 +1113,11 @@ export default {
 				 */
 				// #1
 				const results = await Promise.allSettled([
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/zaken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/taken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/berichten`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/audit_trail`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klant.id}/contactmomenten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/zaken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/taken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/berichten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/audit_trail`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/contactmomenten`),
 				])
 
 				// #2 & #3
@@ -1168,7 +1170,10 @@ export default {
 
 				if (contactMomentenData?.results && Array.isArray(contactMomentenData.results)) {
 					if (this.isView) {
-						this.klantContactmomenten = contactMomentenData.results
+						const filteredResults = contactMomentenData.results.filter((contactMoment) =>
+							contactMoment.id !== this.contactMoment.id,
+						)
+						this.klantContactmomenten = filteredResults
 					} else {
 						this.contactMomenten[this.selectedContactMoment].klantContactmomenten = contactMomentenData.results
 					}
