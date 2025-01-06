@@ -1,5 +1,5 @@
 <script setup>
-import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
+import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -121,12 +121,14 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 							<div class="flexContainer">
 								<NcSelect v-bind="channels"
 									v-model="channels.values[i-1]"
-									input-label="Kanaal" />
+									input-label="Kanaal"
+									required />
 
 								<NcSelect v-bind="medewerkers"
 									v-model="medewerkers.values[i-1]"
 									input-label="Medewerker"
-									:user-select="true" />
+									:user-select="true"
+									required />
 							</div>
 						</div>
 						<div class="tabContainer">
@@ -265,6 +267,7 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 						</div>
 
 						<SearchKlantModal v-if="searchKlantModalOpen && i === selectedContactMoment"
+							class="higher-index"
 							:dashboard-widget="true"
 							:starting-type="startingType"
 							@selected-klant="fetchKlantData($event)"
@@ -299,8 +302,10 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 									{{ `${getSex(klant)} ${getName(klant)}` }}
 									<div v-if="klant?.type === 'persoon'" class="flexContainer">
 										<div>
-											Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new
-												Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+											Geboortedatum: {{
+												getValidISOstring(klant?.geboortedatum) ? new
+													Date(klant?.geboortedatum).toLocaleDateString() :
+												'N/A' }}
 										</div>
 										<div>
 											Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
@@ -388,15 +393,14 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 									:key="key"
 									:name="getName(klant)"
 									:bold="false"
-									:details="klantContactmoment.startDate"
 									:disabled="loading"
 									:active="selectedKlantContactMoment === klantContactmoment.id"
 									:force-display-actions="true">
 									<template #icon>
-										<Phone v-if="klantContactmoment.kanaal === 'Telefoon'" :size="44" />
-										<EmailOutline v-else-if="klantContactmoment.kanaal === 'E-mail'" :size="44" />
-										<FaceAgent v-else-if="klantContactmoment.kanaal === 'Balie'" :size="44" />
-										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'Brief'" :size="44" />
+										<Phone v-if="klantContactmoment.kanaal === 'telefoon'" :size="44" />
+										<EmailOutline v-else-if="klantContactmoment.kanaal === 'email'" :size="44" />
+										<FaceAgent v-else-if="klantContactmoment.kanaal === 'balie'" :size="44" />
+										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'brief'" :size="44" />
 										<BriefcaseAccountOutline v-else :size="44" />
 									</template>
 									<template #subname>
@@ -488,6 +492,7 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 				</div>
 
 				<SearchKlantModal v-if="searchKlantModalOpen"
+					class="higher-index"
 					:dashboard-widget="true"
 					:starting-type="startingType"
 					@selected-klant="fetchKlantData($event)"
@@ -555,7 +560,7 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 			</NcActions>
 			<NcButton v-if="!isView"
 				type="primary"
-				:disabled="!contactMomenten[selectedContactMoment].klant || loading || success || fetchLoading"
+				:disabled="!contactMomenten[selectedContactMoment].klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment(selectedContactMoment)">
 				<template #icon>
@@ -567,12 +572,14 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 		</template>
 
 		<ViewContactMoment v-if="isContactMomentFormOpen"
+			class="higher-index"
 			:dashboard-widget="true"
 			:contact-moment-id="viewContactMomentId"
 			:is-view="viewContactMomentIsView"
 			@close-modal="closeViewContactMomentModal" />
 
 		<EditTaakForm v-if="taakFormOpen"
+			class="higher-index"
 			:dashboard-widget="true"
 			:client-type="taakClientType"
 			:klant-id="contactMomenten[selectedContactMoment].klant?.id"
@@ -580,6 +587,7 @@ import { contactMomentStore, medewerkerStore, navigationStore, taakStore, zaakSt
 			@save-success="closeTaakForm" />
 
 		<ZaakForm v-if="zaakFormOpen"
+			class="higher-index"
 			:dashboard-widget="true"
 			:klant-id="contactMomenten[selectedContactMoment].klant?.id"
 			@close-modal="() => (zaakFormOpen = false)"
@@ -768,7 +776,7 @@ export default {
 					this.channels.values.splice(i, 1)
 				}
 			}
-			this.selectedContactMoment = 1
+			this.selectedContactMoment = this.tabs[0]
 		},
 		newTab() {
 			const index = this.tabCounter + 1
@@ -899,7 +907,7 @@ export default {
 				startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
 				status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
 				contactmoment: contactMomentCopy.selectedKlantContactMoment,
-				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].email,
+				medewerker: this.medewerkers.options[this.selectedContactMoment - 1].id,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
@@ -979,7 +987,7 @@ export default {
 		closeTaakForm(e) {
 			if (e) {
 				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
-				this.contactMomenten[this.selectedContactMoment].klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
+				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
 			}
 			this.taakFormOpen = false
 		},
@@ -1067,9 +1075,10 @@ export default {
 
 		},
 
-		async fetchKlantData(id) {
+		async fetchKlantData(klant) {
+			const klantId = klant.id ?? klant
 			try {
-				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
+				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}`)
 				// ifselectedContactMoment
 				if (this.isView) {
 					this.klant = await klantResponse.json()
@@ -1104,11 +1113,11 @@ export default {
 				 */
 				// #1
 				const results = await Promise.allSettled([
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/contactmomenten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/zaken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/taken`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/berichten`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/audit_trail`),
+					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/contactmomenten`),
 				])
 
 				// #2 & #3
@@ -1161,7 +1170,10 @@ export default {
 
 				if (contactMomentenData?.results && Array.isArray(contactMomentenData.results)) {
 					if (this.isView) {
-						this.klantContactmomenten = contactMomentenData.results
+						const filteredResults = contactMomentenData.results.filter((contactMoment) =>
+							contactMoment.id !== this.contactMoment.id,
+						)
+						this.klantContactmomenten = filteredResults
 					} else {
 						this.contactMomenten[this.selectedContactMoment].klantContactmomenten = contactMomentenData.results
 					}
@@ -1306,4 +1318,7 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 	pointer-events: all !important;
 }
 
+.higher-index {
+	z-index: 10000 !important;
+}
 </style>
