@@ -1,14 +1,10 @@
-<script setup>
-import { navigationStore, contactMomentStore } from '../../store/store.js'
-</script>
-
 <template>
 	<NcAppContent>
 		<template #list>
 			<ContactMomentenList />
 		</template>
 		<template #default>
-			<NcEmptyContent v-if="!contactMomentStore.contactMomentItem?.id || navigationStore.selected !== 'contactMomenten'"
+			<NcEmptyContent v-if="!id"
 				class="detailContainer"
 				name="Geen contact moment"
 				description="Nog geen contact moment geselecteerd">
@@ -16,20 +12,30 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 					<CardAccountPhoneOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
+					<NcButton type="primary"
+						@click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
 						Contact moment aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
-			<ContactMomentDetails v-if="contactMomentStore.contactMomentItem?.id && navigationStore.selected === 'contactMomenten'" :contact-moment-id="contactMomentStore.contactMomentItem?.id" />
+			<ContactMomentDetails v-if="id" :id="id" />
 		</template>
 	</NcAppContent>
 </template>
 
 <script>
+// vue
+import { getCurrentInstance, ref, watch } from 'vue'
+
+// store
+import { navigationStore, contactMomentStore } from '../../store/store.js'
+
+// components
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import ContactMomentenList from './ContactMomentenList.vue'
 import ContactMomentDetails from './ContactMomentDetails.vue'
+
+// icons
 import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
 
 export default {
@@ -41,6 +47,27 @@ export default {
 		ContactMomentenList,
 		ContactMomentDetails,
 		CardAccountPhoneOutline,
+	},
+	setup() {
+		// get a proxy instance, this simulates the `this` keyword in a vue component, which is not available in the setup function
+		const { proxy } = getCurrentInstance()
+
+		// create a ref, which is a reactive reference to the id
+		// this is needed since the component wont be re-rendered when the id changes otherwise
+		const id = ref(proxy.$route.params.id || null)
+
+		// watch the id, and update the ref when the id changes
+		watch(() => proxy.$route.params.id, (newId) => {
+			id.value = newId
+		})
+
+		// return the id and the navigationStore and zaakStore
+		// the store is still required throughout the component, and not exporting them would break it
+		return {
+			navigationStore,
+			contactMomentStore,
+			id,
+		}
 	},
 }
 </script>

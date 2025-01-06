@@ -6,6 +6,7 @@ export const mockKlantData = (): TKlant[] => [
 		id: '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
 		type: 'persoon',
 		voornaam: 'John',
+		tweedeVoornaam: '',
 		tussenvoegsel: 'de',
 		achternaam: 'Doe',
 		bsn: '1234567890',

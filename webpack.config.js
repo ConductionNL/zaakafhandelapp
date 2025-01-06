@@ -46,4 +46,11 @@ webpackConfig.entry = {
 	},
 }
 
+webpackConfig.resolve = {
+	extensions: ['.ts', '.js', '.vue', '.json'],
+	alias: {
+		'@': path.resolve(__dirname, 'src/'),
+	},
+}
+
 module.exports = webpackConfig

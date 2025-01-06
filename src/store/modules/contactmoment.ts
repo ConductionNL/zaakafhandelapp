@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { ContactMoment, TContactMoment } from '../../entities/index.js'
+import router from '../../router/router'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/contactmomenten'
 
@@ -35,22 +36,26 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 *
 		 * @param search - Optional search query to filter the contact moments list. (default: `null`)
 		 * @param notClosed - Optional boolean to filter out closed contact moments from the contact moments list. (default: `false`)
+		 * @param user
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
 		 */
-		async refreshContactMomentenList(search: string = null, notClosed: boolean = false): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
+		async refreshContactMomentenList(search: string = null, notClosed: boolean = false, user: string = null): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
 			let endpoint = apiEndpoint
 
-			if (search !== null && search !== '') {
-				endpoint = endpoint + '?_search=' + search
+			const params = new URLSearchParams()
+			if (search) {
+				params.append('_search', search)
+			}
+			if (notClosed) {
+				params.append('status', 'open')
+			}
+			if (user) {
+				params.append('medewerker', user)
 			}
 
-			if (notClosed) {
-				if (search !== null && search !== '') {
-					endpoint = endpoint + '&status=open'
-				} else {
-					endpoint = endpoint + '?status=open'
-				}
+			if (params.toString()) {
+				endpoint += `?${params.toString()}`
 			}
 
 			const response = await fetch(endpoint, {
@@ -124,6 +129,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 			}
 
 			this.refreshContactMomentenList()
+			router.push({ name: 'dynamic-view', params: { view: 'contactmomenten' } })
 
 			return { response }
 		},
@@ -132,10 +138,15 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Otherwise, it will be updated.
 		 *
 		 * @param contactMomentItem - The contact moment item to save.
+		 * @param options - The options to save the contact moment.
+		 * @param options.redirect - Whether to redirect to the contact moment after saving. (default: `true`)
 		 * @throws If there is no contact moment item to save or if the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
 		 */
-		async saveContactMoment(contactMomentItem: TContactMoment | ContactMoment): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
+		async saveContactMoment(
+			contactMomentItem: TContactMoment | ContactMoment,
+			options: { redirect?: boolean } = { redirect: true },
+		): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
 			if (!contactMomentItem) {
 				throw new Error('No contactmoment item to save')
 			}
@@ -167,6 +178,9 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 
 			this.setContactMomentItem(data)
 			this.refreshContactMomentenList()
+			if (options.redirect) {
+				router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: entity.id } })
+			}
 
 			return { response, data, entity }
 		},

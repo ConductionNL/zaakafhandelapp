@@ -5,8 +5,9 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!klantStore.klantItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="klantStore.klantItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ getName(klantStore.klantItem) }}
@@ -288,7 +289,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcEmptyContent, NcListItem } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcEmptyContent, NcListItem, NcLoadingIcon } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
 // Icons
@@ -311,6 +312,7 @@ export default {
 		BTabs,
 		BTab,
 		NcListItem,
+		NcLoadingIcon,
 		// Icons
 		DotsHorizontal,
 		Pencil,
@@ -321,6 +323,12 @@ export default {
 		Eye,
 		TimelineQuestionOutline,
 	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
 	data() {
 		return {
 			currentActiveKlant: undefined, // whole klant object
@@ -328,6 +336,7 @@ export default {
 			taken: [],
 			berichten: [],
 			auditTrails: [],
+			loading: true,
 		}
 	},
 	computed: {
@@ -335,21 +344,26 @@ export default {
 			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === klantStore.klantItem.id)
 		},
 	},
-	mounted() {
-		this.fetchContactMomenten()
-
-		if (klantStore.klantItem?.id) {
-			this.currentActiveKlant = klantStore.klantItem
-			this.fetchKlantData(klantStore.klantItem.id)
-		}
+	watch: {
+		id(newId) {
+			this.fetchKlantData(newId)
+		},
 	},
-	updated() {
-		if (klantStore.klantItem?.id && JSON.stringify(this.currentActiveKlant) !== JSON.stringify(klantStore.klantItem)) {
-			this.currentActiveKlant = klantStore.klantItem
-			this.fetchKlantData(klantStore.klantItem.id)
-		}
+	mounted() {
+		this.fetchData(this.id)
 	},
 	methods: {
+		fetchData(id) {
+			this.loading = true
+
+			klantStore.getKlant(id)
+				.finally(() => {
+					this.loading = false
+				})
+
+			this.fetchContactMomenten()
+			this.fetchKlantData(id)
+		},
 		async fetchKlantData(id) {
 			// when using Promise.allSettled, it will return an array of items.
 			// these items contain a status string, which is either 'fulfilled' or 'rejected'.

@@ -14,6 +14,7 @@ export const mockTaakData = (): TTaak[] => [
 		actie: 'Voorbereiden van auditchecklist, uitvoeren van audits, rapporteren van bevindingen, aanbevelen van verbeteringen.',
 		klant: 'urn:uuid:6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b',
 		medewerker: 'urn:uuid:6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b',
+		contactmoment: 'urn:uuid:6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b',
 	},
 ]
 

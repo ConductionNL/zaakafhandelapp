@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { TRol, Rol } from '../../entities/index.js'
 
-const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/rollen'
+const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/rollen'
 
 type TOptions = {
 	/**

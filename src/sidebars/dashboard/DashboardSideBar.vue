@@ -1,7 +1,3 @@
-<script setup>
-import { store } from '../../store.js'
-</script>
-
 <template>
 	<NcAppSidebar
 		name="Snelle start"
@@ -31,13 +27,10 @@ import { store } from '../../store.js'
 </template>
 <script>
 
-import { NcAppSidebar, NcAppSidebarTab, NcTextField, NcNoteCard, NcListItem, NcActionButton } from '@nextcloud/vue'
+import { NcAppSidebar, NcAppSidebarTab, NcNoteCard } from '@nextcloud/vue'
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
-import Publish from 'vue-material-design-icons/Publish.vue'
-import Delete from 'vue-material-design-icons/Delete.vue'
 
 export default {
 	name: 'DashboardSideBar',

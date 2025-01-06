@@ -71,6 +71,7 @@ export default {
 			 * determines if the contactmoment form modal is open
 			 */
 			isContactMomentFormOpen: false,
+			userEmail: null,
 			contactMomentItems: [],
 			// contactmoment form props
 			contactMomentId: null,
@@ -93,14 +94,28 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchContactMomentItems()
+		this.fetchUser()
 	},
 	methods: {
+		async fetchUser() {
+			this.loading = true
+
+			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
+			const user = await getUser.json()
+
+			const medewerkerList = await fetch('/index.php/apps/zaakafhandelapp/api/medewerkers')
+			const medewerkers = await medewerkerList.json()
+
+			const medewerker = medewerkers.results.find((medewerker) => medewerker.email === user.user.email)
+
+			this.userEmail = medewerker.email
+			this.fetchContactMomentItems()
+		},
 		fetchContactMomentItems() {
 			this.loading = true
 
 			Promise.all([
-				contactMomentStore.refreshContactMomentenList(null, true),
+				contactMomentStore.refreshContactMomentenList(null, true, this.userEmail),
 				klantStore.refreshKlantenList(),
 			])
 				.then(([contactMomentResponse, klantResponse]) => {
@@ -114,7 +129,20 @@ export default {
 							return ''
 						})(),
 						subText: new Date(contactMoment.startDate).toLocaleString(),
-						avatarUrl: this.getItemIcon(),
+						avatarUrl: (() => {
+							switch (contactMoment.kanaal) {
+							case 'telefoon':
+								return this.getItemPhoneIcon()
+							case 'email':
+								return this.getItemEmailIcon()
+							case 'brief':
+								return this.getItemMailboxIcon()
+							case 'balie':
+								return this.getItemAgentIcon()
+							default:
+								return this.getItemIcon()
+							}
+						})(),
 					}))
 				})
 				.finally(() => {
@@ -133,6 +161,50 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
 		},
+		getItemPhoneIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/phone-dark.svg` : `${appLocation}/zaakafhandelapp/img/phone.svg`
+		},
+		getItemEmailIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/email-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/email-outline.svg`
+		},
+		getItemMailboxIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/mailbox-open-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/mailbox-open-outline.svg`
+		},
+		getItemAgentIcon() {
+			const theme = getTheme()
+
+			let appLocation = '/custom_apps'
+
+			if (window.location.hostname === 'nextcloud.local') {
+				appLocation = '/apps-extra'
+			}
+
+			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/face-agent-dark.svg` : `${appLocation}/zaakafhandelapp/img/face-agent.svg`
+		},
 		// === MODAL CONTROL ===
 		/**
 		 * Opens the contactmoment form modal in create/add mode
@@ -149,6 +221,7 @@ export default {
 			this.isContactMomentFormOpen = false
 			this.isView = false
 			navigationStore.setModal(null)
+			this.fetchContactMomentItems()
 		},
 		// === EVENTS ===
 		/**
@@ -198,14 +271,15 @@ export default {
 }
 </script>
 <style scoped>
-.contactmomentenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.contactmomentenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
-.itemContainer{
+
+.itemContainer {
 	overflow: auto;
 	margin-block-end: var(--zaa-margin-10);
- }
+}
 </style>

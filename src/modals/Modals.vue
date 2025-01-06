@@ -14,6 +14,7 @@ import { navigationStore } from '../store/store.js'
 		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
 		<!-- contactmomenten -->
 		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
+		<ViewContactMoment v-if="navigationStore.viewModal === 'viewContactMoment'" />
 		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<!-- zaaktypen -->
 		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
@@ -21,6 +22,7 @@ import { navigationStore } from '../store/store.js'
 		<!-- klanten -->
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
+		<ViewKlant v-if="navigationStore.modal === 'viewKlant'" />
 		<!-- berichten -->
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
@@ -29,9 +31,17 @@ import { navigationStore } from '../store/store.js'
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<!-- rollen -->
 		<EditRol />
-		<!-- klant register -->
-		<ViewKlantRegister v-if="navigationStore.modal === 'viewKlantRegister'" />
+		<!-- medewerkers -->
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
+		<!-- resultaat -->
+		<ResultaatForm v-if="navigationStore.modal === 'resultaatForm'" />
+		<DeleteResultaat v-if="navigationStore.modal === 'deleteResultaat'" />
+		<!-- besluiten -->
+		<BesluitForm v-if="navigationStore.modal === 'besluitForm'" />
+		<DeleteBesluit v-if="navigationStore.modal === 'deleteBesluit'" />
+		<!-- documenten -->
+		<DocumentForm v-if="navigationStore.modal === 'documentForm'" />
+		<DeleteDocument v-if="navigationStore.modal === 'deleteDocument'" />
 	</div>
 </template>
 
@@ -48,13 +58,20 @@ import EditTaak from './taken/EditTaak.vue'
 import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
 import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
-import ViewKlantRegister from './klantRegister/ViewKlantRegister.vue'
+import ViewKlant from './klanten/ViewKlant.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
 import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
 import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
 import AddRolToZaak from './zaken/AddRolToZaak.vue'
+import ResultaatForm from './resultaten/ResultaatForm.vue'
+import DeleteResultaat from './resultaten/DeleteResultaat.vue'
+import BesluitForm from './besluiten/BesluitForm.vue'
+import DeleteBesluit from './besluiten/DeleteBesluit.vue'
+import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
+import DocumentForm from './documenten/DocumentForm.vue'
+import DeleteDocument from './documenten/DeleteDocument.vue'
 
 export default {
 	name: 'Modals',
@@ -71,13 +88,20 @@ export default {
 		ViewTaakAuditTrail,
 		EditRol,
 		ViewZaakAuditTrail,
-		ViewKlantRegister,
+		ViewKlant,
 		DeleteContactMoment,
 		EditMedewerker,
 		AddBerichtToZaak,
 		AddTaakToZaak,
 		ContactMomentenForm,
 		AddRolToZaak,
+		ResultaatForm,
+		DeleteResultaat,
+		BesluitForm,
+		DeleteBesluit,
+		ViewContactMoment,
+		DocumentForm,
+		DeleteDocument,
 	},
 }
 </script>

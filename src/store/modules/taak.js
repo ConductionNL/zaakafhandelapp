@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Taak } from '../../entities/index.js'
+import router from '../../router/router.ts'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/taken'
 
@@ -107,6 +108,8 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			this.refreshTakenList()
+			// go back to taken list
+			router.replace({ name: 'dynamic-view', params: { view: 'taken' } })
 
 			return { response }
 		},
@@ -145,6 +148,8 @@ export const useTaakStore = defineStore('taken', {
 			if (!options.doNotRefresh) {
 				this.refreshTakenList()
 			}
+			// go to new item with this id
+			router.push({ name: 'dynamic-view', params: { view: 'taken', id: entity.id } })
 
 			return { response, data, entity }
 		},

@@ -3,8 +3,7 @@ import { klantStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog
-		:name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
+	<NcDialog :name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
 		size="normal"
 		label-id="searchKlantModal"
 		dialog-classes="SearchKlantModal"
@@ -12,28 +11,28 @@ import { klantStore } from '../../store/store.js'
 		@closing="closeModalFromButton()">
 		<div class="listContainer">
 			<div class="filtersContainer">
-				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
+				<NcCheckboxRadioSwitch v-if="startingType === 'persoon' || startingType === 'all'"
 					:checked.sync="klantenSearchType"
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
 					Geboortedatum + achternaam
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
+				<NcCheckboxRadioSwitch v-if="startingType === 'persoon' || startingType === 'all'"
 					:checked.sync="klantenSearchType"
 					value="bsn"
 					name="klantenSearchType"
 					type="radio">
 					BSN
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
+				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie' || startingType === 'all'"
 					:checked.sync="klantenSearchType"
 					value="bedrijfsnaam"
 					name="klantenSearchType"
 					type="radio">
 					Bedrijfsnaam
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
+				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie' || startingType === 'all'"
 					:checked.sync="klantenSearchType"
 					value="kvkNummer"
 					name="klantenSearchType"
@@ -65,31 +64,29 @@ import { klantStore } from '../../store/store.js'
 			<div class="searchInputContainer">
 				<p>{{ searchLabel }}</p>
 				<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
-					<NcDateTimePicker v-model="searchQuery[0]"
-						:disabled="loading"
-						class="date-picker" />
+					<NcDateTimePicker v-model="searchQuery[0]" :disabled="loading" class="date-picker" />
 
 					<NcTextField :disabled="loading"
 						label="achternaam"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[1]" />
 				</div>
 				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
 					<NcTextField :disabled="loading"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[0]" />
 
 					<NcTextField :disabled="loading"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[1]" />
 				</div>
 				<div v-else>
 					<NcTextField :disabled="loading"
 						maxlength="255"
-						class="searchField"
+						class="klantSearchField"
 						:value.sync="searchQuery[0]" />
 				</div>
 			</div>
@@ -113,17 +110,17 @@ import { klantStore } from '../../store/store.js'
 				<NcListItem v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
 					:name="`${getSex(klant)} ${getName(klant)} ${getSubname(klant)}`"
-					:active="selectedKlant === klant?.id"
+					:active="selectedKlant?.id === klant?.id"
 					:force-display-actions="true"
 					:details="_.upperFirst(klant.type)"
-					@click="setActive(klant.id)">
+					@click="setActive(klant)">
 					<template #icon>
 						<OfficeBuildingOutline v-if="klant.type === 'organisatie'"
-							:class="selectedKlant === klant.id && 'selectedZaakIcon'"
+							:class="selectedKlant?.id === klant?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 						<AccountOutline v-if="klant.type === 'persoon'"
-							:class="selectedKlant === klant.id && 'selectedZaakIcon'"
+							:class="selectedKlant?.id === klant?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
@@ -134,7 +131,7 @@ import { klantStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="!klanten?.length && !loading">
-				Geen {{ startingType === 'persoon' ? 'personen' : 'organisaties' }} gevonden.
+				Geen {{ modalType.plural }} gevonden.
 			</div>
 
 			<NcLoadingIcon v-if="loading"
@@ -145,9 +142,7 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton
-				type="secondary"
-				@click="closeModal()">
+			<NcButton type="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
@@ -156,11 +151,11 @@ import { klantStore } from '../../store/store.js'
 			<NcButton
 				type="primary"
 				:disabled="!selectedKlant"
-				@click="addKlant()">
+				@click="selectKlant()">
 				<template #icon>
 					<Plus :size="20" />
 				</template>
-				Koppelen
+				{{ selectButtonLabel }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -193,14 +188,47 @@ export default {
 		NcLoadingIcon,
 	},
 	props: {
+		/**
+		 * Determines the initial type of customer search to display
+		 * @param { "persoon" | "organisatie" | "all" } startingType - The type of customer search to display
+		 * @default 'all'
+		 *
+		 * Controls which type of customer search is initially shown:
+		 * - 'persoon': Only show person search options (BSN, name, birthdate etc)
+		 * - 'organisatie': Only show organization search options (company name, KVK number etc)
+		 * - 'all': Show both person and organization search options (default)
+		 *
+		 * This affects both the UI display and search behavior. The search will be restricted
+		 * to only the specified customer type if 'persoon' or 'organisatie' is set.
+		 */
 		startingType: {
 			type: String,
+			required: true, // required is set to true as I want developers to be aware of the functionality they're adding / using
+			validator(value) {
+				return ['persoon', 'organisatie', 'all'].includes(value)
+			},
+		},
+		/**
+		 * The label of the select button
+		 * @param {string} selectButtonLabel - The label of the select button
+		 * @default Selecteren
+		 */
+		selectButtonLabel: {
+			type: String,
 			required: false,
-			default: 'all',
+			default: 'Selecteren',
 		},
 	},
 	data() {
 		return {
+			modalType: (() => {
+				const typeMap = {
+					persoon: { plural: 'personen', singular: 'persoon' },
+					organisatie: { plural: 'organisaties', singular: 'organisatie' },
+					all: { plural: 'klanten', singular: 'klant' },
+				}
+				return typeMap[this.startingType] || typeMap.all
+			})(),
 			succes: false,
 			loading: false,
 			error: false,
@@ -222,6 +250,13 @@ export default {
 				},
 				organisatie: {
 					default: 'organisatie',
+					bedrijfsnaam: ' met bedrijfsnaam',
+					kvkNummer: ' met KVK nummer',
+				},
+				all: {
+					default: 'klant',
+					geboortedatum_achternaam: ' met geboortedatum en achternaam',
+					bsn: ' met BSN',
 					bedrijfsnaam: ' met bedrijfsnaam',
 					kvkNummer: ' met KVK nummer',
 				},
@@ -258,9 +293,8 @@ export default {
 			this.$emit('close-modal')
 
 		},
-		addKlant() {
-			// eslint-disable-next-line no-console
-			console.log('added')
+		selectKlant() {
+			console.info('klant selected', this.selectedKlant?.id)
 			this.$emit('selected-klant', this.selectedKlant)
 			this.closeModalFromButton()
 		},
@@ -289,7 +323,7 @@ export default {
 
 			const searchParams = new URLSearchParams({
 				...(this.searchQuery && queryParams),
-				...(this.startingType && { type: this.startingType }),
+				...(this.startingType !== 'all' && { type: this.startingType }),
 			}).toString()
 
 			klantStore.searchKlanten(searchParams)
@@ -346,7 +380,7 @@ export default {
 			return ''
 		},
 		setActive(klant) {
-			if (this.selectedKlant === klant) {
+			if (this.selectedKlant?.id === (klant?.id || Symbol('default id'))) {
 				this.selectedKlant = null
 			} else { this.selectedKlant = klant }
 		},
@@ -354,9 +388,7 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
 
 <style scoped>
 .listContainer {
@@ -372,12 +404,15 @@ export default {
 	align-items: end;
 	gap: 10px;
 }
+
 .searchInputContainer :deep(.input-field) {
 	margin-block-end: 3px;
 }
-.searchField {
+
+.klantSearchField {
 	width: auto;
 }
+
 .searchButton {
 	margin-block-start: 3px;
 	margin-block-end: 3px;

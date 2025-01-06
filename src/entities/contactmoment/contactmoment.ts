@@ -12,6 +12,9 @@ export class ContactMoment implements TContactMoment {
 	public product: string
 	public startDate: string
 	public status: string
+	public contactmoment: string
+	public medewerker: string
+	public kanaal: string
 
 	constructor(source: TContactMoment) {
 		this.id = source.id || ''
@@ -23,6 +26,9 @@ export class ContactMoment implements TContactMoment {
 		this.product = source.product || ''
 		this.startDate = source.startDate || ''
 		this.status = source.status || 'open'
+		this.contactmoment = source.contactmoment || ''
+		this.medewerker = source.medewerker || ''
+		this.kanaal = source.kanaal || ''
 	}
 
 	public validate(): SafeParseReturnType<TContactMoment, unknown> {
@@ -36,6 +42,9 @@ export class ContactMoment implements TContactMoment {
 			product: z.string().min(1),
 			startDate: z.string().min(1),
 			status: z.string().min(1),
+			contactmoment: z.string().min(1),
+			medewerker: z.string().min(1),
+			kanaal: z.string().min(1),
 		})
 
 		return schema.safeParse(this)

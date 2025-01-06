@@ -4,6 +4,7 @@ export type TKlant = {
     id: string;
     type: TKlantType;
     voornaam: string;
+    tweedeVoornaam: string;
     tussenvoegsel: string;
     achternaam: string;
     bsn: string;
