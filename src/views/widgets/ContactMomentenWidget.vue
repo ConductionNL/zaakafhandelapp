@@ -266,7 +266,7 @@ export default {
 				status: 'gesloten',
 			})
 
-			contactMomentStore.saveContactMoment(newContactMoment)
+			contactMomentStore.saveContactMoment(newContactMoment, { redirect: false })
 				.then(({ response }) => {
 					if (response.ok) {
 						this.fetchContactMomentItems(null, true)

@@ -239,8 +239,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Producten ${contactMomenten[selectedContactMoment].klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
-									<div v-if="contactMomenten[selectedContactMoment].klant?.producten?.length">
+								<BTab :title="`Producten ${contactMomenten[selectedContactMoment]?.klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
+									<div v-if="contactMomenten[selectedContactMoment]?.klant?.producten?.length">
 										<NcListItem
 											v-for="(product, key) in contactMomenten[selectedContactMoment].klant.producten"
 											:key="key"
@@ -528,9 +528,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
 					v-tooltip="'Een klant taak kan alleen worden aangemaakt als er een klant is geselecteerd.'"
-					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment].klant?.id }"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment].klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
 					@click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
@@ -539,9 +539,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
 					v-tooltip="'Een zaak kan alleen worden gestart als er een klant is geselecteerd.'"
-					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment].klant?.id }"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment].klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
 					@click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
@@ -560,7 +560,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</NcActions>
 			<NcButton v-if="!isView"
 				type="primary"
-				:disabled="!contactMomenten[selectedContactMoment].klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
+				:disabled="!contactMomenten[selectedContactMoment]?.klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment(selectedContactMoment)">
 				<template #icon>
