@@ -1,7 +1,3 @@
-<script setup>
-import { navigationStore } from '../../store/store.js'
-</script>
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -43,6 +39,7 @@ export default {
 		return {
 			zaak: [],
 			loading: false,
+			statusItem: [],
 		}
 	},
 	watch: {
@@ -54,7 +51,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.statusItem)
+		this.fetchData(this.statusItem)
 	},
 	methods: {
 		fetchData(statusId) {

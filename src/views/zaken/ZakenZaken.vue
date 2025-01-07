@@ -48,8 +48,8 @@ import { zaakStore } from '../../store/store.js'
 </template>
 <script>
 import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ZakenZaken',

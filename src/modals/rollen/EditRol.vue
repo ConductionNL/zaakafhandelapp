@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -59,13 +59,13 @@ export default {
 	},
 	updated() {
 		if (navigationStore.modal === 'editRol' && this.hasUpdated) {
-			if (this.rol === store.rolItem) return
+			if (this.rol === rolStore.rolItem) return
 			this.hasUpdated = false
 		}
 		if (navigationStore.modal === 'editRol' && !this.hasUpdated) {
-			this.fetchData(store.rolId)
+			this.fetchData(rolStore.rolId)
 			this.hasUpdated = true
-			this.rol = store.rolItem
+			this.rol = rolStore.rolItem
 		}
 	},
 	methods: {
@@ -87,7 +87,7 @@ export default {
 					const self = this
 					setTimeout(function() {
 						self.succes = false
-						store.setModal(false)
+						navigationStore.setModal(false)
 					}, 2000)
 				})
 				.catch((err) => {
@@ -101,7 +101,7 @@ export default {
 		},
 		editRol() {
 			fetch(
-				`/index.php/apps/zaakafhandelapp/api/objects/rollen/${store.rolId}`,
+				`/index.php/apps/zaakafhandelapp/api/objects/rollen/${rolStore.rolId}`,
 				{
 					method: 'PUT',
 					headers: {

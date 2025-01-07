@@ -1,35 +1,35 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useZaakStore } from './zaken.js'
-import { Zaak, mockZaak } from '../../entities/index.js'
+import { useBerichtStore } from './berichten.js'
+import { Bericht, mockBericht } from '../../entities/index.js'
 
-describe('Zaak Store', () => {
+describe('Bericht Store', () => {
 	beforeEach(() => {
 		setActivePinia(createPinia())
 	})
 
 	it('sets zaak item correctly', () => {
-		const store = useZaakStore()
+		const store = useBerichtStore()
 
-		store.setZaakItem(mockZaak()[0])
+		store.setBerichtItem(mockBericht()[0])
 
-		expect(store.zaakItem).toBeInstanceOf(Zaak)
-		expect(store.zaakItem).toEqual(mockZaak()[0])
+		expect(store.berichtItem).toBeInstanceOf(Bericht)
+		expect(store.berichtItem).toEqual(mockBericht()[0])
 
-		expect(store.zaakItem.validate().success).toBe(true)
+		expect(store.berichtItem.validate().success).toBe(true)
 	})
 
 	it('sets zaken list correctly', () => {
-		const store = useZaakStore()
+		const store = useBerichtStore()
 
-		store.setZakenList(mockZaak())
+		store.setBerichtList(mockBericht())
 
-		expect(store.zakenList).toHaveLength(mockZaak().length)
+		expect(store.berichtList).toHaveLength(mockBericht().length)
 
-		store.zakenList.forEach((item, index) => {
-			expect(item).toBeInstanceOf(Zaak)
-			expect(item).toEqual(mockZaak()[index])
+		store.berichtList.forEach((item, index) => {
+			expect(item).toBeInstanceOf(Bericht)
+			expect(item).toEqual(mockBericht()[index])
 			expect(item.validate().success).toBe(true)
 		})
 	})

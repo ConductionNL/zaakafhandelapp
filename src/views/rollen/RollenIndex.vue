@@ -30,8 +30,8 @@ import { navigationStore } from '../../store/store.js'
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
 import RollenList from './RollenList.vue'
 import RolDetails from './RolDetails.vue'
-// eslint-disable-next-line n/no-missing-import
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
 export default {
 	name: 'RollenIndex',

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useNavigationStore } from './navigation.js'
+import { useNavigationStore } from './navigation.ts'
 
 describe('Navigation Store', () => {
 	beforeEach(() => {
