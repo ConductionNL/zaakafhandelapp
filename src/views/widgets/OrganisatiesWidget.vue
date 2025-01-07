@@ -23,7 +23,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			<NcTextField :disabled="loading"
 				label="Zoeken op bedrijfsnaam"
 				maxlength="255"
-				class="searchField"
+				class="OrgSearchField"
 				:value.sync="searchOrganisatie" />
 
 			<NcButton type="primary"
@@ -35,13 +35,13 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				</template>
 				Zoeken
 			</NcButton>
-
-			<ViewKlant v-if="isModalOpen"
-				:dashboard-widget="true"
-				:klant-id="klantStore.widgetKlantId"
-				@save-success="fetchOrganisatieItems"
-				@close-modal="() => (isModalOpen = false)" />
 		</div>
+
+		<ViewKlant v-if="isModalOpen"
+			:dashboard-widget="true"
+			:klant-id="klantStore.widgetKlantId"
+			@save-success="fetchOrganisatieItems"
+			@close-modal="() => (isModalOpen = false)" />
 	</div>
 </template>
 
@@ -160,7 +160,7 @@ export default {
 	align-items: end;
 	gap: 10px;
 }
-.searchField {
+.OrgSearchField {
 	width: auto;
 }
 .searchButton {
