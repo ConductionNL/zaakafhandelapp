@@ -988,6 +988,9 @@ export default {
 			if (e) {
 				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
 				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
+
+				// set the selected taak for current contactmoment to the new taak
+				this.contactMomenten[this.selectedContactMoment].selectedTaak = e
 			}
 			this.taakFormOpen = false
 		},
