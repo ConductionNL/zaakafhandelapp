@@ -10,6 +10,15 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		:close-on-click-outside="false"
 		@closing="closeModalFromButton()">
 		<div v-if="!isView" class="tabContainer">
+			<div class="newTabButtonContainer">
+				<NcButton type="primary" class="newTabButton" @click="newTab">
+					<template #icon>
+						<Plus :size="20" />
+					</template>
+					Nieuw contactmoment
+				</NcButton>
+			</div>
+
 			<BTabs card>
 				<BTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
@@ -277,12 +286,6 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						Close tab
 					</NcButton>
 				</BTab>
-
-				<template #tabs-end>
-					<NcButton @click="newTab">
-						<Plus :size="20" />
-					</NcButton>
-				</template>
 			</BTabs>
 		</div>
 		<div v-if="isView">
@@ -1291,14 +1294,15 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 	margin-block-end: 100px;
 }
 
-.tabContainer {
-	margin-block-end: var(--zaa-margin-20);
+.newTabButtonContainer {
+    width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
 }
 
-.newTabButton>a {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+.tabContainer {
+	margin-block-end: var(--zaa-margin-20);
 }
 
 .modalButtonsContainer {
