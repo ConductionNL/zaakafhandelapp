@@ -1,6 +1,4 @@
 /* import icons css file */
-@import "../src/services/icons/icons.css";
-
 .icon-zaken-widget {
   background-image: url("../img/app-dark.svg");
   filter: var(--background-invert-if-dark);
