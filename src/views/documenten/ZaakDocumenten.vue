@@ -50,8 +50,8 @@ import { navigationStore, documentStore } from '../../store/store.js'
 
 <script>
 import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline'
+
+import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 

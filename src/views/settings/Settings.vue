@@ -239,7 +239,7 @@ export default {
 				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
 				{ id: 'contactmomenten', title: 'Contactmomenten', description: 'Configureer de opslag voor contactmomenten', helpLink: 'https://example.com/help/contactmomenten' },
 				{ id: 'medewerkers', title: 'Medewerkers', description: 'Configureer de opslag voor medewerkers', helpLink: 'https://example.com/help/medewerkers' },
-				{ id: 'rollen', title: 'Rollen', description: 'Configureer de opslag voor rollen', helpLink: 'https://example.com/help/rollen' }
+				{ id: 'rollen', title: 'Rollen', description: 'Configureer de opslag voor rollen', helpLink: 'https://example.com/help/rollen' },
 			],
 		}
 	},

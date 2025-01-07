@@ -65,5 +65,6 @@ class ContactmomentenWidget implements IWidget
     {
         Util::addScript(Application::APP_ID, Application::APP_ID . '-contactmomentenWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
+        Util::addStyle(Application::APP_ID, 'icons');
     }
 }

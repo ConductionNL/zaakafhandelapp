@@ -23,7 +23,6 @@ export const useBesluitStore = defineStore('besluiten', {
 		/**
 		 * Fetch a single besluit item by its ID.
 		 *
-		 * @param zaakId - The ID of the zaak the besluit belongs to
 		 * @param id - The ID of the besluit item to fetch.
 		 * @param options - Options for fetching the besluit item. (default: `{}`)
 		 * @throws If the HTTP request fails.

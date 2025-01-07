@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { besluitStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -55,7 +55,7 @@ export default {
 	},
 	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData(store.besluitItem)
+		this.fetchData(besluitStore.besluitItem)
 	},
 	methods: {
 		fetchData(besluitId) {

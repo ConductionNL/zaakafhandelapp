@@ -65,5 +65,6 @@ class OrganisatiesWidget implements IWidget
     {
         Util::addScript(Application::APP_ID, Application::APP_ID . '-organisatiesWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
+        Util::addStyle(Application::APP_ID, 'icons');
     }
 }
