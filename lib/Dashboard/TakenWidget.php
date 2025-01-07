@@ -65,5 +65,6 @@ class TakenWidget implements IWidget
     {
         Util::addScript(Application::APP_ID, Application::APP_ID . '-takenWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
+        Util::addStyle(Application::APP_ID, 'icons');
     }
 }

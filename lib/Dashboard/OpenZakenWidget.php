@@ -65,5 +65,6 @@ class OpenZakenWidget implements IWidget
     {
         Util::addScript(Application::APP_ID, Application::APP_ID . '-openZakenWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
+        Util::addStyle(Application::APP_ID, 'icons');
     }
 }
