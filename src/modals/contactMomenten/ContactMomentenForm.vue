@@ -3,7 +3,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 </script>
 
 <template>
-	<NcDialog name="Contactmoment"
+	<NcDialog :name="Object.keys(contactMomenten).length > 1 ? 'Contactmomenten' : 'Contactmoment'"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
