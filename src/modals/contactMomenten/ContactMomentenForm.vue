@@ -877,7 +877,7 @@ export default {
 							// I hate this code...
 							// This code sets the selected medewerker for the current tab based on the index.
 							// to ensure this works with other tabs it'll spread the values array and then add the selected medewerker
-							// and then spread the values array again to add the rest of the values. (if there are any values behind )
+							// and then spread the values array again to add the rest of the values. (if there are any values ahead)
 							...(this.medewerkers.values).slice(0, index - 1),
 							selectedMedewerker
 								? {
