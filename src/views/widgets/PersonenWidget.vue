@@ -79,8 +79,11 @@ import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nex
 import { getTheme } from '../../services/getTheme.js'
 import { iconCalendarMonthOutline, iconCardAccountPhoneOutline, iconBriefcaseAccountOutline } from '../../services/icons/index.js'
 
+// icons
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+
+// Modals
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import ZaakForm from '../../modals/zaken/ZaakForm.vue'
