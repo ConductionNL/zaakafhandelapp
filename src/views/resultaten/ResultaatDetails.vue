@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { resultaatStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -54,7 +54,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.resultaatItem)
+		this.fetchData(resultaatStore.resultaatItem)
 	},
 	methods: {
 		fetchData(resultaatId) {

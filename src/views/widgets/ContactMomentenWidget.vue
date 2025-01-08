@@ -103,10 +103,17 @@ export default {
 			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
 			const user = await getUser.json()
 
-			const medewerkerList = await fetch('/index.php/apps/zaakafhandelapp/api/medewerkers')
-			const medewerkers = await medewerkerList.json()
+			const medewerkers = await fetch('/ocs/v1.php/cloud/users/details', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			})
+				.then(response => response.json())
+				.then((data) => Object.values(data.ocs.data.users))
 
-			const medewerker = medewerkers.results.find((medewerker) => medewerker.email === user.user.email)
+			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.user.id)
 
 			this.userEmail = medewerker.email
 			this.fetchContactMomentItems()
@@ -259,7 +266,7 @@ export default {
 				status: 'gesloten',
 			})
 
-			contactMomentStore.saveContactMoment(newContactMoment)
+			contactMomentStore.saveContactMoment(newContactMoment, { redirect: false })
 				.then(({ response }) => {
 					if (response.ok) {
 						this.fetchContactMomentItems(null, true)

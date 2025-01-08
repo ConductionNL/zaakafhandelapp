@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -67,10 +67,10 @@ import { navigationStore } from '../../store/store.js'
 </template>
 <script>
 import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import ChatOutline from 'vue-material-design-icons/ChatOutline'
+
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
 export default {
 	name: 'RollenList',
@@ -95,8 +95,8 @@ export default {
 	},
 	methods: {
 		editRol(rol) {
-			store.setRolItem(rol)
-			store.setRolId(rol.id)
+			rolStore.setRolItem(rol)
+			rolStore.setRolId(rol.id)
 			navigationStore.setModal('editRol')
 		},
 		fetchData(newPage) {

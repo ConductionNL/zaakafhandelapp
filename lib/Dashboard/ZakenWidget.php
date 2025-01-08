@@ -65,5 +65,6 @@ class ZakenWidget implements IWidget
     {
         Util::addScript(Application::APP_ID, Application::APP_ID . '-zakenWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
+        Util::addStyle(Application::APP_ID, 'icons');
     }
 }

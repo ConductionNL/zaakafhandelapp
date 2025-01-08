@@ -39,7 +39,6 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			<ViewKlant v-if="isModalOpen"
 				:dashboard-widget="true"
 				:klant-id="klantStore.widgetKlantId"
-				@save-success="fetchPersonenItems"
 				@close-modal="() => (isModalOpen = false)" />
 
 			<SearchKlantModal v-if="searchKlantModalOpen"

@@ -35,7 +35,7 @@ import TakenList from './TakenList.vue'
 import TaakDetails from './TaakDetails.vue'
 
 // icons
-import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline'
+import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
 
 export default {
 	name: 'TakenIndex',

@@ -65,5 +65,6 @@ class PersonenWidget implements IWidget
     {
         Util::addScript(Application::APP_ID, Application::APP_ID . '-personenWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
+        Util::addStyle(Application::APP_ID, 'icons');
     }
 }

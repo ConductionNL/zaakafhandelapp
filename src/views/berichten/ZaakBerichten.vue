@@ -62,7 +62,6 @@ import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 // Icons
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
