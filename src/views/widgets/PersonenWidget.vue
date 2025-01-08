@@ -1,5 +1,5 @@
 <script setup>
-import { klantStore, navigationStore } from '../../store/store.js'
+import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -7,7 +7,10 @@ import { klantStore, navigationStore } from '../../store/store.js'
 		<div class="itemContainer">
 			<NcDashboardWidget :items="personenItems"
 				:item-menu="itemMenu"
-				@show="onShow">
+				@show="onShow"
+				@startZaak="() => (zaakFormModalOpen = true)"
+				@startContactmoment="() => (contactmomentModalOpen = true)"
+				@startTaak="() => (taakModalOpen = true)">
 				<template #empty-content>
 					<div>
 						<NcEmptyContent v-if="loading" name="Persoon laden...">
@@ -36,16 +39,35 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				Zoek
 			</NcButton>
 
-			<ViewKlant v-if="isModalOpen"
-				:dashboard-widget="true"
-				:klant-id="klantStore.widgetKlantId"
-				@close-modal="() => (isModalOpen = false)" />
-
 			<SearchKlantModal v-if="searchKlantModalOpen"
 				:dashboard-widget="true"
 				starting-type="persoon"
 				@selected-klant="createKlantItems($event)"
 				@close-modal="() => (searchKlantModalOpen = false)" />
+
+			<ViewKlant v-if="isModalOpen"
+				:dashboard-widget="true"
+				:klant-id="selectedKlantId"
+				@close-modal="() => (isModalOpen = false)" />
+
+			<ZaakForm v-if="zaakFormModalOpen"
+				:dashboard-widget="true"
+				:klant-id="selectedKlantId"
+				@close-modal="() => (zaakFormModalOpen = false)"
+				@save-success="fetchZaakItems" />
+
+			<ContactMomentenForm v-if="contactmomentModalOpen"
+				:dashboard-widget="true"
+				:klant-id="selectedKlantId"
+				@close-modal="() => (contactmomentModalOpen = false)"
+				@save-success="fetchContactMomentenItems" />
+
+			<EditTaak v-if="taakModalOpen"
+				:dashboard-widget="true"
+				client-type="klant"
+				:klant-id="selectedKlantId"
+				@close-modal="() => (taakModalOpen = false)"
+				@save-success="fetchTaakItems" />
 		</div>
 	</div>
 </template>
@@ -53,11 +75,17 @@ import { klantStore, navigationStore } from '../../store/store.js'
 <script>
 // Components
 import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nextcloud/vue'
+
 import { getTheme } from '../../services/getTheme.js'
+import { iconCalendarMonthOutline, iconCardAccountPhoneOutline, iconBriefcaseAccountOutline } from '../../services/icons/index.js'
+
 import Search from 'vue-material-design-icons/Magnify.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
 import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
+import EditTaak from '../../modals/taken/EditTaak.vue'
 
 export default {
 	name: 'PersonenWidget',
@@ -81,10 +109,25 @@ export default {
 			searchPerson: '',
 			selectedKlantId: '',
 			searchKlantModalOpen: false,
+			zaakFormModalOpen: false,
+			contactmomentModalOpen: false,
+			taakModalOpen: false,
 			itemMenu: {
 				show: {
 					text: 'Bekijk',
 					icon: 'icon-toggle',
+				},
+				startZaak: {
+					text: 'Start zaak',
+					icon: iconBriefcaseAccountOutline,
+				},
+				startContactmoment: {
+					text: 'Start contactmoment',
+					icon: iconCardAccountPhoneOutline,
+				},
+				startTaak: {
+					text: 'Start taak',
+					icon: iconCalendarMonthOutline,
 				},
 			},
 		}
@@ -92,6 +135,8 @@ export default {
 
 	methods: {
 		createKlantItems(klant) {
+			this.selectedKlantId = klant.id
+
 			this.personenItems = [{
 				id: klant.id,
 				mainText: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
@@ -120,7 +165,27 @@ export default {
 			klantStore.setWidgetKlantId(item.id)
 			this.isModalOpen = true
 			navigationStore.setModal('viewKlant')
-
+		},
+		fetchZaakItems() {
+			this.loading = true
+			zaakStore.refreshZakenList()
+				.then(() => {
+					this.loading = false
+				})
+		},
+		fetchContactMomentenItems() {
+			this.loading = true
+			contactMomentStore.refreshContactMomentenList()
+				.then(() => {
+					this.loading = false
+				})
+		},
+		fetchTaakItems() {
+			this.loading = true
+			taakStore.refreshTakenList()
+				.then(() => {
+					this.loading = false
+				})
 		},
 	},
 
