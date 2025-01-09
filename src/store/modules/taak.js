@@ -114,7 +114,7 @@ export const useTaakStore = defineStore('taken', {
 			return { response }
 		},
 		// Create or save a taak from store
-		async saveTaak(taakItem, options = {}) {
+		async saveTaak(taakItem, options = { redirect: true }) {
 			if (!taakItem) {
 				throw new Error('No taak item to save')
 			}
@@ -148,8 +148,10 @@ export const useTaakStore = defineStore('taken', {
 			if (!options.doNotRefresh) {
 				this.refreshTakenList()
 			}
-			// go to new item with this id
-			router.push({ name: 'dynamic-view', params: { view: 'taken', id: entity.id } })
+			if (options.redirect) {
+				// go to new item with this id
+				router.push({ name: 'dynamic-view', params: { view: 'taken', id: entity.id } })
+			}
 
 			return { response, data, entity }
 		},

@@ -555,7 +555,7 @@ export default {
 				medewerker: medewerkerId || null,
 				status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
 				deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
-			})
+			}, { redirect: !this.dashboardWidget })
 				.then((response) => {
 					this.success = response.response.ok
 
