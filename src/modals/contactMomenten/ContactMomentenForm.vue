@@ -910,7 +910,7 @@ export default {
 				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].id,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
-				.then((response) => {
+				.then(({ response, data }) => {
 					this.contactMoment.addedTaken.forEach(taak => {
 						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
 							method: 'GET',
@@ -930,10 +930,13 @@ export default {
 							})
 					})
 
+					this.contactMomenten[this.selectedContactMoment] = {
+						...this.contactMomenten[this.selectedContactMoment],
+						...data,
+					}
+
 					if (this.isView) {
-						response.json().then(data => {
-							this.contactMoment = data
-						})
+						this.contactMoment = data
 
 						if (this.dashboardWidget === true) {
 							this.$emit('save-success')
@@ -949,15 +952,11 @@ export default {
 					this.loading = false
 
 					setTimeout(() => {
-						this.closeTab(this.selectedContactMoment)
 						this.success = false
 						this.succesMessage = false
 					}, 2000)
 					if (this.tabs.length === 1) {
 						if (this.dashboardWidget) this.$emit('save-success')
-						setTimeout(() => {
-							this.closeModal()
-						}, 2000)
 					}
 
 				})
