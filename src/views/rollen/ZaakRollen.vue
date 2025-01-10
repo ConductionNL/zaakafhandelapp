@@ -5,40 +5,40 @@ import { navigationStore, rolStore } from '../../store/store.js'
 <template>
 	<div>
 		<div v-if="filteredRollenList?.length">
-			<NcListItem v-for="(rollen, i) in filteredRollenList"
-				:key="`${rollen}${i}`"
-				:name="rollen?.omschrijving"
-				:active="rolStore.rolItem?.id === rollen.id"
+			<NcListItem v-for="(rol, i) in filteredRollenList"
+				:key="`${rol}${i}`"
+				:name="rol?.roltype"
+				:active="rolStore.rolItem?.id === rol.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="toggleRol(rollen)">
+				@click="toggleRol(rol)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="rolStore.rolItem?.id === rollen.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="rolStore.rolItem?.id === rol.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ rollen?.omschrijving }}
+					{{ rol?.roltoelichting }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="rolStore.setRolItem(rollen); navigationStore.setSelected('rollen')">
+					<NcActionButton @click="$router.push({ name: 'dynamic-view', params: { view: 'rollen', id: rol.id } })">
 						<template #icon>
 							<Eye :size="20" />
 						</template>
 						Bekijken
 					</NcActionButton>
-					<!-- <NcActionButton @click="rolStore.setRolItem(rollen); navigationStore.setModal('rollen')">
+					<NcActionButton @click="rolStore.setRolItem(rol); rolStore.extraData.redirect = false; navigationStore.setModal('rolForm')">
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
 						Bewerken
-					</NcActionButton> -->
-					<NcActionButton>
+					</NcActionButton>
+					<NcActionButton @click="rolStore.setRolItem(rol); navigationStore.setModal('deleteRol')">
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
-						Verwijderen van zaak
+						Verwijderen
 					</NcActionButton>
 				</template>
 			</NcListItem>
@@ -59,6 +59,9 @@ import { navigationStore, rolStore } from '../../store/store.js'
 import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakRollen',

@@ -76,6 +76,15 @@ import { navigationStore } from '../store/store.js'
 					</template>
 				</NcAppNavigationItem>
 			</router-link>
+			<router-link to="/rollen">
+				<NcAppNavigationItem
+					:active="$route.path.startsWith('/rollen')"
+					name="Rollen">
+					<template #icon>
+						<BadgeAccountOutline :size="20" />
+					</template>
+				</NcAppNavigationItem>
+			</router-link>
 			<router-link to="/zoeken">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/zoeken')"
@@ -134,6 +143,7 @@ import Plus from 'vue-material-design-icons/Plus.vue'
 import SortVariantLock from 'vue-material-design-icons/SortVariantLock.vue'
 import Magnify from 'vue-material-design-icons/Magnify.vue'
 import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
+import BadgeAccountOutline from 'vue-material-design-icons/BadgeAccountOutline.vue'
 
 export default {
 	name: 'MainMenu',
