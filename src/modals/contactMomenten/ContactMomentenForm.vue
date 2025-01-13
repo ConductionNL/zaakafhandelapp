@@ -558,6 +558,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Sluit Contactmoment
 				</NcActionButton>
 			</NcActions>
+
 			<NcButton v-if="!isView"
 				type="primary"
 				:disabled="!contactMomenten[selectedContactMoment]?.klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
@@ -567,7 +568,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else :size="20" />
 				</template>
-				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
+				{{ contactMomenten[selectedContactMoment]?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
 
