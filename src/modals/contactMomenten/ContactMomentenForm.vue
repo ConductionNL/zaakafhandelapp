@@ -279,7 +279,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</BTab>
 
 				<template #tabs-end>
-					<NcButton @click="newTab">
+					<NcButton @click="() => newTab()">
 						<Plus :size="20" />
 					</NcButton>
 				</template>
@@ -558,6 +558,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Sluit Contactmoment
 				</NcActionButton>
 			</NcActions>
+
 			<NcButton v-if="!isView"
 				type="primary"
 				:disabled="!contactMomenten[selectedContactMoment]?.klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
@@ -567,7 +568,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else :size="20" />
 				</template>
-				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
+				{{ contactMomenten[selectedContactMoment]?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
 
@@ -713,7 +714,6 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
-					addedTaken: [],
 				},
 			},
 			selectedContactMoment: 1,
@@ -803,7 +803,6 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
-					addedTaken: [],
 				},
 			}
 
@@ -912,16 +911,14 @@ export default {
 
 			this.selectedContactMoment = i
 
-			this.contactMoment = {
-				...this.contactMoment,
-				...this.contactMomenten[i],
-				id: this.contactMoment.id,
-				startDate: this.contactMoment.startDate,
-			}
-
 			this.loading = true
 
-			const contactMomentCopy = _.cloneDeep(this.contactMoment)
+			const contactMomentCopy = _.cloneDeep({
+				...this.contactMoment,
+				...this.contactMomenten[i],
+				id: this.contactMomenten[i]?.id,
+				startDate: this.contactMoment.startDate,
+			})
 
 			contactMomentStore.saveContactMoment({
 				id: contactMomentCopy.id,
@@ -936,30 +933,17 @@ export default {
 				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].id,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
-				.then((response) => {
-					this.contactMoment.addedTaken.forEach(taak => {
-						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
-							method: 'GET',
-						})
-							.then(response => response.json())
-							.then(data => {
-								fetch(`/index.php/apps/zaakafhandelapp/api/taken/${data.id}`, {
-									method: 'PUT',
-									headers: {
-										'Content-Type': 'application/json',
-									},
-									body: JSON.stringify({
-										...data,
-										contactmoment: response.data.id,
-									}),
-								})
-							})
-					})
+				.then(({ response, data }) => {
+
+					this.contactMomenten[this.selectedContactMoment] = {
+						...this.contactMomenten[this.selectedContactMoment],
+						...data,
+					}
+
+					this.fetchKlantData(data.klant)
 
 					if (this.isView) {
-						response.json().then(data => {
-							this.contactMoment = data
-						})
+						this.contactMoment = data
 
 						if (this.dashboardWidget === true) {
 							this.$emit('save-success')
@@ -975,15 +959,11 @@ export default {
 					this.loading = false
 
 					setTimeout(() => {
-						this.closeTab(this.selectedContactMoment)
 						this.success = false
 						this.succesMessage = false
 					}, 2000)
 					if (this.tabs.length === 1) {
 						if (this.dashboardWidget) this.$emit('save-success')
-						setTimeout(() => {
-							this.closeModal()
-						}, 2000)
 					}
 
 				})
@@ -1012,7 +992,6 @@ export default {
 
 		closeTaakForm(e) {
 			if (e) {
-				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
 				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
 			}
 			this.taakFormOpen = false
@@ -1070,7 +1049,6 @@ export default {
 
 			if (this.isEdit) {
 				data = {
-					...this.contactMoment,
 					...this.contactMomenten[this.selectedContactMoment],
 				}
 			} else if (this.isView) {
