@@ -940,7 +940,6 @@ export default {
 						...data,
 					}
 
-					// this.fetchData(data.id, this.selectedContactMoment)
 					this.fetchKlantData(data.klant)
 
 					if (this.isView) {
