@@ -241,7 +241,7 @@ export default {
 				klant: this.klantId,
 			})
 
-			zaakStore.saveZaak(newZaak)
+			zaakStore.saveZaak(newZaak, { redirect: !this.dashboardWidget })
 				.then(({ response }) => {
 					this.success = response.ok
 
