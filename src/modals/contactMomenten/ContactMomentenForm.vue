@@ -279,7 +279,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</BTab>
 
 				<template #tabs-end>
-					<NcButton @click="newTab">
+					<NcButton @click="() => newTab()">
 						<Plus :size="20" />
 					</NcButton>
 				</template>
@@ -714,7 +714,6 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
-					addedTaken: [],
 				},
 			},
 			selectedContactMoment: 1,
@@ -804,7 +803,6 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
-					addedTaken: [],
 				},
 			}
 
@@ -913,16 +911,14 @@ export default {
 
 			this.selectedContactMoment = i
 
-			this.contactMoment = {
-				...this.contactMoment,
-				...this.contactMomenten[i],
-				id: this.contactMoment.id,
-				startDate: this.contactMoment.startDate,
-			}
-
 			this.loading = true
 
-			const contactMomentCopy = _.cloneDeep(this.contactMoment)
+			const contactMomentCopy = _.cloneDeep({
+				...this.contactMoment,
+				...this.contactMomenten[i],
+				id: this.contactMomenten[i]?.id,
+				startDate: this.contactMoment.startDate,
+			})
 
 			contactMomentStore.saveContactMoment({
 				id: contactMomentCopy.id,
@@ -938,29 +934,14 @@ export default {
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
 				.then(({ response, data }) => {
-					this.contactMoment.addedTaken.forEach(taak => {
-						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
-							method: 'GET',
-						})
-							.then(response => response.json())
-							.then(data => {
-								fetch(`/index.php/apps/zaakafhandelapp/api/taken/${data.id}`, {
-									method: 'PUT',
-									headers: {
-										'Content-Type': 'application/json',
-									},
-									body: JSON.stringify({
-										...data,
-										contactmoment: response.data.id,
-									}),
-								})
-							})
-					})
 
 					this.contactMomenten[this.selectedContactMoment] = {
 						...this.contactMomenten[this.selectedContactMoment],
 						...data,
 					}
+
+					// this.fetchData(data.id, this.selectedContactMoment)
+					this.fetchKlantData(data.klant)
 
 					if (this.isView) {
 						this.contactMoment = data
@@ -1012,7 +993,6 @@ export default {
 
 		closeTaakForm(e) {
 			if (e) {
-				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
 				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
 			}
 			this.taakFormOpen = false
@@ -1070,7 +1050,6 @@ export default {
 
 			if (this.isEdit) {
 				data = {
-					...this.contactMoment,
 					...this.contactMomenten[this.selectedContactMoment],
 				}
 			} else if (this.isView) {
