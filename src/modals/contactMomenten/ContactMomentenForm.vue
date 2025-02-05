@@ -43,7 +43,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<p>{{ error }}</p>
 					</NcNoteCard>
 
-					<div v-if="!success">
+					<div>
 						<div class="headerContainer">
 							<div class="personInfoContainer">
 								<NcNoteCard type="info" class="noteCard">
@@ -151,6 +151,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									required />
 							</div>
 						</div>
+						<div>{{ contactMomenten[selectedContactMoment] }}</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
 								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
@@ -538,10 +539,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Medewerker taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een klant taak kan alleen worden aangemaakt als er een klant is geselecteerd.'"
+					v-tooltip="'Een klant taak kan alleen worden aangemaakt als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
 					@click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
@@ -549,10 +550,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een zaak kan alleen worden gestart als er een klant is geselecteerd.'"
-					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
+					v-tooltip="'Een zaak kan alleen worden gestart als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
 					@click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
