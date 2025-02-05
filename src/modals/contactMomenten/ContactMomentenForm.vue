@@ -3,19 +3,39 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 </script>
 
 <template>
-	<NcDialog name="Contactmoment"
+	<NcDialog :name="tabs.length > 1 ? 'Contactmomenten' : 'Contactmoment'"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
 		:close-on-click-outside="false"
 		@closing="closeModalFromButton()">
 		<div v-if="!isView" class="tabContainer">
-			<BTabs card>
+			<div class="newTabButtonContainer">
+				<NcButton type="primary" class="newTabButton" @click="() => newTab()">
+					<template #icon>
+						<Plus :size="20" />
+					</template>
+					Nieuw contactmoment
+				</NcButton>
+			</div>
+
+			<BTabs card class="contactmomentTabsContainer">
 				<BTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
-					:title="contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg'"
 					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
+					<template #title>
+						{{ contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg' }}
+						<NcButton v-if="tabs.length > 1 && !success"
+							v-tooltip="'Sluiten'"
+							type="tertiary"
+							@click="closeTab(i)">
+							<template #icon>
+								<Close :size="20" />
+							</template>
+						</NcButton>
+					</template>
+
 					<NcNoteCard v-if="success" type="success">
 						<p>Contactmoment succesvol opgeslagen</p>
 					</NcNoteCard>
@@ -273,16 +293,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							@selected-klant="fetchKlantData($event)"
 							@close-modal="closeSearchKlantModal" />
 					</div>
-					<NcButton v-if="tabs.length > 1 && !success" @click="closeTab(i)">
-						Close tab
-					</NcButton>
 				</BTab>
-
-				<template #tabs-end>
-					<NcButton @click="() => newTab()">
-						<Plus :size="20" />
-					</NcButton>
-				</template>
 			</BTabs>
 		</div>
 		<div v-if="isView">
@@ -628,6 +639,7 @@ import Phone from 'vue-material-design-icons/Phone.vue'
 import EmailOutline from 'vue-material-design-icons/EmailOutline.vue'
 import FaceAgent from 'vue-material-design-icons/FaceAgent.vue'
 import MailboxOpenOutline from 'vue-material-design-icons/MailboxOpenOutline.vue'
+import Close from 'vue-material-design-icons/Close.vue'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -1289,14 +1301,30 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 	margin-block-end: 100px;
 }
 
-.tabContainer {
-	margin-block-end: var(--zaa-margin-20);
+.newTabButtonContainer {
+    width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
 }
 
-.newTabButton>a {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+.contactmomentTabsContainer :deep(.nav-link) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contactmomentTabsContainer :deep(.nav-link) .button-vue {
+    position: absolute;
+    right: 6px;
+}
+.contactmomentTabsContainer :deep(.nav-link) .button-vue:hover {
+    background-color: rgba(255, 255, 255, 0.045) !important;
+}
+
+.tabContainer {
+	margin-block-end: var(--zaa-margin-20);
 }
 
 .modalButtonsContainer {
