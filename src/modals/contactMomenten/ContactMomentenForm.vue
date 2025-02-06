@@ -11,7 +11,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		@closing="closeModalFromButton()">
 		<div v-if="!isView" class="tabContainer">
 			<div class="newTabButtonContainer">
-				<NcButton type="primary" class="newTabButton" @click="() => newTab()">
+				<NcButton type="primary"
+					class="newTabButton"
+					aria-label="Nieuw contactmoment"
+					@click="() => newTab()">
 					<template #icon>
 						<Plus :size="20" />
 					</template>
@@ -29,6 +32,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<NcButton v-if="tabs.length > 1 && !success"
 							v-tooltip="'Sluiten'"
 							type="tertiary"
+							aria-label="Sluiten"
 							@click="closeTab(i)">
 							<template #icon>
 								<Close :size="20" />
@@ -43,7 +47,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<p>{{ error }}</p>
 					</NcNoteCard>
 
-					<div v-if="!success">
+					<div>
 						<div class="headerContainer">
 							<div class="personInfoContainer">
 								<NcNoteCard type="info" class="noteCard">
@@ -131,7 +135,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</div>
 						</div>
 
-						<div v-if="!success" class="form-group">
+						<div class="form-group">
 							<NcTextArea :value.sync="contactMomenten[i].notitie"
 								label="Notitie"
 								:disabled="loading"
@@ -538,10 +542,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Medewerker taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een klant taak kan alleen worden aangemaakt als er een klant is geselecteerd.'"
+					v-tooltip="'Een klant taak kan alleen worden aangemaakt als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
 					@click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
@@ -549,10 +553,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een zaak kan alleen worden gestart als er een klant is geselecteerd.'"
-					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
+					v-tooltip="'Een zaak kan alleen worden gestart als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
 					@click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
@@ -784,8 +788,6 @@ export default {
 			for (let i = 0; i < this.tabs.length; i++) {
 				if (this.tabs[i] === x) {
 					this.tabs.splice(i, 1)
-					this.medewerkers.values.splice(i, 1)
-					this.channels.values.splice(i, 1)
 				}
 			}
 			this.selectedContactMoment = this.tabs[0]
@@ -1004,7 +1006,9 @@ export default {
 
 		closeTaakForm(e) {
 			if (e) {
-				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
+				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id).then(() => {
+					this.setSelectedTaak(this.selectedContactMoment, e)
+				})
 			}
 			this.taakFormOpen = false
 		},
