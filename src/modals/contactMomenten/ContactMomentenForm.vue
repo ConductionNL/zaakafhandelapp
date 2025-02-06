@@ -155,7 +155,6 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									required />
 							</div>
 						</div>
-						<div>{{ contactMomenten[selectedContactMoment] }}</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
 								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
