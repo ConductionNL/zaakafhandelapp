@@ -135,7 +135,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</div>
 						</div>
 
-						<div v-if="!success" class="form-group">
+						<div class="form-group">
 							<NcTextArea :value.sync="contactMomenten[i].notitie"
 								label="Notitie"
 								:disabled="loading"
@@ -788,8 +788,6 @@ export default {
 			for (let i = 0; i < this.tabs.length; i++) {
 				if (this.tabs[i] === x) {
 					this.tabs.splice(i, 1)
-					this.medewerkers.values.splice(i, 1)
-					this.channels.values.splice(i, 1)
 				}
 			}
 			this.selectedContactMoment = this.tabs[0]
@@ -1008,7 +1006,9 @@ export default {
 
 		closeTaakForm(e) {
 			if (e) {
-				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
+				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id).then(() => {
+					this.setSelectedTaak(this.selectedContactMoment, e)
+				})
 			}
 			this.taakFormOpen = false
 		},
