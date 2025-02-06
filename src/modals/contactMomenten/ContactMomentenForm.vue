@@ -11,7 +11,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		@closing="closeModalFromButton()">
 		<div v-if="!isView" class="tabContainer">
 			<div class="newTabButtonContainer">
-				<NcButton type="primary" class="newTabButton" @click="() => newTab()">
+				<NcButton type="primary"
+					class="newTabButton"
+					aria-label="Nieuw contactmoment"
+					@click="() => newTab()">
 					<template #icon>
 						<Plus :size="20" />
 					</template>
@@ -29,6 +32,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<NcButton v-if="tabs.length > 1 && !success"
 							v-tooltip="'Sluiten'"
 							type="tertiary"
+							aria-label="Sluiten"
 							@click="closeTab(i)">
 							<template #icon>
 								<Close :size="20" />
