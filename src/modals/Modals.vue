@@ -23,6 +23,7 @@ import { navigationStore } from '../store/store.js'
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
 		<ViewKlant v-if="navigationStore.modal === 'viewKlant'" />
+		<DeleteKlant v-if="navigationStore.modal === 'deleteKlant'" />
 		<!-- berichten -->
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
@@ -59,6 +60,7 @@ import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
 import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 import ViewKlant from './klanten/ViewKlant.vue'
+import DeleteKlant from './klanten/DeleteKlant.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
@@ -89,6 +91,7 @@ export default {
 		EditRol,
 		ViewZaakAuditTrail,
 		ViewKlant,
+		DeleteKlant,
 		DeleteContactMoment,
 		EditMedewerker,
 		AddBerichtToZaak,

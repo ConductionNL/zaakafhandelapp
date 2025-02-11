@@ -51,6 +51,12 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							</template>
 							Bewerken
 						</NcActionButton>
+						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('deleteKlant')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Verwijderen
+						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
@@ -78,6 +84,7 @@ import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'KlantenList',
@@ -92,6 +99,7 @@ export default {
 		AccountOutline,
 		Magnify,
 		Pencil,
+		TrashCanOutline,
 	},
 	data() {
 		return {
