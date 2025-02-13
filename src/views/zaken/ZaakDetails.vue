@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore, documentStore } from '../../store/store.js'
+import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore, documentStore, rolStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -29,11 +29,16 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 							</template>
 							Document toevoegen
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setModal('addRolToZaak')">
+						<NcActionButton @click="() => {
+							rolStore.setRolItem(null);
+							rolStore.setZaakId(zaakStore.zaakItem?.id);
+							rolStore.extraData.redirect = false;
+							navigationStore.setModal('rolForm')
+						}">
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
-							Rol toevoegen
+							Rol aanmaken
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('addTaakToZaak')">
 							<template #icon>

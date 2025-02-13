@@ -16,41 +16,47 @@ import { navigationStore, rolStore } from '../../store/store.js'
 					<Magnify :size="20" />
 				</NcTextField>
 				<NcActions>
-					<NcActionButton @click="fetchData">
+					<NcActionButton @click="zaakStore.refreshZakenList()">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
 						Ververs
 					</NcActionButton>
-					<NcActionButton @click="store.setModal('addRoll')">
+					<NcActionButton @click="rolStore.setRolItem(null); navigationStore.setModal('rolForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Rol toevoegen
+						Rol starten
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="!loading">
-				<NcListItem v-for="(rollen, i) in rollenList.results"
-					:key="`${rollen}${i}`"
-					:name="rollen?.name"
-					:active="store.rolId === rollen?.id"
-					:details="'1h'"
-					:counter-number="44"
-					@click="store.setRolItem(rollen)">
+
+			<div v-if="rolStore.rollenList?.length">
+				<NcListItem v-for="(rol, i) in rolStore.rollenList"
+					:key="`${rol}${i}`"
+					:name="rol?.roltype"
+					:force-display-actions="true"
+					:active="$route.params?.id === rol?.id"
+					@click="openRol(rol)">
 					<template #icon>
-						<ChatOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="rolStore.rolItem?.id === rol?.id && 'selectedRolIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ rollen?.summary }}
+						{{ rol.roltoelichting }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="editRol(rol)">
+						<NcActionButton @click="rolStore.setRolItem(rol); navigationStore.setModal('rolForm')">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
 							Bewerken
 						</NcActionButton>
-						<NcActionButton>
+						<NcActionButton @click="rolStore.setRolItem(rol); navigationStore.setModal('deleteRol')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
 							Verwijderen
 						</NcActionButton>
 					</template>
@@ -58,7 +64,11 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="loading"
+		<div v-if="!rolStore.rollenList.length && !loading">
+			Geen rollen gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="!rolStore.rollenList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
@@ -66,80 +76,70 @@ import { navigationStore, rolStore } from '../../store/store.js'
 	</NcAppContentList>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+// Components
+import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
 
+// Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
-
-import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
-
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Refresh from 'vue-material-design-icons/Refresh.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 export default {
 	name: 'RollenList',
 	components: {
+		// Components
 		NcListItem,
+		NcActions,
 		NcActionButton,
 		NcAppContentList,
 		NcTextField,
-		ChatOutline,
-		Magnify,
 		NcLoadingIcon,
+		// Icons
+		BriefcaseAccountOutline,
+		Magnify,
+		Refresh,
+		Plus,
+		Pencil,
+		TrashCanOutline,
 	},
 	data() {
 		return {
 			search: '',
-			loading: true,
+			loading: false,
 			rollenList: [],
 		}
 	},
 	mounted() {
-		this.fetchData()
+		this.loading = true
+
+		Promise.all([
+			rolStore.refreshRollenList(),
+		]).then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
-		editRol(rol) {
-			rolStore.setRolItem(rol)
-			rolStore.setRolId(rol.id)
-			navigationStore.setModal('editRol')
-		},
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/rollen',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.rollenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
 		clearText() {
 			this.search = ''
+		},
+		openRol(rol) {
+			rolStore.setRolItem(rol)
+			this.$router.push({ params: { id: rol.id } })
 		},
 	},
 }
 </script>
-<style>
-.listHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--color-main-background);
-    border-bottom: 1px solid var(--color-border);
-}
 
+<style>
 .searchField {
     padding-inline-start: 65px;
     padding-inline-end: 20px;
     margin-block-end: 6px;
 }
 
-.selectedZaakIcon>svg {
+.selectedRolIcon>svg {
     fill: white;
 }
 

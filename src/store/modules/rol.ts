@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { TRol, Rol } from '../../entities/index.js'
+import router from '../../router/router'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/rollen'
 
@@ -8,12 +9,30 @@ type TOptions = {
 	 * Save the rol item to the store in 'rolItem'
 	 */
 	setItem?: boolean
+	/**
+	 * Redirect to the rol details page after saving the rol item
+	 */
+	redirect?: boolean
 }
 
 export const useRolStore = defineStore('rollen', {
 	state: () => ({
 		rolItem: null as Rol,
 		rollenList: [] as Rol[],
+		zaakId: null as string,
+		/**
+		 * Extra data to pass through the application.
+		 *
+		 * This is used for data which is required to be used somewhere else, but there is no state for, or cannot be inferred from other data.
+		 *
+		 * It is vital to clean this data up after usage.
+		 *
+		 * @example
+		 * - redirect: true
+		 * - redirect: false
+		 * - anything: 'something'
+		 */
+		extraData: {} as Record<string, any>,
 	}),
 	actions: {
 		setRolItem(rolItem: Rol | TRol) {
@@ -25,6 +44,9 @@ export const useRolStore = defineStore('rollen', {
 			    (rolItem) => new Rol(rolItem),
 			)
 			console.info('Rollen list set to ' + rollenList.length + ' items')
+		},
+		setZaakId(zaakId: string) {
+			this.zaakId = zaakId
 		},
 		/**
 		 * Refresh the list of rollen items.
@@ -93,22 +115,19 @@ export const useRolStore = defineStore('rollen', {
 		/**
 		 * Delete a rol item from the database.
 		 *
-		 * @param rolItem - The rol item to delete.
+		 * @param rolId - The id of the rol item to delete.
 		 * @throws If there is no rol item to delete or if the rol item does not have an id.
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response }>} The response from the delete request.
 		 */
-		async deleteRol(rolItem: Rol | TRol): Promise<{ response: Response }> {
-			if (!rolItem) {
+		async deleteRol(rolId: string): Promise<{ response: Response }> {
+			if (!rolId) {
 				throw new Error('No rol item to delete')
 			}
-			if (!rolItem.id) {
-				throw new Error('No id for rol item to delete')
-			}
 
-			const endpoint = `${apiEndpoint}/${rolItem.id}`
+			const endpoint = `${apiEndpoint}/${rolId}`
 
-			console.info('Deleting rol item with id: ' + rolItem.id)
+			console.info('Deleting rol item with id: ' + rolId)
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
@@ -120,6 +139,7 @@ export const useRolStore = defineStore('rollen', {
 			}
 
 			this.refreshRollenList()
+			router.push({ name: 'dynamic-view', params: { view: 'rollen' } })
 
 			return { response }
 		},
@@ -134,11 +154,14 @@ export const useRolStore = defineStore('rollen', {
 		 */
 		async saveRol(
 			rolItem: Rol | TRol,
-			options: TOptions = { setItem: true },
+			options: TOptions = { setItem: true, redirect: true },
 		): Promise<{ response: Response, data: TRol, entity: Rol }> {
 			if (!rolItem) {
 				throw new Error('No rol item to save')
 			}
+
+			// Ensure options fall back to default values if not provided
+			options = { setItem: true, redirect: true, ...options }
 
 			const isNewRol = !rolItem.id
 			const endpoint = isNewRol
@@ -169,6 +192,7 @@ export const useRolStore = defineStore('rollen', {
 
 			options.setItem && this.setRolItem(data)
 			this.refreshRollenList()
+			if (options.redirect) router.push({ name: 'dynamic-view', params: { view: 'rollen', id: entity.id } })
 
 			return { response, data, entity }
 		},
