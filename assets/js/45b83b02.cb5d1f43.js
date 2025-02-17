@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkzaakafhandelapp_docs=self.webpackChunkzaakafhandelapp_docs||[]).push([[929],{1966:a=>{a.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"default"}')}}]);
