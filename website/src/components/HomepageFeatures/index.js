@@ -4,30 +4,31 @@ import styles from './styles.module.css';
 
 /**
  * List of features displayed on the homepage
- * Each feature has a title and description
+ * Each feature has a title and description highlighting key capabilities
+ * of the Zaakafhandelapp case management system
  */
 const FeatureList = [
   {
-    title: '100% Local Processing',
+    title: 'Efficient Case Management',
     description: (
       <>
-        All document processing happens within your Nextcloud instance, ensuring your sensitive data never leaves your secure environment while maintaining full functionality.
+        Streamline your municipal case handling with an intuitive interface that helps track, process and manage cases efficiently while ensuring compliance with Dutch administrative law.
       </>
     ),
   },
   {
-    title: 'Comprehensive Document Services',
+    title: 'Standards-Based Architecture',
     description: (
       <>
-        From document generation and signing to GDPR anonymization and WCAG compliance, DocuDesk provides all the tools you need for modern document management.
+        Built on Dutch government standards like ZGW APIs and Common Ground principles, ensuring interoperability and future-proof case management for municipalities.
       </>
     ),
   },
   {
-    title: 'Seamless Integration',
+    title: 'Complete Process Control',
     description: (
       <>
-        Connect with SharePoint, Office 365, or case management systems while maintaining complete control over your document processing and storage.
+        Manage the entire case lifecycle from intake to archiving, with built-in support for documents, tasks, and communications while maintaining full audit trails.
       </>
     ),
   },
@@ -52,6 +53,7 @@ function Feature({title, description}) {
 
 /**
  * Main component that displays all features on the homepage
+ * Renders the features in a responsive grid layout
  * @returns {JSX.Element} HomepageFeatures component
  */
 export default function HomepageFeatures() {
