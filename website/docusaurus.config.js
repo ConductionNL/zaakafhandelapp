@@ -5,8 +5,8 @@
 const config = {
   title: 'Zaakafhandelapp',
   tagline: 'Efficient case management for municipalities',
-  url: 'https://conductionnl.github.io',
-  baseUrl: '/zaakafhandelapp/',
+  url: 'https://zaakonline.nl',
+  baseUrl: '/',
   
   // GitHub pages deployment config
   organizationName: 'conductionnl', 

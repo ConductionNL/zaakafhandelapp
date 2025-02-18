@@ -1,63 +1,64 @@
-# DocuDesk Documentation
+# Zaakafhandelapp Documentation
 
-DocuDesk provides services for generating and anonymizing PDF, Word, HTML or Excel documents in a GDPR and WCAG compliant manner, all while keeping your data secure within your local Nextcloud instance.
+The Zaakafhandelapp is a comprehensive case management solution designed specifically for Dutch municipalities, enabling efficient and compliant handling of cases (zaken) while integrating seamlessly with existing systems and standards.
 
-## The Power of Local Processing
+## Modern Case Management Made Simple
 
-Imagine a world where your sensitive documents never have to leave your premises, yet you still have all the power of modern cloud collaboration. That's DocuDesk. Running on your local Nextcloud instance, it's like having a secure document fortress with a sophisticated diplomatic corps.
+The Zaakafhandelapp brings modern case management capabilities to municipalities while fully adhering to Dutch administrative standards and Common Ground principles. It provides a complete solution for managing cases from intake to archiving, with powerful features for document management, task tracking, and communication.
 
-When your organization needs to process sensitive documents - whether it's generating contracts, anonymizing personal data, or ensuring accessibility - everything happens within your walls. Your data stays your data. Yet through Nextcloud's powerful integration capabilities, you maintain seamless connections with your SharePoint, Office 365, or case management systems.
+By building on open standards like the ZGW APIs, the Zaakafhandelapp ensures interoperability with other municipal systems while maintaining full control over your processes and data. Whether you're handling permits, complaints, or other municipal cases, the Zaakafhandelapp streamlines your workflows while ensuring compliance.
 
 ## Key Features
 
-- 📄 Generate documents in multiple formats (PDF, Word, HTML, Excel)
-- ✍️ Digital document signing and verification
-- 🔒 GDPR-compliant document anonymization
-- ♿ WCAG accessibility standards compliance
-- 🔄 Batch document processing
-- 📱 Responsive document viewing
-- 🏰 100% Local document processing
-- 🤝 Seamless external system integration
-- 📋 Complete audit trail
-- ⚡ High performance local operations
-- 🔍 Document comparison and version tracking
-- 🏷️ AI-powered document classification
-- 🌐 Multi-language support
-- ✅ Document validation & quality control
-- ⚡ Workflow automation & process management
-- 📊 Comprehensive reporting & analytics
+- 📋 Complete case lifecycle management
+- 📄 Integrated document management
+- ✅ Task tracking and workflow management
+- 🔄 Process automation capabilities
+- 🤝 Citizen interaction management
+- 📱 Responsive web interface
+- 🏰 Standards-based architecture
+- 🔒 Secure and compliant
+- 📊 Comprehensive reporting
+- ⚡ High performance
+- 🔍 Case search and filtering
+- 📈 Progress monitoring
+- 🌐 Multi-role support
+- ✍️ Digital signing integration
+- 🔄 API-first architecture
+- 📋 Audit trail functionality
 
-## Why Nextcloud?
+## Why Common Ground?
 
-We chose Nextcloud as our platform for several compelling reasons:
+The Zaakafhandelapp is built on Common Ground principles for several key reasons:
 
-### Seamless Integration with Enterprise Systems
-Nextcloud provides robust integration capabilities with Microsoft Office 365 and SharePoint, allowing organizations to maintain their existing workflows while adding powerful document processing capabilities. Users can seamlessly access and process documents across platforms without disrupting their established processes.
+### Modern Architecture
+By leveraging microservices and API-based communication, the application provides a flexible, maintainable, and future-proof solution for municipal case management.
 
-### Enterprise-Grade Security
-By leveraging Nextcloud's secure infrastructure, DocuDesk ensures all document processing happens within your controlled environment. This means sensitive data never leaves your premises while still enabling collaborative features and integrations with external systems.
+### Standards Compliance
+Built on ZGW APIs and other Dutch government standards, ensuring seamless integration with other municipal systems and processes.
 
-### Easy Installation and Updates
-DocuDesk is available directly through the Nextcloud App Store, making installation as simple as a few clicks:
+### Data Sovereignty
+Following Common Ground principles ensures that data remains under proper control and can be accessed and managed according to municipal requirements.
 
-1. Log in to your Nextcloud instance as an administrator
-2. Navigate to the Apps section
-3. Find DocuDesk in the Office & Text category
-4. Click "Install"
+### Easy Deployment
+The Zaakafhandelapp can be deployed in various ways:
 
-Note: For anonymization functionality, you'll need to provide your own LLM (Language Learning Model) tool. We recommend using Presidio, an open-source solution. You can find detailed installation instructions for Presidio at https://github.com/MWest2020/presidio-nl/tree/main/docs. However, you're free to use other anonymization tools that suit your needs.
+1. As a standalone application
+2. Integrated with existing municipal infrastructure
+3. As part of a broader Common Ground implementation
 
-The app will automatically stay up-to-date with your Nextcloud instance, ensuring you always have the latest features and security updates.
+For detailed installation instructions, please refer to our deployment documentation.
 
 ### Scalability and Performance
-Nextcloud's architecture allows DocuDesk to handle everything from individual document processing to large-scale batch operations, all while maintaining optimal performance within your local environment.
+The microservices architecture allows the application to scale efficiently based on your municipality's needs while maintaining optimal performance.
 
 ## Contributing
 
-We welcome contributions to improve the documentation! If you'd like to contribute, please visit our [GitHub repository](https://github.com/conductionnl/docudesk). There you can:
+We welcome contributions to improve both the application and its documentation! If you'd like to contribute, please visit our [GitHub repository](https://github.com/conductionnl/zaakafhandelapp). You can:
 
-- Report issues or suggest improvements by opening an issue
-- Submit pull requests with documentation changes
-- Engage with the community in discussions
+- Report issues or suggest improvements
+- Submit pull requests
+- Participate in discussions
+- Help improve documentation
 
 For detailed contribution guidelines, please refer to the CONTRIBUTING.md file in our repository.
