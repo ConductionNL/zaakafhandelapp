@@ -41,7 +41,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 							</template>
 							Zaak starten
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setDialog('deleteKlant')">
+						<NcActionButton @click="navigationStore.setModal('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
