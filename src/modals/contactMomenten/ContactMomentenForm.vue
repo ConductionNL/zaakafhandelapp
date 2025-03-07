@@ -871,9 +871,15 @@ export default {
 						'OCS-APIRequest': 'true',
 					},
 				}).then(response => response.json()),
-				fetch('/index.php/apps/zaakafhandelapp/me').then(response => response.json()),
+				fetch('/ocs/v2.php/cloud/user', {
+					method: 'GET',
+					headers: {
+						Accept: 'application/json',
+						'OCS-APIRequest': 'true',
+					},
+				}).then(response => response.json()),
 			])
-				.then(([usersData, { user: currentUser }]) => {
+				.then(([usersData, { ocs: { data: currentUser } }]) => {
 					const users = Object.values(usersData.ocs.data.users)
 
 					const medewerkerToSelect = medewerkerId || currentUser.id
