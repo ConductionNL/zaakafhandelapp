@@ -140,7 +140,7 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 							<ZaakResultaten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab title="Rollen">
-							<ZaakRollen :zaak-id="zaakStore.zaakItem?.id" />
+							<ZaakRollen :zaak-url="zaakStore.zaakItem?.url" />
 						</BTab>
 						<BTab title="Taken">
 							<ZaakTaken :zaak-id="zaakStore.zaakItem?.id" />

@@ -10,7 +10,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			<div v-if="rolStore.rolItem">
 				<div class="head">
 					<h1 class="h1">
-						{{ rolStore.rolItem?.roltype }}
+						{{ rolStore.rolItem?.url ?? rolStore.rolItem?.rolType }}
 					</h1>
 
 					<NcActions :primary="true" menu-name="Acties">
@@ -35,8 +35,28 @@ import { navigationStore, rolStore } from '../../store/store.js'
 
 				<div class="detailGrid">
 					<div>
-						<h4>Sammenvatting:</h4>
-						<span>{{ rolStore.rolItem.summary }}</span>
+						<h4>Omschrijving:</h4>
+						<span>{{ rolStore.rolItem?.omschrijving }}</span>
+						<h4>Omschrijving generiek:</h4>
+						<span>{{ rolStore.rolItem?.omschrijvingGeneriek }}</span>
+						<h4>Roltoelichting:</h4>
+						<span>{{ rolStore.rolItem?.roltoelichting }}</span>
+						<h4>Registratiedatum:</h4>
+						<span>{{ rolStore.rolItem?.registratiedatum && new Date(rolStore.rolItem?.registratiedatum).toLocaleString() }}</span>
+						<h4>Betrokkene type:</h4>
+						<span>{{ rolStore.rolItem?.betrokkeneType }}</span>
+						<h4>Naam:</h4>
+						<span>
+							{{
+								(rolStore.rolItem?.betrokkeneIdentificatie?.voornamen || "") +
+									(rolStore.rolItem?.betrokkeneIdentificatie?.voorletters ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.voorletters : "") +
+									(rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam : "") ||
+									"Geen naam beschikbaar"
+							}}
+						</span>
+
+						<h4>BSN:</h4>
+						<span>{{ rolStore.rolItem?.betrokkeneIdentificatie?.inpBsn }}</span>
 					</div>
 				</div>
 			</div>

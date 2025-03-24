@@ -20,6 +20,7 @@ export const useRolStore = defineStore('rollen', {
 		rolItem: null as Rol,
 		rollenList: [] as Rol[],
 		zaakId: null as string,
+		zaakUrl: null as string,
 		/**
 		 * Extra data to pass through the application.
 		 *
