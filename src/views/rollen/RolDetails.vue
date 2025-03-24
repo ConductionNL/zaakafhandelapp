@@ -1,40 +1,85 @@
 <script setup>
-import { rolStore } from '../../store/store.js'
+import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div class="detailContainer">
-		<div v-if="!loading" id="app-content">
+		<div id="app-content">
+			<NcLoadingIcon v-if="!rolStore.rolItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
-				<h1 class="h1">
-					{{ rol.name }}
-				</h1>
-				<div class="grid">
-					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
-						<span>{{ rol.summary }}</span>
+			<div v-if="rolStore.rolItem">
+				<div class="head">
+					<h1 class="h1">
+						{{ rolStore.rolItem?.url ?? rolStore.rolItem?.rolType }}
+					</h1>
+
+					<NcActions :primary="true" menu-name="Acties">
+						<template #icon>
+							<DotsHorizontal :size="20" />
+						</template>
+
+						<NcActionButton @click="navigationStore.setModal('rolForm')">
+							<template #icon>
+								<Pencil :size="20" />
+							</template>
+							Bewerken
+						</NcActionButton>
+						<NcActionButton @click="navigationStore.setModal('deleteRol')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							Delete
+						</NcActionButton>
+					</NcActions>
+				</div>
+
+				<div class="detailGrid">
+					<div>
+						<h4>Omschrijving:</h4>
+						<span>{{ rolStore.rolItem?.omschrijving }}</span>
+						<h4>Omschrijving generiek:</h4>
+						<span>{{ rolStore.rolItem?.omschrijvingGeneriek }}</span>
+						<h4>Roltoelichting:</h4>
+						<span>{{ rolStore.rolItem?.roltoelichting }}</span>
+						<h4>Registratiedatum:</h4>
+						<span>{{ rolStore.rolItem?.registratiedatum && new Date(rolStore.rolItem?.registratiedatum).toLocaleString() }}</span>
+						<h4>Betrokkene type:</h4>
+						<span>{{ rolStore.rolItem?.betrokkeneType }}</span>
+						<h4>Naam:</h4>
+						<span>
+							{{
+								(rolStore.rolItem?.betrokkeneIdentificatie?.voornamen || "") +
+									(rolStore.rolItem?.betrokkeneIdentificatie?.voorletters ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.voorletters : "") +
+									(rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam : "") ||
+									"Geen naam beschikbaar"
+							}}
+						</span>
+
+						<h4>BSN:</h4>
+						<span>{{ rolStore.rolItem?.betrokkeneIdentificatie?.inpBsn }}</span>
 					</div>
 				</div>
 			</div>
 		</div>
-		<NcLoadingIcon v-if="loading"
-			:size="100"
-			appearance="dark"
-			name="Rol details aan het laden" />
 	</div>
 </template>
 
 <script>
-import { NcLoadingIcon } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
+
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 
 export default {
 	name: 'RolDetails',
 	components: {
+		NcActions,
+		NcActionButton,
 		NcLoadingIcon,
 	},
 	props: {
-		rolId: {
+		id: {
 			type: String,
 			required: true,
 		},
@@ -46,36 +91,23 @@ export default {
 		}
 	},
 	watch: {
-		rolId: {
-			handler(rolId) {
-				this.fetchData(rolId)
-			},
-			deep: true,
+		id(newId) {
+			this.fetchData(newId)
 		},
 	},
 	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData(rolStore.rolItem.id)
+		this.fetchData(this.id)
 	},
 	methods: {
-		fetchData(rolId) {
+		fetchData(id) {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/rollen/' + rolId,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.rol = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
+
+			Promise.all([
+				rolStore.getRol(id, { setItem: true }),
+			]).finally(() => {
+				this.loading = false
+			})
 		},
 	},
 }

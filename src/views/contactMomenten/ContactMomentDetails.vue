@@ -147,6 +147,7 @@ export default {
 		return {
 			currentActiveContactMoment: null,
 			auditTrails: [],
+			loading: false,
 		}
 	},
 	watch: {

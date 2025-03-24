@@ -108,8 +108,15 @@ export default {
 		async fetchUser() {
 			this.loading = true
 
-			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
-			const user = await getUser.json()
+			const getUser = await fetch('/ocs/v2.php/cloud/user', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			})
+			// Destructure the response to directly access `result.ocs.data`
+			const { ocs: { data: user } } = await getUser.json()
 
 			const medewerkers = await fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
@@ -121,7 +128,7 @@ export default {
 				.then(response => response.json())
 				.then((data) => Object.values(data.ocs.data.users))
 
-			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.user.id)
+			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.id)
 
 			this.userEmail = medewerker.email
 			this.fetchTaakItems()

@@ -1,5 +1,5 @@
 <script setup>
-import { navigationStore } from '../store/store.js'
+import { navigationStore, rolStore } from '../store/store.js'
 </script>
 
 <template>
@@ -23,6 +23,7 @@ import { navigationStore } from '../store/store.js'
 		<EditKlant />
 		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
 		<ViewKlant v-if="navigationStore.modal === 'viewKlant'" />
+		<DeleteKlant v-if="navigationStore.modal === 'deleteKlant'" />
 		<!-- berichten -->
 		<EditBericht />
 		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
@@ -30,7 +31,8 @@ import { navigationStore } from '../store/store.js'
 		<EditTaak v-if="navigationStore.modal === 'editTaak'" />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<!-- rollen -->
-		<EditRol />
+		<RolForm v-if="navigationStore.modal === 'rolForm'" :zaak-id="rolStore.zaakId" :redirect="rolStore.extraData?.redirect" />
+		<DeleteRol v-if="navigationStore.modal === 'deleteRol'" />
 		<!-- medewerkers -->
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />
 		<!-- resultaat -->
@@ -56,9 +58,9 @@ import EditBericht from './berichten/EditBericht.vue'
 import ViewBerichtAuditTrail from './berichten/ViewBerichtAuditTrail.vue'
 import EditTaak from './taken/EditTaak.vue'
 import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
-import EditRol from './rollen/EditRol.vue'
 import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
 import ViewKlant from './klanten/ViewKlant.vue'
+import DeleteKlant from './klanten/DeleteKlant.vue'
 import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
@@ -72,6 +74,8 @@ import DeleteBesluit from './besluiten/DeleteBesluit.vue'
 import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
 import DocumentForm from './documenten/DocumentForm.vue'
 import DeleteDocument from './documenten/DeleteDocument.vue'
+import RolForm from './rollen/RolForm.vue'
+import DeleteRol from './rollen/DeleteRol.vue'
 
 export default {
 	name: 'Modals',
@@ -86,9 +90,9 @@ export default {
 		ViewBerichtAuditTrail,
 		EditTaak,
 		ViewTaakAuditTrail,
-		EditRol,
 		ViewZaakAuditTrail,
 		ViewKlant,
+		DeleteKlant,
 		DeleteContactMoment,
 		EditMedewerker,
 		AddBerichtToZaak,
@@ -102,6 +106,8 @@ export default {
 		ViewContactMoment,
 		DocumentForm,
 		DeleteDocument,
+		RolForm,
+		DeleteRol,
 	},
 }
 </script>

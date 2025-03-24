@@ -3,19 +3,43 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 </script>
 
 <template>
-	<NcDialog name="Contactmoment"
+	<NcDialog :name="tabs.length > 1 ? 'Contactmomenten' : 'Contactmoment'"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
 		:close-on-click-outside="false"
 		@closing="closeModalFromButton()">
 		<div v-if="!isView" class="tabContainer">
-			<BTabs card>
+			<div class="newTabButtonContainer">
+				<NcButton type="primary"
+					class="newTabButton"
+					aria-label="Nieuw contactmoment"
+					@click="() => newTab()">
+					<template #icon>
+						<Plus :size="20" />
+					</template>
+					Nieuw contactmoment
+				</NcButton>
+			</div>
+
+			<BTabs card class="contactmomentTabsContainer">
 				<BTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
-					:title="contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg'"
 					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
+					<template #title>
+						{{ contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg' }}
+						<NcButton v-if="tabs.length > 1 && !success"
+							v-tooltip="'Sluiten'"
+							type="tertiary"
+							aria-label="Sluiten"
+							@click="closeTab(i)">
+							<template #icon>
+								<Close :size="20" />
+							</template>
+						</NcButton>
+					</template>
+
 					<NcNoteCard v-if="success" type="success">
 						<p>Contactmoment succesvol opgeslagen</p>
 					</NcNoteCard>
@@ -23,7 +47,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<p>{{ error }}</p>
 					</NcNoteCard>
 
-					<div v-if="!success">
+					<div>
 						<div class="headerContainer">
 							<div class="personInfoContainer">
 								<NcNoteCard type="info" class="noteCard">
@@ -111,7 +135,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</div>
 						</div>
 
-						<div v-if="!success" class="form-group">
+						<div class="form-group">
 							<NcTextArea :value.sync="contactMomenten[i].notitie"
 								label="Notitie"
 								:disabled="loading"
@@ -156,7 +180,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 												{{ new Date(klantContactmoment.startDate).toLocaleString() }}
 											</template>
 											<template #actions>
-												<NcButton @click="viewContactMoment(klantContactmoment.id)">
+												<NcButton @click="viewContactMoment(klantContactmoment)">
 													<template #icon>
 														<Eye :size="20" />
 													</template>
@@ -273,16 +297,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							@selected-klant="fetchKlantData($event)"
 							@close-modal="closeSearchKlantModal" />
 					</div>
-					<NcButton v-if="tabs.length > 1 && !success" @click="closeTab(i)">
-						Close tab
-					</NcButton>
 				</BTab>
-
-				<template #tabs-end>
-					<NcButton @click="newTab">
-						<Plus :size="20" />
-					</NcButton>
-				</template>
 			</BTabs>
 		</div>
 		<div v-if="isView">
@@ -527,10 +542,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Medewerker taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een klant taak kan alleen worden aangemaakt als er een klant is geselecteerd.'"
+					v-tooltip="'Een klant taak kan alleen worden aangemaakt als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
 					@click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
@@ -538,10 +553,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een zaak kan alleen worden gestart als er een klant is geselecteerd.'"
-					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
+					v-tooltip="'Een zaak kan alleen worden gestart als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id }"
 					:close-after-click="true"
-					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id"
+					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
 					@click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
@@ -558,6 +573,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Sluit Contactmoment
 				</NcActionButton>
 			</NcActions>
+
 			<NcButton v-if="!isView"
 				type="primary"
 				:disabled="!contactMomenten[selectedContactMoment]?.klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
@@ -567,7 +583,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else :size="20" />
 				</template>
-				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
+				{{ contactMomenten[selectedContactMoment]?.id ? 'Opslaan' : 'Aanmaken' }}
 			</NcButton>
 		</template>
 
@@ -627,6 +643,7 @@ import Phone from 'vue-material-design-icons/Phone.vue'
 import EmailOutline from 'vue-material-design-icons/EmailOutline.vue'
 import FaceAgent from 'vue-material-design-icons/FaceAgent.vue'
 import MailboxOpenOutline from 'vue-material-design-icons/MailboxOpenOutline.vue'
+import Close from 'vue-material-design-icons/Close.vue'
 
 export default {
 	name: 'ContactMomentenForm',
@@ -713,7 +730,6 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
-					addedTaken: [],
 				},
 			},
 			selectedContactMoment: 1,
@@ -758,12 +774,12 @@ export default {
 		this.isEdit = !!contactMomentId
 
 		if (this.isEdit) {
-			this.fetchData(contactMomentId)
+			this.fetchData(contactMomentId, this.tabCounter)
 		} else if (this.klantId) {
 			// if it is not an edit modal but a klantId is provided, fetch the klant data
 			this.fetchKlantData(this.klantId)
 		} else {
-			this.fetchMedewerkers()
+			this.fetchMedewerkers(null, this.tabCounter)
 		}
 	},
 	methods: {
@@ -772,14 +788,20 @@ export default {
 			for (let i = 0; i < this.tabs.length; i++) {
 				if (this.tabs[i] === x) {
 					this.tabs.splice(i, 1)
-					this.medewerkers.values.splice(i, 1)
-					this.channels.values.splice(i, 1)
 				}
 			}
 			this.selectedContactMoment = this.tabs[0]
 		},
-		newTab() {
+		/**
+		 * Creates a new tab with the given tabData. If no tabData is provided, it creates a new tab with default data.
+		 * @param {object} tabData - The data for the new tab.
+		 */
+		newTab(tabData = null) {
 			const index = this.tabCounter + 1
+			this.tabs.push(index)
+			this.tabCounter = this.tabCounter + 1
+			this.selectedContactMoment = index
+
 			this.contactMomenten = {
 				...this.contactMomenten,
 				[index]: {
@@ -795,15 +817,15 @@ export default {
 					taken: [],
 					berichten: [],
 					klantContactmomenten: [],
-					addedTaken: [],
 				},
 			}
-			this.tabs.push(index)
-			this.tabCounter = this.tabCounter + 1
-			this.selectedContactMoment = index
+
+			if (tabData) {
+				this.fetchData(tabData.id, index)
+			}
 		},
 
-		async fetchData(id) {
+		async fetchData(id, index) {
 			this.fetchLoading = true
 
 			const { data } = await contactMomentStore.getContactMoment(id)
@@ -816,22 +838,31 @@ export default {
 				startDate: data.startDate ?? null,
 			}
 
+			this.contactMomenten[index] = {
+				...this.contactMomenten[index],
+				...data,
+				selectedZaak: data.zaak ?? null,
+				selectedTaak: data.taak ?? null,
+				selectedProduct: data.product ?? null,
+				selectedKlantContactMoment: data.contactmoment ?? null,
+			}
+
+			this.channels.values[index - 1] = this.channels.options.find(channel => channel.value === data.kanaal) ?? null
+
 			this.selectedZaak = data.zaak
 			this.selectedKlantContactMoment = data.contactmoment
 			this.selectedTaak = data.taak
 			this.selectedProduct = data.product
 
-			this.channels.values[0] = this.channels.options.find(channel => channel.value === data.kanaal)
-
 			await Promise.all([
 				this.fetchKlantData(data.klant),
-				this.fetchMedewerkers(data.medewerker),
+				this.fetchMedewerkers(data.medewerker, index),
 			])
 
 			this.fetchLoading = false
 		},
 
-		async fetchMedewerkers(medewerkerId = null) {
+		async fetchMedewerkers(medewerkerId = null, index) {
 			return Promise.all([
 				fetch('/ocs/v1.php/cloud/users/details', {
 					method: 'GET',
@@ -840,29 +871,43 @@ export default {
 						'OCS-APIRequest': 'true',
 					},
 				}).then(response => response.json()),
-				fetch('/index.php/apps/zaakafhandelapp/me').then(response => response.json()),
+				fetch('/ocs/v2.php/cloud/user', {
+					method: 'GET',
+					headers: {
+						Accept: 'application/json',
+						'OCS-APIRequest': 'true',
+					},
+				}).then(response => response.json()),
 			])
-				.then(([usersData, { user: currentUser }]) => {
+				.then(([usersData, { ocs: { data: currentUser } }]) => {
 					const users = Object.values(usersData.ocs.data.users)
 
-					const medewerkerToSelect = medewerkerId ?? users.find(medewerker => medewerker.id === currentUser.id)?.id
+					const medewerkerToSelect = medewerkerId || currentUser.id
 					const selectedMedewerker = users.find(medewerker => medewerker.id === medewerkerToSelect) || null
 
 					this.medewerkers = {
 						options: Object.values(users).map((medewerker) => ({
-							id: medewerker.email,
+							id: medewerker.id,
 							displayName: medewerker.displayname,
 							subname: medewerker.email,
 							user: medewerker.id,
 						})),
-						values: [selectedMedewerker
-							? {
-								id: selectedMedewerker?.email,
-								displayName: selectedMedewerker.displayname,
-								subname: selectedMedewerker.email,
-								user: selectedMedewerker.id,
-							}
-							: null],
+						values: [
+							// I hate this code...
+							// This code sets the selected medewerker for the current tab based on the index.
+							// to ensure this works with other tabs it'll spread the values array and then add the selected medewerker
+							// and then spread the values array again to add the rest of the values. (if there are any values ahead)
+							...(this.medewerkers.values).slice(0, index - 1),
+							selectedMedewerker
+								? {
+									id: selectedMedewerker?.id,
+									displayName: selectedMedewerker.displayname,
+									subname: selectedMedewerker.email,
+									user: selectedMedewerker.id,
+								}
+								: null,
+							...(this.medewerkers.values).slice(index),
+						],
 					}
 				})
 				.catch((err) => {
@@ -886,16 +931,14 @@ export default {
 
 			this.selectedContactMoment = i
 
-			this.contactMoment = {
-				...this.contactMoment,
-				...this.contactMomenten[i],
-				id: this.contactMoment.id,
-				startDate: this.contactMoment.startDate,
-			}
-
 			this.loading = true
 
-			const contactMomentCopy = _.cloneDeep(this.contactMoment)
+			const contactMomentCopy = _.cloneDeep({
+				...this.contactMoment,
+				...this.contactMomenten[i],
+				id: this.contactMomenten[i]?.id,
+				startDate: this.contactMoment.startDate,
+			})
 
 			contactMomentStore.saveContactMoment({
 				id: contactMomentCopy.id,
@@ -910,30 +953,17 @@ export default {
 				medewerker: this.medewerkers.values[this.selectedContactMoment - 1].id,
 				kanaal: this.channels.values[this.selectedContactMoment - 1].value,
 			}, { redirect: !this.dashboardWidget })
-				.then((response) => {
-					this.contactMoment.addedTaken.forEach(taak => {
-						fetch(`/index.php/apps/zaakafhandelapp/api/taken/${taak}`, {
-							method: 'GET',
-						})
-							.then(response => response.json())
-							.then(data => {
-								fetch(`/index.php/apps/zaakafhandelapp/api/taken/${data.id}`, {
-									method: 'PUT',
-									headers: {
-										'Content-Type': 'application/json',
-									},
-									body: JSON.stringify({
-										...data,
-										contactmoment: response.data.id,
-									}),
-								})
-							})
-					})
+				.then(({ response, data }) => {
+
+					this.contactMomenten[this.selectedContactMoment] = {
+						...this.contactMomenten[this.selectedContactMoment],
+						...data,
+					}
+
+					this.fetchKlantData(data.klant)
 
 					if (this.isView) {
-						response.json().then(data => {
-							this.contactMoment = data
-						})
+						this.contactMoment = data
 
 						if (this.dashboardWidget === true) {
 							this.$emit('save-success')
@@ -949,15 +979,11 @@ export default {
 					this.loading = false
 
 					setTimeout(() => {
-						this.closeTab(this.selectedContactMoment)
 						this.success = false
 						this.succesMessage = false
 					}, 2000)
 					if (this.tabs.length === 1) {
 						if (this.dashboardWidget) this.$emit('save-success')
-						setTimeout(() => {
-							this.closeModal()
-						}, 2000)
 					}
 
 				})
@@ -986,17 +1012,15 @@ export default {
 
 		closeTaakForm(e) {
 			if (e) {
-				this.contactMomenten[this.selectedContactMoment].addedTaken.push(e)
-				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id)
+				this.contactMomenten[this.selectedContactMoment]?.klant?.id && this.fetchKlantData(this.contactMomenten[this.selectedContactMoment]?.klant?.id).then(() => {
+					this.setSelectedTaak(this.selectedContactMoment, e)
+				})
 			}
 			this.taakFormOpen = false
 		},
 
-		viewContactMoment(id) {
-			this.isContactMomentFormOpen = true
-			this.viewContactMomentIsView = true
-			this.viewContactMomentId = id
-			navigationStore.setViewModal('viewContactMoment')
+		viewContactMoment(contactMoment) {
+			this.newTab(contactMoment)
 		},
 
 		viewZaak(id) {
@@ -1047,7 +1071,6 @@ export default {
 
 			if (this.isEdit) {
 				data = {
-					...this.contactMoment,
 					...this.contactMomenten[this.selectedContactMoment],
 				}
 			} else if (this.isView) {
@@ -1288,14 +1311,30 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 	margin-block-end: 100px;
 }
 
-.tabContainer {
-	margin-block-end: var(--zaa-margin-20);
+.newTabButtonContainer {
+    width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
 }
 
-.newTabButton>a {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+.contactmomentTabsContainer :deep(.nav-link) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contactmomentTabsContainer :deep(.nav-link) .button-vue {
+    position: absolute;
+    right: 6px;
+}
+.contactmomentTabsContainer :deep(.nav-link) .button-vue:hover {
+    background-color: rgba(255, 255, 255, 0.045) !important;
+}
+
+.tabContainer {
+	margin-block-end: var(--zaa-margin-20);
 }
 
 .modalButtonsContainer {
