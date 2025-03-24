@@ -34,7 +34,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			<div v-if="rolStore.rollenList?.length">
 				<NcListItem v-for="(rol, i) in rolStore.rollenList"
 					:key="`${rol}${i}`"
-					:name="rol?.roltype"
+					:name="rol?.url ?? rol?.rolType"
 					:force-display-actions="true"
 					:active="$route.params?.id === rol?.id"
 					@click="openRol(rol)">

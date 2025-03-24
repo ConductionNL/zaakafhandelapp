@@ -7,10 +7,10 @@ import { navigationStore, rolStore } from '../../store/store.js'
 		<div v-if="filteredRollenList?.length">
 			<NcListItem v-for="(rol, i) in filteredRollenList"
 				:key="`${rol}${i}`"
-				:name="rol?.roltype"
+				:name="rol?.url"
 				:active="rolStore.rolItem?.id === rol.id"
-				:details="'1h'"
-				:counter-number="44"
+				:details="rol?.betrokkeneType"
+				:counter-number="rol?.omschrijvingGeneriek"
 				:force-display-actions="true"
 				@click="toggleRol(rol)">
 				<template #icon>
@@ -19,7 +19,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ rol?.roltoelichting }}
+					{{ rol?.roltype }}
 				</template>
 				<template #actions>
 					<NcActionButton @click="$router.push({ name: 'dynamic-view', params: { view: 'rollen', id: rol.id } })">
@@ -72,7 +72,7 @@ export default {
 		NcLoadingIcon,
 	},
 	props: {
-		zaakId: {
+		zaakUrl: {
 			type: String,
 			required: true,
 		},
@@ -85,11 +85,11 @@ export default {
 	},
 	computed: {
 		filteredRollenList() {
-			return rolStore.rollenList.filter((rol) => rol.zaak === this.zaakId)
+			return rolStore.rollenList.filter((rol) => rol.zaak === this.zaakUrl)
 		},
 	},
 	watch: {
-		zaakId(newVal) {
+		zaakUrl(newVal) {
 			this.fetchData()
 		},
 	},
