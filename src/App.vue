@@ -10,6 +10,7 @@
 
 <script>
 import { NcContent } from '@nextcloud/vue'
+import { objectStore } from './store/store.js'
 import { RouterView } from 'vue-router'
 import MainMenu from './navigation/MainMenu.vue'
 import Modals from './modals/Modals.vue'
@@ -25,6 +26,10 @@ export default {
 		Modals,
 		Dialogs,
 		SideBars,
+	},
+	async mounted() {
+		// Preload all collections when the app starts
+		await objectStore.preloadCollections()
 	},
 }
 </script>
