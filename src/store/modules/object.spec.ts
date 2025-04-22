@@ -73,36 +73,37 @@ const mockRelatedData = {
 }
 
 // Mock fetch globally
-global.fetch = jest.fn()
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
+global.fetch = mockFetch
 
 describe('ObjectStore', () => {
-	let store
+	let store: ReturnType<typeof useObjectStore>
 
 	beforeEach(() => {
 		setActivePinia(createPinia())
 		store = useObjectStore()
 		// Reset fetch mock
-		fetch.mockReset()
+		mockFetch.mockReset()
 	})
 
 	describe('Settings', () => {
 		it('fetches settings successfully', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockSettings),
-			})
+			} as Response)
 
 			await store.fetchSettings()
 
 			expect(store.settings).toEqual(mockSettings)
 			expect(store.objectTypes).toEqual(['character', 'item', 'skill'])
-			expect(fetch).toHaveBeenCalledWith('/index.php/apps/opencatalogi/api/settings')
+			expect(mockFetch).toHaveBeenCalledWith('/index.php/apps/opencatalogi/api/settings')
 		})
 
 		it('handles settings fetch error', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: false,
-			})
+			} as Response)
 
 			await expect(store.fetchSettings()).rejects.toThrow('Failed to fetch settings')
 		})
@@ -110,10 +111,10 @@ describe('ObjectStore', () => {
 
 	describe('Schema Configuration', () => {
 		beforeEach(async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockSettings),
-			})
+			} as Response)
 			await store.fetchSettings()
 		})
 
@@ -133,18 +134,18 @@ describe('ObjectStore', () => {
 
 	describe('Collection Operations', () => {
 		beforeEach(async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockSettings),
-			})
+			} as Response)
 			await store.fetchSettings()
 		})
 
 		it('fetches collection successfully', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockCollection),
-			})
+			} as Response)
 
 			await store.fetchCollection('character')
 
@@ -158,9 +159,9 @@ describe('ObjectStore', () => {
 		})
 
 		it('handles collection fetch error', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: false,
-			})
+			} as Response)
 
 			await expect(store.fetchCollection('character')).rejects.toThrow('Failed to fetch character collection')
 			expect(store.isLoading('character')).toBe(false)
@@ -170,18 +171,18 @@ describe('ObjectStore', () => {
 
 	describe('Single Object Operations', () => {
 		beforeEach(async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockSettings),
-			})
+			} as Response)
 			await store.fetchSettings()
 		})
 
 		it('fetches single object successfully', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockObject),
-			})
+			} as Response)
 
 			await store.fetchObject('character', '1')
 
@@ -191,10 +192,10 @@ describe('ObjectStore', () => {
 		})
 
 		it('creates object successfully', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockObject),
-			})
+			} as Response)
 
 			const newObject = await store.createObject('character', { name: 'New Character' })
 
@@ -206,10 +207,10 @@ describe('ObjectStore', () => {
 
 		it('updates object successfully', async () => {
 			const updatedObject = { ...mockObject, name: 'Updated Name' }
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(updatedObject),
-			})
+			} as Response)
 
 			const result = await store.updateObject('character', '1', { name: 'Updated Name' })
 
@@ -220,13 +221,14 @@ describe('ObjectStore', () => {
 		})
 
 		it('deletes object successfully', async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
-			})
+			} as Response)
 
 			// Add object to store first
 			store.objects.character = { 1: mockObject }
-			store.collections.character = [mockObject]
+			// a collection type is expected to be a object with "results" as an array
+			store.collections.character = { results: [mockObject] }
 
 			await store.deleteObject('character', '1')
 
@@ -239,29 +241,29 @@ describe('ObjectStore', () => {
 
 	describe('Active Object Operations', () => {
 		beforeEach(async () => {
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockSettings),
-			})
+			} as Response)
 			await store.fetchSettings()
 
 			// Mock related data fetches
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.logs),
-			})
-			fetch.mockResolvedValueOnce({
+			} as Response)
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.uses),
-			})
-			fetch.mockResolvedValueOnce({
+			} as Response)
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.used),
-			})
-			fetch.mockResolvedValueOnce({
+			} as Response)
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.files),
-			})
+			} as Response)
 		})
 
 		it('sets active object and fetches related data', async () => {
@@ -288,28 +290,28 @@ describe('ObjectStore', () => {
 			await store.setActiveObject('character', mockObject)
 
 			const updatedObject = { ...mockObject, name: 'Updated Name' }
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(updatedObject),
-			})
+			} as Response)
 
 			// Mock related data fetches again
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.logs),
-			})
-			fetch.mockResolvedValueOnce({
+			} as Response)
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.uses),
-			})
-			fetch.mockResolvedValueOnce({
+			} as Response)
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.used),
-			})
-			fetch.mockResolvedValueOnce({
+			} as Response)
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: () => Promise.resolve(mockRelatedData.files),
-			})
+			} as Response)
 
 			await store.fetchObject('character', '1')
 
@@ -319,9 +321,9 @@ describe('ObjectStore', () => {
 		it('clears active object when deleting it', async () => {
 			await store.setActiveObject('character', mockObject)
 
-			fetch.mockResolvedValueOnce({
+			mockFetch.mockResolvedValueOnce({
 				ok: true,
-			})
+			} as Response)
 
 			await store.deleteObject('character', '1')
 
@@ -330,8 +332,8 @@ describe('ObjectStore', () => {
 		})
 
 		it('handles related data fetch error', async () => {
-			fetch.mockReset()
-			fetch.mockRejectedValueOnce(new Error('Network error'))
+			mockFetch.mockReset()
+			mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
 			await expect(store.fetchRelatedData('character', '1', 'logs')).rejects.toThrow()
 			expect(store.getError('character_1_logs')).toBe('Network error')
