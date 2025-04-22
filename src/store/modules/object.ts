@@ -22,7 +22,9 @@ import { defineStore } from 'pinia'
 // eslint-disable-next-line no-unused-vars, camelcase, @typescript-eslint/no-unused-vars
 const Readme_Error_handling = {}
 
-type Type = string
+const objectTypes = ['bericht', 'besluit', 'klant', 'medewerker', 'resultaat', 'rol', 'zaak', 'zaaktype', 'taak', 'contactmoment'] as const
+
+type Type = typeof objectTypes[number]
 type Id = string
 
 // this type got created in the original code, but is not used anywhere.
@@ -38,7 +40,7 @@ type Schema = {
 type Timer = ReturnType<typeof setTimeout>
 
 type TSettings = {
-    objectTypes: Array<string>;
+    objectTypes: Array<Type>;
     configuration: Record<string, string>;
     // THE FOLLOWING TYPES DO NOT EXIST ON THE ORIGINAL CODE YET WERE REFERENCED.
     // someone needs to go through this and add the correct types.
@@ -69,25 +71,25 @@ interface State {
     /** Application settings */
     settings: TSettings | null
     /** Objects by type and ID */
-    objects: Record<Type, Record<Id, any>>
+    objects: Partial<Record<Type, Record<Id, any>>>
     /** Collections by type */
-    collections: TCollections
+    collections: Partial<TCollections>
     /** Loading states by type */
-    loading: Record<Type, boolean>
+    loading: Partial<Record<Type | string, boolean>>
     /** Error states by type */
-    errors: Record<Type, string | null>
+    errors: Partial<Record<Type | string, string | null>>
     /** Currently active objects by type */
-    activeObjects: Record<Type, any>
+    activeObjects: Partial<Record<Type, any>>
     /** Related data for active objects */
-    relatedData: Record<Type, TRelatedDataTypes>
+    relatedData: Partial<Record<Type, TRelatedDataTypes>>
     /** Search terms by collection type */
-    searchTerms: Record<Type, string>
+    searchTerms: Partial<Record<Type, string>>
     /** Search debounce timers by collection type */
-    searchDebounceTimers: Record<Type, Timer | null>
+    searchDebounceTimers: Partial<Record<Type, Timer | null>>
     /** Pagination state by type */
-    pagination: Record<Type, TPagination>
+    pagination: Partial<Record<Type, TPagination>>
     /** Success states by type */
-    success: Record<Type, boolean | null>
+    success: Partial<Record<Type, boolean | null>>
 }
 
 /**
@@ -151,20 +153,22 @@ export const useObjectStore = defineStore('object', {
 		 * Get loading state for specific type.
 		 *
 		 * Returns a function that when called with a object type, returns the loading state for that object type.
+		 * The object type can be a composite id like `${type}_${id}`.
 		 * @param state the state of the store
 		 */
 		isLoading(state: State) {
-			return (type: Type) => state.loading[type] || false
+			return (type: Type | string) => state.loading[type] || false
 		},
 
 		/**
 		 * Get error for specific type.
 		 *
 		 * Returns a function that when called with a object type, returns the error for that object type.
+		 * The object type can be a composite id like `${type}_${id}`.
 		 * @param state the state of the store
 		 */
 		getError(state: State) {
-			return (type: Type) => state.errors[type] || null
+			return (type: Type | string) => state.errors[type] || null
 		},
 
 		/**
@@ -341,7 +345,7 @@ export const useObjectStore = defineStore('object', {
 		 * @param type - Object type (can be a composite id like `${type}_${id}`)
 		 * @param isLoading - Loading state
 		 */
-		setLoading(type: Type, isLoading: boolean) {
+		setLoading(type: Type | string, isLoading: boolean) {
 			this.loading = {
 				...this.loading,
 				[type]: isLoading,
@@ -351,10 +355,10 @@ export const useObjectStore = defineStore('object', {
 
 		/**
 		 * Set error for type
-		 * @param type - Object type
+		 * @param type - Object type (can be a composite id like `${type}_${id}`)
 		 * @param error - Error message
 		 */
-		setError(type: Type, error: State['errors'][Type]) {
+		setError(type: Type | string, error: State['errors'][Type]) {
 			this.errors = {
 				...this.errors,
 				[type]: error,

@@ -6,11 +6,11 @@ import { useObjectStore } from './object.js'
  * Mock settings response
  */
 const mockSettings = {
-	objectTypes: ['character', 'item', 'skill'],
+	objectTypes: ['klant', 'item', 'skill'],
 	configuration: {
-		character_source: 'openregister',
-		character_schema: '105',
-		character_register: '20',
+		klant_source: 'openregister',
+		klant_schema: '105',
+		klant_register: '20',
 		item_source: 'openregister',
 		item_schema: '109',
 		item_register: '20',
@@ -56,7 +56,7 @@ const mockRelatedData = {
 		total: 1,
 		page: 1,
 		perPage: 10,
-		results: [{ id: '1', usedBy: 'character-1', timestamp: '2024-04-13T00:00:00Z' }],
+		results: [{ id: '1', usedBy: 'klant-1', timestamp: '2024-04-13T00:00:00Z' }],
 	},
 	used: {
 		total: 1,
@@ -96,7 +96,7 @@ describe('ObjectStore', () => {
 			await store.fetchSettings()
 
 			expect(store.settings).toEqual(mockSettings)
-			expect(store.objectTypes).toEqual(['character', 'item', 'skill'])
+			expect(store.objectTypes).toEqual(['klant', 'item', 'skill'])
 			expect(mockFetch).toHaveBeenCalledWith('/index.php/apps/opencatalogi/api/settings')
 		})
 
@@ -119,7 +119,7 @@ describe('ObjectStore', () => {
 		})
 
 		it('gets schema configuration for valid object type', () => {
-			const config = store.getSchemaConfig('character')
+			const config = store.getSchemaConfig('klant')
 			expect(config).toEqual({
 				source: 'openregister',
 				schema: '105',
@@ -128,6 +128,7 @@ describe('ObjectStore', () => {
 		})
 
 		it('throws error for invalid object type', () => {
+			// @ts-expect-error - Invalid object type
 			expect(() => store.getSchemaConfig('invalid')).toThrow('Invalid configuration for object type: invalid')
 		})
 	})
@@ -147,15 +148,15 @@ describe('ObjectStore', () => {
 				json: () => Promise.resolve(mockCollection),
 			} as Response)
 
-			await store.fetchCollection('character')
+			await store.fetchCollection('klant')
 
-			expect(store.collections.character).toEqual(mockCollection.results)
-			expect(store.objects.character).toEqual({
+			expect(store.collections.klant).toEqual(mockCollection.results)
+			expect(store.objects.klant).toEqual({
 				1: { id: '1', name: 'Test 1' },
 				2: { id: '2', name: 'Test 2' },
 			})
-			expect(store.isLoading('character')).toBe(false)
-			expect(store.getError('character')).toBeNull()
+			expect(store.isLoading('klant')).toBe(false)
+			expect(store.getError('klant')).toBeNull()
 		})
 
 		it('handles collection fetch error', async () => {
@@ -163,9 +164,9 @@ describe('ObjectStore', () => {
 				ok: false,
 			} as Response)
 
-			await expect(store.fetchCollection('character')).rejects.toThrow('Failed to fetch character collection')
-			expect(store.isLoading('character')).toBe(false)
-			expect(store.getError('character')).toBe('Failed to fetch character collection')
+			await expect(store.fetchCollection('klant')).rejects.toThrow('Failed to fetch klant collection')
+			expect(store.isLoading('klant')).toBe(false)
+			expect(store.getError('klant')).toBe('Failed to fetch klant collection')
 		})
 	})
 
@@ -184,11 +185,11 @@ describe('ObjectStore', () => {
 				json: () => Promise.resolve(mockObject),
 			} as Response)
 
-			await store.fetchObject('character', '1')
+			await store.fetchObject('klant', '1')
 
-			expect(store.objects.character['1']).toEqual(mockObject)
-			expect(store.isLoading('character_1')).toBe(false)
-			expect(store.getError('character_1')).toBeNull()
+			expect(store.objects.klant['1']).toEqual(mockObject)
+			expect(store.isLoading('klant_1')).toBe(false)
+			expect(store.getError('klant_1')).toBeNull()
 		})
 
 		it('creates object successfully', async () => {
@@ -197,12 +198,12 @@ describe('ObjectStore', () => {
 				json: () => Promise.resolve(mockObject),
 			} as Response)
 
-			const newObject = await store.createObject('character', { name: 'New Character' })
+			const newObject = await store.createObject('klant', { name: 'New klant' })
 
 			expect(newObject).toEqual(mockObject)
-			expect(store.objects.character['1']).toEqual(mockObject)
-			expect(store.isLoading('character_create')).toBe(false)
-			expect(store.getError('character_create')).toBeNull()
+			expect(store.objects.klant['1']).toEqual(mockObject)
+			expect(store.isLoading('klant_create')).toBe(false)
+			expect(store.getError('klant_create')).toBeNull()
 		})
 
 		it('updates object successfully', async () => {
@@ -212,12 +213,12 @@ describe('ObjectStore', () => {
 				json: () => Promise.resolve(updatedObject),
 			} as Response)
 
-			const result = await store.updateObject('character', '1', { name: 'Updated Name' })
+			const result = await store.updateObject('klant', '1', { name: 'Updated Name' })
 
 			expect(result).toEqual(updatedObject)
-			expect(store.objects.character['1']).toEqual(updatedObject)
-			expect(store.isLoading('character_1')).toBe(false)
-			expect(store.getError('character_1')).toBeNull()
+			expect(store.objects.klant['1']).toEqual(updatedObject)
+			expect(store.isLoading('klant_1')).toBe(false)
+			expect(store.getError('klant_1')).toBeNull()
 		})
 
 		it('deletes object successfully', async () => {
@@ -226,16 +227,16 @@ describe('ObjectStore', () => {
 			} as Response)
 
 			// Add object to store first
-			store.objects.character = { 1: mockObject }
+			store.objects.klant = { 1: mockObject }
 			// a collection type is expected to be a object with "results" as an array
-			store.collections.character = { results: [mockObject] }
+			store.collections.klant = { results: [mockObject] }
 
-			await store.deleteObject('character', '1')
+			await store.deleteObject('klant', '1')
 
-			expect(store.objects.character['1']).toBeUndefined()
-			expect(store.collections.character).toEqual([])
-			expect(store.isLoading('character_1')).toBe(false)
-			expect(store.getError('character_1')).toBeNull()
+			expect(store.objects.klant['1']).toBeUndefined()
+			expect(store.collections.klant).toEqual([])
+			expect(store.isLoading('klant_1')).toBe(false)
+			expect(store.getError('klant_1')).toBeNull()
 		})
 	})
 
@@ -267,10 +268,10 @@ describe('ObjectStore', () => {
 		})
 
 		it('sets active object and fetches related data', async () => {
-			await store.setActiveObject('character', mockObject)
+			await store.setActiveObject('klant', mockObject)
 
-			expect(store.activeObjects.character).toEqual(mockObject)
-			expect(store.relatedData.character).toEqual({
+			expect(store.activeObjects.klant).toEqual(mockObject)
+			expect(store.relatedData.klant).toEqual({
 				logs: mockRelatedData.logs,
 				uses: mockRelatedData.uses,
 				used: mockRelatedData.used,
@@ -279,15 +280,15 @@ describe('ObjectStore', () => {
 		})
 
 		it('clears active object and related data', async () => {
-			await store.setActiveObject('character', mockObject)
-			store.clearActiveObject('character')
+			await store.setActiveObject('klant', mockObject)
+			store.clearActiveObject('klant')
 
-			expect(store.activeObjects.character).toBeUndefined()
-			expect(store.relatedData.character).toBeUndefined()
+			expect(store.activeObjects.klant).toBeUndefined()
+			expect(store.relatedData.klant).toBeUndefined()
 		})
 
 		it('updates active object when fetching same object', async () => {
-			await store.setActiveObject('character', mockObject)
+			await store.setActiveObject('klant', mockObject)
 
 			const updatedObject = { ...mockObject, name: 'Updated Name' }
 			mockFetch.mockResolvedValueOnce({
@@ -313,31 +314,31 @@ describe('ObjectStore', () => {
 				json: () => Promise.resolve(mockRelatedData.files),
 			} as Response)
 
-			await store.fetchObject('character', '1')
+			await store.fetchObject('klant', '1')
 
-			expect(store.activeObjects.character).toEqual(updatedObject)
+			expect(store.activeObjects.klant).toEqual(updatedObject)
 		})
 
 		it('clears active object when deleting it', async () => {
-			await store.setActiveObject('character', mockObject)
+			await store.setActiveObject('klant', mockObject)
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 			} as Response)
 
-			await store.deleteObject('character', '1')
+			await store.deleteObject('klant', '1')
 
-			expect(store.activeObjects.character).toBeUndefined()
-			expect(store.relatedData.character).toBeUndefined()
+			expect(store.activeObjects.klant).toBeUndefined()
+			expect(store.relatedData.klant).toBeUndefined()
 		})
 
 		it('handles related data fetch error', async () => {
 			mockFetch.mockReset()
 			mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
-			await expect(store.fetchRelatedData('character', '1', 'logs')).rejects.toThrow()
-			expect(store.getError('character_1_logs')).toBe('Network error')
-			expect(store.isLoading('character_1_logs')).toBe(false)
+			await expect(store.fetchRelatedData('klant', '1', 'logs')).rejects.toThrow()
+			expect(store.getError('klant_1_logs')).toBe('Network error')
+			expect(store.isLoading('klant_1_logs')).toBe(false)
 		})
 	})
 })
