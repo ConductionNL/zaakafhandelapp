@@ -12,12 +12,12 @@ type TOptions = {
 
 export const useDocumentStore = defineStore('documenten', {
 	state: () => ({
-		documentItem: null,
-		documentenList: [],
+		documentItem: null as Document,
+		documentenList: [] as Document[],
 		/**
 		 * Set the zaakId, used when creating a new document on a zaak.
 		 */
-		zaakId: null,
+		zaakId: null as string,
 	}),
 	actions: {
 		setDocumentItem(documentItem: Document | TDocument) {

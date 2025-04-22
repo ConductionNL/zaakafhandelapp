@@ -6,7 +6,7 @@ export const useSearchStore = defineStore('search', {
 		search: '',
 		publicationType: {},
 		catalogi: {},
-		searchResults: '',
+		searchResults: [] as string[],
 		searchError: '',
 	}),
 	actions: {

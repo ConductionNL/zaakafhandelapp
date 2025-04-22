@@ -1,15 +1,18 @@
 {
     "compilerOptions": {
+        "strict": true,
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "es6",
-        "target": "es5",
+        "target": "es2022",
         "jsx": "preserve",
         "allowJs": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "baseUrl": ".",
+        "strictNullChecks": false,
+        "lib": ["es2022"],
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/shims-vue.d.ts"],
     "exclude": ["node_modules"]

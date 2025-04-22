@@ -13,9 +13,9 @@ type TOptions = {
 
 export const useZaakStore = defineStore('zaken', {
 	state: () => ({
-		zaakItem: null,
-		zakenList: [],
-		auditTrailItem: null,
+		zaakItem: null as Zaak,
+		zakenList: [] as Zaak[],
+		auditTrailItem: null as unknown,
 	}),
 	actions: {
 		setZaakItem(zaakItem: Zaak | TZaak) {

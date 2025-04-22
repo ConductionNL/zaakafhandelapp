@@ -12,12 +12,12 @@ type TOptions = {
 
 export const useResultaatStore = defineStore('resultaten', {
 	state: () => ({
-		resultaatItem: null,
-		resultatenList: [],
+		resultaatItem: null as Resultaat,
+		resultatenList: [] as Resultaat[],
 		/**
 		 * Set the zaakId, used when creating a new resultaat on a zaak.
 		 */
-		zaakId: null,
+		zaakId: null as string,
 	}),
 	actions: {
 		setResultaatItem(resultaatItem: Resultaat | TResultaat) {

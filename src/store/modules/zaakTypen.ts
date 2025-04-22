@@ -13,8 +13,8 @@ type TOptions = {
 
 export const useZaakTypeStore = defineStore('zaakTypen', {
 	state: () => ({
-		zaakTypeItem: null,
-		zaakTypeList: [],
+		zaakTypeItem: null as ZaakType,
+		zaakTypeList: [] as ZaakType[],
 	}),
 	actions: {
 		setZaakTypeItem(zaakTypeItem: ZaakType | TZaakType) {

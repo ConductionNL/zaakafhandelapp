@@ -12,8 +12,8 @@ type TOptions = {
 
 export const useBesluitStore = defineStore('besluiten', {
 	state: () => ({
-		besluitItem: null,
-		zaakId: null,
+		besluitItem: null as Besluit,
+		zaakId: null as string,
 	}),
 	actions: {
 		setBesluitItem(besluitItem: Besluit | TBesluit) {
