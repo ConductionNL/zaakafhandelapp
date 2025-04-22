@@ -12,7 +12,7 @@
 					<ChatOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="berichtStore.setBerichtItem(null); navigationStore.setModal('editBericht')">
+					<NcButton type="primary" @click="objectStore.clearActiveObject('bericht'); navigationStore.setModal('editBericht')">
 						Bericht aanmaken
 					</NcButton>
 				</template>
@@ -22,12 +22,12 @@
 	</NcAppContent>
 </template>
 
-<script>
+<script lang="ts">
 // vue
 import { getCurrentInstance, ref, watch } from 'vue'
 
 // store
-import { navigationStore, berichtStore } from '../../store/store.js'
+import { navigationStore, objectStore } from '../../store/store.js'
 
 // components
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
@@ -64,7 +64,7 @@ export default {
 		// the store is still required throughout the component, and not exporting them would break it
 		return {
 			navigationStore,
-			berichtStore,
+			objectStore,
 			id,
 		}
 	},

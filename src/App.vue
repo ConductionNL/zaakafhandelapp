@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import { NcContent } from '@nextcloud/vue'
 import { objectStore } from './store/store.js'
+import { NcContent } from '@nextcloud/vue'
 import { RouterView } from 'vue-router'
 import MainMenu from './navigation/MainMenu.vue'
 import Modals from './modals/Modals.vue'

@@ -6,15 +6,15 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen contact moment"
-				description="Nog geen contact moment geselecteerd">
+				name="Geen contactmoment"
+				description="Nog geen contactmoment geselecteerd">
 				<template #icon>
 					<CardAccountPhoneOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary"
-						@click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
-						Contact moment aanmaken
+						@click="objectStore.clearActiveObject('contactmoment'); navigationStore.setModal('contactMomentenForm')">
+						Contactmoment aanmaken
 					</NcButton>
 				</template>
 			</NcEmptyContent>
@@ -23,12 +23,12 @@
 	</NcAppContent>
 </template>
 
-<script>
+<script lang="ts">
 // vue
 import { getCurrentInstance, ref, watch } from 'vue'
 
 // store
-import { navigationStore, contactMomentStore } from '../../store/store.js'
+import { navigationStore, objectStore } from '../../store/store.js'
 
 // components
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
@@ -65,7 +65,7 @@ export default {
 		// the store is still required throughout the component, and not exporting them would break it
 		return {
 			navigationStore,
-			contactMomentStore,
+			objectStore,
 			id,
 		}
 	},

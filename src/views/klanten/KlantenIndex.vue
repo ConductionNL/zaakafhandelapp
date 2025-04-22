@@ -12,7 +12,7 @@
 					<AccountOutline />
 				</template>
 				<template #action>
-					<NcButton type="primary" @click="klantStore.setKlantItem(null); navigationStore.setModal('editKlant')">
+					<NcButton type="primary" @click="objectStore.clearActiveObject('klant'); navigationStore.setModal('editKlant')">
 						Klant toevoegen
 					</NcButton>
 				</template>
@@ -22,12 +22,12 @@
 	</NcAppContent>
 </template>
 
-<script>
+<script lang="ts">
 // vue
 import { getCurrentInstance, ref, watch } from 'vue'
 
 // store
-import { navigationStore, klantStore } from '../../store/store.js'
+import { navigationStore, objectStore } from '../../store/store.js'
 
 // components
 import { NcAppContent, NcEmptyContent, NcButton } from '@nextcloud/vue'
@@ -64,7 +64,7 @@ export default {
 		// the store is still required throughout the component, and not exporting them would break it
 		return {
 			navigationStore,
-			klantStore,
+			objectStore,
 			id,
 		}
 	},

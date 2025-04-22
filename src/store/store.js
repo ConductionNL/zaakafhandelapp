@@ -1,6 +1,6 @@
 // The store script handles app wide variables (or state), for the use of these variables and there governing concepts read the design.md
 import pinia from '../pinia.js'
-import { useObjectStore } from './modules/object.js'
+import { useObjectStore } from './modules/object.ts'
 import { useNavigationStore } from './modules/navigation.ts'
 import { useZaakStore } from './modules/zaken.ts'
 import { useZaakTypeStore } from './modules/zaakTypen.ts'
