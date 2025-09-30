@@ -18,7 +18,9 @@ declare(strict_types=1);
 
 namespace OCA\ZaakAfhandelApp\EventListener;
 
+use OCA\OpenRegister\Db\SchemaMapper;
 use OCA\ZaakAfhandelApp\Service\ContactpersoonService;
+use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCA\ZaakAfhandelApp\Service\SettingsService;
 use OCA\ZaakAfhandelApp\Service\GebruikSyncService;
 use OCA\ZaakAfhandelApp\Service\ZGWLogicService;
@@ -49,11 +51,14 @@ use Psr\Log\LoggerInterface;
  */
 class ZaakRegisterEventListener implements IEventListener
 {
+
+
     /**
      * Constructor for ZaakAfhandelAppEventListener
      */
     public function __construct(
-        private readonly ZGWLogicService $logicService
+        private readonly ZGWLogicService $logicService,
+        private readonly SchemaMapper $schemaMapper,
     ) {
     }
 
@@ -71,8 +76,6 @@ class ZaakRegisterEventListener implements IEventListener
     {
         try {
             $logger = \OC::$server->get(LoggerInterface::class);
-            $contactpersoonService = \OC::$server->get(ContactpersoonService::class);
-            $settingsService = \OC::$server->get(SettingsService::class);
 
             $logger->debug('ZaakAfhandelApp: Processing event', [
                 'eventType' => get_class($event),
@@ -80,11 +83,11 @@ class ZaakRegisterEventListener implements IEventListener
             ]);
 
             if ($event instanceof ObjectCreatedEvent) {
-                $this->handleObjectCreated($event, $contactpersoonService, $settingsService, $logger);
+                $this->handleObjectCreated($event, $logger);
             } elseif ($event instanceof ObjectUpdatedEvent) {
-                $this->handleObjectUpdated($event, $contactpersoonService, $settingsService, $logger);
+                $this->handleObjectUpdated($event, $logger);
             } elseif ($event instanceof ObjectDeletedEvent) {
-                $this->handleObjectDeleted($event, $contactpersoonService, $settingsService, $logger);
+                $this->handleObjectDeleted($event, $logger);
             } elseif ($event instanceof ObjectLockedEvent || $event instanceof ObjectUnlockedEvent || $event instanceof ObjectRevertedEvent) {
                 $logger->debug('ZaakAfhandelApp: Ignoring object lifecycle event', [
                     'eventType' => get_class($event)
@@ -95,6 +98,7 @@ class ZaakRegisterEventListener implements IEventListener
                 ]);
             }
         } catch (\Exception $e) {
+            var_dump($e->getMessage());
             try {
                 $logger = \OC::$server->get(LoggerInterface::class);
                 $logger->error('ZaakAfhandelApp: Error in event handler', [
@@ -105,6 +109,7 @@ class ZaakRegisterEventListener implements IEventListener
                     'trace' => $e->getTraceAsString()
                 ]);
             } catch (\Exception $logException) {
+                var_dump($e->getMessage());
                 // Silently fail if logging fails - better than breaking the event system
             }
         }
@@ -121,8 +126,23 @@ class ZaakRegisterEventListener implements IEventListener
      * @param LoggerInterface $logger The logger instance
      * @return void
      */
-    private function handleObjectCreated(ObjectCreatedEvent $event, ContactpersoonService $contactpersoonService, SettingsService $settingsService, LoggerInterface $logger): void
+    private function handleObjectCreated(ObjectCreatedEvent $event, LoggerInterface $logger): void
     {
+        $schema = $event->getObject()->getSchema();
+        $schema = $this->schemaMapper->find($schema);
+
+        if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
+            $this->logicService->closeZaak($event->getObject());
+            $this->logicService->reopenZaak($event->getObject());
+        }
+
+        if ($schema->getSlug() === $this->logicService->getZioSchema()) {
+            $this->logicService->createObjectInformatieObjectZaak($event->getObject());
+        }
+
+        if ($schema->getSlug() === $this->logicService->getBioSchema()) {
+            $this->logicService->createObjectInformatieObjectBesluit($event->getObject());
+        }
 
     }
 
@@ -135,7 +155,7 @@ class ZaakRegisterEventListener implements IEventListener
      * @param LoggerInterface $logger The logger instance
      * @return void
      */
-    private function handleObjectUpdated(ObjectUpdatedEvent $event, ContactpersoonService $contactpersoonService, SettingsService $settingsService, LoggerInterface $logger): void
+    private function handleObjectUpdated(ObjectUpdatedEvent $event, LoggerInterface $logger): void
     {
 
     }
@@ -149,9 +169,21 @@ class ZaakRegisterEventListener implements IEventListener
      * @param LoggerInterface $logger The logger instance
      * @return void
      */
-    private function handleObjectDeleted(ObjectDeletedEvent $event, ContactpersoonService $contactpersoonService, SettingsService $settingsService, LoggerInterface $logger): void
+    private function handleObjectDeleted(ObjectDeletedEvent $event, LoggerInterface $logger): void
     {
+        $schema = $event->getObject()->getSchema();
+        $schema = $this->schemaMapper->find($schema);
 
+        if ($schema->getSlug() === $this->logicService->getZioSchema()
+            || $schema->getSlug() === $this->logicService->getBioSchema()
+        ) {
+            $this->logicService->deleteObjectInformatieObject($event->getObject(), $schema);
+        }
+
+        if ($schema->getSlug() === $this->logicService->getZaakSchema()
+        ) {
+            $this->logicService->deleteZaak($event->getObject());
+        }
     }
 
     /**

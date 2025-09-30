@@ -5,6 +5,9 @@ namespace OCA\ZaakAfhandelApp\Service;
 use DateInterval;
 use DateTime;
 use OCA\OpenRegister\Db\ObjectEntity;
+use OCA\OpenRegister\Db\RegisterMapper;
+use OCA\OpenRegister\Db\Schema;
+use OCA\OpenRegister\Db\SchemaMapper;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 
 class ZGWLogicService
@@ -22,7 +25,9 @@ class ZGWLogicService
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct(
-        ObjectService $objectService
+        ObjectService $objectService,
+        private RegisterMapper $registerMapper,
+        private SchemaMapper $schemaMapper,
     )
     {
         $this->objectService = $objectService->getOpenRegisters();
@@ -39,7 +44,8 @@ class ZGWLogicService
             'bio'     => 'besluitinformatieobject',
             'oio'     => 'objectinformatieobject',
             'besluit' => 'besluit',
-
+            'zaak'    => 'zaak',
+            'status'  => 'status',
         ];
     }
 
@@ -83,6 +89,16 @@ class ZGWLogicService
         return $this->schemas['besluit'];
     }
 
+    public function getZaakSchema(): string
+    {
+        return $this->schemas['zaak'];
+    }
+
+    public function getStatusSchema(): string
+    {
+        return $this->schemas['status'];
+    }
+
     /**
      * When eindstatus is set on a zaak, close the zaak by setting appropriate values
      * ZRC-007 and ZRC-021
@@ -90,33 +106,40 @@ class ZGWLogicService
      * @param string|int $statusId
      * @return void
      */
-    public function closeZaak(string|int $statusId): void
+    public function closeZaak(ObjectEntity $status): void
     {
-        $status = $this->objectService->find($statusId);
-        $this->objectService->clearCurrents();
-
         $statusArray = $status->jsonSerialize();
-        // Validate endStatus
-        $statusType = $this->objectService->find($statusArray['statustype']);
-        $this->objectService->clearCurrents();
 
-        if($statusType->jsonSerialize()['isEindstatus'] === false) {
+        // Validate endStatus
+        $explodedStatusType = explode('/', $statusArray['statustype']);
+        $this->objectService->clearCurrents();
+        $statusType = $this->objectService->find(id: end($explodedStatusType), extend: ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' =>'zaaktype.statustypen']);
+
+        $maxOrder = max(array_map(function(array $st) {
+            return $st['volgnummer'];
+        }, $statusType->jsonSerialize()['_extend']['zaaktype']['_extend']['statustypen']));
+
+        if($statusType->jsonSerialize()['volgnummer'] !== $maxOrder) {
             return;
         }
 
         // Get zaak
-        $zaak = $this->objectService->find($statusArray['zaak']);
+        $explodedZaak = explode('/', $statusArray['zaak']);
         $this->objectService->clearCurrents();
+        $zaak = $this->objectService->find(end($explodedZaak));
 
         $zaakArray = $zaak->jsonSerialize();
 
         //Set fields for closed zaak
-        $zaakArray['einddatum'] = $statusArray['datumStatusGezet'];
+        $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
 
-        $resultaat = $this->objectService->find($zaakArray['resultaat']);
+        $explodedResultaat = explode('/', $zaakArray['resultaat']);
         $this->objectService->clearCurrents();
+        $resultaat = $this->objectService->find(end($explodedResultaat));
 
-        $resultaatType = $this->objectService->find($resultaat->jsonSerialize()['resultaatType']);
+        $explodedResultaattype = explode('/', $resultaat->jsonSerialize()['resultaattype']);
+        $this->objectService->clearCurrents();
+        $resultaatType = $this->objectService->find(end($explodedResultaattype));
 
         $resultaattypeArray = $resultaatType->jsonSerialize();
 
@@ -128,32 +151,38 @@ class ZGWLogicService
                 $zaakArray['archiefactiedatum'] = $zaakArray['einddatum'];
                 break;
             case 'hoofdzaak':
-                $hoofdzaak = $this->objectService->find($zaakArray['hoofdzaak']);
+                $hoofdzaakId = explode('/', $zaakArray['hoofdzaak']);
+                $hoofdzaakId = end($hoofdzaakId);
                 $this->objectService->clearCurrents();
+                $hoofdzaak = $this->objectService->find($hoofdzaakId);
 
                 $zaak['archiefactiedatum'] = $hoofdzaak->jsonSerialize()['einddatum'];
                 break;
             case 'eigenschap':
                 $eigenschap = $resultaattypeArray['brondatumArchiefprocedure']['datumkenmerk'] ?? null;
-                $eigenschappen = $this->objectService->findAll(['ids' => $zaak['eigenschappen']]);
+                $eigenschapIds = array_map(function ($eigenschap) {
+                    $exploded = explode('/', $eigenschap);
+                    return end($exploded);
+                }, $zaakArray['eigenschappen']);
                 $this->objectService->clearCurrents();
+                $eigenschappen = $this->objectService->findAll(['ids' => $eigenschapIds]);
                 $eigenschapObjects = array_filter($eigenschappen, function (ObjectEntity $eigenschapObject) use ($eigenschap) {return $eigenschapObject->jsonSerialize()['naam'] === $eigenschap;});
                 $eigenschapObject = array_shift($eigenschapObjects);
 
-                $zaak['archiefactiedatum'] = $eigenschapObject->jsonSerialize()['waarde'];
+                $zaakArray['archiefactiedatum'] = $eigenschapObject->jsonSerialize()['waarde'];
                 break;
             case 'ander_datumkenmerk':
                 $zaakArray['archiefactiedatum'] = null;
                 break;
             case 'termijn':
-                $zaakArray['archiefactiedatum'] = new DateTime($zaakArray['einddatum'])->add(new DateInterval($resultaattypeArray['brondatumArchiefprocedure']['procestermijn']));
+                $zaakArray['archiefactiedatum'] = (new DateTime($zaakArray['einddatum']))->add(new DateInterval($resultaattypeArray['brondatumArchiefprocedure']['procestermijn']));
                 break;
             case 'ingangsdatum_besluit':
             case 'vervaldatum_besluit':
                 // Can we please stop breaking performance?
                 // fetch besluiten
-                $besluiten = $this->objectService->findAll(['filters' => ['zaak' => $zaakArray['url'], 'register' => $this->getBrcRegister(), 'schema'=> $this->getBesluitSchema()]]);
                 $this->objectService->clearCurrents();
+                $besluiten = $this->objectService->findAll(['filters' => ['zaak' => $zaakArray['url'], 'register' => $this->getBrcRegister(), 'schema'=> $this->getBesluitSchema()]]);
 
                 if ($afleidingswijze === 'ingangsdatum_besluit') {
                     $data = array_map(function (ObjectEntity $besluit) {
@@ -175,9 +204,11 @@ class ZGWLogicService
 
         }
 
+        $this->objectService->clearCurrents();
 
         // Save zaak
-        $this->objectService->saveObject($zaak, $zaakArray);
+        $zaak->setObject($zaakArray);
+        $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
     }
 
     /**
@@ -187,24 +218,28 @@ class ZGWLogicService
      * @param string|int $statusId
      * @return void
      */
-    public function reopenZaak(string|int $statusId): void
+    public function reopenZaak(ObjectEntity $status): void
     {
-        $status = $this->objectService->find($statusId);
-        $this->objectService->clearCurrents();
 
         $statusArray = $status->jsonSerialize();
 
         // Validate not endStatus
-        $statusType = $this->objectService->find($statusArray['statustype']);
+        $explodedStatusType = explode('/', $statusArray['statustype']);
         $this->objectService->clearCurrents();
+        $statusType = $this->objectService->find(id: end($explodedStatusType), extend: ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' =>'zaaktype.statustypen']);
 
-        if($statusType->jsonSerialize()['isEindstatus'] === true) {
+        $maxOrder = max(array_map(function(array $st) {
+            return $st['volgnummer'];
+        }, $statusType->jsonSerialize()['_extend']['zaaktype']['_extend']['statustypen']));
+
+        if($statusType->jsonSerialize()['volgnummer'] === $maxOrder) {
             return;
         }
 
         // Get zaak
-        $zaak = $this->objectService->find($statusArray['zaak']);
+        $explodedZaak = explode('/', $statusArray['zaak']);
         $this->objectService->clearCurrents();
+        $zaak = $this->objectService->find(end($explodedZaak));
 
         $zaakArray = $zaak->jsonSerialize();
 
@@ -214,7 +249,8 @@ class ZGWLogicService
         $zaakArray['archiefnominatie'] = null;
 
         // Save zaak
-        $this->objectService->saveObject($zaak, $zaakArray);
+        $zaak->setObject($zaakArray);
+        $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
     }
 
     /**
@@ -224,22 +260,35 @@ class ZGWLogicService
      * @param string|int $zaakId
      * @return void
      */
-    public function deleteZaak(string|int $zaakId) {
-        $zaak = $this->objectService->find($zaakId);
+    public function deleteZaak(ObjectEntity $zaak): void
+    {
 
-        $zaakArray = $zaak->jsonSerialize();
+        $zaakArray = $this->objectService->renderEntity($zaak);
+
 
         // Delete connected objects
         $cascadeDeletes = array_merge(
-            $zaakArray['rollen'],
-            $zaakArray['eigenschappen'],
-            $zaakArray['resultaat'],
-            $zaakArray['status'], //?
-            $zaakArray['deelzaken'],
-            $zaakArray['zaakobjecten'],
-            $zaakArray['zaakInformatieObjecten'],
-            $zaakArray['klantcontact'],
+            $zaakArray['rollen'] ?? [],
+            $zaakArray['eigenschappen'] ?? [],
+            [$zaakArray['resultaat']],
+            $zaakArray['statussen'] ?? [],
+            $zaakArray['deelzaken'] ?? [],
+            $zaakArray['zaakobjecten'] ?? [],
+            $zaakArray['zaakinformatieobjecten'] ?? [],
+            [$zaakArray['klantcontact']],
         );
+
+        $cascadeDeletes = array_map(function (?string $url) {
+            if($url === null) {
+                return null;
+            }
+
+            $explodedUrl = explode('/', $url);
+            return end($explodedUrl);
+        }, $cascadeDeletes);
+
+        $cascadeDeletes = array_filter($cascadeDeletes);
+
 
         $this->objectService->deleteObjects($cascadeDeletes);
     }
@@ -251,25 +300,23 @@ class ZGWLogicService
      * @param string|int $zaakInformatieObjectId
      * @return void
      */
-    public function createObjectInformatieObjectZaak(string|int $zaakInformatieObjectId): void
+    public function createObjectInformatieObjectZaak(ObjectEntity $zio): void
     {
         $oio = new ObjectEntity();
         $oio->setSchema($this->getOioSchema());
         $oio->setRegister($this->getDrcRegister());
 
-        $zio = $this->objectService->find($zaakInformatieObjectId);
-        $this->objectService->clearCurrents();
-
         $zioArray = $zio->jsonSerialize();
 
         $oioArray = [
             'object' => $zioArray['zaak'],
-            'informatieoject' => $zioArray['informatieoject'],
+            'informatieobject' => $zioArray['informatieobject'],
+            'objectType' => 'zaak'
         ];
 
         $oio->setObject($oioArray);
 
-        $this->objectService->saveObject($oio, $oioArray);
+        $this->objectService->saveObject(object: $oio, register: $this->getDrcRegister(), schema: $this->getOioSchema());
 
     }
 
@@ -280,25 +327,23 @@ class ZGWLogicService
      * @param string|int $besluitInformatieObjectId
      * @return void
      */
-    public function createObjectInformatieObjectBesluit(string|int $besluitInformatieObjectId): void
+    public function createObjectInformatieObjectBesluit(ObjectEntity $bio): void
     {
         $oio = new ObjectEntity();
         $oio->setSchema($this->getOioSchema());
         $oio->setRegister($this->getDrcRegister());
 
-        $bio = $this->objectService->find($besluitInformatieObjectId);
-        $this->objectService->clearCurrents();
-
         $bioArray = $bio->jsonSerialize();
 
         $oioArray = [
             'object' => $bioArray['besluit'],
-            'informatieoject' => $bioArray['informatieoject'],
+            'informatieobject' => $bioArray['informatieobject'],
+            'objectType' => 'besluit'
         ];
 
         $oio->setObject($oioArray);
 
-        $this->objectService->saveObject($oio, $oioArray);
+        $this->objectService->saveObject(object: $oio, register: $this->getDrcRegister(), schema: $this->getOioSchema());
 
     }
 
@@ -309,18 +354,18 @@ class ZGWLogicService
      * @param string|int $objectId
      * @return void
      */
-    public function deleteObjectInformatieObject(string|int $objectId): void
+    public function deleteObjectInformatieObject(ObjectEntity $object, Schema $schema): void
     {
-        $object = $this->objectService->find($objectId);
         $serialized = $object->jsonSerialize();
-        if($object->getSchema() === $this->getZioSchema()) {
-            $objects = $this->objectService->findAll(['filters' => ['object' => $serialized['zaak'], 'objectType' => 'zaak', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->getDrcRegister(), 'schema' => $this->getOioSchema()]]);
+
+        if($schema->getSlug() === $this->getZioSchema()) {
+            $objects = $this->objectService->findAll(['filters' => ['object' => $serialized['zaak'], 'objectType' => 'zaak', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->registerMapper->find($this->getDrcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->getOioSchema())->getId()]]);
 
             $this->objectService->deleteObjects(array_map(function(ObjectEntity $object) {return $object->getUuid();}, $objects));
 
         }
-        if($object->getSchema() === $this->getBioSchema()) {
-            $objects = $this->objectService->findObjects(['filters' => ['object' => $serialized['besluit'], 'objectType' => 'besluit', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->getDrcRegister(), 'schema' => $this->getOioSchema()]]);
+        if($schema->getSlug() === $this->getBioSchema()) {
+            $objects = $this->objectService->findObjects(['filters' => ['object' => $serialized['besluit'], 'objectType' => 'besluit', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->registerMapper->find($this->getDrcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->getOioSchema())->getId()]]);
 
             $this->objectService->deleteObjects(array_map(function(ObjectEntity $object) {return $object->getUuid();}, $objects));
 
