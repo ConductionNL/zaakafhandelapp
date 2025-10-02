@@ -3,12 +3,12 @@
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>zaakafhandelapp</id>
 	<name>Zaak Afhandel App</name>
-	<summary>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionN</summary>	
+	<summary>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionN</summary>
 	<description><![CDATA[📰 Brinning Gateway and Service bus functionality to nextcloud
 
 The OpenCatalogi Nextcloud app provides a framework for federated catalogi to work together in an open data ecosystem
 
-- 📲 Synchronize your data sources 
+- 📲 Synchronize your data sources
 - 📰 Send cloud eventt
 - 🆓 Map and translate api calls
 
@@ -35,9 +35,9 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
         <database min-version="10">pgsql</database>
         <database>sqlite</database>
         <database min-version="8.0">mysql</database>
-		
+
         <owncloud max-version="0" min-version="0"/>
-		<nextcloud min-version="28" max-version="30"/>
+		<nextcloud min-version="28" max-version="33"/>
 	</dependencies>
 	<navigations>
 		<navigation>

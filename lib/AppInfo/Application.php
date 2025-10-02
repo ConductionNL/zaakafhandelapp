@@ -40,6 +40,19 @@ class Application extends App implements IBootstrap
 		$context->registerDashboardWidget(ContactmomentenWidget::class);
 		$context->registerDashboardWidget(PersonenWidget::class);
 		$context->registerDashboardWidget(OrganisatiesWidget::class);
+
+        $context->registerEventListener(
+            \OCA\OpenRegister\Event\ObjectCreatedEvent::class,
+            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
+        );
+        $context->registerEventListener(
+            \OCA\OpenRegister\Event\ObjectUpdatedEvent::class,
+            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
+        );
+        $context->registerEventListener(
+            \OCA\OpenRegister\Event\ObjectDeletedEvent::class,
+            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
+        );
 	}
 
 	public function boot(IBootContext $context): void
