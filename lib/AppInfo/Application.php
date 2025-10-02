@@ -53,6 +53,18 @@ class Application extends App implements IBootstrap
             \OCA\OpenRegister\Event\ObjectDeletedEvent::class,
             \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
         );
+        $context->registerEventListener(
+            \OCA\OpenRegister\Event\ObjectCreatingEvent::class,
+            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
+        );
+        $context->registerEventListener(
+            \OCA\OpenRegister\Event\ObjectUpdatingEvent::class,
+            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
+        );
+        $context->registerEventListener(
+            \OCA\OpenRegister\Event\ObjectDeletingEvent::class,
+            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
+        );
 	}
 
 	public function boot(IBootContext $context): void
