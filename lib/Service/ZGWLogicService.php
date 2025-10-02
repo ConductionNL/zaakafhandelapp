@@ -8,7 +8,9 @@ use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Db\RegisterMapper;
 use OCA\OpenRegister\Db\Schema;
 use OCA\OpenRegister\Db\SchemaMapper;
+use OCA\OpenRegister\Exception\CustomValidationException;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
+use OCP\AppFramework\Db\DoesNotExistException;
 
 class ZGWLogicService
 {
@@ -400,5 +402,111 @@ class ZGWLogicService
         $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
 
 
+    }
+
+    /**
+     * ZRC-010: Validate if 'relevanteAndereZaken' contains valid references
+     *
+     * @param ObjectEntity $zaak The zaak resource to validate
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkRelevanteAndereZaken (ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if (is_array($zaakArray['relevanteAndereZaken']) === false) {
+            return;
+        }
+
+        $i = 0;
+        foreach ($zaakArray['relevanteAndereZaken'] as $relevanteZaak) {
+            $this->objectService->clearCurrents();
+            if(isset($relevanteZaak['url']) === false) {
+                $i++;
+                continue;
+            }
+            try {
+                $relevanteZaakId = explode('/', $relevanteZaak['url']);
+                $relevanteZaakId = end($relevanteZaakId);
+                $this->objectService->clearCurrents();
+                $zaaktype = $this->objectService->find($relevanteZaakId);
+                $this->objectService->clearCurrents();
+            } catch (DoesNotExistException $exception) {
+                throw new CustomValidationException("Relevante zaak bestaat niet", [['name' => "relevanteAndereZaken.$i.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]);
+            }
+            $i++;
+        }
+
+    }
+
+    /**
+     * ZRC-015: Check if the values of 'productenOfDiensten' are also present in the 'productenOfDiensten' parameter of the 'zaaktype'
+     *
+     * @param ObjectEntity $zaak The zaak resource to validate
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkProductenOfDiensten (ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if (is_array($zaakArray['productenOfDiensten']) === false) {
+            return;
+        }
+
+        $zaaktypeId = explode('/', $zaakArray['zaaktype']);
+        $zaaktypeId = end($zaaktypeId);
+        $this->objectService->clearCurrents();
+        $zaaktype = $this->objectService->find($zaaktypeId);
+        $this->objectService->clearCurrents();
+
+        $zaaktypeArray = $zaaktype->jsonSerialize();
+
+        if(array_diff($zaakArray['productenOfDiensten'], $zaaktypeArray['productenOfDiensten']) !== []) {
+            throw new CustomValidationException("Producten of diensten niet in lijn met zaaktype", [['name' => 'productenOfDiensten', 'code' => 'invalid-products-services', 'reason' => 'De producten en services zijn niet allemaal aanwezig op het zaaktype']]);
+        }
+
+    }
+
+    /**
+     * ZRC-022: Check if the archive-parameters are set properly before changing the archivation status
+     *
+     * @param ObjectEntity $zaak The zaak to validate
+     * @return void
+     */
+    public function checkArchivePrerequisites (ObjectEntity $zaak): void
+    {
+        $zaakArray = $this->objectService->renderEntity($zaak);
+
+        if($zaakArray['archiefstatus'] === 'nog_te_archiveren') {
+            return;
+        }
+
+        $zioIds = array_map(function ($zio) {
+            $exploded = explode('/', $zio);
+            return end($exploded);
+        }, $zaakArray['zaakinformatieobjecten']);
+
+        $this->objectService->clearCurrents();
+        $zios = $this->objectService->findAll(['ids' => $zioIds, 'extend' => ['informatieobject']]);
+
+        $eioStatuses = array_unique(array_map(function (ObjectEntity $zio) {
+            $zioArray = $zio->jsonSerialize();
+            return $zioArray['informatieobject']['status'] ?? null;
+        }, $zios));
+
+        if(count($eioStatuses) !== 1 || $eioStatuses[0] !== 'gearchiveerd') {
+            throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'zaakinformatieobjecten', 'code' => 'informatieobject-status-not-set', 'reason' => 'De status van alle informatieobjecten moet \'gearchiveerd\' zijn voordat de zaak gearchiveerd kan worden.']]);
+        }
+
+        if ($zaakArray['archiefstatus'] !== 'nog_te_archiveren' && ($zaakArray['archiefnominatie'] === null)) {
+            throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'archiefnominatie', 'code' => 'archiefnominatie-not-set', 'reason' => 'De archiefnominatie moet geset zijn voordat de zaak gearchiveerd kan worden']]);
+
+        }
+        if ($zaakArray['archiefstatus'] !== 'nog_te_archiveren' && ($zaakArray['archiefactiedatum'] === null)) {
+            throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'archiefactiedatum', 'code' => 'archiefactiedatum-not-set', 'reason' => 'De archiefactiedatum moet geset zijn voordat de zaak gearchiveerd kan worden']]);
+
+        }
     }
 }

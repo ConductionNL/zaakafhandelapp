@@ -19,6 +19,9 @@ declare(strict_types=1);
 namespace OCA\ZaakAfhandelApp\EventListener;
 
 use OCA\OpenRegister\Db\SchemaMapper;
+use OCA\OpenRegister\Event\ObjectCreatingEvent;
+use OCA\OpenRegister\Event\ObjectUpdatingEvent;
+use OCA\OpenRegister\Exception\CustomValidationException;
 use OCA\ZaakAfhandelApp\Service\ContactpersoonService;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCA\ZaakAfhandelApp\Service\SettingsService;
@@ -88,6 +91,12 @@ class ZaakRegisterEventListener implements IEventListener
                 $this->handleObjectUpdated($event, $logger);
             } elseif ($event instanceof ObjectDeletedEvent) {
                 $this->handleObjectDeleted($event, $logger);
+            } elseif ($event instanceof ObjectCreatingEvent) {
+                $this->handleObjectCreating($event, $logger);
+            } elseif ($event instanceof ObjectUpdatingEvent) {
+                $this->handleObjectUpdating($event, $logger);
+            } elseif ($event instanceof ObjectCreatingEvent) {
+                $this->handleObjectDeleting($event, $logger);
             } elseif ($event instanceof ObjectLockedEvent || $event instanceof ObjectUnlockedEvent || $event instanceof ObjectRevertedEvent) {
                 $logger->debug('ZaakAfhandelApp: Ignoring object lifecycle event', [
                     'eventType' => get_class($event)
@@ -97,6 +106,9 @@ class ZaakRegisterEventListener implements IEventListener
                     'eventType' => get_class($event)
                 ]);
             }
+        } catch (CustomValidationException $e) {
+            // These errors should not be surpressed
+            throw $e;
         } catch (\Exception $e) {
             try {
                 $logger = \OC::$server->get(LoggerInterface::class);
@@ -234,5 +246,35 @@ class ZaakRegisterEventListener implements IEventListener
     private function handleObjectReverted(ObjectRevertedEvent $event, ZaakAfhandelAppueService $softwareCatalogueService, SettingsService $settingsService, LoggerInterface $logger): void
     {
 
+    }
+
+    private function handleObjectCreating(ObjectCreatingEvent $event, mixed $logger)
+    {
+        $schema = $event->getObject()->getSchema();
+        $schema = $this->schemaMapper->find($schema);
+
+        if ($schema->getSlug() === $this->logicService->getZaakSchema()
+        ) {
+            $this->logicService->checkProductenOfDiensten($event->getObject());
+            $this->logicService->checkRelevanteAndereZaken($event->getObject());
+            $this->logicService->checkArchivePrerequisites($event->getObject());
+        }
+    }
+
+    private function handleObjectUpdating(ObjectUpdatingEvent $event, mixed $logger)
+    {
+        $schema = $event->getNewObject()->getSchema();
+        $schema = $this->schemaMapper->find($schema);
+
+        if ($schema->getSlug() === $this->logicService->getZaakSchema()
+        ) {
+            $this->logicService->checkProductenOfDiensten($event->getNewObject());
+            $this->logicService->checkRelevanteAndereZaken($event->getNewObject());
+            $this->logicService->checkArchivePrerequisites($event->getNewObject());
+        }
+    }
+
+    private function handleObjectDeleting(ObjectCreatingEvent $event, mixed $logger)
+    {
     }
 }
