@@ -142,6 +142,10 @@ class ZaakRegisterEventListener implements IEventListener
             $this->logicService->createObjectInformatieObjectBesluit($event->getObject());
         }
 
+        if ($schema->getSlug() === $this->logicService->getZaakSchema()) {
+            $this->logicService->setVertrouwelijkheidaanduiding($event->getObject());
+        }
+
     }
 
     /**
@@ -155,6 +159,12 @@ class ZaakRegisterEventListener implements IEventListener
      */
     private function handleObjectUpdated(ObjectUpdatedEvent $event, LoggerInterface $logger): void
     {
+        $schema = $event->getNewObject()->getSchema();
+        $schema = $this->schemaMapper->find($schema);
+
+        if ($schema->getSlug() === $this->logicService->getZaakSchema()) {
+            $this->logicService->setVertrouwelijkheidaanduiding($event->getNewObject());
+        }
 
     }
 
