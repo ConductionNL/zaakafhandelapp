@@ -371,4 +371,34 @@ class ZGWLogicService
 
         }
     }
+
+    /**
+     * ZRC-009: Set derived 'vertrouwelijkheidaanduiding' when 'vertrouwelijkheidaanduiding' is null
+     *
+     * @param ObjectEntity $zaak The 'zaak' for which vertrouwelijkheidaanduiding must be checked (and possibly derived).
+     * @return void
+     * @throws \Exception
+     */
+    public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if ($zaakArray['vertrouwelijkheidaanduiding'] !== null) {
+            return;
+        }
+
+        $zaaktypeId = explode('/', $zaakArray['zaaktype']);
+        $zaaktypeId = end($zaaktypeId);
+        $this->objectService->clearCurrents();
+        $zaaktype = $this->objectService->find($zaaktypeId);
+
+        $zaaktypeArray = $zaaktype->jsonSerialize();
+
+        $zaakArray['vertrouwelijkheidaanduiding'] = $zaaktypeArray['vertrouwelijkheidaanduiding'];
+
+        $zaak->setObject($zaakArray);
+        $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
+
+
+    }
 }
