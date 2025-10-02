@@ -142,7 +142,6 @@ class ZaakRegisterEventListener implements IEventListener
         $schema = $this->schemaMapper->find($schema);
 
         if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
-            $this->logicService->closeZaak($event->getObject());
             $this->logicService->reopenZaak($event->getObject());
         }
 
@@ -252,6 +251,10 @@ class ZaakRegisterEventListener implements IEventListener
     {
         $schema = $event->getObject()->getSchema();
         $schema = $this->schemaMapper->find($schema);
+
+        if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
+            $this->logicService->closeZaak($event->getObject());
+        }
 
         if ($schema->getSlug() === $this->logicService->getZaakSchema()
         ) {
