@@ -8,7 +8,9 @@ use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Db\RegisterMapper;
 use OCA\OpenRegister\Db\Schema;
 use OCA\OpenRegister\Db\SchemaMapper;
+use OCA\OpenRegister\Exception\CustomValidationException;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
+use OCP\AppFramework\Db\DoesNotExistException;
 
 class ZGWLogicService
 {
@@ -46,6 +48,7 @@ class ZGWLogicService
             'besluit' => 'besluit',
             'zaak'    => 'zaak',
             'status'  => 'status',
+            'gebruiksrechten' => 'gebruiksrechten'
         ];
     }
 
@@ -67,6 +70,11 @@ class ZGWLogicService
     public function getZtcRegister(): string
     {
         return $this->registers['ztc'];
+    }
+
+    public function getGebruiksrechtenSchema(): string
+    {
+        return $this->schemas['gebruiksrechten'];
     }
 
     public function getZioSchema(): string
@@ -126,9 +134,18 @@ class ZGWLogicService
         // Get zaak
         $explodedZaak = explode('/', $statusArray['zaak']);
         $this->objectService->clearCurrents();
-        $zaak = $this->objectService->find(end($explodedZaak));
-
+        $zaak = $this->objectService->find(id: end($explodedZaak), extend: ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject', /*'zaakinformatieobjecten.informatieobject.gebruiksrechten'*/]);
         $zaakArray = $zaak->jsonSerialize();
+
+        // This only works if the relation between gebruiksrecht and informatieobject is properly set
+        $gebruiksrechtenSet = array_map(function (array $zio) {
+            $informatieobject = $zio['informatieobject'];
+            return count($informatieobject['gebruiksrechten']) > 0 || $informatieobject['indicatieGebruiksrecht'] !== null;
+        }, $zaakArray['zaakinformatieobjecten']);
+
+        if (in_array(haystack: $gebruiksrechtenSet, needle: false) === true) {
+                throw new CustomValidationException("Indicatiegebruiksrecht niet geset", [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben voor een zaak kan worden gesloten.']]);
+        }
 
         //Set fields for closed zaak
         $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
@@ -399,6 +416,167 @@ class ZGWLogicService
         $zaak->setObject($zaakArray);
         $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
 
+
+    }
+
+    /**
+     * ZRC-010: Validate if 'relevanteAndereZaken' contains valid references
+     *
+     * @param ObjectEntity $zaak The zaak resource to validate
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkRelevanteAndereZaken (ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if (is_array($zaakArray['relevanteAndereZaken']) === false) {
+            return;
+        }
+
+        $i = 0;
+        foreach ($zaakArray['relevanteAndereZaken'] as $relevanteZaak) {
+            $this->objectService->clearCurrents();
+            if(isset($relevanteZaak['url']) === false) {
+                $i++;
+                continue;
+            }
+            try {
+                $relevanteZaakId = explode('/', $relevanteZaak['url']);
+                $relevanteZaakId = end($relevanteZaakId);
+                $this->objectService->clearCurrents();
+                $zaaktype = $this->objectService->find($relevanteZaakId);
+                $this->objectService->clearCurrents();
+            } catch (DoesNotExistException $exception) {
+                throw new CustomValidationException("Relevante zaak bestaat niet", [['name' => "relevanteAndereZaken.$i.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]);
+            }
+            $i++;
+        }
+
+    }
+
+    /**
+     * ZRC-015: Check if the values of 'productenOfDiensten' are also present in the 'productenOfDiensten' parameter of the 'zaaktype'
+     *
+     * @param ObjectEntity $zaak The zaak resource to validate
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkProductenOfDiensten (ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if (is_array($zaakArray['productenOfDiensten']) === false) {
+            return;
+        }
+
+        $zaaktypeId = explode('/', $zaakArray['zaaktype']);
+        $zaaktypeId = end($zaaktypeId);
+        $this->objectService->clearCurrents();
+        $zaaktype = $this->objectService->find($zaaktypeId);
+        $this->objectService->clearCurrents();
+
+        $zaaktypeArray = $zaaktype->jsonSerialize();
+
+        if(array_diff($zaakArray['productenOfDiensten'], $zaaktypeArray['productenOfDiensten']) !== []) {
+            throw new CustomValidationException("Producten of diensten niet in lijn met zaaktype", [['name' => 'productenOfDiensten', 'code' => 'invalid-products-services', 'reason' => 'De producten en services zijn niet allemaal aanwezig op het zaaktype']]);
+        }
+
+    }
+
+    /**
+     * ZRC-022: Check if the archive-parameters are set properly before changing the archivation status
+     *
+     * @param ObjectEntity $zaak The zaak to validate
+     * @return void
+     */
+    public function checkArchivePrerequisites (ObjectEntity $zaak): void
+    {
+        $zaakArray = $this->objectService->renderEntity($zaak);
+
+        if($zaakArray['archiefstatus'] === 'nog_te_archiveren') {
+            return;
+        }
+
+        $zioIds = array_map(function ($zio) {
+            $exploded = explode('/', $zio);
+            return end($exploded);
+        }, $zaakArray['zaakinformatieobjecten']);
+
+        $this->objectService->clearCurrents();
+        $zios = $this->objectService->findAll(['ids' => $zioIds, 'extend' => ['informatieobject']]);
+
+        $eioStatuses = array_unique(array_map(function (ObjectEntity $zio) {
+            $zioArray = $zio->jsonSerialize();
+            return $zioArray['informatieobject']['status'] ?? null;
+        }, $zios));
+
+        if(count($eioStatuses) !== 1 || $eioStatuses[0] !== 'gearchiveerd') {
+            throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'zaakinformatieobjecten', 'code' => 'informatieobject-status-not-set', 'reason' => 'De status van alle informatieobjecten moet \'gearchiveerd\' zijn voordat de zaak gearchiveerd kan worden.']]);
+        }
+
+        if ($zaakArray['archiefstatus'] !== 'nog_te_archiveren' && ($zaakArray['archiefnominatie'] === null)) {
+            throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'archiefnominatie', 'code' => 'archiefnominatie-not-set', 'reason' => 'De archiefnominatie moet geset zijn voordat de zaak gearchiveerd kan worden']]);
+
+        }
+        if ($zaakArray['archiefstatus'] !== 'nog_te_archiveren' && ($zaakArray['archiefactiedatum'] === null)) {
+            throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'archiefactiedatum', 'code' => 'archiefactiedatum-not-set', 'reason' => 'De archiefactiedatum moet geset zijn voordat de zaak gearchiveerd kan worden']]);
+
+        }
+    }
+
+    /**
+     * ZRC-012: Check the 'verlenging' and 'opschorting' parameters on a zaak resource
+     *
+     * @TODO: This should be done by the validator, but it does not validate subobjects at the moment.
+     *
+     * @param ObjectEntity $zaak
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkGegevensgroepen(ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if ($zaakArray['verlenging'] === null && $zaakArray['opschorting'] === null) {
+            return;
+        }
+
+        if ($zaakArray['verlenging'] !== null) {
+            $unsetFields = array_diff(array_keys($zaakArray), ['reden', 'duur']);
+            foreach($unsetFields as $field) {
+                unset($zaakArray['verlenging'][$field]);
+            }
+
+            if(isset($zaakArray['verlenging']['reden']) === false) {
+                $errors[] = ['name' => 'verlenging.reden', 'code' => 'required', 'reason' => 'Een verlenging moet het veld reden bevatten'];
+            }
+            if(isset($zaakArray['verlenging']['duur']) === false) {
+                $errors[] = ['name' => 'verlenging.duur', 'code' => 'required', 'reason' => 'Een verlenging moet het veld duur bevatten'];
+            }
+
+            if(count($errors) !== 0) {
+                throw new CustomValidationException(message: "Verlenging is incorrect", errors: $errors);
+            }
+        }
+
+        if ($zaakArray['opschorting'] !== null) {
+            $unsetFields = array_diff(array_keys($zaakArray), ['reden', 'indicatie']);
+            foreach($unsetFields as $field) {
+                unset($zaakArray['verlenging'][$field]);
+            }
+
+            if(isset($zaakArray['verlenging']['indicatie']) === false) {
+                $errors[] = ['name' => 'opschorting.indicatie', 'code' => 'required', 'reason' => 'Een opschorting moet het veld indicatie bevatten'];
+            }
+            if(isset($zaakArray['verlenging']['reden']) === false) {
+                $errors[] = ['name' => 'opschorting.reden', 'code' => 'required', 'reason' => 'Een opschorting moet het veld reden bevatten'];
+            }
+
+            if(count($errors) !== 0) {
+                throw new CustomValidationException(message: "Opschorting is incorrect", errors: $errors);
+            }
+        }
 
     }
 }
