@@ -48,6 +48,7 @@ class ZGWLogicService
             'besluit' => 'besluit',
             'zaak'    => 'zaak',
             'status'  => 'status',
+            'gebruiksrechten' => 'gebruiksrechten'
         ];
     }
 
@@ -69,6 +70,11 @@ class ZGWLogicService
     public function getZtcRegister(): string
     {
         return $this->registers['ztc'];
+    }
+
+    public function getGebruiksrechtenSchema(): string
+    {
+        return $this->schemas['gebruiksrechten'];
     }
 
     public function getZioSchema(): string
@@ -128,9 +134,18 @@ class ZGWLogicService
         // Get zaak
         $explodedZaak = explode('/', $statusArray['zaak']);
         $this->objectService->clearCurrents();
-        $zaak = $this->objectService->find(end($explodedZaak));
-
+        $zaak = $this->objectService->find(id: end($explodedZaak), extend: ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject', /*'zaakinformatieobjecten.informatieobject.gebruiksrechten'*/]);
         $zaakArray = $zaak->jsonSerialize();
+
+        // This only works if the relation between gebruiksrecht and informatieobject is properly set
+        $gebruiksrechtenSet = array_map(function (array $zio) {
+            $informatieobject = $zio['informatieobject'];
+            return count($informatieobject['gebruiksrechten']) > 0 || $informatieobject['indicatieGebruiksrecht'] !== null;
+        }, $zaakArray['zaakinformatieobjecten']);
+
+        if (in_array(haystack: $gebruiksrechtenSet, needle: false) === true) {
+                throw new CustomValidationException("Indicatiegebruiksrecht niet geset", [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben voor een zaak kan worden gesloten.']]);
+        }
 
         //Set fields for closed zaak
         $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
@@ -508,5 +523,60 @@ class ZGWLogicService
             throw new CustomValidationException("Archivatieparameters zijn niet correct geset", [['name' => 'archiefactiedatum', 'code' => 'archiefactiedatum-not-set', 'reason' => 'De archiefactiedatum moet geset zijn voordat de zaak gearchiveerd kan worden']]);
 
         }
+    }
+
+    /**
+     * ZRC-012: Check the 'verlenging' and 'opschorting' parameters on a zaak resource
+     *
+     * @TODO: This should be done by the validator, but it does not validate subobjects at the moment.
+     *
+     * @param ObjectEntity $zaak
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkGegevensgroepen(ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if ($zaakArray['verlenging'] === null && $zaakArray['opschorting'] === null) {
+            return;
+        }
+
+        if ($zaakArray['verlenging'] !== null) {
+            $unsetFields = array_diff(array_keys($zaakArray), ['reden', 'duur']);
+            foreach($unsetFields as $field) {
+                unset($zaakArray['verlenging'][$field]);
+            }
+
+            if(isset($zaakArray['verlenging']['reden']) === false) {
+                $errors[] = ['name' => 'verlenging.reden', 'code' => 'required', 'reason' => 'Een verlenging moet het veld reden bevatten'];
+            }
+            if(isset($zaakArray['verlenging']['duur']) === false) {
+                $errors[] = ['name' => 'verlenging.duur', 'code' => 'required', 'reason' => 'Een verlenging moet het veld duur bevatten'];
+            }
+
+            if(count($errors) !== 0) {
+                throw new CustomValidationException(message: "Verlenging is incorrect", errors: $errors);
+            }
+        }
+
+        if ($zaakArray['opschorting'] !== null) {
+            $unsetFields = array_diff(array_keys($zaakArray), ['reden', 'indicatie']);
+            foreach($unsetFields as $field) {
+                unset($zaakArray['verlenging'][$field]);
+            }
+
+            if(isset($zaakArray['verlenging']['indicatie']) === false) {
+                $errors[] = ['name' => 'opschorting.indicatie', 'code' => 'required', 'reason' => 'Een opschorting moet het veld indicatie bevatten'];
+            }
+            if(isset($zaakArray['verlenging']['reden']) === false) {
+                $errors[] = ['name' => 'opschorting.reden', 'code' => 'required', 'reason' => 'Een opschorting moet het veld reden bevatten'];
+            }
+
+            if(count($errors) !== 0) {
+                throw new CustomValidationException(message: "Opschorting is incorrect", errors: $errors);
+            }
+        }
+
     }
 }

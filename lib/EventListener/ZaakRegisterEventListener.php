@@ -142,7 +142,6 @@ class ZaakRegisterEventListener implements IEventListener
         $schema = $this->schemaMapper->find($schema);
 
         if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
-            $this->logicService->closeZaak($event->getObject());
             $this->logicService->reopenZaak($event->getObject());
         }
 
@@ -253,11 +252,16 @@ class ZaakRegisterEventListener implements IEventListener
         $schema = $event->getObject()->getSchema();
         $schema = $this->schemaMapper->find($schema);
 
+        if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
+            $this->logicService->closeZaak($event->getObject());
+        }
+
         if ($schema->getSlug() === $this->logicService->getZaakSchema()
         ) {
             $this->logicService->checkProductenOfDiensten($event->getObject());
             $this->logicService->checkRelevanteAndereZaken($event->getObject());
             $this->logicService->checkArchivePrerequisites($event->getObject());
+            $this->logicService->checkGegevensgroepen($event->getObject());
         }
     }
 
@@ -271,6 +275,7 @@ class ZaakRegisterEventListener implements IEventListener
             $this->logicService->checkProductenOfDiensten($event->getNewObject());
             $this->logicService->checkRelevanteAndereZaken($event->getNewObject());
             $this->logicService->checkArchivePrerequisites($event->getNewObject());
+            $this->logicService->checkGegevensgroepen($event->getNewObject());
         }
     }
 
