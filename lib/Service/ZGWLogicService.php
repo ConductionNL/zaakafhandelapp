@@ -524,4 +524,59 @@ class ZGWLogicService
 
         }
     }
+
+    /**
+     * ZRC-012: Check the 'verlenging' and 'opschorting' parameters on a zaak resource
+     *
+     * @TODO: This should be done by the validator, but it does not validate subobjects at the moment.
+     *
+     * @param ObjectEntity $zaak
+     * @return void
+     * @throws CustomValidationException
+     */
+    public function checkGegevensgroepen(ObjectEntity $zaak): void
+    {
+        $zaakArray = $zaak->jsonSerialize();
+
+        if ($zaakArray['verlenging'] === null && $zaakArray['opschorting'] === null) {
+            return;
+        }
+
+        if ($zaakArray['verlenging'] !== null) {
+            $unsetFields = array_diff(array_keys($zaakArray), ['reden', 'duur']);
+            foreach($unsetFields as $field) {
+                unset($zaakArray['verlenging'][$field]);
+            }
+
+            if(isset($zaakArray['verlenging']['reden']) === false) {
+                $errors[] = ['name' => 'verlenging.reden', 'code' => 'required', 'reason' => 'Een verlenging moet het veld reden bevatten'];
+            }
+            if(isset($zaakArray['verlenging']['duur']) === false) {
+                $errors[] = ['name' => 'verlenging.duur', 'code' => 'required', 'reason' => 'Een verlenging moet het veld duur bevatten'];
+            }
+
+            if(count($errors) !== 0) {
+                throw new CustomValidationException(message: "Verlenging is incorrect", errors: $errors);
+            }
+        }
+
+        if ($zaakArray['opschorting'] !== null) {
+            $unsetFields = array_diff(array_keys($zaakArray), ['reden', 'indicatie']);
+            foreach($unsetFields as $field) {
+                unset($zaakArray['verlenging'][$field]);
+            }
+
+            if(isset($zaakArray['verlenging']['indicatie']) === false) {
+                $errors[] = ['name' => 'opschorting.indicatie', 'code' => 'required', 'reason' => 'Een opschorting moet het veld indicatie bevatten'];
+            }
+            if(isset($zaakArray['verlenging']['reden']) === false) {
+                $errors[] = ['name' => 'opschorting.reden', 'code' => 'required', 'reason' => 'Een opschorting moet het veld reden bevatten'];
+            }
+
+            if(count($errors) !== 0) {
+                throw new CustomValidationException(message: "Opschorting is incorrect", errors: $errors);
+            }
+        }
+
+    }
 }
