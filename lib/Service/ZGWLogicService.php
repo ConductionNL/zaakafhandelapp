@@ -48,6 +48,7 @@ class ZGWLogicService
             'besluit' => 'besluit',
             'zaak'    => 'zaak',
             'status'  => 'status',
+            'gebruiksrechten' => 'gebruiksrechten'
         ];
     }
 
@@ -69,6 +70,11 @@ class ZGWLogicService
     public function getZtcRegister(): string
     {
         return $this->registers['ztc'];
+    }
+
+    public function getGebruiksrechtenSchema(): string
+    {
+        return $this->schemas['gebruiksrechten'];
     }
 
     public function getZioSchema(): string
@@ -128,17 +134,18 @@ class ZGWLogicService
         // Get zaak
         $explodedZaak = explode('/', $statusArray['zaak']);
         $this->objectService->clearCurrents();
-        $zaak = $this->objectService->find(id: end($explodedZaak), extend: ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject', 'zaakinformatieobjecten.informatieobject.gebruiksrechten']);
+        $zaak = $this->objectService->find(id: end($explodedZaak), extend: ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject', /*'zaakinformatieobjecten.informatieobject.gebruiksrechten'*/]);
         $zaakArray = $zaak->jsonSerialize();
 
         // This only works if the relation between gebruiksrecht and informatieobject is properly set
-//        $gebruiksrechtenSet = array_map(function (array $zio) {
-//            return $zio['informatieobject']['gebruiksrechten'] !== null && count($zio['informatieobject']['gebruiksrechten']) > 0;
-//        }, $zaakArray['zaakinformatieobjecten']);
-//
-//        if (in_array(haystack: $gebruiksrechtenSet, needle: false) === true) {
-//                throw new CustomValidationException("Indicatiegebruiksrecht niet geset", [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben voor een zaak kan worden gesloten.']]);
-//        }
+        $gebruiksrechtenSet = array_map(function (array $zio) {
+            $informatieobject = $zio['informatieobject'];
+            return count($informatieobject['gebruiksrechten']) > 0 || $informatieobject['indicatieGebruiksrecht'] !== null;
+        }, $zaakArray['zaakinformatieobjecten']);
+
+        if (in_array(haystack: $gebruiksrechtenSet, needle: false) === true) {
+                throw new CustomValidationException("Indicatiegebruiksrecht niet geset", [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben voor een zaak kan worden gesloten.']]);
+        }
 
         //Set fields for closed zaak
         $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
