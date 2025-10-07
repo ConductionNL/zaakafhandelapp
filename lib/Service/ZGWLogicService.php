@@ -48,7 +48,8 @@ class ZGWLogicService
             'besluit' => 'besluit',
             'zaak'    => 'zaak',
             'status'  => 'status',
-            'gebruiksrechten' => 'gebruiksrechten'
+            'gebruiksrechten' => 'gebruiksrechten',
+            'zaakbesluit' => 'zaakbesluit',
         ];
     }
 
@@ -105,6 +106,24 @@ class ZGWLogicService
     public function getStatusSchema(): string
     {
         return $this->schemas['status'];
+    }
+
+    public function getZaakBesluitSchema(): string
+    {
+        return $this->schemas['zaakbesluit'];
+    }
+
+    public function getObjectIdByEndpointUrl(string $url): string
+    {
+        $explodedUrl = explode('/', $url);
+        return end($explodedUrl);
+    }
+
+    public function getObjectByEndpointUrl(string $url, array $extend = []): ObjectEntity
+    {
+        $this->objectService->clearCurrents();
+        return $this->objectService->find(id: $this->getObjectIdByEndpointUrl($url), extend: $extend);
+
     }
 
     /**
@@ -291,7 +310,6 @@ class ZGWLogicService
             $zaakArray['statussen'] ?? [],
             $zaakArray['deelzaken'] ?? [],
             $zaakArray['zaakobjecten'] ?? [],
-            $zaakArray['zaakinformatieobjecten'] ?? [],
             [$zaakArray['klantcontact']],
         );
 
@@ -308,6 +326,17 @@ class ZGWLogicService
 
 
         $this->objectService->deleteObjects($cascadeDeletes);
+
+        $zios = $zaakArray['zaakinformatieobjecten'];
+
+        // Delete bio objects
+        $zioIds = array_map(function(string $bio) {
+            return $this->getObjectIdByEndpointUrl($bio);
+        }, $zios);
+
+        foreach($zioIds as $zioId) {
+            $this->objectService->deleteObject($zioId);
+        }
     }
 
     /**
@@ -382,9 +411,10 @@ class ZGWLogicService
 
         }
         if($schema->getSlug() === $this->getBioSchema()) {
-            $objects = $this->objectService->findObjects(['filters' => ['object' => $serialized['besluit'], 'objectType' => 'besluit', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->registerMapper->find($this->getDrcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->getOioSchema())->getId()]]);
+            $objects = $this->objectService->findAll(['filters' => ['object' => $serialized['besluit'], 'objectType' => 'besluit', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->registerMapper->find($this->getDrcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->getOioSchema())->getId()]]);
 
-            $this->objectService->deleteObjects(array_map(function(ObjectEntity $object) {return $object->getUuid();}, $objects));
+            $uuids = array_map(function(ObjectEntity $object) {return $object->getUuid();}, $objects);
+            $this->objectService->deleteObjects($uuids);
 
         }
     }
@@ -566,10 +596,12 @@ class ZGWLogicService
                 unset($zaakArray['verlenging'][$field]);
             }
 
-            if(isset($zaakArray['verlenging']['indicatie']) === false) {
+            $errors = [];
+
+            if(isset($zaakArray['opschorting']['indicatie']) === false) {
                 $errors[] = ['name' => 'opschorting.indicatie', 'code' => 'required', 'reason' => 'Een opschorting moet het veld indicatie bevatten'];
             }
-            if(isset($zaakArray['verlenging']['reden']) === false) {
+            if(isset($zaakArray['opschorting']['reden']) === false) {
                 $errors[] = ['name' => 'opschorting.reden', 'code' => 'required', 'reason' => 'Een opschorting moet het veld reden bevatten'];
             }
 
@@ -578,5 +610,77 @@ class ZGWLogicService
             }
         }
 
+    }
+
+    public function createZaakBesluit(ObjectEntity $besluit): void
+    {
+        $besluitArray = $besluit->jsonSerialize();
+
+        if (isset($besluitArray['zaak']) === false) {
+            return;
+        }
+
+        $zaak = $this->getObjectByEndpointUrl(url: $besluitArray['zaak'], extend: ['zaaktype']);
+
+        $zaakArray = $zaak->jsonSerialize();
+        $zaaktypeArray = $zaakArray['zaaktype'];
+
+        $besluittype = $this->getObjectByEndpointUrl($besluitArray['besluittype']);
+
+        $besluittypeOmschrijving = $besluittype->jsonSerialize()['omschrijving'];
+
+        if (in_array(needle: $besluittypeOmschrijving, haystack: $zaaktypeArray['besluittypen']) === false) {
+            throw new CustomValidationException(message: 'Besluittype niet in zaaktype', errors: [['name' => 'nonFieldErrors', 'code' => 'invalid-besluittype', 'reason' => 'besluittype hoort niet bij het zaaktype van de zaak']]);
+        }
+
+        $zaakBesluit = new ObjectEntity();
+        $zaakBesluit->setRegister($this->getZrcRegister());
+        $zaakBesluit->setSchema($this->getZaakBesluitSchema());
+
+        $zaakBesluit->setObject(
+            [
+                'zaak' => $besluitArray['zaak'],
+                'besluit' => $besluitArray['url'], // TODO: Check if this is properly written.
+            ]
+        );
+
+        $this->objectService->saveObject(object: $zaakBesluit, register: $zaakBesluit->getRegister(), schema: $zaakBesluit->getSchema());
+
+    }
+
+    public function validateBesluitInformatieObject(ObjectEntity $bio): void
+    {
+        $bioArray = $bio->jsonSerialize();
+
+        $eio = $this->getObjectByEndpointUrl(url: $bioArray['informatieobject'], extend: ['informatieobjecttype']);
+        $besluit = $this->getObjectByEndpointUrl(url: $bioArray['besluit'], extend: ['besluittype']);
+
+        $eioIot = $eio->jsonSerialize()['informatieobjecttype']['omschrijving'];
+
+        if (in_array(needle: $eioIot, haystack: $besluit->jsonSerialize()['besluittype']['informatieobjecttypen']) === false) {
+            throw new CustomValidationException(message: 'Informatieobjecttype niet in besluittype', errors: [['name' => 'nonFieldErrors', 'code' => 'invalid-informatieobjecttype', 'reason' => 'informatieobjecttype niet aanwezig op besluittype']]);
+        }
+    }
+
+    /**
+     * Cascade deleting a zaak to delete BesluitInformatieObjecten
+     *
+     * @param ObjectEntity $besluit The besluit to be deleted.
+     * @return void
+     * @throws \Exception
+     */
+    public function deleteBesluit(ObjectEntity $besluit): void
+    {
+        $besluitArray = $this->objectService->renderEntity($besluit);
+
+
+        // Delete bio objects
+        $bioIds = array_map(function(string $bio) {
+            return $this->getObjectIdByEndpointUrl($bio);
+        }, $besluitArray['besluitinformatieobjecten']);
+
+        foreach($bioIds as $bioId) {
+            $this->objectService->deleteObject($bioId);
+        }
     }
 }

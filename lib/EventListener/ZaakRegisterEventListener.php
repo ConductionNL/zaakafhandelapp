@@ -203,6 +203,11 @@ class ZaakRegisterEventListener implements IEventListener
         ) {
             $this->logicService->deleteZaak($event->getObject());
         }
+
+        if ($schema->getSlug() === $this->logicService->getBesluitSchema()
+        ) {
+            $this->logicService->deleteBesluit($event->getObject());
+        }
     }
 
     /**
@@ -262,6 +267,15 @@ class ZaakRegisterEventListener implements IEventListener
             $this->logicService->checkRelevanteAndereZaken($event->getObject());
             $this->logicService->checkArchivePrerequisites($event->getObject());
             $this->logicService->checkGegevensgroepen($event->getObject());
+        }
+
+        if ($schema->getSlug() === $this->logicService->getBesluitSchema()
+        ) {
+            $this->logicService->createZaakBesluit($event->getObject());
+        }
+
+        if ($schema->getSlug() === $this->logicService->getBioSchema()) {
+            $this->logicService->validateBesluitInformatieObject($event->getObject());
         }
     }
 
