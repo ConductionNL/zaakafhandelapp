@@ -411,9 +411,10 @@ class ZGWLogicService
 
         }
         if($schema->getSlug() === $this->getBioSchema()) {
-            $objects = $this->objectService->findObjects(['filters' => ['object' => $serialized['besluit'], 'objectType' => 'besluit', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->registerMapper->find($this->getDrcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->getOioSchema())->getId()]]);
+            $objects = $this->objectService->findAll(['filters' => ['object' => $serialized['besluit'], 'objectType' => 'besluit', 'informatieobject' => $serialized['informatieobject'], 'register' => $this->registerMapper->find($this->getDrcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->getOioSchema())->getId()]]);
 
-            $this->objectService->deleteObjects(array_map(function(ObjectEntity $object) {return $object->getUuid();}, $objects));
+            $uuids = array_map(function(ObjectEntity $object) {return $object->getUuid();}, $objects);
+            $this->objectService->deleteObjects($uuids);
 
         }
     }
@@ -661,19 +662,22 @@ class ZGWLogicService
         }
     }
 
+    /**
+     * Cascade deleting a zaak to delete BesluitInformatieObjecten
+     *
+     * @param ObjectEntity $besluit The besluit to be deleted.
+     * @return void
+     * @throws \Exception
+     */
     public function deleteBesluit(ObjectEntity $besluit): void
     {
-        $besluitArray = $besluit->jsonSerialize();
+        $besluitArray = $this->objectService->renderEntity($besluit);
 
-
-        var_Dump($besluitArray);
 
         // Delete bio objects
         $bioIds = array_map(function(string $bio) {
             return $this->getObjectIdByEndpointUrl($bio);
         }, $besluitArray['besluitinformatieobjecten']);
-
-        var_dump($bioIds);
 
         foreach($bioIds as $bioId) {
             $this->objectService->deleteObject($bioId);
