@@ -110,7 +110,6 @@ class ZaakRegisterEventListener implements IEventListener
             // These errors should not be surpressed
             throw $e;
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
             try {
                 $logger = \OC::$server->get(LoggerInterface::class);
                 $logger->error('ZaakAfhandelApp: Error in event handler', [
