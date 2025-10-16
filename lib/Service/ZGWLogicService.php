@@ -788,4 +788,15 @@ class ZGWLogicService
         $this->objectService->clearCurrents();
 
     }
+
+    public function removeLock(ObjectEntity $objectEntity): void
+    {
+        $object = $objectEntity->getObject();
+
+        unset($object['lock']);
+        $objectEntity->setObject($object);
+
+        $this->objectService->saveObject(object: $objectEntity, register: $objectEntity->getRegister(), schema: $objectEntity->getSchema());
+
+    }
 }

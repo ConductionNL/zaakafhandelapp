@@ -97,6 +97,8 @@ class ZaakRegisterEventListener implements IEventListener
                 $this->handleObjectUpdating($event, $logger);
             } elseif ($event instanceof ObjectCreatingEvent) {
                 $this->handleObjectDeleting($event, $logger);
+            } elseif($event instanceof ObjectUnlockedEvent) {
+                $this->handleObjectUnlocked($event);
             } elseif ($event instanceof ObjectLockedEvent || $event instanceof ObjectUnlockedEvent || $event instanceof ObjectRevertedEvent) {
                 $logger->debug('ZaakAfhandelApp: Ignoring object lifecycle event', [
                     'eventType' => get_class($event)
@@ -242,9 +244,9 @@ class ZaakRegisterEventListener implements IEventListener
      * @param LoggerInterface $logger The logger instance
      * @return void
      */
-    private function handleObjectUnlocked(ObjectUnlockedEvent $event, ZaakAfhandelAppueService $softwareCatalogueService, SettingsService $settingsService, LoggerInterface $logger): void
+    private function handleObjectUnlocked(ObjectUnlockedEvent $event): void
     {
-
+        $this->logicService->removeLock($event->getObject());
     }
 
     /**
