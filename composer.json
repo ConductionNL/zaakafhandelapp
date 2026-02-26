@@ -1,7 +1,7 @@
 {
 	"name": "nextcloud/zaakafhandelapp",
 	"description": "This nextcloud app provid a basic zaak afhandel component for dutch governemental institutions",
-	"license": "AGPL-3.0-or-later",	
+	"license": "EUPL-1.2",	
 	"authors": [
 		{
 			"name": "Conduction b.v.",
