@@ -6,6 +6,8 @@
 	<summary>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionN</summary>
 	<description><![CDATA[📰 Brinning Gateway and Service bus functionality to nextcloud
 
+**Requires:** [OpenRegister](https://apps.nextcloud.com/apps/openregister) (install from the [Nextcloud App Store](https://apps.nextcloud.com/apps/openregister)).
+
 The OpenCatalogi Nextcloud app provides a framework for federated catalogi to work together in an open data ecosystem
 
 - 📲 Synchronize your data sources
