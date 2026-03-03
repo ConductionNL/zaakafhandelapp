@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img/app-dark.svg" alt="Zaak Afhandel App logo" width="80" height="80">
+  <img src="img/app-store.svg" alt="Zaak Afhandel App logo" width="80" height="80">
 </p>
 
 <h1 align="center">Zaak Afhandel App</h1>
