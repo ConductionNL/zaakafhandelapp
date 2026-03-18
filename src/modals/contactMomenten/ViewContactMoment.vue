@@ -1,9 +1,10 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Contactmoment"
+	<NcDialog :name="t('zaakafhandelapp', 'Contact moment')"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
@@ -11,7 +12,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		@closing="closeModalFromButton()">
 		<div>
 			<NcNoteCard v-if="success" type="success">
-				<p>Contactmoment succesvol opgeslagen</p>
+				<p>{{ t('zaakafhandelapp', 'Contact moment successfully saved') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -228,7 +229,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<NcActions :disabled="loading || success || fetchLoading"
 				:primary="true"
 				:force-name="true"
-				menu-name="Acties">
+				:menu-name="t('zaakafhandelapp', 'Actions')">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>

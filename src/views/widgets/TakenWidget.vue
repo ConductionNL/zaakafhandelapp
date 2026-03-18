@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { taakStore, navigationStore } from '../../store/store.js'
 </script>
 
@@ -12,7 +13,7 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				@statusClose="onCloseStatus"
 				@statusHandled="onHandledStatus">
 				<template #empty-content>
-					<NcEmptyContent name="Geen open taken">
+					<NcEmptyContent :name="t('zaakafhandelapp', 'No open tasks')">
 						<template #icon>
 							<Folder />
 						</template>

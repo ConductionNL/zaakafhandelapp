@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 				<NcTextField class="searchField"
 					disabled
 					:value.sync="search"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
 					@trailing-button-click="clearText">

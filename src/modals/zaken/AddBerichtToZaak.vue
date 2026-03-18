@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>Bericht succesvol toegevoegd aan zaak</p>
+					<p>{{ t('zaakafhandelapp', 'Message successfully added to case') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -19,7 +20,7 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 			<div v-if="success === null" class="form-group">
 				<NcSelect v-bind="berichten"
 					v-model="berichten.value"
-					input-label="Bericht"
+					:input-label="t('zaakafhandelapp', 'Message')"
 					:loading="berichtenLoading"
 					:disabled="loading"
 					required />

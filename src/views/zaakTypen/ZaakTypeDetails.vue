@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 						{{ zaakTypeStore.zaakTypeItem?.identificatie }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>

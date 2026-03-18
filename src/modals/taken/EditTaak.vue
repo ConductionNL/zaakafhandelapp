@@ -1,10 +1,11 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { taakStore, navigationStore, klantStore, contactMomentStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog
-		name="Taak"
+		:name="t('zaakafhandelapp', 'Task')"
 		size="normal"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
@@ -19,12 +20,12 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				:disabled="loading"
 				:value.sync="taakItem.title"
 				required
-				label="Titel"
+				:label="t('zaakafhandelapp', 'Title')"
 				maxlength="255" />
 
 			<NcSelect v-bind="taakType"
 				v-model="taakType.value"
-				input-label="Type"
+				:input-label="t('zaakafhandelapp', 'Type')"
 				:clearable="false"
 				:loading="klantenLoading"
 				:disabled="loading" />
@@ -40,13 +41,13 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 			<NcTextField
 				:disabled="loading"
 				:value.sync="taakItem.onderwerp"
-				label="Onderwerp"
+				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255" />
 
 			<NcTextArea
 				:disabled="loading"
 				:value.sync="taakItem.toelichting"
-				label="Toelichting" />
+				:label="t('zaakafhandelapp', 'Explanation')" />
 
 			<div>
 				<NcCheckboxRadioSwitch v-if="clientType === 'both'"
@@ -59,14 +60,14 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 					<NcSelect v-if="(clientType !== 'medewerker' && (clientType !== 'both' || clientType === 'both' && !useMedewerkerInsteadOfKlant))"
 						v-bind="klanten"
 						v-model="klanten.value"
-						input-label="Klant*"
+						:input-label="t('zaakafhandelapp', 'Customer*')"
 						:loading="klantenLoading"
 						:disabled="loading" />
 
 					<NcSelect v-if="(clientType !== 'klant' && (clientType !== 'both' || clientType === 'both' && useMedewerkerInsteadOfKlant))"
 						v-bind="medewerkers"
 						v-model="medewerkers.value"
-						input-label="Medewerker*"
+						:input-label="t('zaakafhandelapp', 'Employee*')"
 						:loading="medewerkersLoading"
 						:disabled="loading" />
 				</div>

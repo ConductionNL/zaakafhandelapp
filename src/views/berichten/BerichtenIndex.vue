@@ -6,8 +6,8 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen bericht"
-				description="Nog geen bericht geselecteerd">
+				:name="t('zaakafhandelapp', 'No message')"
+				:description="t('zaakafhandelapp', 'No message selected yet')">
 				<template #icon>
 					<ChatOutline />
 				</template>

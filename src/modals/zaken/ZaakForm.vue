@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -23,38 +24,38 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 
 			<div v-if="success === null" class="form-group">
 				<NcTextField :disabled="zaakLoading"
-					label="Identificatie"
+					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
 					:value.sync="zaak.identificatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Omschrijving"
+					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255"
 					:value.sync="zaak.omschrijving" />
 				<NcTextField :disabled="zaakLoading"
-					label="Bronorganisatie"
+					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
 					:value.sync="zaak.bronorganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="VerantwoordelijkeOrganisatie"
+					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
 					:value.sync="zaak.verantwoordelijkeOrganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Startdatum"
+					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
 					:value.sync="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaakType"
 					v-model="zaakType.value"
-					input-label="Zaaktype"
+					:input-label="t('zaakafhandelapp', 'Case type')"
 					:loading="zaakTypeLoading"
 					:disabled="zaakLoading || zaakTypeLoading"
 					required />
 				<NcSelect v-bind="archiefstatus"
 					v-model="archiefstatus.value"
-					input-label="Archiefstatus"
+					:input-label="t('zaakafhandelapp', 'Archive status')"
 					:disabled="zaakLoading"
 					required />
 				<div>
@@ -65,11 +66,11 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						required />
 				</div>
 				<NcTextField :disabled="zaakLoading"
-					label="Registratiedatum"
+					:label="t('zaakafhandelapp', 'Registration date')"
 					maxlength="255"
 					:value.sync="zaak.registratiedatum" />
 				<NcTextArea :disabled="zaakLoading"
-					label="Toelichting"
+					:label="t('zaakafhandelapp', 'Explanation')"
 					:value.sync="zaak.toelichting" />
 			</div>
 

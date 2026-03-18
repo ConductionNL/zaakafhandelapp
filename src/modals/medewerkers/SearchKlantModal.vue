@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { klantStore } from '../../store/store.js'
 </script>
 
@@ -68,7 +69,7 @@ import { klantStore } from '../../store/store.js'
 					class="date-picker" />
 
 				<NcTextField :disabled="loading"
-					label="achternaam"
+					:label="t('zaakafhandelapp', 'Last name')"
 					maxlength="255"
 					class="searchField"
 					:value.sync="searchQuery" />

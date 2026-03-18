@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore } from '../store/store.js'
 </script>
 
@@ -6,7 +7,7 @@ import { navigationStore } from '../store/store.js'
 	<NcAppNavigation>
 		<NcAppNavigationList>
 			<NcAppNavigationNew
-				text="Zaak Starten"
+				:text="t('zaakafhandelapp', 'Start case')"
 				@new-item="navigationStore.modal = 'zaakAdd'">
 				<template #icon>
 					<Plus :size="20" />
@@ -16,7 +17,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/">
 				<NcAppNavigationItem
 					:active="$route.path === '/'"
-					name="Dashboard">
+					:name="t('zaakafhandelapp', 'Dashboard')">
 					<template #icon>
 						<Finance :size="20" />
 					</template>
@@ -25,7 +26,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/zaken">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/zaken')"
-					name="Zaken">
+					:name="t('zaakafhandelapp', 'Cases')">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>

@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
@@ -10,7 +11,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:item-menu="itemMenu"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent name="Geen organisaties gevonden">
+					<NcEmptyContent :name="t('zaakafhandelapp', 'No organisations found')">
 						<template #icon>
 							<OfficeBuildingOutline />
 						</template>

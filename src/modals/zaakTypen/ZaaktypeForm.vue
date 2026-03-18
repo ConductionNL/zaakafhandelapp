@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -19,13 +20,13 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 			<div v-if="success === null" class="form-group">
 				<NcTextField :disabled="loading"
 					:value.sync="zaaktype.identificatie"
-					label="Identificatie"
+					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
 					required />
 
 				<NcTextField :disabled="loading"
 					:value.sync="zaaktype.omschrijving"
-					label="Omschrijving"
+					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255" />
 
 				<NcTextField :disabled="loading"

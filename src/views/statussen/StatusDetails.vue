@@ -8,7 +8,7 @@
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Summary:') }}</h4>
 						<span>{{ zaak.summary }}</span>
 					</div>
 				</div>
@@ -17,7 +17,7 @@
 		<NcLoadingIcon v-if="loading"
 			:size="100"
 			appearance="dark"
-			name="Zaak details aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading case details')" />
 	</div>
 </template>
 

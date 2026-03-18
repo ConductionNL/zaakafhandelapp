@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, documentStore } from '../../store/store.js'
 </script>
 
@@ -44,7 +45,7 @@ import { navigationStore, documentStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Documenten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading documents')" />
 	</div>
 </template>
 

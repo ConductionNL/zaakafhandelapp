@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore } from '../../store/store.js'
 </script>
 
@@ -10,8 +11,8 @@ import { navigationStore } from '../../store/store.js'
 		<template #default>
 			<NcEmptyContent v-if="!store.item || navigationStore.selected != 'zaken' "
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd">
+				:name="t('zaakafhandelapp', 'No case')"
+				:description="t('zaakafhandelapp', 'No case selected yet')">
 				<template #icon>
 					<BriefcaseAccountOutline />
 				</template>
