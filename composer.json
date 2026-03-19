@@ -35,6 +35,11 @@
 		"cs:check": "php-cs-fixer fix --dry-run --diff",
 		"cs:fix": "php-cs-fixer fix",
 		"psalm": "psalm --threads=1 --no-cache",
+		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=1G || echo 'PHPStan not installed, skipping...'",
+		"phpmetrics": "./vendor/bin/phpmetrics --report-html=phpmetrics lib/",
+		"phpmetrics:json": "./vendor/bin/phpmetrics --report-json=phpmetrics/report.json lib/",
+		"phpmetrics:csv": "./vendor/bin/phpmetrics --report-csv=phpmetrics/report.csv lib/",
+		"phpmetrics:violations": "./vendor/bin/phpmetrics --report-violations=phpmetrics/violations.xml lib/",
 		"test:unit": "phpunit tests -c tests/phpunit.xml --colors=always --fail-on-warning --fail-on-risky",
 		"openapi": "generate-spec"
 	},
@@ -50,6 +55,7 @@
 	},
 	"require-dev": {
 		"nextcloud/ocp": "dev-stable29",
+		"phpmetrics/phpmetrics": "^2.8",
 		"roave/security-advisories": "dev-latest",
 		"vimeo/psalm": "^5.26"
 	},

@@ -2,16 +2,11 @@
 /**
  * ZaakAfhandelApp Event Listener
  *
- * This file contains the listener class for handling events from OpenRegister
- * specific to the ZaakAfhandelApp application.
- *
  * @category  EventListener
  * @package   OCA\ZaakAfhandelApp\EventListener
  * @author    Conduction b.v. <info@conduction.nl>
  * @copyright 2024 Conduction B.V.
  * @license   AGPL-3.0-or-later https://www.gnu.org/licenses/agpl-3.0.html
- * @version   1.0.0
- * @link      https://github.com/ConductionNL/OpenConnector
  */
 
 declare(strict_types=1);
@@ -22,278 +17,146 @@ use OCA\OpenRegister\Db\SchemaMapper;
 use OCA\OpenRegister\Event\ObjectCreatingEvent;
 use OCA\OpenRegister\Event\ObjectUpdatingEvent;
 use OCA\OpenRegister\Exception\CustomValidationException;
-use OCA\ZaakAfhandelApp\Service\ContactpersoonService;
-use OCA\ZaakAfhandelApp\Service\ObjectService;
-use OCA\ZaakAfhandelApp\Service\SettingsService;
-use OCA\ZaakAfhandelApp\Service\GebruikSyncService;
 use OCA\ZaakAfhandelApp\Service\ZGWLogicService;
+use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
+use OCA\ZaakAfhandelApp\Service\ZGWValidationService;
+use OCA\ZaakAfhandelApp\Service\ZGWZaakLifecycleService;
+use OCA\ZaakAfhandelApp\Service\ZGWZaakValidationService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCA\OpenRegister\Event\ObjectCreatedEvent;
 use OCA\OpenRegister\Event\ObjectUpdatedEvent;
 use OCA\OpenRegister\Event\ObjectDeletedEvent;
-use OCA\OpenRegister\Event\ObjectLockedEvent;
-use OCA\OpenRegister\Event\ObjectUnlockedEvent;
-use OCA\OpenRegister\Event\ObjectRevertedEvent;
 use Psr\Log\LoggerInterface;
 
 /**
- * Event listener for handling software catalog specific events.
- *
- * This listener handles organization, contact, and user (gebruiker) related events
- * in the software catalog, including user management, email notifications, and
- * user blocking/unblocking functionality.
- *
- * @category EventListener
- * @package  OCA\ZaakAfhandelApp\EventListener
- * @author   Conduction b.v. <info@conduction.nl>
- * @license  AGPL-3.0-or-later https://www.gnu.org/licenses/agpl-3.0.html
- * @version  1.0.0
- * @link     https://github.com/ConductionNL/OpenConnector
- * @todo     This listener should be moved to the software catalog app
+ * Event listener for handling ZaakAfhandelApp specific events.
  */
 class ZaakRegisterEventListener implements IEventListener
 {
 
+    private const EVENT_HANDLERS = [
+        ObjectCreatedEvent::class => 'handleObjectCreated',
+        ObjectUpdatedEvent::class => 'handleObjectUpdated',
+        ObjectDeletedEvent::class => 'handleObjectDeleted',
+        ObjectCreatingEvent::class => 'handleObjectCreating',
+        ObjectUpdatingEvent::class => 'handleObjectUpdating',
+    ];
 
-    /**
-     * Constructor for ZaakAfhandelAppEventListener
-     */
     public function __construct(
         private readonly ZGWLogicService $logicService,
+        private readonly ZGWZaakLifecycleService $lifecycleService,
+        private readonly ZGWValidationService $validationService,
+        private readonly ZGWZaakValidationService $zaakValidationService,
+        private readonly ZGWRegistryService $registry,
         private readonly SchemaMapper $schemaMapper,
     ) {
     }
 
-    /**
-     * Handles events related to software catalog objects
-     *
-     * DISABLED: All processing is now handled by cron-based OrganizationSyncService
-     * to avoid race conditions and ensure consistent processing.
-     *
-     * @param  Event $event The event to handle
-     *
-     * @return void
-     */
     public function handle(Event $event): void
     {
         try {
-            $logger = \OC::$server->get(LoggerInterface::class);
-
-            $logger->debug('ZaakAfhandelApp: Processing event', [
-                'eventType' => get_class($event),
-                'timestamp' => date('Y-m-d H:i:s')
-            ]);
-
-            if ($event instanceof ObjectCreatedEvent) {
-                $this->handleObjectCreated($event, $logger);
-            } elseif ($event instanceof ObjectUpdatedEvent) {
-                $this->handleObjectUpdated($event, $logger);
-            } elseif ($event instanceof ObjectDeletedEvent) {
-                $this->handleObjectDeleted($event, $logger);
-            } elseif ($event instanceof ObjectCreatingEvent) {
-                $this->handleObjectCreating($event, $logger);
-            } elseif ($event instanceof ObjectUpdatingEvent) {
-                $this->handleObjectUpdating($event, $logger);
-            } elseif ($event instanceof ObjectCreatingEvent) {
-                $this->handleObjectDeleting($event, $logger);
-            } elseif ($event instanceof ObjectLockedEvent || $event instanceof ObjectUnlockedEvent || $event instanceof ObjectRevertedEvent) {
-                $logger->debug('ZaakAfhandelApp: Ignoring object lifecycle event', [
-                    'eventType' => get_class($event)
-                ]);
-            } else {
-                $logger->debug('ZaakAfhandelApp: Unknown event type ignored', [
-                    'eventType' => get_class($event)
-                ]);
+            $handler = self::EVENT_HANDLERS[get_class($event)] ?? null;
+            if ($handler !== null) {
+                $this->$handler($event);
             }
         } catch (CustomValidationException $e) {
-            // These errors should not be surpressed
             throw $e;
         } catch (\Exception $e) {
-            try {
-                $logger = \OC::$server->get(LoggerInterface::class);
-                $logger->error('ZaakAfhandelApp: Error in event handler', [
-                    'eventType' => get_class($event),
-                    'exception' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-            } catch (\Exception $logException) {
-                // Silently fail if logging fails - better than breaking the event system
-            }
+            $this->logError($event, $e);
         }
     }
 
-
-
-    /**
-     * Handles object creation events
-     *
-     * @param ObjectCreatedEvent $event The creation event
-     * @param ContactpersoonService $contactpersoonService The contact person service
-     * @param SettingsService $settingsService The settings service
-     * @param LoggerInterface $logger The logger instance
-     * @return void
-     */
-    private function handleObjectCreated(ObjectCreatedEvent $event, LoggerInterface $logger): void
+    private function handleObjectCreated(ObjectCreatedEvent $event): void
     {
-        $schema = $event->getObject()->getSchema();
-        $schema = $this->schemaMapper->find($schema);
+        $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
+        $obj = $event->getObject();
 
-        if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
-            $this->logicService->reopenZaak($event->getObject());
+        if ($slug === $this->registry->getStatusSchema()) {
+            $this->lifecycleService->reopenZaak($obj);
         }
-
-        if ($schema->getSlug() === $this->logicService->getZioSchema()) {
-            $this->logicService->createObjectInformatieObjectZaak($event->getObject());
+        if ($slug === $this->registry->getZioSchema()) {
+            $this->logicService->createObjectInformatieObjectZaak($obj);
         }
-
-        if ($schema->getSlug() === $this->logicService->getBioSchema()) {
-            $this->logicService->createObjectInformatieObjectBesluit($event->getObject());
+        if ($slug === $this->registry->getBioSchema()) {
+            $this->logicService->createObjectInformatieObjectBesluit($obj);
         }
-
-        if ($schema->getSlug() === $this->logicService->getZaakSchema()) {
-            $this->logicService->setVertrouwelijkheidaanduiding($event->getObject());
-        }
-
-    }
-
-    /**
-     * Handles object update events
-     *
-     * @param ObjectUpdatedEvent $event The update event
-     * @param ContactpersoonService $contactpersoonService The contact person service
-     * @param SettingsService $settingsService The settings service
-     * @param LoggerInterface $logger The logger instance
-     * @return void
-     */
-    private function handleObjectUpdated(ObjectUpdatedEvent $event, LoggerInterface $logger): void
-    {
-        $schema = $event->getNewObject()->getSchema();
-        $schema = $this->schemaMapper->find($schema);
-
-        if ($schema->getSlug() === $this->logicService->getZaakSchema()) {
-            $this->logicService->setVertrouwelijkheidaanduiding($event->getNewObject());
-        }
-
-    }
-
-    /**
-     * Handles object deletion events
-     *
-     * @param ObjectDeletedEvent $event The deletion event
-     * @param ContactpersoonService $contactpersoonService The contact person service
-     * @param SettingsService $settingsService The settings service
-     * @param LoggerInterface $logger The logger instance
-     * @return void
-     */
-    private function handleObjectDeleted(ObjectDeletedEvent $event, LoggerInterface $logger): void
-    {
-        $schema = $event->getObject()->getSchema();
-        $schema = $this->schemaMapper->find($schema);
-
-        if ($schema->getSlug() === $this->logicService->getZioSchema()
-            || $schema->getSlug() === $this->logicService->getBioSchema()
-        ) {
-            $this->logicService->deleteObjectInformatieObject($event->getObject(), $schema);
-        }
-
-        if ($schema->getSlug() === $this->logicService->getZaakSchema()
-        ) {
-            $this->logicService->deleteZaak($event->getObject());
-        }
-
-        if ($schema->getSlug() === $this->logicService->getBesluitSchema()
-        ) {
-            $this->logicService->deleteBesluit($event->getObject());
+        if ($slug === $this->registry->getZaakSchema()) {
+            $this->lifecycleService->setVertrouwelijkheidaanduiding($obj);
         }
     }
 
-    /**
-     * Handles object locking events
-     *
-     * @param ObjectLockedEvent $event The locking event
-     * @param ZaakAfhandelAppueService $softwareCatalogueService The software catalog service
-     * @param SettingsService $settingsService The settings service
-     * @param LoggerInterface $logger The logger instance
-     * @return void
-     */
-    private function handleObjectLocked(ObjectLockedEvent $event, ZaakAfhandelAppueService $softwareCatalogueService, SettingsService $settingsService, LoggerInterface $logger): void
+    private function handleObjectUpdated(ObjectUpdatedEvent $event): void
     {
+        $slug = $this->schemaMapper->find($event->getNewObject()->getSchema())->getSlug();
 
-    }
-
-    /**
-     * Handles object unlocking events
-     *
-     * @param ObjectUnlockedEvent $event The unlocking event
-     * @param ZaakAfhandelAppueService $softwareCatalogueService The software catalog service
-     * @param SettingsService $settingsService The settings service
-     * @param LoggerInterface $logger The logger instance
-     * @return void
-     */
-    private function handleObjectUnlocked(ObjectUnlockedEvent $event, ZaakAfhandelAppueService $softwareCatalogueService, SettingsService $settingsService, LoggerInterface $logger): void
-    {
-
-    }
-
-    /**
-     * Handles object reversion events
-     *
-     * @param ObjectRevertedEvent $event The reversion event
-     * @param ZaakAfhandelAppueService $softwareCatalogueService The software catalog service
-     * @param SettingsService $settingsService The settings service
-     * @param LoggerInterface $logger The logger instance
-     * @return void
-     */
-    private function handleObjectReverted(ObjectRevertedEvent $event, ZaakAfhandelAppueService $softwareCatalogueService, SettingsService $settingsService, LoggerInterface $logger): void
-    {
-
-    }
-
-    private function handleObjectCreating(ObjectCreatingEvent $event, mixed $logger)
-    {
-        $schema = $event->getObject()->getSchema();
-        $schema = $this->schemaMapper->find($schema);
-
-        if ($schema->getSlug() === $this->logicService->getStatusSchema()) {
-            $this->logicService->closeZaak($event->getObject());
-        }
-
-        if ($schema->getSlug() === $this->logicService->getZaakSchema()
-        ) {
-            $this->logicService->checkProductenOfDiensten($event->getObject());
-            $this->logicService->checkRelevanteAndereZaken($event->getObject());
-            $this->logicService->checkArchivePrerequisites($event->getObject());
-            $this->logicService->checkGegevensgroepen($event->getObject());
-        }
-
-        if ($schema->getSlug() === $this->logicService->getBesluitSchema()
-        ) {
-            $this->logicService->createZaakBesluit($event->getObject());
-        }
-
-        if ($schema->getSlug() === $this->logicService->getBioSchema()) {
-            $this->logicService->validateBesluitInformatieObject($event->getObject());
+        if ($slug === $this->registry->getZaakSchema()) {
+            $this->lifecycleService->setVertrouwelijkheidaanduiding($event->getNewObject());
         }
     }
 
-    private function handleObjectUpdating(ObjectUpdatingEvent $event, mixed $logger)
+    private function handleObjectDeleted(ObjectDeletedEvent $event): void
     {
-        $schema = $event->getNewObject()->getSchema();
-        $schema = $this->schemaMapper->find($schema);
+        $schema = $this->schemaMapper->find($event->getObject()->getSchema());
+        $slug = $schema->getSlug();
+        $obj = $event->getObject();
 
-        if ($schema->getSlug() === $this->logicService->getZaakSchema()
-        ) {
-            $this->logicService->checkProductenOfDiensten($event->getNewObject());
-            $this->logicService->checkRelevanteAndereZaken($event->getNewObject());
-            $this->logicService->checkArchivePrerequisites($event->getNewObject());
-            $this->logicService->checkGegevensgroepen($event->getNewObject());
+        if ($slug === $this->registry->getZioSchema() || $slug === $this->registry->getBioSchema()) {
+            $this->logicService->deleteObjectInformatieObject($obj, $schema);
+        }
+        if ($slug === $this->registry->getZaakSchema()) {
+            $this->lifecycleService->deleteZaak($obj);
+        }
+        if ($slug === $this->registry->getBesluitSchema()) {
+            $this->logicService->deleteBesluit($obj);
         }
     }
 
-    private function handleObjectDeleting(ObjectCreatingEvent $event, mixed $logger)
+    private function handleObjectCreating(ObjectCreatingEvent $event): void
     {
+        $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
+        $obj = $event->getObject();
+
+        if ($slug === $this->registry->getStatusSchema()) {
+            $this->lifecycleService->closeZaak($obj);
+        }
+        if ($slug === $this->registry->getZaakSchema()) {
+            $this->zaakValidationService->checkProductenOfDiensten($obj);
+            $this->validationService->checkRelevanteAndereZaken($obj);
+            $this->zaakValidationService->checkArchivePrerequisites($obj);
+            $this->zaakValidationService->checkGegevensgroepen($obj);
+        }
+        if ($slug === $this->registry->getBesluitSchema()) {
+            $this->logicService->createZaakBesluit($obj);
+        }
+        if ($slug === $this->registry->getBioSchema()) {
+            $this->validationService->validateBesluitInformatieObject($obj);
+        }
+    }
+
+    private function handleObjectUpdating(ObjectUpdatingEvent $event): void
+    {
+        $slug = $this->schemaMapper->find($event->getNewObject()->getSchema())->getSlug();
+
+        if ($slug === $this->registry->getZaakSchema()) {
+            $obj = $event->getNewObject();
+            $this->zaakValidationService->checkProductenOfDiensten($obj);
+            $this->validationService->checkRelevanteAndereZaken($obj);
+            $this->zaakValidationService->checkArchivePrerequisites($obj);
+            $this->zaakValidationService->checkGegevensgroepen($obj);
+        }
+    }
+
+    private function logError(Event $event, \Exception $e): void
+    {
+        try {
+            $logger = \OC::$server->get(LoggerInterface::class);
+            $logger->error('ZaakAfhandelApp: Error in event handler', [
+                'eventType' => get_class($event),
+                'exception' => $e->getMessage(),
+            ]);
+        } catch (\Exception $logException) {
+            // Silently fail
+        }
     }
 }
