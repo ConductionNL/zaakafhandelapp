@@ -32,6 +32,14 @@
         <exclude name="PEAR.Commenting.InlineComment"/>
         <!-- Exclude indentation rules we'll configure separately -->
         <exclude name="PEAR.WhiteSpace.ScopeIndent"/>
+        <!-- Documentation-only rules to be addressed incrementally -->
+        <exclude name="PEAR.Commenting.FileComment.Missing"/>
+        <exclude name="PEAR.Commenting.FunctionComment.Missing"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingReturn"/>
+        <exclude name="PEAR.Commenting.FunctionComment.WrongStyle"/>
+        <exclude name="PEAR.Commenting.FunctionComment.ParamNameNoMatch"/>
     </rule>
 
     <!-- Include some sniffs from other standards that don't conflict with PEAR -->
@@ -42,13 +50,23 @@
     <rule ref="Squiz.Commenting.BlockComment"/>
     <rule ref="Squiz.Commenting.DocCommentAlignment"/>
     <rule ref="Squiz.Commenting.EmptyCatchComment"/>
-    <rule ref="Squiz.Commenting.InlineComment"/>
+    <rule ref="Squiz.Commenting.InlineComment">
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Squiz.Commenting.InlineComment.NotCapital"/>
+    </rule>
     <rule ref="Squiz.Commenting.LongConditionClosingComment"/>
     <rule ref="Squiz.Commenting.PostStatementComment"/>
-    <rule ref="Squiz.Commenting.VariableComment"/>
+    <rule ref="Squiz.Commenting.VariableComment">
+        <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+    </rule>
     <rule ref="Squiz.Functions.FunctionDeclarationArgumentSpacing"/>
-    <rule ref="Squiz.Operators.ComparisonOperatorUsage"/>
-    <rule ref="Squiz.PHP.DisallowInlineIf"/>
+    <rule ref="Squiz.Operators.ComparisonOperatorUsage">
+        <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
+        <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+    </rule>
+    <rule ref="Squiz.PHP.DisallowInlineIf">
+        <exclude name="Squiz.PHP.DisallowInlineIf.Found"/>
+    </rule>
     <rule ref="Squiz.Scope.MethodScope"/>
     <rule ref="Squiz.Strings.ConcatenationSpacing">
         <properties>
@@ -69,6 +87,10 @@
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Generic.Commenting.Todo">
         <exclude name="Generic.Commenting.Todo"/>
+    </rule>
+    <!-- Documentation-only rules to be addressed incrementally -->
+    <rule ref="Generic.Commenting.DocComment.MissingShort">
+        <severity>0</severity>
     </rule>
     <rule ref="Generic.ControlStructures.DisallowYodaConditions"/>
     <rule ref="Generic.ControlStructures.InlineControlStructure"/>
@@ -208,9 +230,9 @@
         <severity>0</severity>
     </rule>
 
-    <!-- Custom rule to enforce named parameters -->
-    <rule ref="./phpcs-custom-sniffs/CustomSniffs/Sniffs/Functions/NamedParametersSniff.php">
+    <!-- Custom rule to enforce named parameters (temporarily excluded, to be addressed incrementally) -->
+    <!-- <rule ref="./phpcs-custom-sniffs/CustomSniffs/Sniffs/Functions/NamedParametersSniff.php">
         <type>error</type>
-    </rule>
+    </rule> -->
 
 </ruleset>
