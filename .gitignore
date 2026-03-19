@@ -17,3 +17,7 @@
 /custom-apps/
 /js/
 Zone.Identifier
+
+.phpunit.cache/
+coverage/
+phpmetrics/
