@@ -52,7 +52,15 @@ class ZGWZaakLifecycleService
     public function deleteZaak(ObjectEntity $zaak): void
     {
         $a    = $this->objectService->renderEntity($zaak);
-        $urls = array_merge($a['rollen'] ?? [], $a['eigenschappen'] ?? [], [$a['resultaat']], $a['statussen'] ?? [], $a['deelzaken'] ?? [], $a['zaakobjecten'] ?? [], [$a['klantcontact']]);
+        $urls = array_merge(
+            $a['rollen'] ?? [],
+                $a['eigenschappen'] ?? [],
+                [$a['resultaat']],
+            $a['statussen'] ?? [],
+                $a['deelzaken'] ?? [],
+                $a['zaakobjecten'] ?? [],
+            [$a['klantcontact']]
+        );
 
         $ids = array_filter(array_map(fn(?string $u) => $u ? $this->registry->getObjectIdByEndpointUrl($u) : null, $urls));
         $this->objectService->deleteObjects($ids);

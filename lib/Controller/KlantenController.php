@@ -42,8 +42,9 @@ class KlantenController extends Controller
     /**
      * Render no page.
      *
-     * @param  string|null $getParameter Optional GET parameter
-     * @return TemplateResponse The rendered template response
+     * @param string|null $getParameter Optional GET parameter.
+     *
+     * @return TemplateResponse The rendered template response.
      *
      * @NoAdminRequired
      * @NoCSRFRequired

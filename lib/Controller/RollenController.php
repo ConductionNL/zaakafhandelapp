@@ -47,12 +47,12 @@ class RollenController extends Controller
     /**
      * Return (and search) all rollen.
      *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @param CallService $callService The call service
+     * @param CallService $callService The call service.
      *
      * @return JSONResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function index(CallService $callService): JSONResponse
     {
@@ -63,13 +63,13 @@ class RollenController extends Controller
     /**
      * Read a single rol.
      *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @param string      $id          The rol ID
-     * @param CallService $callService The call service
+     * @param string      $id          The rol ID.
+     * @param CallService $callService The call service.
      *
      * @return JSONResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
@@ -80,12 +80,12 @@ class RollenController extends Controller
     /**
      * Create a rol.
      *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @param CallService $callService The call service
+     * @param CallService $callService The call service.
      *
      * @return JSONResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function create(CallService $callService): JSONResponse
     {
@@ -97,13 +97,13 @@ class RollenController extends Controller
     /**
      * Update a rol.
      *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @param string      $id          The rol ID
-     * @param CallService $callService The call service
+     * @param string      $id          The rol ID.
+     * @param CallService $callService The call service.
      *
      * @return JSONResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
@@ -115,13 +115,13 @@ class RollenController extends Controller
     /**
      * Delete a rol.
      *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @param string      $id          The rol ID
-     * @param CallService $callService The call service
+     * @param string      $id          The rol ID.
+     * @param CallService $callService The call service.
      *
      * @return JSONResponse
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {

@@ -1,4 +1,13 @@
 <?php
+/**
+ * Controller for handling besluiten operations.
+ *
+ * @category Controller
+ * @package  OCA\ZaakAfhandelApp\Controller
+ * @author   Conduction b.v. <info@conduction.nl>
+ * @license  EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ * @link     https://conduction.nl
+ */
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
@@ -39,17 +48,24 @@ class BesluitenController extends Controller
         ],
     ];
 
+    /**
+     * Constructor for BesluitenController.
+     *
+     * @param string     $appName The app name.
+     * @param IRequest   $request The request object.
+     * @param IAppConfig $config  The app configuration.
+     */
     public function __construct(
         $appName,
         IRequest $request,
         private readonly IAppConfig $config
     ) {
-        parent::__construct($appName, $request);
+        parent::__construct(appName: $appName, request: $request);
     }//end __construct()
 
     /**
-     * This returns the template of the main app's page
-     * It adds some data to the template (app version)
+     * This returns the template of the main app's page.
+     * It adds some data to the template (app version).
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -59,7 +75,6 @@ class BesluitenController extends Controller
     public function page(): TemplateResponse
     {
         return new TemplateResponse(
-            // Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
@@ -67,7 +82,9 @@ class BesluitenController extends Controller
     }//end page()
 
     /**
-     * Return (and serach) all objects
+     * Return (and search) all besluiten.
+     *
+     * @param CallService $callService The call service.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -76,7 +93,7 @@ class BesluitenController extends Controller
      */
     public function index(CallService $callService): JSONResponse
     {
-        // Latere zorg
+        // Later concern.
         $query = $this->request->getParams();
 
         $results = $callService->index(source: 'brc', endpoint: 'besluiten');
@@ -84,7 +101,10 @@ class BesluitenController extends Controller
     }//end index()
 
     /**
-     * Read a single object
+     * Read a single besluit.
+     *
+     * @param string      $id          The besluit ID.
+     * @param CallService $callService The call service.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -93,7 +113,7 @@ class BesluitenController extends Controller
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
-        // Latere zorg
+        // Later concern.
         $query = $this->request->getParams();
 
         $results = $callService->show(source: 'brc', endpoint: 'besluiten', id: $id);
@@ -101,7 +121,9 @@ class BesluitenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create a besluit.
+     *
+     * @param CallService $callService The call service.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -110,14 +132,17 @@ class BesluitenController extends Controller
      */
     public function create(CallService $callService): JSONResponse
     {
-        // get post from requests
+        // Get post from requests.
         $body    = $this->request->getParams();
         $results = $callService->create(source: 'brc', endpoint: 'besluiten', data: $body);
         return new JSONResponse($results);
     }//end create()
 
     /**
-     * Update an object
+     * Update a besluit.
+     *
+     * @param string      $id          The besluit ID.
+     * @param CallService $callService The call service.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -132,7 +157,10 @@ class BesluitenController extends Controller
     }//end update()
 
     /**
-     * Delate an object
+     * Delete a besluit.
+     *
+     * @param string      $id          The besluit ID.
+     * @param CallService $callService The call service.
      *
      * @NoAdminRequired
      * @NoCSRFRequired

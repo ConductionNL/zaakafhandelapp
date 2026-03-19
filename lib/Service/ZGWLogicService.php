@@ -151,7 +151,14 @@ class ZGWLogicService
 
         $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
 
-        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $registerId = $this->registerMapper->find($this->registry->getZtcRegister())->getId();
+        $schemaId   = $this->schemaMapper->find($this->registry->getIOTSchema())->getId();
+        $filters    = [
+            'omschrijving' => $informatieObjectTypeOmschrijving,
+            'register'     => $registerId,
+            'schema'       => $schemaId,
+        ];
+        $iots       = $this->objectService->findAll(['filters' => $filters]);
         $this->objectService->clearCurrents();
 
         $zt      = $this->getObjectByEndpointUrl($ztIotArray['zaaktype']);
@@ -160,13 +167,23 @@ class ZGWLogicService
         $iot = array_shift($iots);
 
         if ($iot === null) {
-            throw new CustomValidationException(message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus', errors: [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'informatieobjecttype niet gevonden']]);
+            $errors = [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'informatieobjecttype niet gevonden']];
+            throw new CustomValidationException(
+                message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus',
+                errors: $errors
+            );
         }
 
         $iotArray = $iot->jsonSerialize();
 
         if ($ztArray['catalogus'] !== $iotArray['catalogus']) {
-            throw new CustomValidationException(message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus', errors: [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'zaaktype niet in zelfde catalogus als informatieobjecttype']]);
+            $errors = [
+                ['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'zaaktype niet in zelfde catalogus als informatieobjecttype'],
+            ];
+            throw new CustomValidationException(
+                message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus',
+                errors: $errors
+            );
         }
 
         $iotArray['zaaktypen'][] = $ztIotArray['zaaktype'];
@@ -193,7 +210,14 @@ class ZGWLogicService
 
         $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
 
-        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $registerId = $this->registerMapper->find($this->registry->getZtcRegister())->getId();
+        $schemaId   = $this->schemaMapper->find($this->registry->getIOTSchema())->getId();
+        $filters    = [
+            'omschrijving' => $informatieObjectTypeOmschrijving,
+            'register'     => $registerId,
+            'schema'       => $schemaId,
+        ];
+        $iots       = $this->objectService->findAll(['filters' => $filters]);
 
         $iot      = array_shift($iots);
         $iotArray = $iot->jsonSerialize();

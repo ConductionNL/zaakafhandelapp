@@ -96,7 +96,11 @@ class ZGWZaakValidationService
         $statuses = array_unique(array_map(fn(ObjectEntity $z) => $z->jsonSerialize()['informatieobject']['status'] ?? null, $zios));
 
         if (count($statuses) !== 1 || $statuses[0] !== 'gearchiveerd') {
-            $this->throwValidationError('zaakinformatieobjecten', 'informatieobject-status-not-set', 'Alle informatieobjecten moeten status gearchiveerd hebben.');
+            $this->throwValidationError(
+                'zaakinformatieobjecten',
+                'informatieobject-status-not-set',
+                'Alle informatieobjecten moeten status gearchiveerd hebben.'
+            );
         }
     }//end validateEioStatuses()
 
