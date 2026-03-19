@@ -58,6 +58,9 @@ class ObjectsController extends Controller
 	public function show(string $objectType, string $id): JSONResponse
 	{
         try {
+            // Retrieve all request parameters
+            $requestParams = $this->request->getParams();
+
             // Get extend parameter if present
             $extend = $requestParams['extend'] ?? $requestParams['_extend'] ?? [];
             if (is_string($extend)) {
