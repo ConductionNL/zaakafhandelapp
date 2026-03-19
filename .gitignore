@@ -10,6 +10,10 @@
 
 /node_modules/
 /custom_apps/
+
+/docs/node_modules/
+/docs/build/
+/docs/.docusaurus/
 /custom-apps/
 /js/
 Zone.Identifier
