@@ -84,6 +84,11 @@ class ZaakRegisterEventListener implements IEventListener
         if ($slug === $this->registry->getZaakSchema()) {
             $this->lifecycleService->setVertrouwelijkheidaanduiding($obj);
         }
+
+        if ($slug === $this->registry->getZTIOTSchema()) {
+            $this->logicService->createZaakTypeInformatieObjecttype($obj);
+        }
+
     }
 
     private function handleObjectUpdated(ObjectUpdatedEvent $event): void
@@ -109,6 +114,10 @@ class ZaakRegisterEventListener implements IEventListener
         }
         if ($slug === $this->registry->getBesluitSchema()) {
             $this->logicService->deleteBesluit($obj);
+        }
+
+        if ($slug === $this->registry->getZTIOTSchema()) {
+            $this->logicService->deleteZaakTypeInformatieObjecttype($obj);
         }
     }
 

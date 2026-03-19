@@ -5,7 +5,7 @@
 				<NcTextField class="searchField"
 					disabled
 					:value.sync="search"
-					:label="t('zaakafhandelapp', 'Search')"
+					label="Search"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
 					@trailing-button-click="clearText">

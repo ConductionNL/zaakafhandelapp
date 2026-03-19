@@ -33,6 +33,9 @@ class ZGWRegistryService
         'status'          => 'status',
         'gebruiksrechten' => 'gebruiksrechten',
         'zaakbesluit'     => 'zaakbesluit',
+        'informatieobjecttype' => 'informatieobjecttype',
+        'zaaktype-informatieobjecttype' => 'zaaktypeinformatieobjecttype',
+        'zaaktype' => 'zaaktype',
     ];
 
     public function getDrcRegister(): string
@@ -93,6 +96,21 @@ class ZGWRegistryService
     public function getZaakBesluitSchema(): string
     {
         return self::SCHEMAS['zaakbesluit'];
+    }
+
+    public function getIOTSchema(): string
+    {
+        return self::SCHEMAS['informatieobjecttype'];
+    }
+
+    public function getZTIOTSchema(): string
+    {
+        return self::SCHEMAS['zaaktype-informatieobjecttype'];
+    }
+
+    public function getZaakTypeSchema(): string
+    {
+        return self::SCHEMAS['zaaktype'];
     }
 
     /**

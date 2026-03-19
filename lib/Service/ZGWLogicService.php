@@ -131,4 +131,97 @@ class ZGWLogicService
 
         $this->objectService->deleteObjects(array_map(fn(ObjectEntity $o) => $o->getUuid(), $objects));
     }
+
+    private function getObjectByEndpointUrl(string $url, array $extend = []): ObjectEntity
+    {
+        $this->objectService->clearCurrents();
+        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), extend: $extend);
+    }
+
+    private function rewriteInternalReference(string $internalReference): string
+    {
+        return $this->getObjectByEndpointUrl($internalReference);
+    }
+
+    public function createZaakTypeInformatieObjecttype (ObjectEntity $ztIot):  void
+    {
+        $ztIotArray = $ztIot->jsonSerialize();
+
+        $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
+
+        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema'=> $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $this->objectService->clearCurrents();
+
+        $zt = $this->getObjectByEndpointUrl($ztIotArray['zaaktype']);
+        $ztArray = $zt->jsonSerialize();
+
+        /** @var ObjectEntity $iot */
+        $iot = array_shift($iots);
+
+        if($iot === null) {
+            throw new CustomValidationException(message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus', errors: [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'informatieobjecttype niet gevonden']]);
+        }
+
+        $iotArray = $iot->jsonSerialize();
+
+        if($ztArray['catalogus'] !== $iotArray['catalogus']) {
+            throw new CustomValidationException(message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus', errors: [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'zaaktype niet in zelfde catalogus als informatieobjecttype']]);
+        }
+
+        $iotArray['zaaktypen'][] = $ztIotArray['zaaktype'];
+
+        $iotArray['zaaktypen'] = array_unique($iotArray['zaaktypen']);
+
+        $iot->setObject($iotArray);
+
+        $this->objectService->saveObject(object: $iot, register: $this->registry->getZtcRegister(), schema: $this->registry->getIOTSchema());
+
+        $ztArray['informatieobjecttypen'][] = $this->rewriteInternalReference($iotArray['url']);
+        $ztArray['informatieobjecttypen'] = array_unique($ztArray['informatieobjecttypen']);
+        $zt->setObject($ztArray);
+
+        $this->objectService->saveObject(object: $zt, register: $this->registry->getZtcRegister(), schema: $this->registry->getZaakTypeSchema());
+
+
+        $this->objectService->clearCurrents();
+
+    }
+    public function deleteZaakTypeInformatieObjecttype (ObjectEntity $ztIot):  void
+    {
+        $ztIotArray = $ztIot->jsonSerialize();
+
+        $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
+
+        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema'=> $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+
+        /** @var ObjectEntity $iot */
+        $iot = array_shift($iots);
+        $iotArray = $iot->jsonSerialize();
+
+        $removeZaaktype = $ztIotArray['zaaktype'];
+
+        $iotArray['zaaktypen'] = array_filter($iotArray['zaaktypen'], function(string $zaaktype) use ($removeZaaktype) {
+            return $zaaktype !== $removeZaaktype;
+        });
+
+        $iot->setObject($iotArray);
+
+        $this->objectService->saveObject(object: $iot, register: $this->registry->getZtcRegister(), schema: $this->registry->getIOTSchema());
+
+        $zt = $this->getObjectByEndpointUrl($removeZaaktype);
+
+        $ztArray = $zt->jsonSerialize();
+
+        $removeIOT = $iotArray['id'];
+
+        $ztArray['informatieobjecttypen'] = array_filter($ztArray['informatieobjecttypen'], function (string $iotInZt) use ($removeIOT) {
+            return $iotInZt !== $removeIOT;
+        });
+
+        $zt->setObject($ztArray);
+
+        $this->objectService->saveObject(object: $zt, register: $this->registry->getZtcRegister(), schema: $this->registry->getZaakTypeSchema());
+        $this->objectService->clearCurrents();
+
+    }
 }

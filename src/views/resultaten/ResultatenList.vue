@@ -5,7 +5,7 @@
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					:label="t('zaakafhandelapp', 'Search')"
+					label="Search"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -63,7 +63,7 @@
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			:name="t('zaakafhandelapp', 'Loading cases')" />
+			name="Zaken aan het laden" />
 	</NcAppContentList>
 </template>
 <script>
