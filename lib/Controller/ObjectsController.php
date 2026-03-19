@@ -14,49 +14,48 @@ use Exception;
 class ObjectsController extends Controller
 {
     public function __construct(
-		$appName,
-		IRequest $request,
+        $appName,
+        IRequest $request,
         private readonly ObjectService $objectService
-	)
-    {
+    ) {
         parent::__construct($appName, $request);
-    }
+    }//end __construct()
 
-	/**
-	 * Return (and search) all objects
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-     * 
+    /**
+     * Return (and search) all objects
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
      * @param string $objectType The type of object to return
-	 *
-	 * @return JSONResponse
-	 */
-	public function index(string $objectType): JSONResponse
-	{
+     *
+     * @return JSONResponse
+     */
+    public function index(string $objectType): JSONResponse
+    {
         // Retrieve all request parameters
         $requestParams = $this->request->getParams();
 
         unset($requestParams['_route']);
-        unset($requestParams['objectType']); // Nextcloud automatically adds this from the route so we need to remove it
-
+        unset($requestParams['objectType']);
+        // Nextcloud automatically adds this from the route so we need to remove it
         // Fetch catalog objects based on filters and order
         $data = $this->objectService->getResultArrayForRequest($objectType, $requestParams);
 
         // Return JSON response
         return new JSONResponse($data);
-	}
+    }//end index()
 
-	/**
-	 * Read a single object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function show(string $objectType, string $id): JSONResponse
-	{
+    /**
+     * Read a single object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     */
+    public function show(string $objectType, string $id): JSONResponse
+    {
         try {
             // Retrieve all request parameters
             $requestParams = $this->request->getParams();
@@ -74,22 +73,22 @@ class ObjectsController extends Controller
             return new JSONResponse($object);
         } catch (Exception $e) {
             return new JSONResponse(
-                ['error' => $e->getMessage()],
-                400
+             ['error' => $e->getMessage()],
+             400
             );
-        }
-	}
+        }//end try
+    }//end show()
 
-	/**
-	 * Create an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function create(string $objectType): JSONResponse
-	{
+    /**
+     * Create an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     */
+    public function create(string $objectType): JSONResponse
+    {
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
@@ -97,34 +96,29 @@ class ObjectsController extends Controller
             // Remove the 'id' field if it exists, as we're creating a new object
             unset($data['id']);
 
-            // Small bit of custom logic for characters
-            if ($objectType === 'character') {
-                $data = $this->characterService->calculateCharacter($data);
-            }
-
             // Save the new object
             $object = $this->objectService->saveObject($objectType, $data);
-            
+
             // Return the created object as a JSON response
             return new JSONResponse($object);
         } catch (Exception $e) {
             return new JSONResponse(
-                ['error' => $e->getMessage()],
-                400
+             ['error' => $e->getMessage()],
+             400
             );
-        }
-	}
+        }//end try
+    }//end create()
 
-	/**
-	 * Update an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function update(string $objectType, string $id): JSONResponse
-	{
+    /**
+     * Update an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     */
+    public function update(string $objectType, string $id): JSONResponse
+    {
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
@@ -132,34 +126,29 @@ class ObjectsController extends Controller
             // Ensure ID in data matches URL parameter
             $data['id'] = $id;
 
-            // Small bit of custom logic for characters
-            if ($objectType === 'character') {
-                $data = $this->characterService->calculateCharacter($data);
-            }
-
             // Save the updated object
             $object = $this->objectService->saveObject($objectType, $data);
-            
+
             // Return the updated object as a JSON response
             return new JSONResponse($object);
         } catch (Exception $e) {
             return new JSONResponse(
-                ['error' => $e->getMessage()],
-                400
+             ['error' => $e->getMessage()],
+             400
             );
-        }
-	}
+        }//end try
+    }//end update()
 
-	/**
-	 * Delete an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function destroy(string $objectType, string $id): JSONResponse
-	{
+    /**
+     * Delete an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     */
+    public function destroy(string $objectType, string $id): JSONResponse
+    {
         try {
             // Delete the object
             $result = $this->objectService->deleteObject($objectType, $id);
@@ -168,33 +157,32 @@ class ObjectsController extends Controller
             return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
         } catch (Exception $e) {
             return new JSONResponse(
-                ['error' => $e->getMessage()],
-                400
+             ['error' => $e->getMessage()],
+             400
             );
         }
-	}
+    }//end destroy()
 
-	/**
+    /**
      * Get audit trail for a specific object
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function getAuditTrail(string $objectType, string $id): JSONResponse
     {
         try {
-
             $auditTrail = $this->objectService->getAuditTrail($objectType, $id);
             return new JSONResponse($auditTrail);
         } catch (Exception $e) {
             return new JSONResponse(
-                ['error' => $e->getMessage()],
-                400
+             ['error' => $e->getMessage()],
+             400
             );
         }
-    }
+    }//end getAuditTrail()
 
     /**
      * Get all relations for a specific object
@@ -217,8 +205,8 @@ class ObjectsController extends Controller
                 ['error' => $e->getMessage()],
                 400
             );
-        } 
-    }
+        }
+    }//end getRelations()
 
     /**
      * Get all uses for a specific object
@@ -232,5 +220,5 @@ class ObjectsController extends Controller
     {
         $uses = $this->objectService->getUses($objectType, $id);
         return new JSONResponse($uses);
-    }
-}
+    }//end getUses()
+}//end class

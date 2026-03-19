@@ -38,45 +38,45 @@ class RequestParamsParser
      */
     public function parse(array $requestParams): array
     {
-        $limit = $this->getParam($requestParams, 'limit');
+        $limit  = $this->getParam($requestParams, 'limit');
         $offset = $this->getParam($requestParams, 'offset');
-        $order = $this->getParam($requestParams, 'order') ?? [];
+        $order  = $this->getParam($requestParams, 'order') ?? [];
         $extend = $this->getParam($requestParams, 'extend');
-        $page = $this->getParam($requestParams, 'page');
+        $page   = $this->getParam($requestParams, 'page');
         $search = $this->getParam($requestParams, 'search');
 
         $offset = $this->calculateOffset($page, $limit, $offset);
-        $order = $this->ensureArray($order);
+        $order  = $this->ensureArray($order);
         $extend = $this->ensureArray($extend);
 
         return [
-            'limit' => $limit,
-            'offset' => $offset,
-            'order' => $order,
-            'extend' => $extend,
-            'search' => $search,
+            'limit'   => $limit,
+            'offset'  => $offset,
+            'order'   => $order,
+            'extend'  => $extend,
+            'search'  => $search,
             'filters' => $this->extractFilters($requestParams),
         ];
-    }
+    }//end parse()
 
     /**
      * Get a parameter value, checking both prefixed and unprefixed versions.
      *
-     * @param array $params The parameters array
-     * @param string $name The parameter name (without underscore prefix)
+     * @param array  $params The parameters array
+     * @param string $name   The parameter name (without underscore prefix)
      *
      * @return mixed The parameter value or null
      */
     private function getParam(array $params, string $name): mixed
     {
-        return $params[$name] ?? $params['_' . $name] ?? null;
-    }
+        return $params[$name] ?? $params['_'.$name] ?? null;
+    }//end getParam()
 
     /**
      * Calculate the offset from page and limit if page is set.
      *
-     * @param mixed $page The page number
-     * @param mixed $limit The limit
+     * @param mixed $page   The page number
+     * @param mixed $limit  The limit
      * @param mixed $offset The current offset
      *
      * @return mixed The calculated offset
@@ -88,7 +88,7 @@ class RequestParamsParser
         }
 
         return $offset;
-    }
+    }//end calculateOffset()
 
     /**
      * Ensure a value is an array (convert from comma-separated string if needed).
@@ -104,7 +104,7 @@ class RequestParamsParser
         }
 
         return $value;
-    }
+    }//end ensureArray()
 
     /**
      * Extract filters by removing reserved parameters.
@@ -116,5 +116,5 @@ class RequestParamsParser
     private function extractFilters(array $requestParams): array
     {
         return array_diff_key($requestParams, array_flip(self::RESERVED_PARAMS));
-    }
-}
+    }//end extractFilters()
+}//end class

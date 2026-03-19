@@ -36,9 +36,9 @@ class ZaakRegisterEventListener implements IEventListener
 {
 
     private const EVENT_HANDLERS = [
-        ObjectCreatedEvent::class => 'handleObjectCreated',
-        ObjectUpdatedEvent::class => 'handleObjectUpdated',
-        ObjectDeletedEvent::class => 'handleObjectDeleted',
+        ObjectCreatedEvent::class  => 'handleObjectCreated',
+        ObjectUpdatedEvent::class  => 'handleObjectUpdated',
+        ObjectDeletedEvent::class  => 'handleObjectDeleted',
         ObjectCreatingEvent::class => 'handleObjectCreating',
         ObjectUpdatingEvent::class => 'handleObjectUpdating',
     ];
@@ -51,7 +51,7 @@ class ZaakRegisterEventListener implements IEventListener
         private readonly ZGWRegistryService $registry,
         private readonly SchemaMapper $schemaMapper,
     ) {
-    }
+    }//end __construct()
 
     public function handle(Event $event): void
     {
@@ -65,22 +65,25 @@ class ZaakRegisterEventListener implements IEventListener
         } catch (\Exception $e) {
             $this->logError($event, $e);
         }
-    }
+    }//end handle()
 
     private function handleObjectCreated(ObjectCreatedEvent $event): void
     {
         $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
-        $obj = $event->getObject();
+        $obj  = $event->getObject();
 
         if ($slug === $this->registry->getStatusSchema()) {
             $this->lifecycleService->reopenZaak($obj);
         }
+
         if ($slug === $this->registry->getZioSchema()) {
             $this->logicService->createObjectInformatieObjectZaak($obj);
         }
+
         if ($slug === $this->registry->getBioSchema()) {
             $this->logicService->createObjectInformatieObjectBesluit($obj);
         }
+
         if ($slug === $this->registry->getZaakSchema()) {
             $this->lifecycleService->setVertrouwelijkheidaanduiding($obj);
         }
@@ -89,7 +92,7 @@ class ZaakRegisterEventListener implements IEventListener
             $this->logicService->createZaakTypeInformatieObjecttype($obj);
         }
 
-    }
+    }//end handleObjectCreated()
 
     private function handleObjectUpdated(ObjectUpdatedEvent $event): void
     {
@@ -98,20 +101,22 @@ class ZaakRegisterEventListener implements IEventListener
         if ($slug === $this->registry->getZaakSchema()) {
             $this->lifecycleService->setVertrouwelijkheidaanduiding($event->getNewObject());
         }
-    }
+    }//end handleObjectUpdated()
 
     private function handleObjectDeleted(ObjectDeletedEvent $event): void
     {
         $schema = $this->schemaMapper->find($event->getObject()->getSchema());
-        $slug = $schema->getSlug();
-        $obj = $event->getObject();
+        $slug   = $schema->getSlug();
+        $obj    = $event->getObject();
 
         if ($slug === $this->registry->getZioSchema() || $slug === $this->registry->getBioSchema()) {
             $this->logicService->deleteObjectInformatieObject($obj, $schema);
         }
+
         if ($slug === $this->registry->getZaakSchema()) {
             $this->lifecycleService->deleteZaak($obj);
         }
+
         if ($slug === $this->registry->getBesluitSchema()) {
             $this->logicService->deleteBesluit($obj);
         }
@@ -119,29 +124,32 @@ class ZaakRegisterEventListener implements IEventListener
         if ($slug === $this->registry->getZTIOTSchema()) {
             $this->logicService->deleteZaakTypeInformatieObjecttype($obj);
         }
-    }
+    }//end handleObjectDeleted()
 
     private function handleObjectCreating(ObjectCreatingEvent $event): void
     {
         $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
-        $obj = $event->getObject();
+        $obj  = $event->getObject();
 
         if ($slug === $this->registry->getStatusSchema()) {
             $this->lifecycleService->closeZaak($obj);
         }
+
         if ($slug === $this->registry->getZaakSchema()) {
             $this->zaakValidationService->checkProductenOfDiensten($obj);
             $this->validationService->checkRelevanteAndereZaken($obj);
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
         }
+
         if ($slug === $this->registry->getBesluitSchema()) {
             $this->logicService->createZaakBesluit($obj);
         }
+
         if ($slug === $this->registry->getBioSchema()) {
             $this->validationService->validateBesluitInformatieObject($obj);
         }
-    }
+    }//end handleObjectCreating()
 
     private function handleObjectUpdating(ObjectUpdatingEvent $event): void
     {
@@ -154,18 +162,21 @@ class ZaakRegisterEventListener implements IEventListener
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
         }
-    }
+    }//end handleObjectUpdating()
 
     private function logError(Event $event, \Exception $e): void
     {
         try {
             $logger = \OC::$server->get(LoggerInterface::class);
-            $logger->error('ZaakAfhandelApp: Error in event handler', [
-                'eventType' => get_class($event),
-                'exception' => $e->getMessage(),
-            ]);
+            $logger->error(
+                    'ZaakAfhandelApp: Error in event handler',
+                    [
+                        'eventType' => get_class($event),
+                        'exception' => $e->getMessage(),
+                    ]
+                    );
         } catch (\Exception $logException) {
             // Silently fail
         }
-    }
-}
+    }//end logError()
+}//end class

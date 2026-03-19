@@ -106,15 +106,19 @@
                 <referencedClass name="OCA\OpenRegister\Db\RegisterMapper"/>
                 <referencedClass name="OCA\OpenRegister\Db\Schema"/>
                 <referencedClass name="OCA\OpenRegister\Db\SchemaMapper"/>
+                <referencedClass name="OCA\OpenRegister\Exception\CustomValidationException"/>
             </errorLevel>
         </UndefinedClass>
+        <InvalidThrow errorLevel="suppress"/>
         <InvalidTemplateParam errorLevel="suppress"/>
+        <MissingTemplateParam errorLevel="suppress"/>
         <NoInterfaceProperties errorLevel="suppress"/>
         <UndefinedMagicMethod errorLevel="suppress"/>
         <UnusedClass errorLevel="suppress"/>
         <PossiblyUnusedMethod errorLevel="suppress"/>
         <UnusedMethod errorLevel="suppress"/>
         <UnusedProperty errorLevel="suppress"/>
+        <UnusedParam errorLevel="suppress"/>
         <PossiblyUnusedParam errorLevel="suppress"/>
         <UnusedDocblockParam errorLevel="suppress"/>
         <UnusedVariable errorLevel="suppress"/>

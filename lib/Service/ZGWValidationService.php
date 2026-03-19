@@ -23,7 +23,7 @@ class ZGWValidationService
     public function __construct(ObjectMapperService $mapperService)
     {
         $this->objectService = $mapperService->getOpenRegisters();
-    }
+    }//end __construct()
 
     /**
      * ZRC-010: Validate relevanteAndereZaken references.
@@ -43,6 +43,7 @@ class ZGWValidationService
                 $i++;
                 continue;
             }
+
             try {
                 $id = explode('/', $relevanteZaak['url']);
                 $this->objectService->clearCurrents();
@@ -54,9 +55,10 @@ class ZGWValidationService
                     [['name' => "relevanteAndereZaken.$i.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]
                 );
             }
+
             $i++;
-        }
-    }
+        }//end foreach
+    }//end checkRelevanteAndereZaken()
 
     /**
      * Validate a BesluitInformatieObject's type against besluittype.
@@ -65,7 +67,7 @@ class ZGWValidationService
     {
         $arr = $bio->jsonSerialize();
 
-        $eio = $this->findByUrl($arr['informatieobject'], ['informatieobjecttype']);
+        $eio     = $this->findByUrl($arr['informatieobject'], ['informatieobjecttype']);
         $besluit = $this->findByUrl($arr['besluit'], ['besluittype']);
 
         $iot = $eio->jsonSerialize()['informatieobjecttype']['omschrijving'];
@@ -76,12 +78,12 @@ class ZGWValidationService
                 [['name' => 'nonFieldErrors', 'code' => 'invalid-informatieobjecttype', 'reason' => 'informatieobjecttype niet aanwezig op besluittype']]
             );
         }
-    }
+    }//end validateBesluitInformatieObject()
 
-    private function findByUrl(string $url, array $extend = []): ObjectEntity
+    private function findByUrl(string $url, array $extend=[]): ObjectEntity
     {
         $parts = explode('/', $url);
         $this->objectService->clearCurrents();
         return $this->objectService->find(id: end($parts), extend: $extend);
-    }
-}
+    }//end findByUrl()
+}//end class

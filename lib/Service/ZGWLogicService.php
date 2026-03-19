@@ -19,10 +19,10 @@ class ZGWLogicService
     private \OCA\OpenRegister\Service\ObjectService $objectService;
 
     /**
-     * @param ObjectMapperService $mapperService The mapper service
-     * @param RegisterMapper $registerMapper The register mapper
-     * @param SchemaMapper $schemaMapper The schema mapper
-     * @param ZGWRegistryService $registry The registry service
+     * @param ObjectMapperService $mapperService  The mapper service
+     * @param RegisterMapper      $registerMapper The register mapper
+     * @param SchemaMapper        $schemaMapper   The schema mapper
+     * @param ZGWRegistryService  $registry       The registry service
      */
     public function __construct(
         ObjectMapperService $mapperService,
@@ -31,7 +31,7 @@ class ZGWLogicService
         private ZGWRegistryService $registry,
     ) {
         $this->objectService = $mapperService->getOpenRegisters();
-    }
+    }//end __construct()
 
     /**
      * Create an OIO for a zaakinformatieobject. ZRC-005.
@@ -40,7 +40,7 @@ class ZGWLogicService
     {
         $arr = $zio->jsonSerialize();
         $this->createOio($arr['zaak'], $arr['informatieobject'], 'zaak');
-    }
+    }//end createObjectInformatieObjectZaak()
 
     /**
      * Create an OIO for a besluitinformatieobject. BRC-005.
@@ -49,7 +49,7 @@ class ZGWLogicService
     {
         $arr = $bio->jsonSerialize();
         $this->createOio($arr['besluit'], $arr['informatieobject'], 'besluit');
-    }
+    }//end createObjectInformatieObjectBesluit()
 
     /**
      * Delete OIO when a ZIO or BIO is deleted. ZRC-023 / BRC-009.
@@ -65,7 +65,7 @@ class ZGWLogicService
         if ($schema->getSlug() === $this->registry->getBioSchema()) {
             $this->deleteOioByFilters($s['besluit'], 'besluit', $s['informatieobject']);
         }
-    }
+    }//end deleteObjectInformatieObject()
 
     /**
      * Create a zaakbesluit when a besluit is created.
@@ -95,7 +95,7 @@ class ZGWLogicService
         $zb->setSchema($this->registry->getZaakBesluitSchema());
         $zb->setObject(['zaak' => $arr['zaak'], 'besluit' => $arr['url']]);
         $this->objectService->saveObject(object: $zb, register: $zb->getRegister(), schema: $zb->getSchema());
-    }
+    }//end createZaakBesluit()
 
     /**
      * Cascade delete BesluitInformatieObjecten when a besluit is deleted.
@@ -106,7 +106,7 @@ class ZGWLogicService
         foreach ($arr['besluitinformatieobjecten'] as $url) {
             $this->objectService->deleteObject($this->registry->getObjectIdByEndpointUrl($url));
         }
-    }
+    }//end deleteBesluit()
 
     private function createOio(string $objectUrl, string $informatieobject, string $objectType): void
     {
@@ -115,56 +115,60 @@ class ZGWLogicService
         $oio->setRegister($this->registry->getDrcRegister());
         $oio->setObject(['object' => $objectUrl, 'informatieobject' => $informatieobject, 'objectType' => $objectType]);
         $this->objectService->saveObject(object: $oio, register: $this->registry->getDrcRegister(), schema: $this->registry->getOioSchema());
-    }
+    }//end createOio()
 
     private function deleteOioByFilters(string $objectUrl, string $objectType, string $informatieobject): void
     {
-        $objects = $this->objectService->findAll([
-            'filters' => [
-                'object' => $objectUrl,
-                'objectType' => $objectType,
-                'informatieobject' => $informatieobject,
-                'register' => $this->registerMapper->find($this->registry->getDrcRegister())->getId(),
-                'schema' => $this->schemaMapper->find($this->registry->getOioSchema())->getId(),
-            ],
-        ]);
+        $objects = $this->objectService->findAll(
+                [
+                    'filters' => [
+                        'object'           => $objectUrl,
+                        'objectType'       => $objectType,
+                        'informatieobject' => $informatieobject,
+                        'register'         => $this->registerMapper->find($this->registry->getDrcRegister())->getId(),
+                        'schema'           => $this->schemaMapper->find($this->registry->getOioSchema())->getId(),
+                    ],
+                ]
+                );
 
         $this->objectService->deleteObjects(array_map(fn(ObjectEntity $o) => $o->getUuid(), $objects));
-    }
+    }//end deleteOioByFilters()
 
-    private function getObjectByEndpointUrl(string $url, array $extend = []): ObjectEntity
+    private function getObjectByEndpointUrl(string $url, array $extend=[]): ObjectEntity
     {
         $this->objectService->clearCurrents();
         return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), extend: $extend);
-    }
+    }//end getObjectByEndpointUrl()
 
     private function rewriteInternalReference(string $internalReference): string
     {
         return $this->getObjectByEndpointUrl($internalReference);
-    }
+    }//end rewriteInternalReference()
 
-    public function createZaakTypeInformatieObjecttype (ObjectEntity $ztIot):  void
+    public function createZaakTypeInformatieObjecttype(ObjectEntity $ztIot):  void
     {
         $ztIotArray = $ztIot->jsonSerialize();
 
         $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
 
-        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema'=> $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
         $this->objectService->clearCurrents();
 
-        $zt = $this->getObjectByEndpointUrl($ztIotArray['zaaktype']);
+        $zt      = $this->getObjectByEndpointUrl($ztIotArray['zaaktype']);
         $ztArray = $zt->jsonSerialize();
 
-        /** @var ObjectEntity $iot */
+        /*
+         * @var ObjectEntity $iot
+         */
         $iot = array_shift($iots);
 
-        if($iot === null) {
+        if ($iot === null) {
             throw new CustomValidationException(message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus', errors: [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'informatieobjecttype niet gevonden']]);
         }
 
         $iotArray = $iot->jsonSerialize();
 
-        if($ztArray['catalogus'] !== $iotArray['catalogus']) {
+        if ($ztArray['catalogus'] !== $iotArray['catalogus']) {
             throw new CustomValidationException(message: 'Informatieobjecttype en zaaktype behoren niet tot dezelfde catalogus', errors: [['name' => 'zaaktype', 'code' => 'catalogus', 'reason' => 'zaaktype niet in zelfde catalogus als informatieobjecttype']]);
         }
 
@@ -177,32 +181,37 @@ class ZGWLogicService
         $this->objectService->saveObject(object: $iot, register: $this->registry->getZtcRegister(), schema: $this->registry->getIOTSchema());
 
         $ztArray['informatieobjecttypen'][] = $this->rewriteInternalReference($iotArray['url']);
-        $ztArray['informatieobjecttypen'] = array_unique($ztArray['informatieobjecttypen']);
+        $ztArray['informatieobjecttypen']   = array_unique($ztArray['informatieobjecttypen']);
         $zt->setObject($ztArray);
 
         $this->objectService->saveObject(object: $zt, register: $this->registry->getZtcRegister(), schema: $this->registry->getZaakTypeSchema());
 
-
         $this->objectService->clearCurrents();
 
-    }
-    public function deleteZaakTypeInformatieObjecttype (ObjectEntity $ztIot):  void
+    }//end createZaakTypeInformatieObjecttype()
+
+    public function deleteZaakTypeInformatieObjecttype(ObjectEntity $ztIot):  void
     {
         $ztIotArray = $ztIot->jsonSerialize();
 
         $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
 
-        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema'=> $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
 
-        /** @var ObjectEntity $iot */
-        $iot = array_shift($iots);
+        /*
+         * @var ObjectEntity $iot
+         */
+        $iot      = array_shift($iots);
         $iotArray = $iot->jsonSerialize();
 
         $removeZaaktype = $ztIotArray['zaaktype'];
 
-        $iotArray['zaaktypen'] = array_filter($iotArray['zaaktypen'], function(string $zaaktype) use ($removeZaaktype) {
-            return $zaaktype !== $removeZaaktype;
-        });
+        $iotArray['zaaktypen'] = array_filter(
+                $iotArray['zaaktypen'],
+                function (string $zaaktype) use ($removeZaaktype) {
+                    return $zaaktype !== $removeZaaktype;
+                }
+                );
 
         $iot->setObject($iotArray);
 
@@ -214,14 +223,17 @@ class ZGWLogicService
 
         $removeIOT = $iotArray['id'];
 
-        $ztArray['informatieobjecttypen'] = array_filter($ztArray['informatieobjecttypen'], function (string $iotInZt) use ($removeIOT) {
-            return $iotInZt !== $removeIOT;
-        });
+        $ztArray['informatieobjecttypen'] = array_filter(
+                $ztArray['informatieobjecttypen'],
+                function (string $iotInZt) use ($removeIOT) {
+                    return $iotInZt !== $removeIOT;
+                }
+                );
 
         $zt->setObject($ztArray);
 
         $this->objectService->saveObject(object: $zt, register: $this->registry->getZtcRegister(), schema: $this->registry->getZaakTypeSchema());
         $this->objectService->clearCurrents();
 
-    }
-}
+    }//end deleteZaakTypeInformatieObjecttype()
+}//end class
