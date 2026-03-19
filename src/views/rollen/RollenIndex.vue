@@ -6,8 +6,8 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen Rol"
-				description="Nog geen rol geselecteerd">
+				:name="t('zaakafhandelapp', 'No role')"
+				:description="t('zaakafhandelapp', 'No role selected yet')">
 				<template #icon>
 					<BriefcaseAccountOutline />
 				</template>

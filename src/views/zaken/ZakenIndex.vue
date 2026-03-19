@@ -1,3 +1,7 @@
+<script setup>
+import { translate as t } from '@nextcloud/l10n'
+</script>
+
 <template>
 	<NcAppContent>
 		<template #list>
@@ -6,14 +10,14 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen Zaak"
-				description="Nog geen zaak geselecteerd">
+				:name="t('zaakafhandelapp', 'No case')"
+				:description="t('zaakafhandelapp', 'No case selected yet')">
 				<template #icon>
 					<BriefcaseAccountOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="zaakStore.setZaakItem(null); navigationStore.setModal('zaakForm')">
-						Zaak starten
+						{{ t('zaakafhandelapp', 'Start case') }}
 					</NcButton>
 				</template>
 			</NcEmptyContent>

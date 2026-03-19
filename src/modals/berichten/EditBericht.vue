@@ -1,14 +1,15 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'editBericht'"
-		name="Bericht"
+		:name="t('zaakafhandelapp', 'Message')"
 		size="normal"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>Bericht succesvol aangepast</p>
+			<p>{{ t('zaakafhandelapp', 'Message successfully updated') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -18,72 +19,72 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.title"
-				label="Title" />
+				:label="t('zaakafhandelapp', 'Title')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.onderwerp"
-				label="Onderwerp" />
+				:label="t('zaakafhandelapp', 'Subject')" />
 
 			<NcTextArea
 				:disabled="loading"
 				:value.sync="berichtItem.berichttekst"
-				label="Berichttekst" />
+				:label="t('zaakafhandelapp', 'Message text')" />
 
 			<NcTextArea
 				:disabled="loading"
 				:value.sync="berichtItem.inhoud"
-				label="Inhoud (base64)" />
+				:label="t('zaakafhandelapp', 'Content (base64)')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.bijlageType"
-				label="Bijlage type" />
+				:label="t('zaakafhandelapp', 'Attachment type')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.soortGebruiker"
-				label="Soort gebruiker" />
+				:label="t('zaakafhandelapp', 'User type')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.publicatieDatum"
-				label="Publicatiedatum" />
+				:label="t('zaakafhandelapp', 'Publication date')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.aanmaakDatum"
-				label="Aanmaak datum" />
+				:label="t('zaakafhandelapp', 'Creation date')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.berichtType"
-				label="Bericht type" />
+				:label="t('zaakafhandelapp', 'Message type')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.referentie"
-				label="Referentie" />
+				:label="t('zaakafhandelapp', 'Reference')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.berichtID"
-				label="Bericht ID" />
+				:label="t('zaakafhandelapp', 'Message ID')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.batchID"
-				label="Batch ID" />
+				:label="t('zaakafhandelapp', 'Batch ID')" />
 
 			<NcTextField
 				:disabled="true"
 				:value="klantStore.klantItem?.id || berichtItem.gebruikerID"
-				label="Gebruiker ID" />
+				:label="t('zaakafhandelapp', 'User ID')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.onderwerp"
-				label="Volgorde" />
+				:label="t('zaakafhandelapp', 'Order')" />
 		</div>
 
 		<template #actions>

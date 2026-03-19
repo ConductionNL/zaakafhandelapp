@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<div class="newTabButtonContainer">
 				<NcButton type="primary"
 					class="newTabButton"
-					aria-label="Nieuw contactmoment"
+					:aria-label="t('zaakafhandelapp', 'New contact moment')"
 					@click="() => newTab()">
 					<template #icon>
 						<Plus :size="20" />
@@ -531,7 +532,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<NcActions :disabled="loading || success || fetchLoading"
 				:primary="true"
 				:force-name="true"
-				menu-name="Acties">
+				:menu-name="t('zaakafhandelapp', 'Actions')">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>

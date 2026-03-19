@@ -1,9 +1,10 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { zaakTypeStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Zaaktype verwijderen" size="normal" :can-close="false">
+	<NcDialog :name="t('zaakafhandelapp', 'Delete case type')" size="normal" :can-close="false">
 		<p v-if="success === null">
 			Weet u zeker dat u <b>{{ zaakTypeStore.zaakTypeItem?.identificatie }}</b> permanent wilt verwijderen? Deze
 			actie kan niet ongedaan worden gemaakt.
@@ -11,10 +12,10 @@ import { zaakTypeStore, navigationStore } from '../../store/store.js'
 
 		<div v-if="success !== null">
 			<NcNoteCard v-if="success" type="success">
-				<p>Zaaktype succesvol verwijderd</p>
+				<p>{{ t('zaakafhandelapp', 'Case type successfully deleted') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="!success && !error" type="error">
-				<p>Er is een fout opgetreden bij het verwijderen van het zaaktype</p>
+				<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the case type') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>

@@ -1,9 +1,10 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Resultaat verwijderen"
+	<NcDialog :name="t('zaakafhandelapp', 'Delete result')"
 		size="normal"
 		:can-close="false">
 		<!-- if zaken list is not populated yet, show a quick loading icon (this should under normal conditions not happen) -->
@@ -19,10 +20,10 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Resultaat succesvol verwijderd</p>
+					<p>{{ t('zaakafhandelapp', 'Result successfully deleted') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success && !error" type="error">
-					<p>Er is een fout opgetreden bij het verwijderen van het resultaat</p>
+					<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the result') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>

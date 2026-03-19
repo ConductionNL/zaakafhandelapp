@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -18,48 +19,48 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 				<NcSelect v-bind="zaakOptions"
 					v-model="zaakOptions.value"
 					:disabled="loading"
-					input-label="Zaak"
+					:input-label="t('zaakafhandelapp', 'Case')"
 					required />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="rolItem.betrokkene"
 					maxlength="1000"
-					label="Betrokkene (url)" />
+					:label="t('zaakafhandelapp', 'Involved party (URL)')" />
 
 				<NcSelect
 					v-bind="betrokkeneTypeOptions"
 					v-model="betrokkeneTypeOptions.value"
 					:disabled="loading"
 					:clearable="false"
-					input-label="Betrokkene Type"
+					:input-label="t('zaakafhandelapp', 'Involved party type')"
 					required />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="rolItem.afwijkendeNaamBetrokkene"
 					maxlength="625"
-					label="Afwijkende Naam Betrokkene" />
+					:label="t('zaakafhandelapp', 'Deviating name involved party')" />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="rolItem.roltype"
 					maxlength="1000"
-					label="Roltype"
+					:label="t('zaakafhandelapp', 'Role type')"
 					required />
 
 				<NcTextArea
 					:disabled="loading"
 					:value.sync="rolItem.roltoelichting"
 					maxlength="1000"
-					label="Roltoelichting"
+					:label="t('zaakafhandelapp', 'Role explanation')"
 					:error="!rolItem.roltoelichting" />
 
 				<NcSelect
 					v-bind="indicatieMachtigingOptions"
 					v-model="indicatieMachtigingOptions.value"
 					:disabled="loading"
-					input-label="Indicatie Machtiging" />
+					:input-label="t('zaakafhandelapp', 'Authorization indication')" />
 			</div>
 
 			<NcButton v-if="success === null"

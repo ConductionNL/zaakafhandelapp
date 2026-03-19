@@ -1,3 +1,7 @@
+<script setup>
+import { translate as t } from '@nextcloud/l10n'
+</script>
+
 <template>
 	<NcAppContent>
 		<template #list>
@@ -6,15 +10,15 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen contact moment"
-				description="Nog geen contact moment geselecteerd">
+				:name="t('zaakafhandelapp', 'No contact moment')"
+				:description="t('zaakafhandelapp', 'No contact moment selected yet')">
 				<template #icon>
 					<CardAccountPhoneOutline />
 				</template>
 				<template #action>
 					<NcButton type="primary"
 						@click="contactMomentStore.setContactMomentItem(null); navigationStore.setModal('contactMomentenForm')">
-						Contact moment aanmaken
+						{{ t('zaakafhandelapp', 'Create contact moment') }}
 					</NcButton>
 				</template>
 			</NcEmptyContent>

@@ -6,8 +6,8 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen Zaaktype"
-				description="Nog geen zaaktype geselecteerd">
+				:name="t('zaakafhandelapp', 'No case type')"
+				:description="t('zaakafhandelapp', 'No case type selected yet')">
 				<template #icon>
 					<AlphaTBoxOutline />
 				</template>

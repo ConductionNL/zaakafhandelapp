@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -18,7 +19,7 @@ import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore }
 								<NcLoadingIcon />
 							</template>
 						</NcEmptyContent>
-						<NcEmptyContent v-if="!loading" name="Geen personen gevonden">
+						<NcEmptyContent v-if="!loading" :name="t('zaakafhandelapp', 'No persons found')">
 							<template #icon>
 								<AccountOutline />
 							</template>

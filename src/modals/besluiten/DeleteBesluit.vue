@@ -1,9 +1,10 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { besluitStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Besluit verwijderen"
+	<NcDialog :name="t('zaakafhandelapp', 'Delete decision')"
 		size="normal"
 		:can-close="false">
 		<p v-if="success === null">
@@ -14,10 +15,10 @@ import { besluitStore, navigationStore } from '../../store/store.js'
 
 		<div v-if="success !== null">
 			<NcNoteCard v-if="success" type="success">
-				<p>Besluit succesvol verwijderd</p>
+				<p>{{ t('zaakafhandelapp', 'Decision successfully deleted') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="!success && !error" type="error">
-				<p>Er is een fout opgetreden bij het verwijderen van het besluit</p>
+				<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the decision') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>

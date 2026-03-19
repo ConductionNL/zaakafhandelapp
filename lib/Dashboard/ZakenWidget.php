@@ -12,11 +12,11 @@ use OCA\ZaakAfhandelApp\AppInfo\Application;
 
 class ZakenWidget implements IWidget
 {
-
     public function __construct(
         private IL10N $l10n,
         private IURLGenerator $url
-    ) {}
+    ) {
+    }//end __construct()
 
     /**
      * @inheritDoc
@@ -24,7 +24,7 @@ class ZakenWidget implements IWidget
     public function getId(): string
     {
         return 'zaakAfhandelApp_zaak_widget';
-    }
+    }//end getId()
 
     /**
      * @inheritDoc
@@ -32,7 +32,7 @@ class ZakenWidget implements IWidget
     public function getTitle(): string
     {
         return $this->l10n->t('Uw zaken');
-    }
+    }//end getTitle()
 
     /**
      * @inheritDoc
@@ -40,7 +40,7 @@ class ZakenWidget implements IWidget
     public function getOrder(): int
     {
         return 10;
-    }
+    }//end getOrder()
 
     /**
      * @inheritDoc
@@ -48,7 +48,7 @@ class ZakenWidget implements IWidget
     public function getIconClass(): string
     {
         return 'icon-zaken-widget';
-    }
+    }//end getIconClass()
 
     /**
      * @inheritDoc
@@ -56,15 +56,15 @@ class ZakenWidget implements IWidget
     public function getUrl(): ?string
     {
         return null;
-    }
+    }//end getUrl()
 
     /**
      * @inheritDoc
      */
     public function load(): void
     {
-        Util::addScript(Application::APP_ID, Application::APP_ID . '-zakenWidget');
+        Util::addScript(Application::APP_ID, Application::APP_ID.'-zakenWidget');
         Util::addStyle(Application::APP_ID, 'dashboardWidgets');
         Util::addStyle(Application::APP_ID, 'icons');
-    }
-}
+    }//end load()
+}//end class

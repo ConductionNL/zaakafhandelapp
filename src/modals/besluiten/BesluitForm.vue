@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -22,14 +23,14 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 				<p>Selecteer een zaak om het besluit aan te maken.</p>
 				<NcSelect v-bind="zaak"
 					v-model="zaak.value"
-					input-label="Zaak"
+					:input-label="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
 
 				<div class="form-group">
 					<NcTextField :disabled="zaakLoading"
-						label="Besluit"
+						:label="t('zaakafhandelapp', 'Decision')"
 						maxlength="1000"
 						:value.sync="besluit.besluit"
 						required />

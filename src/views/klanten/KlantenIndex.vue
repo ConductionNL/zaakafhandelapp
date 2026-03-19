@@ -6,8 +6,8 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen klant"
-				description="Nog geen klant geselecteerd">
+				:name="t('zaakafhandelapp', 'No customer')"
+				:description="t('zaakafhandelapp', 'No customer selected yet')">
 				<template #icon>
 					<AccountOutline />
 				</template>

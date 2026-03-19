@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -71,7 +72,7 @@ import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Taken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading tasks')" />
 	</NcAppContentList>
 </template>
 <script>
