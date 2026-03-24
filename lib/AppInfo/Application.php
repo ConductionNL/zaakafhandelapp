@@ -1,4 +1,13 @@
 <?php
+/**
+ * Application bootstrap for ZaakAfhandelApp.
+ *
+ * @category AppInfo
+ * @package  OCA\ZaakAfhandelApp\AppInfo
+ * @author   Conduction b.v. <info@conduction.nl>
+ * @license  EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ * @link     https://conduction.nl
+ */
 
 namespace OCA\ZaakAfhandelApp\AppInfo;
 
@@ -23,15 +32,22 @@ class Application extends App implements IBootstrap
     public const APP_ID = 'zaakafhandelapp';
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param array $urlParams
+     * @param array $urlParams URL parameters for the app.
      */
     public function __construct(array $urlParams=[])
     {
         parent::__construct(appName: self::APP_ID, urlParams: $urlParams);
     }//end __construct()
 
+    /**
+     * Register application services and event listeners.
+     *
+     * @param IRegistrationContext $context The registration context.
+     *
+     * @return void
+     */
     public function register(IRegistrationContext $context): void
     {
         $context->registerDashboardWidget(ZakenWidget::class);
@@ -67,6 +83,13 @@ class Application extends App implements IBootstrap
         );
     }//end register()
 
+    /**
+     * Boot the application.
+     *
+     * @param IBootContext $context The boot context.
+     *
+     * @return void
+     */
     public function boot(IBootContext $context): void
     {
     }//end boot()

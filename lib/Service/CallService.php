@@ -25,7 +25,9 @@ class CallService
             // case 'OAuth 2.0':
             // return ['headers' => ['authorization' => $this->getOAuth(source: $source)]];
             case 'basic':
-                return ['auth' => [ $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}ClientId"),  $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}Secret")]];
+                $clientId = $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}ClientId");
+                $secret   = $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}Secret");
+                return ['auth' => [$clientId, $secret]];
             case 'apiKey':
                 return ['headers' => ['authorization' => $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}Key")]];
             default:
@@ -53,7 +55,8 @@ class CallService
     /**
      * Gets a guzzle client based upon given config.
      *
-     * @param  array $config The config to be used for the client.
+     * @param array $config The config to be used for the client.
+     *
      * @return Client
      */
     private function getClient(string $source, array $config=[]): Client
@@ -108,7 +111,8 @@ class CallService
         ];
 
         // Setuo the client & make the call
-        $returnData = $this->getClient(source: $source, config: $config)->get($this->config->getValueString('zaakafhandelapp', "{$source}Location")."/$endpoint/$id");
+        $baseUri    = $this->config->getValueString('zaakafhandelapp', "{$source}Location");
+        $returnData = $this->getClient(source: $source, config: $config)->get("$baseUri/$endpoint/$id");
 
         // Turn everything into arrays
         return json_decode(
