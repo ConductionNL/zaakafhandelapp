@@ -1,15 +1,43 @@
+# IDE
 /.idea/
 /*.iml
+*.Identifier
 
+# Dependencies
 /vendor/
 /vendor-bin/*/vendor/
-/composer.lock
+/node_modules/
 
+# Build artifacts
+/js/
+
+# Documentation
+/docs/node_modules/
+/docs/build/
+/docs/.docusaurus/
+/website/node_modules/
+/website/.docusaurus/
+
+# Testing & Quality
 /.php-cs-fixer.cache
 /tests/.phpunit.cache
+/.phpunit.cache/
+.phpunit.cache/
+.phpunit.result.cache
+/coverage/
+/coverage-frontend/
+/phpmetrics/
+/quality-reports/
+/phpqa/
 
-/node_modules/
+# Nextcloud
 /custom_apps/
 /custom-apps/
-/js/
-Zone.Identifier
+/config/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/worktrees/
