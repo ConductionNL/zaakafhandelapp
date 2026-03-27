@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
 </script>
 
@@ -12,7 +13,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 				@edit="onEdit"
 				@sluiten="onSluiten">
 				<template #empty-content>
-					<NcEmptyContent name="Geen contactmomenten gevonden">
+					<NcEmptyContent :name="t('zaakafhandelapp', 'No contact moments found')">
 						<template #icon>
 							<ChatOutline />
 						</template>

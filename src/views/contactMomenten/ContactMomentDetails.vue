@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, contactMomentStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 						{{ contactMomentStore.contactMomentItem.titel }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -21,19 +22,19 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="closeContactMoment">
 							<template #icon>
 								<ProgressClose :size="20" />
 							</template>
-							Sluiten
+							{{ t('zaakafhandelapp', 'Close') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteContactMoment')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>

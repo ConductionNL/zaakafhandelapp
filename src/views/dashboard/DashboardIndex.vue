@@ -2,10 +2,10 @@
 	<NcAppContent>
 		<template #default>
 			<div class="dashboardContainer">
-				<h1>Dashboard</h1>
-				<h2>Werkvooraad</h2>
+				<h1>{{ t('zaakafhandelapp', 'Dashboard') }}</h1>
+				<h2>{{ t('zaakafhandelapp', 'Workload') }}</h2>
 				<NcNoteCard type="success">
-					<p>Er zijn op dit moment geen zaken zonder behandelaar</p>
+					<p>{{ t('zaakafhandelapp', 'There are currently no cases without a handler') }}</p>
 				</NcNoteCard>
 			</div>
 		</template>

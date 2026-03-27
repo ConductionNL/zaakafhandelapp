@@ -6,8 +6,8 @@
 		<template #default>
 			<NcEmptyContent v-if="!id"
 				class="detailContainer"
-				name="Geen taak"
-				description="Nog geen taak geselecteerd">
+				:name="t('zaakafhandelapp', 'No task')"
+				:description="t('zaakafhandelapp', 'No task selected yet')">
 				<template #icon>
 					<CalendarMonthOutline />
 				</template>

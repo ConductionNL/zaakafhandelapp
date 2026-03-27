@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -22,17 +23,17 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 				<p>Selecteer een zaak om het document aan te maken.</p>
 				<NcSelect v-bind="zaak"
 					v-model="zaak.value"
-					input-label="Zaak"
+					:input-label="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading" />
 
 				<div class="form-group">
-					<NcTextField label="Identificatie"
+					<NcTextField :label="t('zaakafhandelapp', 'Identification')"
 						maxlength="40"
 						:value.sync="document.identificatie"
 						required />
 
-					<NcTextField label="Bronorganisatie"
+					<NcTextField :label="t('zaakafhandelapp', 'Source organisation')"
 						minlength="1"
 						maxlength="9"
 						:value.sync="document.bronorganisatie"
@@ -46,16 +47,16 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 							confirm />
 					</div>
 
-					<NcTextField label="Titel"
+					<NcTextField :label="t('zaakafhandelapp', 'Title')"
 						maxlength="200"
 						:value.sync="document.titel"
 						required />
 
 					<NcSelect v-bind="vertrouwelijkheidaanduidingOptions"
 						v-model="vertrouwelijkheidaanduidingOptions.value"
-						input-label="Vertrouwelijkheid aanduiding" />
+						:input-label="t('zaakafhandelapp', 'Confidentiality indication')" />
 
-					<NcTextField label="Auteur"
+					<NcTextField :label="t('zaakafhandelapp', 'Author')"
 						minlength="1"
 						maxlength="200"
 						:value.sync="document.auteur"
@@ -63,7 +64,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 
 					<NcSelect v-bind="statusOptions"
 						v-model="statusOptions.value"
-						input-label="Status" />
+						:input-label="t('zaakafhandelapp', 'Status')" />
 
 					<NcCheckboxRadioSwitch :checked.sync="document.inhoudIsVervallen">
 						Inhoud is vervallen

@@ -6,29 +6,36 @@ use OCP\IConfig;
 use OCP\IL10N;
 use OCP\Settings\ISettings;
 
-class ZaakAfhandelAppAdmin implements ISettings {
+class ZaakAfhandelAppAdmin implements ISettings
+{
+
     private IL10N $l;
+
     private IConfig $config;
 
-    public function __construct(IConfig $config, IL10N $l) {
+    public function __construct(IConfig $config, IL10N $l)
+    {
         $this->config = $config;
-        $this->l = $l;
-    }
+        $this->l      = $l;
+    }//end __construct()
 
     /**
      * @return TemplateResponse
      */
-    public function getForm() {
+    public function getForm()
+    {
         $parameters = [
             'mySetting' => $this->config->getSystemValue('zaakafhandelapp_setting', true),
         ];
 
         return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, 'admin');
-    }
+    }//end getForm()
 
-    public function getSection() {
-        return 'zaakafhandelapp'; // Name of the previously created section.
-    }
+    public function getSection()
+    {
+        return 'zaakafhandelapp';
+        // Name of the previously created section.
+    }//end getSection()
 
     /**
      * @return int whether the form should be rather on the top or bottom of
@@ -37,7 +44,8 @@ class ZaakAfhandelAppAdmin implements ISettings {
      *
      * E.g.: 70
      */
-    public function getPriority() {
+    public function getPriority()
+    {
         return 10;
-    }
-}
+    }//end getPriority()
+}//end class

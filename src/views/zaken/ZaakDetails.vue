@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore, documentStore, rolStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 						{{ zaakStore.zaakItem?.identificatie }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -21,13 +22,13 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="(documentStore.zaakId = zaakStore.zaakItem?.id); documentStore.setDocumentItem(null); navigationStore.setModal('documentForm')">
 							<template #icon>
 								<FileDocumentPlusOutline :size="20" />
 							</template>
-							Document toevoegen
+							{{ t('zaakafhandelapp', 'Add document') }}
 						</NcActionButton>
 						<NcActionButton @click="() => {
 							rolStore.setRolItem(null);
@@ -38,37 +39,37 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 							<template #icon>
 								<AccountPlus :size="20" />
 							</template>
-							Rol aanmaken
+							{{ t('zaakafhandelapp', 'Create role') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('addTaakToZaak')">
 							<template #icon>
 								<CalendarPlus :size="20" />
 							</template>
-							Taak toevoegen
+							{{ t('zaakafhandelapp', 'Add task') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('addBerichtToZaak')">
 							<template #icon>
 								<MessagePlus :size="20" />
 							</template>
-							Bericht toevoegen
+							{{ t('zaakafhandelapp', 'Add message') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('updateZaakStatus')">
 							<template #icon>
 								<VectorPolylineEdit :size="20" />
 							</template>
-							Status wijzigen
+							{{ t('zaakafhandelapp', 'Change status') }}
 						</NcActionButton>
 						<NcActionButton @click="(resultaatStore.zaakId = zaakStore.zaakItem?.id); resultaatStore.setResultaatItem(null); navigationStore.setModal('resultaatForm')">
 							<template #icon>
 								<FileChartCheckOutline :size="20" />
 							</template>
-							Resultaat toevoegen
+							{{ t('zaakafhandelapp', 'Add result') }}
 						</NcActionButton>
 						<NcActionButton @click="(besluitStore.zaakId = zaakStore.zaakItem?.id); besluitStore.setBesluitItem(null); navigationStore.setModal('besluitForm')">
 							<template #icon>
 								<BriefcaseAccountOutline :size="20" />
 							</template>
-							Besluit toevoegen
+							{{ t('zaakafhandelapp', 'Add decision') }}
 						</NcActionButton>
 					</NcActions>
 				</div>

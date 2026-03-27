@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<NcAppNavigationItem name="Configuration" @click="settingsOpen = true">
+		<NcAppNavigationItem :name="t('zaakafhandelapp', 'Configuration')" @click="settingsOpen = true">
 			<template #icon>
 				<CogOutline :size="20" />
 			</template>

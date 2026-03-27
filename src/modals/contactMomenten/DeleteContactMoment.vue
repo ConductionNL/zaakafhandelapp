@@ -1,10 +1,11 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog
-		name="Verwijder contact moment"
+		:name="t('zaakafhandelapp', 'Delete contact moment')"
 		size="normal"
 		:can-close="false">
 		<p v-if="!success">
@@ -12,7 +13,7 @@ import { contactMomentStore, navigationStore } from '../../store/store.js'
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
-			<p>Contact moment succesvol verwijderd</p>
+			<p>{{ t('zaakafhandelapp', 'Contact moment successfully deleted') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
