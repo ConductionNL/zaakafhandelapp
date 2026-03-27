@@ -16,7 +16,11 @@ const config = {
 
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'nl'],
+    localeConfigs: {
+      en: { label: 'English' },
+      nl: { label: 'Nederlands' },
+    },
   },
 
   presets: [
@@ -25,10 +29,11 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          path: '../docs',
+          path: './',
+          exclude: ['**/node_modules/**'],
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/ConductionNL/zaakafhandelapp/tree/main/docusaurus/',
+            'https://github.com/ConductionNL/zaakafhandelapp/tree/main/docs/',
         },
         blog: false,
         theme: {
@@ -65,6 +70,10 @@ const config = {
           {
             href: 'https://github.com/ConductionNL/zaakafhandelapp',
             label: 'GitHub',
+            position: 'right',
+          },
+          {
+            type: 'localeDropdown',
             position: 'right',
           },
         ],
