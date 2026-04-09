@@ -9,6 +9,8 @@
 /tests/.phpunit.cache
 
 /node_modules/
+/docs/node_modules/
+/docs/.docusaurus/
 /custom_apps/
 /custom-apps/
 /js/
