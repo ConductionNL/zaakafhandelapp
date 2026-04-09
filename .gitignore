@@ -13,3 +13,8 @@
 /custom-apps/
 /js/
 Zone.Identifier
+
+# Test/build artifacts
+.docusaurus
+coverage/
+.phpunit.result.cache
