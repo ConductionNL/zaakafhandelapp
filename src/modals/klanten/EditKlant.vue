@@ -119,7 +119,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:value.sync="klantItem.bedrijfsnaam" />
 
 			<NcTextField :disabled="loading"
-				:label="t('zaakafhandelapp', 'Chamber of Commerce number')"
+				:label="t('zaakafhandelapp', 'Chamber of commerce number')"
 				maxlength="255"
 				:value.sync="klantItem.kvkNummer" />
 

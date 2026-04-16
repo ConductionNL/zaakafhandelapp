@@ -53,7 +53,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				<NcCheckboxRadioSwitch v-if="clientType === 'both'"
 					:checked.sync="useMedewerkerInsteadOfKlant"
 					type="switch">
-					{{ t('zaakafhandelapp', 'Customer / Employee') }}
+					{{ t('zaakafhandelapp', 'Customer / employee') }}
 				</NcCheckboxRadioSwitch>
 
 				<div>

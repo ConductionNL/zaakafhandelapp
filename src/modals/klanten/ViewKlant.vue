@@ -12,7 +12,7 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 		</h1>
 		<div class="detailGrid">
 			<div class="gridContent gridFullWidth">
-				<b>{{ t('zaakafhandelapp', 'Chamber of Commerce number:') }}</b>
+				<b>{{ t('zaakafhandelapp', 'Chamber of commerce number:') }}</b>
 				<p>{{ klant.kvkNummer || '-' }}</p>
 			</div>
 

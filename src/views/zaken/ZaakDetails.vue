@@ -156,7 +156,7 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 							<ZakenZaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
 						<BTab :title="t('zaakafhandelapp', 'Synchronizations')">
-							{{ t('zaakafhandelapp', 'Todo: Connection info with DSO') }}
+							{{ t('zaakafhandelapp', 'Todo: connection info with DSO') }}
 						</BTab>
 						<BTab :title="t('zaakafhandelapp', 'Audit trail')">
 							<div v-if="auditTrails.length">

@@ -104,7 +104,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 						<p>{{ klantStore.klantItem.bedrijfsnaam }}</p>
 					</div>
 					<div class="gridContent">
-						<b>{{ t('zaakafhandelapp', 'Chamber of Commerce number:') }}</b>
+						<b>{{ t('zaakafhandelapp', 'Chamber of commerce number:') }}</b>
 						<p>{{ klantStore.klantItem.kvkNummer }}</p>
 					</div>
 					<div class="gridContent">

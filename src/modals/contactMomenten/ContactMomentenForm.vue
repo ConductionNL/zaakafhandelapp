@@ -71,7 +71,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											<div v-if="contactMomenten[i].klant?.type === 'organisatie'"
 												class="flexContainer">
 												<div>
-													{{ t('zaakafhandelapp', 'Chamber of Commerce number:') }} {{ contactMomenten[i].klant?.kvkNummer ?? 'N/A' }}
+													{{ t('zaakafhandelapp', 'Chamber of commerce number:') }} {{ contactMomenten[i].klant?.kvkNummer ?? 'N/A' }}
 												</div>
 												<div>
 													{{ t('zaakafhandelapp', 'Address:') }} {{ contactMomenten[i].klant?.postcode ?? 'N/A' }} {{
@@ -329,7 +329,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</div>
 									<div v-if="klant?.type === 'organisatie'" class="flexContainer">
 										<div>
-											{{ t('zaakafhandelapp', 'Chamber of Commerce number:') }} {{ klant?.kvkNummer ?? 'N/A' }}
+											{{ t('zaakafhandelapp', 'Chamber of commerce number:') }} {{ klant?.kvkNummer ?? 'N/A' }}
 										</div>
 										<div>
 											{{ t('zaakafhandelapp', 'Address:') }} {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}

@@ -4,12 +4,12 @@ import { translate as t } from '@nextcloud/l10n'
 
 <template>
 	<div>
-		<NcSettingsSection :name="t('zaakafhandelapp', 'Zaak Afhandelapp')" :description="t('zaakafhandelapp', 'One central place for case handling within the government')" doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers" />
-		<NcSettingsSection :name="t('zaakafhandelapp', 'Data storage')" :description="t('zaakafhandelapp', 'Configure where data is stored: in the Nextcloud database or Open Registers, including external storage like MongoDB')">
+		<NcSettingsSection :name="t('zaakafhandelapp', 'Zaak afhandelapp')" :description="t('zaakafhandelapp', 'One central place for case handling within the government')" doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers" />
+		<NcSettingsSection :name="t('zaakafhandelapp', 'Data storage')" :description="t('zaakafhandelapp', 'Configure where data is stored: in the Nextcloud database or open registers, including external storage like mongodb')">
 			<div v-if="!loading">
 				<div v-if="!openRegisterInstalled">
 					<NcNoteCard type="info">
-						{{ t('zaakafhandelapp', 'You have not yet installed Open Registers, we recommend that you do so.') }}
+						{{ t('zaakafhandelapp', 'You have not yet installed open registers, we recommend that you do so.') }}
 					</NcNoteCard>
 
 					<NcButton
@@ -19,13 +19,13 @@ import { translate as t } from '@nextcloud/l10n'
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
 							<Restart v-if="!loading && !saving" :size="20" />
 						</template>
-						{{ t('zaakafhandelapp', 'Install Open Registers') }}
+						{{ t('zaakafhandelapp', 'Install open registers') }}
 					</NcButton>
 				</div>
 
 				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister' || settingsData.medewerkers_source === 'openregister' || settingsData.rollen_source === 'openregister')">
 					<NcNoteCard type="warning">
-						{{ t('zaakafhandelapp', 'It looks like you have selected an Open Register but it is not yet installed. This may cause problems. Would you like to reset the setting?') }}
+						{{ t('zaakafhandelapp', 'It looks like you have selected an open register but it is not yet installed. this may cause problems. would you like to reset the setting?') }}
 					</NcNoteCard>
 					<NcButton
 						type="primary"

@@ -39,7 +39,7 @@ import { klantStore } from '../../store/store.js'
 					value="kvkNummer"
 					name="klantenSearchType"
 					type="radio">
-					{{ t('zaakafhandelapp', 'Chamber of Commerce number') }}
+					{{ t('zaakafhandelapp', 'Chamber of commerce number') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 					value="postcode_huisnummer"
@@ -211,7 +211,7 @@ export default {
 				organisatie: {
 					default: t('zaakafhandelapp', 'organisation'),
 					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
-					kvkNummer: t('zaakafhandelapp', 'with Chamber of Commerce number'),
+					kvkNummer: t('zaakafhandelapp', 'with chamber of commerce number'),
 				},
 			}
 			const commonLabels = {
