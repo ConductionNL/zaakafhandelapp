@@ -18,7 +18,7 @@ import { navigationStore } from '../../store/store.js'
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="navigationStore.setModal('zakenAdd')">
-						Zaak starten
+						{{ t('zaakafhandelapp', 'Start case') }}
 					</NcButton>
 				</template>
 			</NcEmptyContent>

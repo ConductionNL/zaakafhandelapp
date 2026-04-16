@@ -26,7 +26,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Contactmoment starten
+			{{ t('zaakafhandelapp', 'Start contact moment') }}
 		</NcButton>
 
 		<ContactMomentenForm v-if="isContactMomentFormOpen"
@@ -77,22 +77,25 @@ export default {
 			// contactmoment form props
 			contactMomentId: null,
 			isView: false,
-			// widget options
-			itemMenu: {
+		}
+	},
+	computed: {
+		itemMenu() {
+			return {
 				show: {
-					text: 'Bekijk',
+					text: t('zaakafhandelapp', 'View'),
 					icon: 'icon-toggle',
 				},
 				edit: {
-					text: 'Bewerk',
+					text: t('zaakafhandelapp', 'Edit'),
 					icon: iconPencil,
 				},
 				sluiten: {
-					text: 'Sluit',
+					text: t('zaakafhandelapp', 'Close'),
 					icon: iconProgressClose,
 				},
-			},
-		}
+			}
+		},
 	},
 	mounted() {
 		this.fetchUser()

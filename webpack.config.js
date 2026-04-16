@@ -1,5 +1,6 @@
 const path = require('path')
 const webpackConfig = require('@nextcloud/webpack-vue-config')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 const buildMode = process.env.NODE_ENV
 const isDev = buildMode === 'development'
@@ -46,11 +47,16 @@ webpackConfig.entry = {
 	},
 }
 
-webpackConfig.resolve = {
-	extensions: ['.ts', '.js', '.vue', '.json'],
-	alias: {
-		'@': path.resolve(__dirname, 'src/'),
-	},
+webpackConfig.resolve = webpackConfig.resolve || {}
+webpackConfig.resolve.modules = [path.resolve(__dirname, 'node_modules'), 'node_modules']
+webpackConfig.resolve.alias = {
+	...(webpackConfig.resolve.alias || {}),
+	'@': path.resolve(__dirname, 'src/'),
 }
+
+webpackConfig.plugins = [
+	...(webpackConfig.plugins || []),
+	new NodePolyfillPlugin({ additionalAliases: ['process'] }),
+]
 
 module.exports = webpackConfig

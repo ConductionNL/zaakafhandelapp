@@ -6,8 +6,7 @@ import { zaakTypeStore, navigationStore } from '../../store/store.js'
 <template>
 	<NcDialog :name="t('zaakafhandelapp', 'Delete case type')" size="normal" :can-close="false">
 		<p v-if="success === null">
-			Weet u zeker dat u <b>{{ zaakTypeStore.zaakTypeItem?.identificatie }}</b> permanent wilt verwijderen? Deze
-			actie kan niet ongedaan worden gemaakt.
+			{{ t('zaakafhandelapp', 'Are you sure you want to permanently delete {name}? This action cannot be undone.', { name: zaakTypeStore.zaakTypeItem?.identificatie }) }}
 		</p>
 
 		<div v-if="success !== null">
@@ -27,7 +26,7 @@ import { zaakTypeStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success === null ? 'Annuleren' : 'Sluiten' }}
+				{{ success === null ? t('zaakafhandelapp', 'Cancel') : t('zaakafhandelapp', 'Close') }}
 			</NcButton>
 			<NcButton v-if="success === null"
 				:disabled="loading"
@@ -37,7 +36,7 @@ import { zaakTypeStore, navigationStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<TrashCanOutline v-if="!loading" :size="20" />
 				</template>
-				Verwijderen
+				{{ t('zaakafhandelapp', 'Delete') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -88,7 +87,7 @@ export default {
 				response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
 			}).catch((error) => {
 				this.success = false
-				this.error = error.message || 'Er is een fout opgetreden bij het verwijderen van het zaaktype'
+				this.error = error.message || t('zaakafhandelapp', 'An error occurred while deleting the case type')
 			}).finally(() => {
 				this.loading = false
 			})

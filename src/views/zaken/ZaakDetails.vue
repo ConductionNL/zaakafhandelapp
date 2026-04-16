@@ -76,53 +76,53 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 
 				<div class="detailGrid">
 					<div>
-						<h4>Omschrijving:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Description:') }}</h4>
 						<span>{{ zaakStore.zaakItem?.omschrijving }}</span>
 					</div>
 					<div>
 						<h4>
-							Zaaktype:
+							{{ t('zaakafhandelapp', 'Case type:') }}
 						</h4>
 						<span v-if="zaakStore.zaakItem.zaaktype" class="zaakType">
 							{{ zaakType?.identificatie }}
-							<NcButton v-tooltip="'bekijken'" type="tertiary-no-background" @click="goToZaakType(zaakType)">
+							<NcButton v-tooltip="t('zaakafhandelapp', 'View')" type="tertiary-no-background" @click="goToZaakType(zaakType)">
 								<template #icon>
 									<OpenInApp :size="20" />
 								</template>
 							</NcButton>
 						</span>
-						<span v-else>geen zaaktype gevonden</span>
+						<span v-else>{{ t('zaakafhandelapp', 'No case type') }}</span>
 					</div>
 					<div>
 						<div>
-							<h4>Archiefstatus:</h4>
+							<h4>{{ t('zaakafhandelapp', 'Archive status:') }}</h4>
 							<p>
 								{{ zaakStore.zaakItem?.archiefstatus }}
 							</p>
 						</div>
-						<h4>Registratiedatum:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Registration date:') }}</h4>
 						<span>{{ zaakStore.zaakItem?.registratiedatum }}</span>
 					</div>
 					<div>
-						<h4>Bronorganisatie:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Source organisation:') }}</h4>
 						<p>
 							{{ zaakStore.zaakItem?.bronorganisatie }}
 						</p>
 					</div>
 					<div>
-						<h4>VerantwoordelijkeOrganisatie:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Responsible organisation:') }}</h4>
 						<p>
 							{{ zaakStore.zaakItem?.verantwoordelijkeOrganisatie }}
 						</p>
 					</div>
 					<div>
-						<h4>Startdatum:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Start date:') }}</h4>
 						<p>
 							{{ zaakStore.zaakItem?.startdatum }}
 						</p>
 					</div>
 					<div>
-						<h4>Toelichting:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Explanation:') }}</h4>
 						<p>
 							{{ zaakStore.zaakItem?.toelichting }}
 						</p>
@@ -131,34 +131,34 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<!-- TODO: Fix tabs -->
-						<BTab title="Eigenschappen" active>
+						<BTab :title="t('zaakafhandelapp', 'Properties')" active>
 							<ZaakEigenschappen :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Documenten">
+						<BTab :title="t('zaakafhandelapp', 'Documents')">
 							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Resultaten">
+						<BTab :title="t('zaakafhandelapp', 'Results')">
 							<ZaakResultaten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Rollen">
+						<BTab :title="t('zaakafhandelapp', 'Roles')">
 							<ZaakRollen :zaak-url="zaakStore.zaakItem?.url" />
 						</BTab>
-						<BTab title="Taken">
+						<BTab :title="t('zaakafhandelapp', 'Tasks')">
 							<ZaakTaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Besluiten">
+						<BTab :title="t('zaakafhandelapp', 'Decisions')">
 							<ZaakBesluiten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Berichten">
+						<BTab :title="t('zaakafhandelapp', 'Messages')">
 							<ZaakBerichten :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Zaken">
+						<BTab :title="t('zaakafhandelapp', 'Cases')">
 							<ZakenZaken :zaak-id="zaakStore.zaakItem?.id" />
 						</BTab>
-						<BTab title="Synchronisaties">
-							Todo: Koppelings info met DSO
+						<BTab :title="t('zaakafhandelapp', 'Synchronizations')">
+							{{ t('zaakafhandelapp', 'Todo: connection info with DSO') }}
 						</BTab>
-						<BTab title="Audit trail">
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')">
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -179,14 +179,14 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
 								<template #description>
-									Er is geen audit trail gevonden voor deze zaak.
+									{{ t('zaakafhandelapp', 'No audit trail was found for this case.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>

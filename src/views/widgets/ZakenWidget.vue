@@ -23,7 +23,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Zaak aanmaken
+			{{ t('zaakafhandelapp', 'Create case') }}
 		</NcButton>
 
 		<ZaakForm v-if="isModalOpen"

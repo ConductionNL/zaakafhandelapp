@@ -8,14 +8,14 @@ import { navigationStore, zaakStore, zaakTypeStore, klantStore } from '../../sto
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Zaak {{ zaakStore.zaakItem?.id ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ zaakStore.zaakItem?.id ? t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Zaak succesvol {{ zaak.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success" type="error">
-					<p>Zaak niet succesvol {{ zaak.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -82,7 +82,7 @@ import { navigationStore, zaakStore, zaakTypeStore, klantStore } from '../../sto
 					<ContentSaveOutline v-else-if="!loading && zaak.id" :size="20" />
 					<Plus v-else-if="!loading && !zaak.id" :size="20" />
 				</template>
-				{{ zaak.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ zaak.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -153,19 +153,19 @@ export default {
 				options: [
 					{
 						id: 'nog_te_archiveren',
-						label: 'Nog te archiveren',
+						label: t('zaakafhandelapp', 'Yet to be archived'),
 					},
 					{
 						id: 'gearchiveerd',
-						label: 'Gearchiveerd',
+						label: t('zaakafhandelapp', 'Archived'),
 					},
 					{
 						id: 'gearchiveerd_procestermijn_onbekend',
-						label: 'Gearchiveerd procestermijn onbekend',
+						label: t('zaakafhandelapp', 'Archived process term unknown'),
 					},
 					{
 						id: 'overgedragen',
-						label: 'Overgedragen',
+						label: t('zaakafhandelapp', 'Transferred'),
 					},
 				],
 			},

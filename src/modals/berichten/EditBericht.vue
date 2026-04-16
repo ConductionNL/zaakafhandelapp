@@ -92,7 +92,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
@@ -109,7 +109,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && berichtStore.berichtItem?.id" :size="20" />
 					<Plus v-if="!loading && !berichtStore.berichtItem?.id" :size="20" />
 				</template>
-				{{ berichtStore.berichtItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ berichtStore.berichtItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>

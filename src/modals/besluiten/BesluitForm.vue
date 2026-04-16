@@ -8,11 +8,11 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Besluit {{ IS_EDIT ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Decision {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Decision {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Besluit succesvol {{ IS_EDIT ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Decision successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Decision successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -20,7 +20,7 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null">
-				<p>Selecteer een zaak om het besluit aan te maken.</p>
+				<p>{{ t('zaakafhandelapp', 'Select a case to create the decision.') }}</p>
 				<NcSelect v-bind="zaak"
 					v-model="zaak.value"
 					:input-label="t('zaakafhandelapp', 'Case')"
@@ -48,7 +48,7 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 					<ContentSaveOutline v-else-if="!loading && IS_EDIT" :size="20" />
 					<Plus v-else-if="!loading && !IS_EDIT" :size="20" />
 				</template>
-				{{ IS_EDIT ? 'Opslaan' : 'Aanmaken' }}
+				{{ IS_EDIT ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</div>
 	</NcModal>
