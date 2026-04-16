@@ -9,7 +9,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 		size="normal"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>{{ taakItem.id ? 'Taak succesvol aangepast' : 'Taak succesvol aangemaakt' }}</p>
+			<p>{{ taakItem.id ? t('zaakafhandelapp', 'Task successfully updated') : t('zaakafhandelapp', 'Task successfully created') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -31,7 +31,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				:disabled="loading" />
 
 			<div>
-				<p>Deadline</p>
+				<p>{{ t('zaakafhandelapp', 'Deadline') }}</p>
 				<NcDateTimePicker
 					v-model="taakItem.deadline"
 					:disabled="loading"
@@ -53,7 +53,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				<NcCheckboxRadioSwitch v-if="clientType === 'both'"
 					:checked.sync="useMedewerkerInsteadOfKlant"
 					type="switch">
-					Klant / Medewerker
+					{{ t('zaakafhandelapp', 'Customer / Employee') }}
 				</NcCheckboxRadioSwitch>
 
 				<div>
@@ -73,7 +73,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				</div>
 			</div>
 			<div v-if="taakItem.id">
-				<span>Contactmoment</span>
+				<span>{{ t('zaakafhandelapp', 'Contact moment') }}</span>
 				<div v-if="taakItem.contactmoment">
 					<NcListItem v-for="(contactMoment, key) in contactMomentItems"
 						:key="key"
@@ -90,13 +90,13 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 								<template #icon>
 									<Eye :size="20" />
 								</template>
-								View
+								{{ t('zaakafhandelapp', 'View') }}
 							</NcButton>
 						</template>
 					</NcListItem>
 				</div>
 				<div v-else>
-					<p>Geen contactmoment gevonden</p>
+					<p>{{ t('zaakafhandelapp', 'No contact moment found') }}</p>
 				</div>
 			</div>
 		</div>
@@ -106,7 +106,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
@@ -130,7 +130,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 					<ContentSaveOutline v-if="!loading && taakStore.taakItem?.id" :size="20" />
 					<Plus v-if="!loading && !taakStore.taakItem?.id" :size="20" />
 				</template>
-				{{ taakStore.taakItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ taakStore.taakItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 
@@ -340,9 +340,9 @@ export default {
 			},
 			taakType: {
 				options: [
-					{ id: 'terugbel', label: 'Terugbel verzoek' },
+					{ id: 'terugbel', label: t('zaakafhandelapp', 'Callback request') },
 				],
-				value: { id: 'terugbel', label: 'Terugbel verzoek' },
+				value: { id: 'terugbel', label: t('zaakafhandelapp', 'Callback request') },
 			},
 			viewContactMomentIsView: false,
 			viewContactMomentId: null,

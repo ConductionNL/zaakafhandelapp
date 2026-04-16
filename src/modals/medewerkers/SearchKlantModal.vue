@@ -5,7 +5,7 @@ import { klantStore } from '../../store/store.js'
 
 <template>
 	<NcDialog
-		:name="startingType === 'persoon' ? 'Persoon zoeken' : 'Organisatie zoeken'"
+		:name="startingType === 'persoon' ? t('zaakafhandelapp', 'Search person') : t('zaakafhandelapp', 'Search organisation')"
 		size="normal"
 		label-id="searchKlantModal"
 		dialog-classes="SearchKlantModal"
@@ -18,46 +18,46 @@ import { klantStore } from '../../store/store.js'
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
-					Geboortedatum + achternaam
+					{{ t('zaakafhandelapp', 'Date of birth + last name') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
 					:checked.sync="klantenSearchType"
 					value="bsn"
 					name="klantenSearchType"
 					type="radio">
-					BSN
+					{{ t('zaakafhandelapp', 'BSN') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
 					:checked.sync="klantenSearchType"
 					value="bedrijfsnaam"
 					name="klantenSearchType"
 					type="radio">
-					Bedrijfsnaam
+					{{ t('zaakafhandelapp', 'Company name') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
 					:checked.sync="klantenSearchType"
 					value="kvkNummer"
 					name="klantenSearchType"
 					type="radio">
-					KVK nummer
+					{{ t('zaakafhandelapp', 'Chamber of Commerce number') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 					value="postcode_huisnummer"
 					name="klantenSearchType"
 					type="radio">
-					Postcode + huisnummer
+					{{ t('zaakafhandelapp', 'Postal code + house number') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 					value="emailadres"
 					name="klantenSearchType"
 					type="radio">
-					Emailadres
+					{{ t('zaakafhandelapp', 'Email address') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 					value="telefoonnummer"
 					name="klantenSearchType"
 					type="radio">
-					Telefoonnummer
+					{{ t('zaakafhandelapp', 'Phone number') }}
 				</NcCheckboxRadioSwitch>
 			</div>
 		</div>
@@ -92,7 +92,7 @@ import { klantStore } from '../../store/store.js'
 				<template #icon>
 					<Search :size="20" />
 				</template>
-				Zoeken
+				{{ t('zaakafhandelapp', 'Search') }}
 			</NcButton>
 		</div>
 
@@ -122,14 +122,14 @@ import { klantStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="!klanten?.length && !loading">
-				Geen {{ startingType === 'persoon' ? 'personen' : 'organisaties' }} gevonden.
+				{{ startingType === 'persoon' ? t('zaakafhandelapp', 'No persons found.') : t('zaakafhandelapp', 'No organisations found') }}
 			</div>
 
 			<NcLoadingIcon v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Aan het zoeken" />
+				:name="t('zaakafhandelapp', 'Searching')" />
 		</div>
 
 		<template #actions>
@@ -139,7 +139,7 @@ import { klantStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				Annuleer
+				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
 				type="primary"
@@ -148,7 +148,7 @@ import { klantStore } from '../../store/store.js'
 				<template #icon>
 					<Plus :size="20" />
 				</template>
-				Koppelen
+				{{ t('zaakafhandelapp', 'Link') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -202,28 +202,27 @@ export default {
 	},
 	computed: {
 		searchLabel() {
-			const baseLabel = 'Zoek naar een '
 			const typeLabels = {
 				persoon: {
-					default: 'persoon',
-					geboortedatum_achternaam: ' met geboortedatum en achternaam',
-					bsn: ' met BSN',
+					default: t('zaakafhandelapp', 'person'),
+					geboortedatum_achternaam: t('zaakafhandelapp', 'with date of birth and last name'),
+					bsn: t('zaakafhandelapp', 'with BSN'),
 				},
 				organisatie: {
-					default: 'organisatie',
-					bedrijfsnaam: ' met bedrijfsnaam',
-					kvkNummer: ' met KVK nummer',
+					default: t('zaakafhandelapp', 'organisation'),
+					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
+					kvkNummer: t('zaakafhandelapp', 'with Chamber of Commerce number'),
 				},
 			}
 			const commonLabels = {
-				postcode_huisnummer: ' met postcode en huisnummer',
-				emailadres: ' met emailadres',
-				telefoonnummer: ' met telefoonnummer',
+				postcode_huisnummer: t('zaakafhandelapp', 'with postal code and house number'),
+				emailadres: t('zaakafhandelapp', 'with email address'),
+				telefoonnummer: t('zaakafhandelapp', 'with phone number'),
 			}
 
-			let label = baseLabel + (typeLabels[this.startingType]?.default || '')
-			label += typeLabels[this.startingType]?.[this.klantenSearchType] || ''
-			label += commonLabels[this.klantenSearchType] || ''
+			let label = t('zaakafhandelapp', 'Search for a') + ' ' + (typeLabels[this.startingType]?.default || '')
+			const modifier = typeLabels[this.startingType]?.[this.klantenSearchType] || commonLabels[this.klantenSearchType] || ''
+			if (modifier) label += ' ' + modifier
 
 			return label
 		},

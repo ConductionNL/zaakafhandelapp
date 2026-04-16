@@ -22,31 +22,31 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="taakStore.setTaakItem(); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<CalendarMonthOutline :size="20" />
 							</template>
-							Taak geven
+							{{ t('zaakafhandelapp', 'Assign task') }}
 						</NcActionButton>
 						<NcActionButton @click="berichtStore.setBerichtItem(); navigationStore.setModal('editBericht')">
 							<template #icon>
 								<ChatOutline :size="20" />
 							</template>
-							Bericht versturen
+							{{ t('zaakafhandelapp', 'Send message') }}
 						</NcActionButton>
 						<NcActionButton @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 							<template #icon>
 								<BriefcaseAccountOutline :size="20" />
 							</template>
-							Zaak starten
+							{{ t('zaakafhandelapp', 'Start case') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setDialog('deleteMedewerker')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -54,11 +54,11 @@ import { navigationStore, medewerkerStore, taakStore, berichtStore, zaakStore } 
 
 				<div class="gridContent">
 					<div>
-						<b>Email adres:</b>
+						<b>{{ t('zaakafhandelapp', 'Email address:') }}</b>
 						<p>{{ medewerkerStore.medewerkerItem.email }}</p>
 					</div>
 					<div>
-						<b>Telefoonnummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Phone number:') }}</b>
 						<p>{{ medewerkerStore.medewerkerItem.telefoonnummer }}</p>
 					</div>
 				</div>
@@ -127,11 +127,11 @@ export default {
 				})
 		},
 		getName(medewerker) {
-			return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? 'onbekend'
+			return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? t('zaakafhandelapp', 'Unknown')
 		},
 
 		getLandName(landId) {
-			return countries.find(country => country.code === landId)?.name ?? 'onbekend'
+			return countries.find(country => country.code === landId)?.name ?? t('zaakafhandelapp', 'Unknown')
 		},
 	},
 }

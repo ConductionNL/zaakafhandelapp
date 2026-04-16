@@ -4,7 +4,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 </script>
 
 <template>
-	<NcDialog :name="tabs.length > 1 ? 'Contactmomenten' : 'Contactmoment'"
+	<NcDialog :name="tabs.length > 1 ? t('zaakafhandelapp', 'Contact moments') : t('zaakafhandelapp', 'Contact moment')"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
@@ -19,7 +19,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #icon>
 						<Plus :size="20" />
 					</template>
-					Nieuw contactmoment
+					{{ t('zaakafhandelapp', 'New contact moment') }}
 				</NcButton>
 			</div>
 
@@ -29,11 +29,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
 					<template #title>
-						{{ contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg' }}
+						{{ contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : t('zaakafhandelapp', 'Empty') }}
 						<NcButton v-if="tabs.length > 1 && !success"
-							v-tooltip="'Sluiten'"
+							v-tooltip="t('zaakafhandelapp', 'Close')"
 							type="tertiary"
-							aria-label="Sluiten"
+							:aria-label="t('zaakafhandelapp', 'Close')"
 							@click="closeTab(i)">
 							<template #icon>
 								<Close :size="20" />
@@ -42,7 +42,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 
 					<NcNoteCard v-if="success" type="success">
-						<p>Contactmoment succesvol opgeslagen</p>
+						<p>{{ t('zaakafhandelapp', 'Contact moment successfully saved') }}</p>
 					</NcNoteCard>
 					<NcNoteCard v-if="error" type="error">
 						<p>{{ error }}</p>
@@ -59,28 +59,28 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											<div v-if="contactMomenten[i].klant?.type === 'persoon'"
 												class="flexContainer">
 												<div>
-													Geboortedatum: {{
+													{{ t('zaakafhandelapp', 'Date of birth:') }} {{
 														getValidISOstring(contactMomenten[i].klant?.geboortedatum) ? new
 															Date(contactMomenten[i].klant?.geboortedatum).toLocaleDateString() :
 														'N/A' }}
 												</div>
 												<div>
-													Geboorteplaats: {{ contactMomenten[i].klant?.plaats ?? 'N/A' }}
+													{{ t('zaakafhandelapp', 'City:') }} {{ contactMomenten[i].klant?.plaats ?? 'N/A' }}
 												</div>
 											</div>
 											<div v-if="contactMomenten[i].klant?.type === 'organisatie'"
 												class="flexContainer">
 												<div>
-													KVK: {{ contactMomenten[i].klant?.kvkNummer ?? 'N/A' }}
+													{{ t('zaakafhandelapp', 'Chamber of Commerce number:') }} {{ contactMomenten[i].klant?.kvkNummer ?? 'N/A' }}
 												</div>
 												<div>
-													Locatie: {{ contactMomenten[i].klant?.postcode ?? 'N/A' }} {{
+													{{ t('zaakafhandelapp', 'Address:') }} {{ contactMomenten[i].klant?.postcode ?? 'N/A' }} {{
 														contactMomenten[i].klant?.straatnaam ?? 'N/A' }}
 												</div>
 											</div>
 										</div>
 										<div v-else>
-											Geen klant geselecteerd
+											{{ t('zaakafhandelapp', 'No customer selected') }}
 										</div>
 									</template>
 								</NcNoteCard>
@@ -94,11 +94,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										<template #icon>
 											<Plus :size="20" />
 										</template>
-										Persoon zoeken
+										{{ t('zaakafhandelapp', 'Search person') }}
 									</NcButton>
 								</div>
 								<div class="orContainer">
-									of
+									{{ t('zaakafhandelapp', 'or') }}
 								</div>
 								<div>
 									<NcButton :disabled="loading"
@@ -108,7 +108,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										<template #icon>
 											<Plus :size="20" />
 										</template>
-										Organisatie zoeken
+										{{ t('zaakafhandelapp', 'Search organisation') }}
 									</NcButton>
 								</div>
 							</div>
@@ -122,43 +122,43 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 										<template #icon>
 											<Minus :size="20" />
 										</template>
-										Klant ontkoppelen
+										{{ t('zaakafhandelapp', 'Unlink customer') }}
 									</NcButton>
 								</div>
 							</div>
 							<div v-if="isView" class="statusContainer">
 								<div v-if="contactMomenten[i].status">
-									Status: {{ contactMomenten[i].status }}
+									{{ t('zaakafhandelapp', 'Status') }}: {{ contactMomenten[i].status }}
 								</div>
 								<div v-if="contactMomenten[i].startDate">
-									Start datum: {{ new Date(contactMomenten[i].startDate).toLocaleDateString() }}
+									{{ t('zaakafhandelapp', 'Start date:') }} {{ new Date(contactMomenten[i].startDate).toLocaleDateString() }}
 								</div>
 							</div>
 						</div>
 
 						<div class="form-group">
 							<NcTextArea :value.sync="contactMomenten[i].notitie"
-								label="Notitie"
+								:label="t('zaakafhandelapp', 'Note')"
 								:disabled="loading"
 								:loading="fetchLoading"
-								placeholder="Notitie" />
+								:placeholder="t('zaakafhandelapp', 'Note')" />
 
 							<div class="flexContainer">
 								<NcSelect v-bind="channels"
 									v-model="channels.values[i-1]"
-									input-label="Kanaal"
+									:input-label="t('zaakafhandelapp', 'Creation channel')"
 									required />
 
 								<NcSelect v-bind="medewerkers"
 									v-model="medewerkers.values[i-1]"
-									input-label="Medewerker"
+									:input-label="t('zaakafhandelapp', 'Employee')"
 									:user-select="true"
 									required />
 							</div>
 						</div>
 						<div class="tabContainer">
 							<BTabs content-class="mt-3" justified>
-								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
+								<BTab :title="`${t('zaakafhandelapp', 'Contact moments')} ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].klantContactmomenten?.length">
 										<NcListItem
 											v-for="(klantContactmoment, key) in contactMomenten[i].klantContactmomenten"
@@ -185,18 +185,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 													<template #icon>
 														<Eye :size="20" />
 													</template>
-													Bekijken
+													{{ t('zaakafhandelapp', 'View') }}
 												</NcButton>
 											</template>
 										</NcListItem>
 									</div>
-									<NcEmptyContent v-else icon="icon-folder" title="Geen contactmomenten gevonden">
+									<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No contact moments found')">
 										<template #description>
-											Er zijn geen contactmomenten gevonden voor deze klant.
+											{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
+								<BTab :title="`${t('zaakafhandelapp', 'Cases')} ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].zaken?.length">
 										<NcListItem v-for="(zaak, key) in contactMomenten[i].zaken"
 											:key="key"
@@ -219,18 +219,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 													<template #icon>
 														<Eye :size="20" />
 													</template>
-													Bekijken
+													{{ t('zaakafhandelapp', 'View') }}
 												</NcButton>
 											</template>
 										</NcListItem>
 									</div>
-									<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+									<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
 										<template #description>
-											Er zijn geen zaken gevonden voor deze klant.
+											{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
+								<BTab :title="`${t('zaakafhandelapp', 'Tasks')} ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].taken?.length">
 										<NcListItem v-for="(taak, key) in contactMomenten[i].taken"
 											:key="key"
@@ -253,18 +253,18 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 													<template #icon>
 														<Eye :size="20" />
 													</template>
-													Bekijken
+													{{ t('zaakafhandelapp', 'View') }}
 												</NcButton>
 											</template>
 										</NcListItem>
 									</div>
-									<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+									<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
 										<template #description>
-											Er zijn geen taken gevonden voor deze klant.
+											{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 										</template>
 									</NcEmptyContent>
 								</BTab>
-								<BTab :title="`Producten ${contactMomenten[selectedContactMoment]?.klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
+								<BTab :title="`${t('zaakafhandelapp', 'Products')} ${contactMomenten[selectedContactMoment]?.klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[selectedContactMoment]?.klant?.producten?.length">
 										<NcListItem
 											v-for="(product, key) in contactMomenten[selectedContactMoment].klant.producten"
@@ -282,9 +282,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											</template>
 										</NcListItem>
 									</div>
-									<NcEmptyContent v-else icon="icon-folder" title="Geen producten gevonden">
+									<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No products found')">
 										<template #description>
-											Er zijn geen producten gevonden voor deze klant.
+											{{ t('zaakafhandelapp', 'No products were found for this customer.') }}
 										</template>
 									</NcEmptyContent>
 								</BTab>
@@ -303,7 +303,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		</div>
 		<div v-if="isView">
 			<NcNoteCard v-if="success" type="success">
-				<p>Contactmoment succesvol opgeslagen</p>
+				<p>{{ t('zaakafhandelapp', 'Contact moment successfully saved') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -318,26 +318,26 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ `${getSex(klant)} ${getName(klant)}` }}
 									<div v-if="klant?.type === 'persoon'" class="flexContainer">
 										<div>
-											Geboortedatum: {{
+											{{ t('zaakafhandelapp', 'Date of birth:') }} {{
 												getValidISOstring(klant?.geboortedatum) ? new
 													Date(klant?.geboortedatum).toLocaleDateString() :
 												'N/A' }}
 										</div>
 										<div>
-											Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
+											{{ t('zaakafhandelapp', 'City:') }} {{ klant?.plaats ?? 'N/A' }}
 										</div>
 									</div>
 									<div v-if="klant?.type === 'organisatie'" class="flexContainer">
 										<div>
-											KVK: {{ klant?.kvkNummer ?? 'N/A' }}
+											{{ t('zaakafhandelapp', 'Chamber of Commerce number:') }} {{ klant?.kvkNummer ?? 'N/A' }}
 										</div>
 										<div>
-											Locatie: {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}
+											{{ t('zaakafhandelapp', 'Address:') }} {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}
 										</div>
 									</div>
 								</div>
 								<div v-else>
-									Geen klant geselecteerd
+									{{ t('zaakafhandelapp', 'No customer selected') }}
 								</div>
 							</template>
 						</NcNoteCard>
@@ -351,11 +351,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<template #icon>
 									<Plus :size="20" />
 								</template>
-								Persoon zoeken
+								{{ t('zaakafhandelapp', 'Search person') }}
 							</NcButton>
 						</div>
 						<div class="orContainer">
-							of
+							{{ t('zaakafhandelapp', 'or') }}
 						</div>
 						<div>
 							<NcButton :disabled="loading"
@@ -365,7 +365,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<template #icon>
 									<Plus :size="20" />
 								</template>
-								Organisatie zoeken
+								{{ t('zaakafhandelapp', 'Search organisation') }}
 							</NcButton>
 						</div>
 					</div>
@@ -379,31 +379,31 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<template #icon>
 									<Minus :size="20" />
 								</template>
-								Klant ontkoppelen
+								{{ t('zaakafhandelapp', 'Unlink customer') }}
 							</NcButton>
 						</div>
 					</div>
 					<div v-if="isView" class="statusContainer">
 						<div v-if="contactMoment.status">
-							Status: {{ contactMoment.status }}
+							{{ t('zaakafhandelapp', 'Status') }}: {{ contactMoment.status }}
 						</div>
 						<div v-if="contactMoment.startDate">
-							Start datum: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
+							{{ t('zaakafhandelapp', 'Start date:') }} {{ new Date(contactMoment.startDate).toLocaleDateString() }}
 						</div>
 					</div>
 				</div>
 
 				<div v-if="!success" class="form-group">
 					<NcTextArea :value.sync="contactMoment.notitie"
-						label="Notitie"
+						:label="t('zaakafhandelapp', 'Note')"
 						:disabled="loading"
 						:loading="fetchLoading"
-						placeholder="Notitie" />
+						:placeholder="t('zaakafhandelapp', 'Note')" />
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
 						<BTab
-							:title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
+							:title="`${t('zaakafhandelapp', 'Contact moments')} ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
 							<div v-if="klantContactmomenten.length">
 								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
 									:key="key"
@@ -424,13 +424,13 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen contactmomenten gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No contact moments found')">
 								<template #description>
-									Er zijn geen contactmomenten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
+						<BTab :title="`${t('zaakafhandelapp', 'Cases')} ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
@@ -449,13 +449,13 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
 								<template #description>
-									Er zijn geen zaken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab :title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
+						<BTab :title="`${t('zaakafhandelapp', 'Tasks')} ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
 							<div v-if="taken.length">
 								<NcListItem v-for="(taak, key) in taken"
 									:key="key"
@@ -475,14 +475,14 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+							<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
 								<template #description>
-									Er zijn geen taken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
 						<BTab
-							:title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
+							:title="`${t('zaakafhandelapp', 'Products')} ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
 							<div v-if="klant?.producten?.length">
 								<NcListItem v-for="(product, key) in klant.producten"
 									:key="key"
@@ -498,9 +498,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen producten gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No products found')">
 								<template #description>
-									Er zijn geen producten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No products were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -518,7 +518,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<SearchKlantModal v-if="searchKlantModalOpen"
 				:dashboard-widget="true"
 				:starting-type="startingType"
-				select-button-label="Koppelen"
+				:select-button-label="t('zaakafhandelapp', 'Link')"
 				@selected-klant="fetchKlantData($event?.id)"
 				@close-modal="closeSearchKlantModal" />
 		</div>
@@ -527,7 +527,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				Annuleer
+				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcActions :disabled="loading || success || fetchLoading"
 				:primary="true"
@@ -540,10 +540,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Medewerker taak aanmaken
+					{{ t('zaakafhandelapp', 'Create employee task') }}
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een klant taak kan alleen worden aangemaakt als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					v-tooltip="t('zaakafhandelapp', 'A customer task can only be created once the contact moment is saved and a customer is selected.')"
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
 					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
@@ -551,10 +551,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Klant taak aanmaken
+					{{ t('zaakafhandelapp', 'Create customer task') }}
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een zaak kan alleen worden gestart als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					v-tooltip="t('zaakafhandelapp', 'A case can only be started once the contact moment is saved and a customer is selected.')"
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id }"
 					:close-after-click="true"
 					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
@@ -562,7 +562,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
-					Zaak starten
+					{{ t('zaakafhandelapp', 'Start case') }}
 				</NcActionButton>
 				<NcActionButton v-if="isView || isEdit"
 					:close-after-click="true"
@@ -571,7 +571,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #icon>
 						<ProgressClose :size="20" />
 					</template>
-					Sluit Contactmoment
+					{{ t('zaakafhandelapp', 'Close contact moment') }}
 				</NcActionButton>
 			</NcActions>
 
@@ -584,7 +584,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else :size="20" />
 				</template>
-				{{ contactMomenten[selectedContactMoment]?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ contactMomenten[selectedContactMoment]?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 
@@ -761,10 +761,10 @@ export default {
 			},
 			channels: {
 				options: [
-					{ label: 'Telefoon', value: 'telefoon' },
+					{ label: 'Phone', value: 'telefoon' },
 					{ label: 'E-mail', value: 'email' },
-					{ label: 'Balie', value: 'balie' },
-					{ label: 'Brief', value: 'brief' },
+					{ label: 'Counter', value: 'balie' },
+					{ label: 'Letter', value: 'brief' },
 				],
 				values: [],
 			},

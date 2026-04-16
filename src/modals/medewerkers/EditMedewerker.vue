@@ -46,7 +46,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
 				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
@@ -64,7 +64,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && medewerkerStore.medewerkerItem?.id" :size="20" />
 					<Plus v-if="!loading && !medewerkerStore.medewerkerItem?.id" :size="20" />
 				</template>
-				{{ medewerkerStore.medewerkerItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ medewerkerStore.medewerkerItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>

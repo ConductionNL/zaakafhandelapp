@@ -23,7 +23,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteRol')">
 							<template #icon>
@@ -36,27 +36,27 @@ import { navigationStore, rolStore } from '../../store/store.js'
 
 				<div class="detailGrid">
 					<div>
-						<h4>Omschrijving:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Description:') }}</h4>
 						<span>{{ rolStore.rolItem?.omschrijving }}</span>
-						<h4>Omschrijving generiek:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Generic description:') }}</h4>
 						<span>{{ rolStore.rolItem?.omschrijvingGeneriek }}</span>
-						<h4>Roltoelichting:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Role explanation:') }}</h4>
 						<span>{{ rolStore.rolItem?.roltoelichting }}</span>
-						<h4>Registratiedatum:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Registration date:') }}</h4>
 						<span>{{ rolStore.rolItem?.registratiedatum && new Date(rolStore.rolItem?.registratiedatum).toLocaleString() }}</span>
-						<h4>Betrokkene type:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Involved party type:') }}</h4>
 						<span>{{ rolStore.rolItem?.betrokkeneType }}</span>
-						<h4>Naam:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Name:') }}</h4>
 						<span>
 							{{
 								(rolStore.rolItem?.betrokkeneIdentificatie?.voornamen || "") +
 									(rolStore.rolItem?.betrokkeneIdentificatie?.voorletters ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.voorletters : "") +
 									(rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam : "") ||
-									"Geen naam beschikbaar"
+									t('zaakafhandelapp', 'No name available')
 							}}
 						</span>
 
-						<h4>BSN:</h4>
+						<h4>{{ t('zaakafhandelapp', 'BSN:') }}</h4>
 						<span>{{ rolStore.rolItem?.betrokkeneIdentificatie?.inpBsn }}</span>
 					</div>
 				</div>

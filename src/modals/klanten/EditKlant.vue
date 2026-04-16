@@ -48,7 +48,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				maxlength="255"
 				:value.sync="klantItem.bsn" />
 			<div>
-				<p>Geboortedatum</p>
+				<p>{{ t('zaakafhandelapp', 'Date of birth') }}</p>
 				<NcDateTimePicker v-model="klantItem.geboortedatum"
 					:disabled="loading"
 					:input-label="t('zaakafhandelapp', 'Date of birth')" />
@@ -159,7 +159,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
@@ -176,7 +176,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && klantStore.klantItem?.id" :size="20" />
 					<Plus v-if="!loading && !klantStore.klantItem?.id" :size="20" />
 				</template>
-				{{ klantStore.klantItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ klantStore.klantItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -258,15 +258,15 @@ export default {
 			},
 			typeOptions: {
 				options: [
-					{ value: 'persoon', label: 'Persoon' },
-					{ value: 'organisatie', label: 'Organisatie' },
+					{ value: 'persoon', label: t('zaakafhandelapp', 'Person') },
+					{ value: 'organisatie', label: t('zaakafhandelapp', 'Organisation') },
 				],
 			},
 			sexOptions: {
 				options: [
-					{ value: 'man', label: 'Man' },
-					{ value: 'vrouw', label: 'Vrouw' },
-					{ value: 'overige', label: 'Overige' },
+					{ value: 'man', label: t('zaakafhandelapp', 'Male') },
+					{ value: 'vrouw', label: t('zaakafhandelapp', 'Female') },
+					{ value: 'overige', label: t('zaakafhandelapp', 'Other') },
 				],
 			},
 		}
@@ -289,12 +289,12 @@ export default {
 					...klantStore.klantItem,
 					voornaam: klantStore.klantItem.voornaam || '',
 					tweedeVoornaam: klantStore.klantItem.tweedeVoornaam || '',
-					type: klantType || { value: 'persoon', label: 'Persoon' },
+					type: klantType || { value: 'persoon', label: t('zaakafhandelapp', 'Person') },
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
 					bsn: klantStore.klantItem.bsn || '',
 					geboortedatum: klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum) : '',
-					geslacht: sex || { value: 'man', label: 'Man' },
+					geslacht: sex || { value: 'man', label: t('zaakafhandelapp', 'Male') },
 					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
@@ -328,12 +328,12 @@ export default {
 			this.klantItem = {
 				voornaam: '',
 				tweedeVoornaam: '',
-				type: { value: 'persoon', label: 'Persoon' },
+				type: { value: 'persoon', label: t('zaakafhandelapp', 'Person') },
 				tussenvoegsel: '',
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
-				geslacht: { value: 'man', label: 'Man' },
+				geslacht: { value: 'man', label: t('zaakafhandelapp', 'Male') },
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',

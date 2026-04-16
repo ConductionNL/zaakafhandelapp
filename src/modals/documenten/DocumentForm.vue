@@ -8,11 +8,11 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 		label-id="documentForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Document {{ IS_EDIT ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Document {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Document {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Document succesvol {{ IS_EDIT ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Document successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Document successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -20,7 +20,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null">
-				<p>Selecteer een zaak om het document aan te maken.</p>
+				<p>{{ t('zaakafhandelapp', 'Select a case to create the document.') }}</p>
 				<NcSelect v-bind="zaak"
 					v-model="zaak.value"
 					:input-label="t('zaakafhandelapp', 'Case')"
@@ -40,7 +40,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 						required />
 
 					<div>
-						Creatiedatum
+						{{ t('zaakafhandelapp', 'Creation date') }}
 						<NcDateTimePicker v-model="document.creatiedatum"
 							type="date"
 							required
@@ -67,60 +67,60 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 						:input-label="t('zaakafhandelapp', 'Status')" />
 
 					<NcCheckboxRadioSwitch :checked.sync="document.inhoudIsVervallen">
-						Inhoud is vervallen
+						{{ t('zaakafhandelapp', 'Content expired') }}
 					</NcCheckboxRadioSwitch>
 
-					<NcTextField label="formaat"
+					<NcTextField :label="t('zaakafhandelapp', 'Format')"
 						maxlength="255"
 						:value.sync="document.formaat" />
 
-					<NcTextField label="taal"
+					<NcTextField :label="t('zaakafhandelapp', 'Language')"
 						minlength="3"
 						maxlength="3"
 						:value.sync="document.taal"
 						required />
 
-					<NcTextField label="bestandsnaam"
+					<NcTextField :label="t('zaakafhandelapp', 'File name')"
 						maxlength="255"
 						:value.sync="document.bestandsnaam" />
 
-					<NcTextField label="inhoud"
+					<NcTextField :label="t('zaakafhandelapp', 'Content')"
 						maxlength="255"
 						:value.sync="document.inhoud" />
 
-					<NcInputField label="bestandsomvang"
+					<NcInputField :label="t('zaakafhandelapp', 'File size')"
 						type="number"
 						min="0"
 						max="9223372036854776000"
 						:value.sync="document.bestandsomvang" />
 
-					<NcTextField label="link"
+					<NcTextField :label="t('zaakafhandelapp', 'Link')"
 						maxlength="200"
 						:value.sync="document.link" />
 
-					<NcTextField label="beschrijving"
+					<NcTextField :label="t('zaakafhandelapp', 'Description')"
 						maxlength="1000"
 						:value.sync="document.beschrijving" />
 
 					<div>
-						Ontvangstdatum
+						{{ t('zaakafhandelapp', 'Receipt date') }}
 						<NcDateTimePicker v-model="document.ontvangstdatum"
 							type="date"
 							confirm />
 					</div>
 
 					<div>
-						Verzenddatum
+						{{ t('zaakafhandelapp', 'Send date') }}
 						<NcDateTimePicker v-model="document.verzenddatum"
 							type="date"
 							confirm />
 					</div>
 
 					<NcCheckboxRadioSwitch :checked.sync="document.indicatieGebruiksrecht">
-						Indicatie gebruiksrecht
+						{{ t('zaakafhandelapp', 'Rights indication') }}
 					</NcCheckboxRadioSwitch>
 
-					<NcTextField label="verschijningsvorm"
+					<NcTextField :label="t('zaakafhandelapp', 'Appearance')"
 						:value.sync="document.verschijningsvorm" />
 
 					<!--
@@ -129,7 +129,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
                         ondertekening and integriteit zou hier nog moeten komen
                     -->
 
-					<NcTextField label="informatieobject type"
+					<NcTextField :label="t('zaakafhandelapp', 'Information object type')"
 						minlength="1"
 						maxlength="200"
 						required
@@ -149,7 +149,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 					<ContentSaveOutline v-else-if="!loading && IS_EDIT" :size="20" />
 					<Plus v-else-if="!loading && !IS_EDIT" :size="20" />
 				</template>
-				{{ IS_EDIT ? 'Opslaan' : 'Aanmaken' }}
+				{{ IS_EDIT ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</div>
 	</NcModal>

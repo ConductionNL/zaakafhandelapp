@@ -22,7 +22,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 
 		<div class="searchContainer">
 			<NcTextField :disabled="loading"
-				label="Zoeken op bedrijfsnaam"
+				:label="t('zaakafhandelapp', 'Search by company name')"
 				maxlength="255"
 				class="OrgSearchField"
 				:value.sync="searchOrganisatie" />
@@ -34,7 +34,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Search :size="20" />
 				</template>
-				Zoeken
+				{{ t('zaakafhandelapp', 'Search') }}
 			</NcButton>
 		</div>
 
@@ -74,18 +74,20 @@ export default {
 			organisatieItems: [],
 			searchOrganisatie: '',
 			selectedKlantId: '',
-			itemMenu: {
-				show: {
-					text: 'Bekijk',
-					icon: 'icon-toggle',
-				},
-			},
 		}
 	},
 
 	computed: {
 		items() {
 			return this.organisatieItems
+		},
+		itemMenu() {
+			return {
+				show: {
+					text: t('zaakafhandelapp', 'View'),
+					icon: 'icon-toggle',
+				},
+			}
 		},
 	},
 

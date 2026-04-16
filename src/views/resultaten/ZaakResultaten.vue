@@ -25,20 +25,20 @@ import { navigationStore, resultaatStore } from '../../store/store.js'
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
-						Bewerken
+						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
 					<NcActionButton @click="resultaatStore.setResultaatItem(resultaat); navigationStore.setModal('deleteResultaat')">
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
-						Verwijderen van zaak
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
 		<div v-if="!filteredResultatenList?.length && !loading">
-			Geen resultaten gevonden.
+			{{ t('zaakafhandelapp', 'No results found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!filteredResultatenList?.length && loading"

@@ -35,7 +35,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/taken">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/taken')"
-					name="Taken">
+					:name="t('zaakafhandelapp', 'Tasks')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
@@ -44,7 +44,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/klanten">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/klanten')"
-					name="Klanten">
+					:name="t('zaakafhandelapp', 'Customers')">
 					<template #icon>
 						<AccountGroupOutline :size="20" />
 					</template>
@@ -53,7 +53,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/medewerkers">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/medewerkers')"
-					name="Medewerkers">
+					:name="t('zaakafhandelapp', 'Employees')">
 					<template #icon>
 						<AccountGroupOutline :size="20" />
 					</template>
@@ -62,7 +62,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/contactmomenten">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/contactmomenten')"
-					name="Contact momenten">
+					:name="t('zaakafhandelapp', 'Contact moments')">
 					<template #icon>
 						<CardAccountPhoneOutline :size="20" />
 					</template>
@@ -71,7 +71,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/berichten">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/berichten')"
-					name="Berichten">
+					:name="t('zaakafhandelapp', 'Messages')">
 					<template #icon>
 						<ChatOutline :size="20" />
 					</template>
@@ -80,7 +80,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/rollen">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/rollen')"
-					name="Rollen">
+					:name="t('zaakafhandelapp', 'Roles')">
 					<template #icon>
 						<BadgeAccountOutline :size="20" />
 					</template>
@@ -89,7 +89,7 @@ import { navigationStore } from '../store/store.js'
 			<router-link to="/zoeken">
 				<NcAppNavigationItem
 					:active="$route.path.startsWith('/zoeken')"
-					name="Zoeken">
+					:name="t('zaakafhandelapp', 'Search')">
 					<template #icon>
 						<Magnify :size="20" />
 					</template>

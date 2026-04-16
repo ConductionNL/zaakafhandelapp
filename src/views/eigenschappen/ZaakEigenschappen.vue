@@ -37,7 +37,7 @@ import { zaakStore } from '../../store/store.js'
 		</div>
 
 		<div v-if="!zakenList?.length && !loading">
-			Geen eigenschappen gevonden.
+			{{ t('zaakafhandelapp', 'No properties found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="loading"

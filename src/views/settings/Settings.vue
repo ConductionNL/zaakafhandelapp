@@ -1,11 +1,15 @@
+<script setup>
+import { translate as t } from '@nextcloud/l10n'
+</script>
+
 <template>
 	<div>
-		<NcSettingsSection :name="'Zaak Afhandelapp'" description="Eén centrale plek voor zaakafhandeling binnen de overheid" doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers" />
-		<NcSettingsSection :name="'Data storage'" description="Korte uitleg over dat je kan opslaan in de nextcloud database of open registers en via open registers ook in externe opslag zo al mongo db">
+		<NcSettingsSection :name="t('zaakafhandelapp', 'Zaak Afhandelapp')" :description="t('zaakafhandelapp', 'One central place for case handling within the government')" doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers" />
+		<NcSettingsSection :name="t('zaakafhandelapp', 'Data storage')" :description="t('zaakafhandelapp', 'Configure where data is stored: in the Nextcloud database or Open Registers, including external storage like MongoDB')">
 			<div v-if="!loading">
 				<div v-if="!openRegisterInstalled">
 					<NcNoteCard type="info">
-						Je hebt nog geen Open Registers geïnstalleerd, we raden je aan om dat wel te doen.
+						{{ t('zaakafhandelapp', 'You have not yet installed Open Registers, we recommend that you do so.') }}
 					</NcNoteCard>
 
 					<NcButton
@@ -15,13 +19,13 @@
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
 							<Restart v-if="!loading && !saving" :size="20" />
 						</template>
-						Installeer Open Registers
+						{{ t('zaakafhandelapp', 'Install Open Registers') }}
 					</NcButton>
 				</div>
 
 				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister' || settingsData.medewerkers_source === 'openregister' || settingsData.rollen_source === 'openregister')">
 					<NcNoteCard type="warning">
-						Het lijkt erop dat je een open register hebt geselecteerd maar dat deze nog niet geïnstalleerd is. Dit kan problemen geven. Wil je de instelling resetten?
+						{{ t('zaakafhandelapp', 'It looks like you have selected an Open Register but it is not yet installed. This may cause problems. Would you like to reset the setting?') }}
 					</NcNoteCard>
 					<NcButton
 						type="primary"
@@ -30,35 +34,35 @@
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
 							<Restart v-if="!loading && !saving" :size="20" />
 						</template>
-						Reset
+						{{ t('zaakafhandelapp', 'Reset') }}
 					</NcButton>
 				</div>
 
-				<div v-for="objectType in objectTypesList" :key="objectType.id">
+				<div v-for="objectType in translatedObjectTypesList" :key="objectType.id">
 					<h3>{{ objectType.title }}</h3>
 					<p>{{ objectType.description }}</p>
 					<NcButton v-if="objectType.helpLink" @click="openLink(objectType.helpLink, '_blank')">
-						Meer informatie
+						{{ t('zaakafhandelapp', 'More information') }}
 					</NcButton>
 					<div class="selectionContainer">
 						<NcSelect v-bind="labelOptions"
 							v-model="getDataProperty(objectType.id).selectedSource"
 							required
-							input-label="Source"
+							:input-label="t('zaakafhandelapp', 'Source')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister'"
 							v-bind="availableRegistersOptions"
 							v-model="getDataProperty(objectType.id).selectedRegister"
-							input-label="Register"
+							:input-label="t('zaakafhandelapp', 'Register')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister' && getDataProperty(objectType.id).selectedRegister?.value"
 							v-bind="getDataProperty(objectType.id).availableSchemas"
 							v-model="getDataProperty(objectType.id).selectedSchema"
-							input-label="Schema"
+							:input-label="t('zaakafhandelapp', 'Schema')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
@@ -70,7 +74,7 @@
 								<NcLoadingIcon v-if="loading || getDataProperty(objectType.id).loading" :size="20" />
 								<Plus v-if="!loading && !getDataProperty(objectType.id).loading" :size="20" />
 							</template>
-							Opslaan
+							{{ t('zaakafhandelapp', 'Save') }}
 						</NcButton>
 					</div>
 				</div>
@@ -82,14 +86,14 @@
 						<NcLoadingIcon v-if="saving" :size="20" />
 						<Plus v-if="!saving" :size="20" />
 					</template>
-					Alles opslaan
+					{{ t('zaakafhandelapp', 'Save all') }}
 				</NcButton>
 			</div>
 			<NcLoadingIcon v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Settings aan het laden" />
+				:name="t('zaakafhandelapp', 'Loading settings')" />
 		</NcSettingsSection>
 	</div>
 </template>
@@ -225,23 +229,29 @@ export default {
 					{ label: 'OpenRegister', value: 'openregister' },
 				],
 			},
-			objectTypesList: [
-				{ id: 'berichten', title: 'Berichten', description: 'Configureer de opslag voor berichten', helpLink: 'https://example.com/help/berichten' },
-				{ id: 'besluiten', title: 'Besluiten', description: 'Configureer de opslag voor besluiten', helpLink: 'https://example.com/help/besluiten' },
-				{ id: 'documenten', title: 'Documenten', description: 'Configureer de opslag voor documenten', helpLink: 'https://example.com/help/documenten' },
-				{ id: 'klanten', title: 'Klanten', description: 'Configureer de opslag voor klantgegevens', helpLink: 'https://example.com/help/klanten' },
-				{ id: 'resultaten', title: 'Resultaten', description: 'Configureer de opslag voor resultaten', helpLink: 'https://example.com/help/resultaten' },
-				{ id: 'taken', title: 'Taken', description: 'Configureer de opslag voor taken', helpLink: 'https://example.com/help/taken' },
-				{ id: 'informatieobjecten', title: 'Informatieobjecten', description: 'Configureer de opslag voor informatieobjecten', helpLink: 'https://example.com/help/informatieobjecten' },
-				{ id: 'organisaties', title: 'Organisaties', description: 'Configureer de opslag voor organisatiegegevens', helpLink: 'https://example.com/help/organisaties' },
-				{ id: 'personen', title: 'Personen', description: 'Configureer de opslag voor persoonsgegevens', helpLink: 'https://example.com/help/personen' },
-				{ id: 'zaken', title: 'Zaken', description: 'Configureer de opslag voor zaken', helpLink: 'https://example.com/help/zaken' },
-				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
-				{ id: 'contactmomenten', title: 'Contactmomenten', description: 'Configureer de opslag voor contactmomenten', helpLink: 'https://example.com/help/contactmomenten' },
-				{ id: 'medewerkers', title: 'Medewerkers', description: 'Configureer de opslag voor medewerkers', helpLink: 'https://example.com/help/medewerkers' },
-				{ id: 'rollen', title: 'Rollen', description: 'Configureer de opslag voor rollen', helpLink: 'https://example.com/help/rollen' },
-			],
+			objectTypesList: [],
 		}
+	},
+
+	computed: {
+		translatedObjectTypesList() {
+			return [
+				{ id: 'berichten', title: t('zaakafhandelapp', 'Messages'), description: t('zaakafhandelapp', 'Configure storage for messages'), helpLink: 'https://example.com/help/berichten' },
+				{ id: 'besluiten', title: t('zaakafhandelapp', 'Decisions'), description: t('zaakafhandelapp', 'Configure storage for decisions'), helpLink: 'https://example.com/help/besluiten' },
+				{ id: 'documenten', title: t('zaakafhandelapp', 'Documents'), description: t('zaakafhandelapp', 'Configure storage for documents'), helpLink: 'https://example.com/help/documenten' },
+				{ id: 'klanten', title: t('zaakafhandelapp', 'Customers'), description: t('zaakafhandelapp', 'Configure storage for customer data'), helpLink: 'https://example.com/help/klanten' },
+				{ id: 'resultaten', title: t('zaakafhandelapp', 'Results'), description: t('zaakafhandelapp', 'Configure storage for results'), helpLink: 'https://example.com/help/resultaten' },
+				{ id: 'taken', title: t('zaakafhandelapp', 'Tasks'), description: t('zaakafhandelapp', 'Configure storage for tasks'), helpLink: 'https://example.com/help/taken' },
+				{ id: 'informatieobjecten', title: t('zaakafhandelapp', 'Information objects'), description: t('zaakafhandelapp', 'Configure storage for information objects'), helpLink: 'https://example.com/help/informatieobjecten' },
+				{ id: 'organisaties', title: t('zaakafhandelapp', 'Organisations'), description: t('zaakafhandelapp', 'Configure storage for organisation data'), helpLink: 'https://example.com/help/organisaties' },
+				{ id: 'personen', title: t('zaakafhandelapp', 'Persons'), description: t('zaakafhandelapp', 'Configure storage for person data'), helpLink: 'https://example.com/help/personen' },
+				{ id: 'zaken', title: t('zaakafhandelapp', 'Cases'), description: t('zaakafhandelapp', 'Configure storage for cases'), helpLink: 'https://example.com/help/zaken' },
+				{ id: 'zaaktypen', title: t('zaakafhandelapp', 'Case types'), description: t('zaakafhandelapp', 'Configure storage for case types'), helpLink: 'https://example.com/help/zaaktypen' },
+				{ id: 'contactmomenten', title: t('zaakafhandelapp', 'Contact moments'), description: t('zaakafhandelapp', 'Configure storage for contact moments'), helpLink: 'https://example.com/help/contactmomenten' },
+				{ id: 'medewerkers', title: t('zaakafhandelapp', 'Employees'), description: t('zaakafhandelapp', 'Configure storage for employees'), helpLink: 'https://example.com/help/medewerkers' },
+				{ id: 'rollen', title: t('zaakafhandelapp', 'Roles'), description: t('zaakafhandelapp', 'Configure storage for roles'), helpLink: 'https://example.com/help/rollen' },
+			]
+		},
 	},
 
 	watch: {

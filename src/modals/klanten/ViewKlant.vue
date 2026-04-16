@@ -67,7 +67,7 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 		</div>
 		<div class="tabContainer">
 			<BTabs content-class="mt-3" justified>
-				<BTab title="Zaken">
+				<BTab :title="t('zaakafhandelapp', 'Cases')">
 					<div v-if="zaken?.length">
 						<NcListItem v-for="(zaak, key) in zaken"
 							:key="key"
@@ -80,13 +80,13 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+					<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
 						<template #description>
-							Er zijn geen zaken gevonden voor deze klant.
+							{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 						</template>
 					</NcEmptyContent>
 				</BTab>
-				<BTab title="Taken">
+				<BTab :title="t('zaakafhandelapp', 'Tasks')">
 					<div v-if="taken?.length">
 						<NcListItem v-for="(taak, key) in taken"
 							:key="key"
@@ -99,13 +99,13 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+					<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
 						<template #description>
-							Er zijn geen taken gevonden voor deze klant.
+							{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 						</template>
 					</NcEmptyContent>
 				</BTab>
-				<BTab title="Berichten">
+				<BTab :title="t('zaakafhandelapp', 'Messages')">
 					<div v-if="berichten?.length">
 						<NcListItem v-for="(bericht, key) in berichten"
 							:key="key"
@@ -127,13 +127,13 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-mail" title="Geen berichten gevonden">
+					<NcEmptyContent v-else icon="icon-mail" :title="t('zaakafhandelapp', 'No messages found')">
 						<template #description>
-							Er zijn geen berichten gevonden voor deze klant.
+							{{ t('zaakafhandelapp', 'No messages found for this customer.') }}
 						</template>
 					</NcEmptyContent>
 				</BTab>
-				<BTab title="Contact Momenten">
+				<BTab :title="t('zaakafhandelapp', 'Contact moments')">
 					<div v-if="filteredContactMomenten?.length">
 						<NcListItem v-for="(contactMoment, key) in filteredContactMomenten"
 							:key="key"
@@ -148,9 +148,9 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-contacts" title="Geen contactmomenten gevonden">
+					<NcEmptyContent v-else icon="icon-contacts" :title="t('zaakafhandelapp', 'No contact moments found')">
 						<template #description>
-							Er zijn geen contactmomenten gevonden voor deze klant.
+							{{ t('zaakafhandelapp', 'No contact moments found for this customer.') }}
 						</template>
 					</NcEmptyContent>
 				</BTab>
@@ -166,21 +166,21 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
-					Zaak aanmaken
+					{{ t('zaakafhandelapp', 'Create case') }}
 				</NcActionButton>
 
 				<NcActionButton @click="taakStore.setTaakItem(); taakModalOpen = true">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Taak aanmaken
+					{{ t('zaakafhandelapp', 'Create task') }}
 				</NcActionButton>
 
 				<NcActionButton :disabled="true" @click="berichtStore.setBerichtItem(); berichtModalOpen = true">
 					<template #icon>
 						<ChatOutline :size="20" />
 					</template>
-					Contact moment aanmaken
+					{{ t('zaakafhandelapp', 'Create contact moment') }}
 				</NcActionButton>
 			</NcActions>
 
@@ -188,7 +188,7 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				Sluiten
+				{{ t('zaakafhandelapp', 'Close') }}
 			</NcButton>
 		</template>
 

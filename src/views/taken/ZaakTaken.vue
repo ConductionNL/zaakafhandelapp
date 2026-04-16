@@ -28,26 +28,26 @@ import { navigationStore, taakStore } from '../../store/store.js'
 						<template #icon>
 							<Eye :size="20" />
 						</template>
-						Bekijken
+						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
 					<!-- <NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('editBericht')">
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
-						Bewerken
+						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton> -->
 					<NcActionButton>
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
-						Verwijderen van zaak
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
 		<div v-if="!filteredTakenList?.length && !loading">
-			Geen taken gevonden.
+			{{ t('zaakafhandelapp', 'No tasks found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!filteredTakenList?.length && loading"

@@ -13,7 +13,7 @@
 				</template>
 				<template #action>
 					<NcButton type="primary" @click="berichtStore.setBerichtItem(null); navigationStore.setModal('editBericht')">
-						Bericht aanmaken
+						{{ t('zaakafhandelapp', 'Create message') }}
 					</NcButton>
 				</template>
 			</NcEmptyContent>
