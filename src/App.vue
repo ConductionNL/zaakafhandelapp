@@ -1,6 +1,7 @@
 <template>
 	<NcContent app-name="zaakafhandelapp">
-		<MainMenu />
+		<MainMenu @open-settings="settingsOpen = true" />
+		<UserSettings :open="settingsOpen" @update:open="settingsOpen = $event" />
 		<RouterView />
 		<SideBars />
 
@@ -26,6 +27,7 @@ import { NcContent } from '@nextcloud/vue'
 import { CnObjectSidebar } from '@conduction/nextcloud-vue'
 import { RouterView } from 'vue-router'
 import MainMenu from './navigation/MainMenu.vue'
+import UserSettings from './views/settings/UserSettings.vue'
 import Modals from './modals/Modals.vue'
 import Dialogs from './dialogs/Dialogs.vue'
 import SideBars from './sidebars/SideBars.vue'
@@ -36,6 +38,7 @@ export default {
 		NcContent,
 		CnObjectSidebar,
 		MainMenu,
+		UserSettings,
 		RouterView,
 		Modals,
 		Dialogs,
@@ -43,6 +46,7 @@ export default {
 	},
 	data() {
 		return {
+			settingsOpen: false,
 			objectSidebarState: {
 				active: false,
 				open: true,
