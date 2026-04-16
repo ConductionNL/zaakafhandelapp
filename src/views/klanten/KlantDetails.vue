@@ -91,7 +91,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 					</div>
 
 					<div class="gridContent">
-						<b>{{ t('zaakafhandelapp', 'Postal code + House number:') }}</b>
+						<b>{{ t('zaakafhandelapp', 'Postal code + house number:') }}</b>
 						<p>{{ klantStore.klantItem.postcode }} {{ klantStore.klantItem.huisnummer }}</p>
 					</div>
 
