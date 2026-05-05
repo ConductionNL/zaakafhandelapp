@@ -71,42 +71,13 @@ webpackConfig.plugins = [
 	new NodePolyfillPlugin({ additionalAliases: ['process'] }),
 ]
 
-// Share Vue + @nextcloud/vue + pinia + icons + @conduction/nextcloud-vue
-// across every entry-point so each widget bundle no longer inlines its own
-// ~5 MB framework copy. Stable filenames (no contenthash in the JS name)
-// mean each widget's `Util::addScript` PHP call can reference the chunk
-// directly without a manifest. The shared chunks load once on the page and
-// stay cached across navigations between zaakafhandelapp's own pages. See
-// ADR-004 (Build / bundling) for the org-wide pattern.
-webpackConfig.optimization = {
-	...(webpackConfig.optimization || {}),
-	splitChunks: {
-		...(webpackConfig.optimization?.splitChunks || {}),
-		chunks: 'all',
-		cacheGroups: {
-			default: false,
-			defaultVendors: false,
-			ncVue: {
-				name: appId + '-shared-nc-vue',
-				// Matches both node_modules entries AND the monorepo-dev alias
-				// `../nextcloud-vue/src/...` which webpack resolves outside
-				// node_modules when @conduction/nextcloud-vue is aliased to it.
-				test: /[\\/]node_modules[\\/](@nextcloud[\\/]vue|@conduction[\\/]nextcloud-vue)[\\/]|[\\/]nextcloud-vue[\\/]src[\\/]/,
-				priority: 30,
-				reuseExistingChunk: true,
-				enforce: true,
-				filename: appId + '-shared-nc-vue.js',
-			},
-			vendor: {
-				name: appId + '-shared-vendor',
-				test: /[\\/]node_modules[\\/](vue|pinia|vue-material-design-icons|@vueuse|core-js)[\\/]/,
-				priority: 20,
-				reuseExistingChunk: true,
-				enforce: true,
-				filename: appId + '-shared-vendor.js',
-			},
-		},
-	},
-}
+// NOTE on splitChunks: see ADR-004 "Build / bundling — known limitation".
+// Apps that use TypeScript with the base config's ts-loader rule produce
+// per-entry runtimes whose module IDs do not survive a `chunks: 'all'`
+// split (TypeError: Cannot read properties of undefined reading 'call'
+// at first widget mount, even with runtimeChunk: 'single'). Same gap as
+// opencatalogi today. The other shrinkers — DefinePlugin from the base
+// config, dropping inline-source-map — already apply here. Revisit
+// splitChunks once the ts-loader / module-id-stability gap is solved.
 
 module.exports = webpackConfig
