@@ -71,13 +71,67 @@ webpackConfig.plugins = [
 	new NodePolyfillPlugin({ additionalAliases: ['process'] }),
 ]
 
-// NOTE on splitChunks: see ADR-004 "Build / bundling — known limitation".
-// Apps that use TypeScript with the base config's ts-loader rule produce
-// per-entry runtimes whose module IDs do not survive a `chunks: 'all'`
-// split (TypeError: Cannot read properties of undefined reading 'call'
-// at first widget mount, even with runtimeChunk: 'single'). Same gap as
-// opencatalogi today. The other shrinkers — DefinePlugin from the base
-// config, dropping inline-source-map — already apply here. Revisit
-// splitChunks once the ts-loader / module-id-stability gap is solved.
+// Drop the base config's ts-loader rule (its module-ID scheme conflicts with
+// the base's babel-loader and breaks `chunks: 'all'` splitChunks — ADR-004
+// 'Build / bundling — TypeScript apps'). Replace with a babel-loader rule
+// using @babel/preset-typescript via .babelrc, so .ts files go through the
+// SAME babel-loader as the .js files. One module-ID space, splitChunks
+// survives, type-checking moves to `npx tsc --noEmit` (opt-in).
+webpackConfig.module.rules = webpackConfig.module.rules.filter(rule =>
+	!(rule && rule.use && (
+		(typeof rule.use === 'string' && rule.use === 'ts-loader')
+		|| (Array.isArray(rule.use) && rule.use.some(u => (u?.loader || u) === 'ts-loader'))
+		|| (typeof rule.use === 'object' && rule.use.loader === 'ts-loader')
+	))
+	&& !(rule && rule.loader === 'ts-loader')
+)
+webpackConfig.module.rules.push({
+	test: /\.ts$/,
+	exclude: /node_modules/,
+	use: { loader: 'babel-loader' },
+})
+
+// Share Vue + @nextcloud/vue + pinia + icons + @conduction/nextcloud-vue
+// across every entry-point so each widget bundle no longer inlines its own
+// ~5 MB framework copy. Stable filenames mean each widget's `Util::addScript`
+// PHP call can reference the chunk directly without a manifest. See ADR-004
+// (Build / bundling) for the org-wide pattern.
+webpackConfig.optimization = {
+	...(webpackConfig.optimization || {}),
+	// Consolidate the runtime into one chunk shared across entries. Without
+	// this, each entry has its own runtime + module-ID space, and split
+	// chunks register modules into the wrong runtime → cross-chunk require()
+	// fails at first widget mount. opencatalogi gets away without it because
+	// its module graph is smaller; zaakafhandelapp's broader graph triggers
+	// the cross-runtime resolution path.
+	runtimeChunk: { name: 'runtime' },
+	splitChunks: {
+		...(webpackConfig.optimization?.splitChunks || {}),
+		chunks: 'all',
+		cacheGroups: {
+			default: false,
+			defaultVendors: false,
+			ncVue: {
+				name: appId + '-shared-nc-vue',
+				// Matches both node_modules entries AND the monorepo-dev alias
+				// `../nextcloud-vue/src/...` which webpack resolves outside
+				// node_modules when @conduction/nextcloud-vue is aliased to it.
+				test: /[\\/]node_modules[\\/](@nextcloud[\\/]vue|@conduction[\\/]nextcloud-vue)[\\/]|[\\/]nextcloud-vue[\\/]src[\\/]/,
+				priority: 30,
+				reuseExistingChunk: true,
+				enforce: true,
+				filename: appId + '-shared-nc-vue.js',
+			},
+			vendor: {
+				name: appId + '-shared-vendor',
+				test: /[\\/]node_modules[\\/](vue|pinia|vue-material-design-icons|@vueuse|core-js)[\\/]/,
+				priority: 20,
+				reuseExistingChunk: true,
+				enforce: true,
+				filename: appId + '-shared-vendor.js',
+			},
+		},
+	},
+}
 
 module.exports = webpackConfig
