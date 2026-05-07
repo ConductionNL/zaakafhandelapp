@@ -42,11 +42,10 @@ jobs:
             exit 1
           fi
 
-      - name: Create .nojekyll and CNAME files
+      - name: Create .nojekyll file
         run: |
           cd docusaurus/build
           touch .nojekyll
-          echo "zaakafhandelapp.app" > CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -54,6 +53,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docusaurus/build
           publish_branch: gh-pages
+          cname: zaakafhandelapp.conduction.nl
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           force_orphan: false
