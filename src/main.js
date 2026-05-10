@@ -18,6 +18,7 @@ import App from './App.vue'
 import router from './router/index.js'
 import bundledManifest from './manifest.json'
 import customComponents from './customComponents.js'
+import { initializeStores } from './store/store.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
 
 // Library CSS — must be explicit import (webpack tree-shakes side-effect imports from aliased packages)
@@ -58,6 +59,26 @@ function tryLoadTranslations() {
 }
 
 tryLoadTranslations()
+
+// Phase 1 of the store migration (openspec/changes/zaakafhandelapp-store-migration):
+// pre-register the eleven manifest-declared object types against the lib's
+// useObjectStore so manifest pages and lib sub-resource plugins (live updates,
+// audit trails, files, relations) bind to a known-shape store. Synchronous
+// registration (no awaits in Phase 1); fire-and-forget the returned promise to
+// keep boot order deterministic and the mount unblocked, mirroring the
+// translation-loading pattern above.
+try {
+	const result = initializeStores()
+	if (result && typeof result.then === 'function') {
+		result.then(() => {}, (e) => {
+			// eslint-disable-next-line no-console
+			console.warn('[zaakafhandelapp] initializeStores failed', e)
+		})
+	}
+} catch (e) {
+	// eslint-disable-next-line no-console
+	console.warn('[zaakafhandelapp] initializeStores threw synchronously', e)
+}
 
 // Pass shallow copies of the registry maps to CnAppRoot. The lib exports
 // `defaultPageTypes` (and consumers' `customComponents`) as frozen module
