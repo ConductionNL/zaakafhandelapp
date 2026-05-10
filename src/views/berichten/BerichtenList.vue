@@ -120,7 +120,7 @@ export default {
 	methods: {
 		openBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'berichten', id: bericht.id } })
+			this.$router.push({ name: 'BerichtDetail', params: { id: bericht.id } })
 		},
 		editBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)

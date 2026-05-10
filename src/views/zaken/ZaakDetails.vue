@@ -307,7 +307,7 @@ export default {
 		},
 		goToZaakType(zaakType) {
 			zaakTypeStore.setZaakTypeItem(zaakType)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: zaakType.id } })
+			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaakType.id } })
 		},
 	},
 }

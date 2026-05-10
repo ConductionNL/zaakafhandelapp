@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { TRol, Rol } from '../../entities/index.js'
-import router from '../../router/router'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/rollen'
 
@@ -140,7 +140,7 @@ export const useRolStore = defineStore('rollen', {
 			}
 
 			this.refreshRollenList()
-			router.push({ name: 'dynamic-view', params: { view: 'rollen' } })
+			router.push({ name: 'Rollen' })
 
 			return { response }
 		},
@@ -193,7 +193,7 @@ export const useRolStore = defineStore('rollen', {
 
 			options.setItem && this.setRolItem(data)
 			this.refreshRollenList()
-			if (options.redirect) router.push({ name: 'dynamic-view', params: { view: 'rollen', id: entity.id } })
+			if (options.redirect) router.push({ name: 'RolDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

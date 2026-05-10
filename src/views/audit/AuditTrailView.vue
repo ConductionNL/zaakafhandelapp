@@ -5,8 +5,7 @@
  Placeholder for the legacy `/auditTrail` route.
 
  The original navigation entry in src/navigation/MainMenu.vue had no
- view binding (the dynamic-route fallback in src/router/router.ts
- didn't resolve a component for it). This stub keeps the menu entry
+ view binding under the legacy router. This stub keeps the menu entry
  functional under the manifest dispatcher; the real audit page lands
  in a sibling change.
 

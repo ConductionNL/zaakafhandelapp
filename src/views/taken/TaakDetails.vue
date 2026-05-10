@@ -188,11 +188,11 @@ export default {
 		},
 		goToKlant() {
 			klantStore.setKlantItem(this.klant)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'klanten', id: this.klant.id } })
+			this.$router.push({ name: 'KlantDetail', params: { id: this.klant.id } })
 		},
 		goToMedewerker() {
 			medewerkerStore.setMedewerkerItem(this.medewerker)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: this.medewerker.id } })
+			this.$router.push({ name: 'MedewerkerDetail', params: { id: this.medewerker.id } })
 		},
 		fetchKlant(klant) {
 			this.klantLoading = true

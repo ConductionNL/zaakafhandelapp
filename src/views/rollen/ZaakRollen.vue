@@ -22,7 +22,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 					{{ rol?.roltype }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="$router.push({ name: 'dynamic-view', params: { view: 'rollen', id: rol.id } })">
+					<NcActionButton @click="$router.push({ name: 'RolDetail', params: { id: rol.id } })">
 						<template #icon>
 							<Eye :size="20" />
 						</template>

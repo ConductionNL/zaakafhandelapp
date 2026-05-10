@@ -5,10 +5,6 @@
 // routesFromManifest pattern — each manifest page becomes one route
 // (name === page.id, component === a shallow-cloned CnPageRenderer
 // reference, props === true when the path declares a `:` parameter).
-//
-// The legacy src/router/router.ts is replaced by this builder for new
-// code paths; that file stays one cycle so any out-of-tree consumers
-// keep importing successfully until the cleanup commit removes it.
 
 import VueRouter from 'vue-router'
 import Vue from 'vue'
