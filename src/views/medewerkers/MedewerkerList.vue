@@ -110,7 +110,7 @@ export default {
 	methods: {
 		openMedewerker(medewerker) {
 			medewerkerStore.setMedewerkerItem(medewerker)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: medewerker.id } })
+			this.$router.push({ name: 'MedewerkerDetail', params: { id: medewerker.id } })
 		},
 		fullName(medewerker) {
 			let name = medewerker.achternaam

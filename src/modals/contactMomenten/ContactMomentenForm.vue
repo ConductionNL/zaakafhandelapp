@@ -618,7 +618,7 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcSelect } from '@nextcloud/vue'
 import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'
-import router from '../../router/router.ts'
+import router from '../../router/index.js'
 import getValidISOstring from '../../services/getValidISOstring.js'
 
 // Forms
@@ -1028,7 +1028,7 @@ export default {
 			if (this.dashboardWidget) {
 				window.location.href = `${generateUrl('/apps/zaakafhandelapp')}/zaken/${id}`
 			} else {
-				router.push({ name: 'dynamic-view', params: { view: 'zaken', id } })
+				router.push({ name: 'ZaakDetail', params: { id } })
 				navigationStore.setModal(false)
 			}
 		},
@@ -1037,7 +1037,7 @@ export default {
 			if (this.dashboardWidget) {
 				window.location.href = `${generateUrl('/apps/zaakafhandelapp')}/taken/${id}`
 			} else {
-				router.push({ name: 'dynamic-view', params: { view: 'taken', id } })
+				router.push({ name: 'TaakDetail', params: { id } })
 				navigationStore.setModal(false)
 			}
 		},

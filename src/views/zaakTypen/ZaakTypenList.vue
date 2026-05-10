@@ -126,7 +126,7 @@ export default {
 	methods: {
 		openZaakType(zaaktype) {
 			zaakTypeStore.setZaakTypeItem(zaaktype)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: zaaktype.id } })
+			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaaktype.id } })
 		},
 		clearText() {
 			this.search = ''

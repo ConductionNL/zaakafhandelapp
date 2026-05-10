@@ -124,7 +124,7 @@ export default {
 	methods: {
 		openContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: contactMoment.id } })
+			this.$router.push({ name: 'ContactmomentDetail', params: { id: contactMoment.id } })
 		},
 		editContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
