@@ -73,7 +73,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Contact momenten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading contact moments')" />
 	</NcAppContentList>
 </template>
 <script>

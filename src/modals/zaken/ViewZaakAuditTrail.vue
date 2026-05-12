@@ -25,8 +25,8 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 							<thead>
 								<tr>
 									<th>{{ t('zaakafhandelapp', 'Field') }}</th>
-									<th>{{ t('zaakafhandelapp', 'Old Value') }}</th>
-									<th>{{ t('zaakafhandelapp', 'New Value') }}</th>
+									<th>{{ t('zaakafhandelapp', 'Old value') }}</th>
+									<th>{{ t('zaakafhandelapp', 'New value') }}</th>
 								</tr>
 							</thead>
 							<tbody>

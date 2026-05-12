@@ -43,7 +43,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</div>
 								</div>
 								<div v-else>
-									Geen klant geselecteerd
+									{{ t('zaakafhandelapp', 'No customer selected') }}
 								</div>
 							</template>
 						</NcNoteCard>
@@ -58,11 +58,11 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<template #icon>
 									<Plus :size="20" />
 								</template>
-								Persoon zoeken
+								{{ t('zaakafhandelapp', 'Search person') }}
 							</NcButton>
 						</div>
 						<div class="orContainer">
-							of
+							{{ t('zaakafhandelapp', 'or') }}
 						</div>
 						<div>
 							<NcButton
@@ -73,7 +73,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<template #icon>
 									<Plus :size="20" />
 								</template>
-								Organisatie zoeken
+								{{ t('zaakafhandelapp', 'Search organisation') }}
 							</NcButton>
 						</div>
 					</div>
@@ -88,26 +88,26 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<template #icon>
 									<Minus :size="20" />
 								</template>
-								Klant ontkoppelen
+								{{ t('zaakafhandelapp', 'Unlink customer') }}
 							</NcButton>
 						</div>
 					</div>
 					<div v-if="isView" class="statusContainer">
 						<div v-if="contactMoment.status">
-							Status: {{ contactMoment.status }}
+							{{ t('zaakafhandelapp', 'Status:') }} {{ contactMoment.status }}
 						</div>
 						<div v-if="contactMoment.startDate">
-							Start datum: {{ new Date(contactMoment.startDate).toLocaleDateString() }}
+							{{ t('zaakafhandelapp', 'Start date:') }} {{ new Date(contactMoment.startDate).toLocaleDateString() }}
 						</div>
 					</div>
 				</div>
 
 				<div v-if="!success" class="form-group">
 					<NcTextArea :value.sync="contactMoment.notitie"
-						label="Notitie"
+						:label="t('zaakafhandelapp', 'Note')"
 						:disabled="loading"
 						:loading="fetchLoading"
-						placeholder="Notitie" />
+						:placeholder="t('zaakafhandelapp', 'Note')" />
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
@@ -133,9 +133,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen contactmomenten gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No contact moments found')">
 								<template #description>
-									Er zijn geen contactmomenten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -158,9 +158,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
 								<template #description>
-									Er zijn geen zaken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -184,9 +184,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+							<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
 								<template #description>
-									Er zijn geen taken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -206,9 +206,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen producten gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No products found')">
 								<template #description>
-									Er zijn geen producten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No products were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -224,7 +224,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				Annuleer
+				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcActions :disabled="loading || success || fetchLoading"
 				:primary="true"
@@ -237,19 +237,19 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Medewerker taak aanmaken
+					{{ t('zaakafhandelapp', 'Create employee task') }}
 				</NcActionButton>
 				<NcActionButton v-if="!isView" @click="openTaakForm('klant')">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
-					Klant taak aanmaken
+					{{ t('zaakafhandelapp', 'Create customer task') }}
 				</NcActionButton>
 				<NcActionButton v-if="!isView" :disabled="!contactMomenten[selectedContactMoment].klant?.id" @click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
-					Zaak starten
+					{{ t('zaakafhandelapp', 'Start case') }}
 				</NcActionButton>
 			</NcActions>
 			<NcButton
@@ -262,7 +262,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else :size="20" />
 				</template>
-				{{ isEdit ? 'Opslaan' : 'Aanmaken' }}
+				{{ isEdit ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>

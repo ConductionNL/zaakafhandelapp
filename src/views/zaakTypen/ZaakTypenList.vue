@@ -52,13 +52,13 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('deleteZaaktype')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -73,7 +73,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaaktypen aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading case types')" />
 	</NcAppContentList>
 </template>
 

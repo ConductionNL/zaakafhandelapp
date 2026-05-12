@@ -51,7 +51,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -59,7 +59,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 		</ul>
 
 		<div v-if="!medewerkerStore.medewerkersList?.length && !loading">
-			Geen medewerkers gedefinieerd.
+			{{ t('zaakafhandelapp', 'No employees defined.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!medewerkerStore.medewerkersList?.length && loading"

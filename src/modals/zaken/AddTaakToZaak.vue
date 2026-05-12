@@ -6,7 +6,7 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 <template>
 	<NcModal ref="modalRef" label-id="addTaakToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>Taak toevoegen aan {{ zaakStore.zaakItem.title }}</h2>
+			<h2>{{ t('zaakafhandelapp', 'Add task') }}: {{ zaakStore.zaakItem.title }}</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">

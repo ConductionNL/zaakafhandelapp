@@ -5,8 +5,8 @@ import { navigationStore, klantStore } from '../../store/store.js'
 
 <template>
 	<NcAppSidebar
-		name="Zoek opdracht"
-		subname="Via deze pagina kunt u zoeken binnen uw gemeente"
+		:name="t('zaakafhandelapp', 'Search')"
+		:subname="t('zaakafhandelapp', 'Search within your municipality')"
 		:active.sync="activeTab">
 		<NcAppSidebarTab id="search-tab"
 			:name="t('zaakafhandelapp', 'Search')"
@@ -15,7 +15,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				<Magnify :size="20" />
 			</template>
 			<NcTextField :value.sync="klantenSearch"
-				label="Search" />
+				:label="t('zaakafhandelapp', 'Search')" />
 
 			<div v-if="klantenList && !loading">
 				<NcListItem v-for="(klant, i) in klantenList"
@@ -38,7 +38,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							<template #icon>
 								<Eye :size="20" />
 							</template>
-							View
+							{{ t('zaakafhandelapp', 'View') }}
 						</NcActionButton>
 						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
 							<template #icon>
@@ -60,11 +60,11 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Klanten aan het laden" />
+				:name="t('zaakafhandelapp', 'Loading customers')" />
 		</NcAppSidebarTab>
 
 		<NcAppSidebarTab id="personen-tab"
-			name="Personen"
+			:name="t('zaakafhandelapp', 'Persons')"
 			:order="2">
 			<template #icon>
 				<AccountGroupOutline :size="20" />
@@ -74,43 +74,43 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				value="voornaam"
 				name="klantenSearchType"
 				type="radio">
-				Voornaam
+				{{ t('zaakafhandelapp', 'First name') }}
 			</NcCheckboxRadioSwitch>
 			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 				disabled
 				value="geboortedatum_achternaam"
 				name="klantenSearchType"
 				type="radio">
-				Geboortedatum + achternaam
+				{{ t('zaakafhandelapp', 'Date of birth + last name') }}
 			</NcCheckboxRadioSwitch>
 			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 				disabled
 				value="postcode_huisnummer"
 				name="klantenSearchType"
 				type="radio">
-				Postcode + huisnummer
+				{{ t('zaakafhandelapp', 'Postal code + house number') }}
 			</NcCheckboxRadioSwitch>
 			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 				value="emailadres"
 				name="klantenSearchType"
 				type="radio">
-				Emailadres
+				{{ t('zaakafhandelapp', 'Email address') }}
 			</NcCheckboxRadioSwitch>
 			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 				value="telefoonnummer"
 				name="klantenSearchType"
 				type="radio">
-				Telefoonnummer
+				{{ t('zaakafhandelapp', 'Phone number') }}
 			</NcCheckboxRadioSwitch>
 			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
 				value="bsn"
 				name="klantenSearchType"
 				type="radio">
-				BSN
+				{{ t('zaakafhandelapp', 'BSN') }}
 			</NcCheckboxRadioSwitch>
 
 			<NcTextField :value.sync="personenSearch"
-				label="Search" />
+				:label="t('zaakafhandelapp', 'Search')" />
 
 			<div v-if="klantenList && !personenLoading && !loading">
 				<NcListItem v-for="(klant, i) in klantenList"
@@ -133,7 +133,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							<template #icon>
 								<Eye :size="20" />
 							</template>
-							View
+							{{ t('zaakafhandelapp', 'View') }}
 						</NcActionButton>
 						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
 							<template #icon>
@@ -155,17 +155,17 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Klanten aan het laden" />
+				:name="t('zaakafhandelapp', 'Loading customers')" />
 		</NcAppSidebarTab>
 
 		<NcAppSidebarTab id="organisaties-tab"
-			name="Organisaties"
+			:name="t('zaakafhandelapp', 'Organisations')"
 			:order="3">
 			<template #icon>
 				<OfficeBuildingOutline :size="20" />
 			</template>
 			<NcTextField :value.sync="organisatiesSearch"
-				label="Search" />
+				:label="t('zaakafhandelapp', 'Search')" />
 
 			<div v-if="klantenList && !organisatiesLoading && !loading">
 				<NcListItem v-for="(klant, i) in klantenList"
@@ -188,7 +188,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 							<template #icon>
 								<Eye :size="20" />
 							</template>
-							View
+							{{ t('zaakafhandelapp', 'View') }}
 						</NcActionButton>
 						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
 							<template #icon>
@@ -210,7 +210,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Klanten aan het laden" />
+				:name="t('zaakafhandelapp', 'Loading customers')" />
 		</NcAppSidebarTab>
 	</NcAppSidebar>
 </template>

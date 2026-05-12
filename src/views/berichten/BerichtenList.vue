@@ -51,13 +51,13 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -72,7 +72,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Berichten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading messages')" />
 	</NcAppContentList>
 </template>
 <script>

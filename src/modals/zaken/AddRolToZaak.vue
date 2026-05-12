@@ -6,7 +6,7 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 <template>
 	<NcModal ref="modalRef" label-id="addRolToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>Rol toevoegen aan {{ zaakStore.zaakItem.title }}</h2>
+			<h2>{{ t('zaakafhandelapp', 'Add role') }}: {{ zaakStore.zaakItem.title }}</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
@@ -34,7 +34,7 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
 				</template>
-				Toevoegen
+				{{ t('zaakafhandelapp', 'Add') }}
 			</NcButton>
 		</div>
 	</NcModal>

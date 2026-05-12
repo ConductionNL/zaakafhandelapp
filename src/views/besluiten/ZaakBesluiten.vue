@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, besluitStore } from '../../store/store.js'
 </script>
 
@@ -24,27 +25,27 @@ import { navigationStore, besluitStore } from '../../store/store.js'
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
-						Bewerken
+						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
 					<NcActionButton @click="(besluitStore.zaakId = zaakId); besluitStore.setBesluitItem(besluit); navigationStore.setModal('deleteBesluit')">
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
-						Verwijderen van zaak
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
 		<div v-if="!besluiten[zaakId]?.besluiten?.length && !besluiten[zaakId]?.loading">
-			Geen besluiten gevonden.
+			{{ t('zaakafhandelapp', 'No decisions found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!besluiten[zaakId]?.besluiten?.length && besluiten[zaakId]?.loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Besluiten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading decisions')" />
 	</div>
 </template>
 <script>
