@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # Zaak Afhandel App — Comprehensive Page Review
 
 **App version:** 0.1.29
