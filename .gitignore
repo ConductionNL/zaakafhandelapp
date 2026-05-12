@@ -9,8 +9,14 @@
 /tests/.phpunit.cache
 
 /node_modules/
+
+# Docusaurus documentation site (docs/)
 /docs/node_modules/
+/docs/build/
 /docs/.docusaurus/
+/docs/.cache-loader/
+/docs/i18n/nl/
+
 /custom_apps/
 /custom-apps/
 /js/
