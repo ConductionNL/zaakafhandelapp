@@ -157,9 +157,6 @@ class ZGWLogicService
         $zt      = $this->getObjectByEndpointUrl($ztIotArray['zaaktype']);
         $ztArray = $zt->jsonSerialize();
 
-        /*
-         * @var ObjectEntity $iot
-         */
         $iot = array_shift($iots);
 
         if ($iot === null) {
@@ -198,9 +195,6 @@ class ZGWLogicService
 
         $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
 
-        /*
-         * @var ObjectEntity $iot
-         */
         $iot      = array_shift($iots);
         $iotArray = $iot->jsonSerialize();
 

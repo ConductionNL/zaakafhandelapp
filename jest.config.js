@@ -33,6 +33,11 @@ module.exports = {
 		// `jest-transform-stub` rule, so a require('....css') from
 		// @nextcloud/vue otherwise crashes the parser.
 		'\\.(css|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+		// Resolve NodeNext-style `import x from './foo.js'` to the on-disk
+		// `./foo.ts` source (the store modules and entities are authored in
+		// TypeScript but referenced with the `.js` extension). Strip the
+		// extension and let `moduleFileExtensions` pick `.ts`.
+		'^(\\.{1,2}/.*)\\.js$': '$1',
 	},
 	coveragePathIgnorePatterns: [
 		'index.js',

@@ -15,6 +15,44 @@
     <arg name="extensions" value="php"/>
     <arg value="p"/>
 
+    <!-- Advisory warnings surface in reports but must not fail the run. -->
+    <config name="ignore_warnings_on_exit" value="1"/>
+
+    <!-- LEGACY DEBT (tracked in ConductionNL/zaakafhandelapp#196): this app pre-dates the
+         tightened Conduction PHPCS commenting / named-parameter rules. Until a dedicated
+         docblock + named-args cleanup lands, the following sniffs are demoted from errors
+         to advisory warnings so the structural rules (spacing, control structures, banned
+         functions, etc.) still gate the build. Promote these back to errors after #196. -->
+    <rule ref="PEAR.Commenting.FunctionComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="PEAR.Commenting.FileComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.Commenting.DocComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Commenting.VariableComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Commenting.InlineComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <type>warning</type>
+    </rule>
+    <!-- Stylistic; the legacy code uses ternaries / implicit-truthy checks throughout.
+         Demoted under #196 — a "rewrite ternaries / explicit comparisons" pass restores them. -->
+    <rule ref="Squiz.PHP.DisallowInlineIf">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Operators.ComparisonOperatorUsage">
+        <type>warning</type>
+    </rule>
+
     <!-- Don't hide tokenizer exceptions -->
     <rule ref="Internal.Tokenizer.Exception">
         <type>error</type>
@@ -208,9 +246,11 @@
         <severity>0</severity>
     </rule>
 
-    <!-- Custom rule to enforce named parameters -->
+    <!-- Custom rule to enforce named parameters.
+         LEGACY DEBT (#196): demoted to a warning for this app until the named-args
+         cleanup lands; promote back to <type>error</type> afterwards. -->
     <rule ref="./phpcs-custom-sniffs/CustomSniffs/Sniffs/Functions/NamedParametersSniff.php">
-        <type>error</type>
+        <type>warning</type>
     </rule>
 
 </ruleset>

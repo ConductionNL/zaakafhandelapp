@@ -64,13 +64,13 @@ class ObjectService implements IObjectService
     /**
      * Gets objects based on the object type and parameters.
      *
-     * @param string      $objectType The type
-     * @param int|null    $limit      Max objects
-     * @param int|null    $offset     Offset
-     * @param array|null  $filters    Filters
-     * @param array|null  $sort       Sort params
-     * @param string|null $search     Search string
-     * @param array|null  $extend     Extensions
+     * @param string       $objectType The type
+     * @param integer|null $limit      Max objects
+     * @param integer|null $offset     Offset
+     * @param array|null   $filters    Filters
+     * @param array|null   $sort       Sort params
+     * @param string|null  $search     Search string
+     * @param array|null   $extend     Extensions
      *
      * @return array The retrieved objects as arrays
      */

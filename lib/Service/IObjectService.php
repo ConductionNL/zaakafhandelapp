@@ -32,13 +32,13 @@ interface IObjectService
     /**
      * Gets multiple objects with filtering.
      *
-     * @param string      $objectType The type
-     * @param int|null    $limit      Max results
-     * @param int|null    $offset     Offset
-     * @param array|null  $filters    Filters
-     * @param array|null  $sort       Sort params
-     * @param string|null $search     Search string
-     * @param array|null  $extend     Extensions
+     * @param string       $objectType The type
+     * @param integer|null $limit      Max results
+     * @param integer|null $offset     Offset
+     * @param array|null   $filters    Filters
+     * @param array|null   $sort       Sort params
+     * @param string|null  $search     Search string
+     * @param array|null   $extend     Extensions
      *
      * @return array Objects as arrays
      */
@@ -55,9 +55,9 @@ interface IObjectService
     /**
      * Creates or updates an object.
      *
-     * @param string $objectType    The type
-     * @param array  $object        The data
-     * @param bool   $updateVersion Whether to bump version
+     * @param string  $objectType    The type
+     * @param array   $object        The data
+     * @param boolean $updateVersion Whether to bump version
      *
      * @return mixed The saved object
      */
@@ -66,10 +66,10 @@ interface IObjectService
     /**
      * Deletes an object.
      *
-     * @param string     $objectType The type
-     * @param string|int $id         The id
+     * @param string         $objectType The type
+     * @param string|integer $id         The id
      *
-     * @return bool Success
+     * @return boolean Success
      */
     public function deleteObject(string $objectType, string|int $id): bool;
 }//end interface
