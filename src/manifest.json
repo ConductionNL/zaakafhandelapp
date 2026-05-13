@@ -118,7 +118,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "zaak",
-				"columns": ["identificatie", "omschrijving", "zaaktype", { "key": "status", "label": "Status", "widget": "badge" }, "uiterlijkeEinddatumAfdoening"],
+				"columns": ["identificatie", "omschrijving", "zaaktype", { "key": "status", "label": "Status", "widget": "badge" }, { "key": "uiterlijkeEinddatumAfdoening", "label": "Deadline", "formatter": "date" }],
 				"sidebar": { "enabled": true, "showMetadata": true }
 			}
 		},
@@ -151,7 +151,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "taak",
-				"columns": ["title", { "key": "status", "label": "Status", "widget": "badge" }, { "key": "priority", "label": "Priority", "widget": "badge" }, "dueDate"],
+				"columns": ["title", { "key": "status", "label": "Status", "widget": "badge" }, { "key": "priority", "label": "Priority", "widget": "badge" }, { "key": "dueDate", "label": "Due", "formatter": "date" }],
 				"sidebar": { "enabled": true, "showMetadata": true }
 			}
 		},
@@ -229,7 +229,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "contactmoment",
-				"columns": ["onderwerp", { "key": "kanaal", "label": "Channel", "widget": "badge" }, "datum"],
+				"columns": ["onderwerp", { "key": "kanaal", "label": "Channel", "widget": "badge" }, { "key": "datum", "label": "Date", "formatter": "datetime" }],
 				"sidebar": { "enabled": true, "showMetadata": true }
 			}
 		},
@@ -255,7 +255,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "bericht",
-				"columns": ["onderwerp", { "key": "kanaal", "label": "Channel", "widget": "badge" }, "datum"],
+				"columns": ["onderwerp", { "key": "kanaal", "label": "Channel", "widget": "badge" }, { "key": "datum", "label": "Date", "formatter": "datetime" }],
 				"sidebar": { "enabled": true, "showMetadata": true }
 			}
 		},
@@ -333,7 +333,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "besluit",
-				"columns": ["identificatie", "datum", { "key": "status", "label": "Status", "widget": "badge" }],
+				"columns": ["identificatie", { "key": "datum", "label": "Date", "formatter": "date" }, { "key": "status", "label": "Status", "widget": "badge" }],
 				"sidebar": { "enabled": true, "showMetadata": true }
 			}
 		},
