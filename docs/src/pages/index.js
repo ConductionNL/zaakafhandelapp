@@ -270,7 +270,15 @@ export default function Home() {
         <DetailHero
           background="cobalt"
           appId="zaakafhandelapp"
-          /* status + version dropped — preset 2.10+ auto-derives from appinfo/info.xml */
+          /* status is kept explicit because 'Deprecated' is a
+             lifecycle decision, not a SemVer-derivable value.
+             deriveStability() in preset 2.10+ only maps SemVer
+             pre-release tags (Stable / Beta / RC / Alpha); for
+             archived or sunset apps the site keeps the override.
+             version is dropped — preset auto-derives from
+             appinfo/info.xml so the chrome pill and the badge row
+             stay in sync. */
+          status={{ label: 'Deprecated', color: 'var(--c-cobalt-400)' }}
           locales="NL · EN"
           title="Zaak Afhandel App"
           tagline={TAGLINE}
