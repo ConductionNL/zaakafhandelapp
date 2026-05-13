@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, contactMomentStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 						{{ contactMomentStore.contactMomentItem.titel }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -21,56 +22,56 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="closeContactMoment">
 							<template #icon>
 								<ProgressClose :size="20" />
 							</template>
-							Sluiten
+							{{ t('zaakafhandelapp', 'Close') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteContactMoment')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
 				<div class="detailGrid">
 					<div>
-						<b>Notitie:</b>
+						<b>{{ t('zaakafhandelapp', 'Note:') }}</b>
 						<p>{{ contactMomentStore.contactMomentItem.notitie }}</p>
 					</div>
 					<div>
-						<b>Start datum:</b>
+						<b>{{ t('zaakafhandelapp', 'Start date:') }}</b>
 						<p>{{ new Date(contactMomentStore.contactMomentItem.startDate).toLocaleString() }}</p>
 					</div>
 					<div>
-						<b>Klant:</b>
+						<b>{{ t('zaakafhandelapp', 'Customer:') }}</b>
 						<p>{{ contactMomentStore.contactMomentItem.klant }}</p>
 					</div>
 					<div>
-						<b>Zaak:</b>
+						<b>{{ t('zaakafhandelapp', 'Case') }}</b>
 						<p>{{ contactMomentStore.contactMomentItem.zaak }}</p>
 					</div>
 					<div>
-						<b>Taak:</b>
+						<b>{{ t('zaakafhandelapp', 'Task') }}</b>
 						<p>{{ contactMomentStore.contactMomentItem.taak }}</p>
 					</div>
 					<div>
-						<b>Product:</b>
+						<b>{{ t('zaakafhandelapp', 'Products') }}</b>
 						<p>{{ contactMomentStore.contactMomentItem.product }}</p>
 					</div>
 					<div>
-						<b>Status:</b>
+						<b>{{ t('zaakafhandelapp', 'Status') }}</b>
 						<p>{{ contactMomentStore.contactMomentItem.status }}</p>
 					</div>
 				</div>
 
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Audit trail" active>
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')" active>
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -91,14 +92,14 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
 								<template #description>
-									Er is geen audit trail gevonden voor dit contactmoment.
+									{{ t('zaakafhandelapp', 'No audit trail was found for this contact moment.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>

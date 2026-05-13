@@ -61,7 +61,7 @@
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading cases')" />
 	</NcAppContentList>
 </template>
 <script>

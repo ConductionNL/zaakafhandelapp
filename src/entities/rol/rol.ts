@@ -88,11 +88,10 @@ export class Rol implements TRol {
 					})
 				}
 			}),
-			_expand: z.object({
-				zaak: z.record(z.any()),
-				roltype: z.record(z.any()),
-				statussen: z.record(z.any()),
-			}),
+			// `_expand` carries optionally-expanded related objects (or reference
+			// strings when not expanded); its shape varies per request, so accept
+			// any object here rather than enforcing a fixed sub-schema.
+			_expand: z.record(z.any()),
 			betrokkeneIdentificatie: z.object({
 				identificatie: z.string().optional(),
 				achternaam: z.string().optional(),

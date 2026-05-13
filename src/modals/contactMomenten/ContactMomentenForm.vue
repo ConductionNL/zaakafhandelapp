@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<div class="newTabButtonContainer">
 				<NcButton type="primary"
 					class="newTabButton"
-					aria-label="Nieuw contactmoment"
+					:aria-label="t('zaakafhandelapp', 'New contact moment')"
 					@click="() => newTab()">
 					<template #icon>
 						<Plus :size="20" />
@@ -531,7 +532,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<NcActions :disabled="loading || success || fetchLoading"
 				:primary="true"
 				:force-name="true"
-				menu-name="Acties">
+				:menu-name="t('zaakafhandelapp', 'Actions')">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
@@ -617,7 +618,7 @@ import { BTabs, BTab } from 'bootstrap-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcSelect } from '@nextcloud/vue'
 import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'
-import router from '../../router/router.ts'
+import router from '../../router/index.js'
 import getValidISOstring from '../../services/getValidISOstring.js'
 
 // Forms
@@ -871,9 +872,15 @@ export default {
 						'OCS-APIRequest': 'true',
 					},
 				}).then(response => response.json()),
-				fetch('/index.php/apps/zaakafhandelapp/me').then(response => response.json()),
+				fetch('/ocs/v2.php/cloud/user', {
+					method: 'GET',
+					headers: {
+						Accept: 'application/json',
+						'OCS-APIRequest': 'true',
+					},
+				}).then(response => response.json()),
 			])
-				.then(([usersData, { user: currentUser }]) => {
+				.then(([usersData, { ocs: { data: currentUser } }]) => {
 					const users = Object.values(usersData.ocs.data.users)
 
 					const medewerkerToSelect = medewerkerId || currentUser.id
@@ -1021,7 +1028,7 @@ export default {
 			if (this.dashboardWidget) {
 				window.location.href = `${generateUrl('/apps/zaakafhandelapp')}/zaken/${id}`
 			} else {
-				router.push({ name: 'dynamic-view', params: { view: 'zaken', id } })
+				router.push({ name: 'ZaakDetail', params: { id } })
 				navigationStore.setModal(false)
 			}
 		},
@@ -1030,7 +1037,7 @@ export default {
 			if (this.dashboardWidget) {
 				window.location.href = `${generateUrl('/apps/zaakafhandelapp')}/taken/${id}`
 			} else {
-				router.push({ name: 'dynamic-view', params: { view: 'taken', id } })
+				router.push({ name: 'TaakDetail', params: { id } })
 				navigationStore.setModal(false)
 			}
 		},

@@ -1,9 +1,10 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Resultaat verwijderen"
+	<NcDialog :name="t('zaakafhandelapp', 'Delete result')"
 		size="normal"
 		:can-close="false">
 		<!-- if zaken list is not populated yet, show a quick loading icon (this should under normal conditions not happen) -->
@@ -12,17 +13,15 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 		</div>
 		<div v-else>
 			<p v-if="success === null">
-				Weet u zeker dat u
-				<b>{{ zaakStore.zakenList.find((zaak) => zaak.id === resultaatStore.resultaatItem?.zaak)?.identificatie }} > {{ resultaatStore.resultaatItem?.toelichting }}</b>
-				permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+				{{ t('zaakafhandelapp', 'Are you sure you want to permanently delete {name}? This action cannot be undone.', { name: `${zaakStore.zakenList.find((zaak) => zaak.id === resultaatStore.resultaatItem?.zaak)?.identificatie} > ${resultaatStore.resultaatItem?.toelichting}` }) }}
 			</p>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Resultaat succesvol verwijderd</p>
+					<p>{{ t('zaakafhandelapp', 'Result successfully deleted') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success && !error" type="error">
-					<p>Er is een fout opgetreden bij het verwijderen van het resultaat</p>
+					<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the result') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -35,7 +34,7 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success === null ? 'Annuleren' : 'Sluiten' }}
+				{{ success === null ? t('zaakafhandelapp', 'Cancel') : t('zaakafhandelapp', 'Close') }}
 			</NcButton>
 			<NcButton v-if="success === null"
 				:disabled="loading"
@@ -45,7 +44,7 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<TrashCanOutline v-if="!loading" :size="20" />
 				</template>
-				Verwijderen
+				{{ t('zaakafhandelapp', 'Delete') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -99,7 +98,7 @@ export default {
 				response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
 			}).catch((error) => {
 				this.success = false
-				this.error = error.message || 'Er is een fout opgetreden bij het verwijderen van het resultaat'
+				this.error = error.message || t('zaakafhandelapp', 'An error occurred while deleting the result')
 			}).finally(() => {
 				this.loading = false
 			})

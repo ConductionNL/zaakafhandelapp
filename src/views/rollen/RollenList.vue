@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -34,7 +35,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			<div v-if="rolStore.rollenList?.length">
 				<NcListItem v-for="(rol, i) in rolStore.rollenList"
 					:key="`${rol}${i}`"
-					:name="rol?.roltype"
+					:name="rol?.url ?? rol?.rolType"
 					:force-display-actions="true"
 					:active="$route.params?.id === rol?.id"
 					@click="openRol(rol)">
@@ -51,13 +52,13 @@ import { navigationStore, rolStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="rolStore.setRolItem(rol); navigationStore.setModal('deleteRol')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -72,7 +73,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Rollen aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading roles')" />
 	</NcAppContentList>
 </template>
 <script>

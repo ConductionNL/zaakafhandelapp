@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				:loading="loading"
 				@show="onShow">
 				<template #empty-content>
-					<NcEmptyContent name="Geen open zaken">
+					<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
 						<template #icon>
 							<Folder />
 						</template>
@@ -22,7 +23,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Zaak aanmaken
+			{{ t('zaakafhandelapp', 'Create case') }}
 		</NcButton>
 
 		<ZaakForm v-if="isModalOpen"

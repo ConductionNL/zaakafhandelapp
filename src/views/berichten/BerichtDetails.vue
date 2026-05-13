@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 						{{ berichtStore.berichtItem.onderwerp }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -21,66 +22,66 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
 				<div class="detailGrid">
 					<div>
-						<b>Berichttekst:</b>
+						<b>{{ t('zaakafhandelapp', 'Message text:') }}</b>
 						<p>{{ berichtStore.berichtItem.berichttekst }}</p>
 					</div>
 					<div>
-						<b>Inhoud:</b>
+						<b>{{ t('zaakafhandelapp', 'Content:') }}</b>
 						<p>{{ berichtStore.berichtItem.inhoud }}</p>
 					</div>
 					<div>
-						<b>Soort gebruiker:</b>
+						<b>{{ t('zaakafhandelapp', 'User type:') }}</b>
 						<span>{{ berichtStore.berichtItem.soortGebruiker }}</span>
 					</div>
 					<div>
-						<b>Publicatiedatum:</b>
+						<b>{{ t('zaakafhandelapp', 'Publication date:') }}</b>
 						<span>{{ berichtStore.berichtItem.publicatieDatum }}</span>
 					</div>
 					<div>
-						<b>Aanmaak datum:</b>
+						<b>{{ t('zaakafhandelapp', 'Creation date:') }}</b>
 						<span>{{ berichtStore.berichtItem.aanmaakDatum }}</span>
 					</div>
 					<div>
-						<b>Bericht type:</b>
+						<b>{{ t('zaakafhandelapp', 'Message type:') }}</b>
 						<span>{{ berichtStore.berichtItem.berichtType }}</span>
 					</div>
 					<div>
-						<b>Referentie:</b>
+						<b>{{ t('zaakafhandelapp', 'Reference:') }}</b>
 						<span>{{ berichtStore.berichtItem.referentie }}</span>
 					</div>
 					<div>
-						<b>Bericht ID:</b>
+						<b>{{ t('zaakafhandelapp', 'Message ID:') }}</b>
 						<span>{{ berichtStore.berichtItem.berichtID }}</span>
 					</div>
 					<div>
-						<b>Batch ID:</b>
+						<b>{{ t('zaakafhandelapp', 'Batch ID:') }}</b>
 						<span>{{ berichtStore.berichtItem.batchID }}</span>
 					</div>
 					<div>
-						<b>Gebruiker ID:</b>
+						<b>{{ t('zaakafhandelapp', 'User ID:') }}</b>
 						<span>{{ berichtStore.berichtItem.gebruikerID }}</span>
 					</div>
 					<div>
-						<b>Volgorde:</b>
+						<b>{{ t('zaakafhandelapp', 'Order:') }}</b>
 						<span>{{ berichtStore.berichtItem.volgorde }}</span>
 					</div>
 				</div>
 
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Audit trail" active>
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')" active>
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -101,14 +102,14 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
 								<template #description>
-									Er is geen audit trail gevonden voor deze bericht.
+									{{ t('zaakafhandelapp', 'No audit trail was found for this message.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>

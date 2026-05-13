@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -13,12 +14,12 @@ import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore }
 				@startTaak="() => (taakModalOpen = true)">
 				<template #empty-content>
 					<div>
-						<NcEmptyContent v-if="loading" name="Persoon laden...">
+						<NcEmptyContent v-if="loading" :name="t('zaakafhandelapp', 'Loading person...')">
 							<template #icon>
 								<NcLoadingIcon />
 							</template>
 						</NcEmptyContent>
-						<NcEmptyContent v-if="!loading" name="Geen personen gevonden">
+						<NcEmptyContent v-if="!loading" :name="t('zaakafhandelapp', 'No persons found')">
 							<template #icon>
 								<AccountOutline />
 							</template>
@@ -36,7 +37,7 @@ import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore }
 				<template #icon>
 					<Search :size="20" />
 				</template>
-				Zoek
+				{{ t('zaakafhandelapp', 'Search') }}
 			</NcButton>
 
 			<SearchKlantModal v-if="searchKlantModalOpen"
@@ -115,25 +116,30 @@ export default {
 			zaakFormModalOpen: false,
 			contactmomentModalOpen: false,
 			taakModalOpen: false,
-			itemMenu: {
+		}
+	},
+
+	computed: {
+		itemMenu() {
+			return {
 				show: {
-					text: 'Bekijk',
+					text: t('zaakafhandelapp', 'View'),
 					icon: 'icon-toggle',
 				},
 				startZaak: {
-					text: 'Start zaak',
+					text: t('zaakafhandelapp', 'Start case'),
 					icon: iconBriefcaseAccountOutline,
 				},
 				startContactmoment: {
-					text: 'Start contactmoment',
+					text: t('zaakafhandelapp', 'Start contact moment'),
 					icon: iconCardAccountPhoneOutline,
 				},
 				startTaak: {
-					text: 'Start taak',
+					text: t('zaakafhandelapp', 'Start task'),
 					icon: iconCalendarMonthOutline,
 				},
-			},
-		}
+			}
+		},
 	},
 
 	methods: {

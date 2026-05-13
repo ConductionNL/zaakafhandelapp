@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
 </script>
 
@@ -12,7 +13,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 				@edit="onEdit"
 				@sluiten="onSluiten">
 				<template #empty-content>
-					<NcEmptyContent name="Geen contactmomenten gevonden">
+					<NcEmptyContent :name="t('zaakafhandelapp', 'No contact moments found')">
 						<template #icon>
 							<ChatOutline />
 						</template>
@@ -25,7 +26,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			<template #icon>
 				<Plus :size="20" />
 			</template>
-			Contactmoment starten
+			{{ t('zaakafhandelapp', 'Start contact moment') }}
 		</NcButton>
 
 		<ContactMomentenForm v-if="isContactMomentFormOpen"
@@ -76,22 +77,25 @@ export default {
 			// contactmoment form props
 			contactMomentId: null,
 			isView: false,
-			// widget options
-			itemMenu: {
+		}
+	},
+	computed: {
+		itemMenu() {
+			return {
 				show: {
-					text: 'Bekijk',
+					text: t('zaakafhandelapp', 'View'),
 					icon: 'icon-toggle',
 				},
 				edit: {
-					text: 'Bewerk',
+					text: t('zaakafhandelapp', 'Edit'),
 					icon: iconPencil,
 				},
 				sluiten: {
-					text: 'Sluit',
+					text: t('zaakafhandelapp', 'Close'),
 					icon: iconProgressClose,
 				},
-			},
-		}
+			}
+		},
 	},
 	mounted() {
 		this.fetchUser()
@@ -100,8 +104,14 @@ export default {
 		async fetchUser() {
 			this.loading = true
 
-			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
-			const user = await getUser.json()
+			const getUser = await fetch('/ocs/v2.php/cloud/user', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			})
+			const { ocs: { data: user } } = await getUser.json()
 
 			const medewerkers = await fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
@@ -113,7 +123,7 @@ export default {
 				.then(response => response.json())
 				.then((data) => Object.values(data.ocs.data.users))
 
-			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.user.id)
+			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.id)
 
 			this.userEmail = medewerker.email
 			this.fetchContactMomentItems()

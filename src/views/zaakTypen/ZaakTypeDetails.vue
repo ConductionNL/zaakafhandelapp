@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 						{{ zaakTypeStore.zaakTypeItem?.identificatie }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -21,120 +22,120 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteZaaktype')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
 
 				<div class="detailGrid">
 					<div>
-						<h4>Omschrijving:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Description:') }}</h4>
 						<span>{{ zaakTypeStore.zaakTypeItem?.omschrijving || '-' }}</span>
 					</div>
 					<div>
-						<h4>Generieke omschrijving:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Generic description:') }}</h4>
 						<span>{{ zaakTypeStore.zaakTypeItem?.omschrijvingGeneriek || '-' }}</span>
 					</div>
 					<div>
-						<h4>Vertrouwelijkheidaanduiding:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Confidentiality designation:') }}</h4>
 						<span>{{ zaakTypeStore.zaakTypeItem?.vertrouwelijkheidaanduiding || '-' }}</span>
 					</div>
 					<div>
-						<h4>Doel:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Goal:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.doel || '-' }}</p>
 					</div>
 					<div>
-						<h4>Aanleiding:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Cause:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.aanleiding || '-' }}</p>
 					</div>
 					<div>
-						<h4>Toelichting:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Explanation:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.toelichting || '-' }}</p>
 					</div>
 					<div>
-						<h4>Indicatie intern of extern:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Internal or external indication:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.indicatieInternOfExtern || '-' }}</p>
 					</div>
 					<div>
-						<h4>Handeling initiatie:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Action initiator:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.handelingInitiator || '-' }}</p>
 					</div>
 					<div>
-						<h4>Onderwerp:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Subject:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.onderwerp || '-' }}</p>
 					</div>
 					<div>
-						<h4>Handeling behandelaar:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Action handler:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.handelingBehandelaar || '-' }}</p>
 					</div>
 					<div>
-						<h4>Doorlooptijd:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Lead time:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.doorlooptijd || '-' }}</p>
 					</div>
 					<div>
-						<h4>Servicenorm:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Service standard:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.servicenorm || '-' }}</p>
 					</div>
 					<div>
-						<h4>Opschorting en aanhouding mogelijk:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Suspension and stay possible:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.opschortingEnAanhoudingMogelijk || '-' }}</p>
 					</div>
 					<div>
-						<h4>Verlenging mogelijk:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Extension possible:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.verlengingMogelijk || '-' }}</p>
 					</div>
 					<div>
-						<h4>Verlengingstermijn:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Extension term:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.verlengingstermijn || '-' }}</p>
 					</div>
 					<div>
-						<h4>Publicatie indicatie:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Publication indication:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.publicatieIndicatie || '-' }}</p>
 					</div>
 					<div>
-						<h4>Publicatietekst:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Publication text:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.publicatietekst || '-' }}</p>
 					</div>
 					<div>
-						<h4>Producten of diensten:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Products or services:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.productenOfDiensten || '-' }}</p>
 					</div>
 					<div>
-						<h4>Selectielijst proces type:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Selection list process type:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.selectielijstProcestype || '-' }}</p>
 					</div>
 					<div>
-						<h4>Referentieproces:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Reference process:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.referentieproces || '-' }}</p>
 					</div>
 					<div>
-						<h4>Catalogus:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Catalogue:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.catalogus || '-' }}</p>
 					</div>
 					<div>
-						<h4>Begin geldigheid:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Start of validity:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.beginGeldigheid || '-' }}</p>
 					</div>
 					<div>
-						<h4>Einde geldigheid:</h4>
+						<h4>{{ t('zaakafhandelapp', 'End of validity:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.eindeGeldigheid || '-' }}</p>
 					</div>
 					<div>
-						<h4>Begin object:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Start of object:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.beginObject || '-' }}</p>
 					</div>
 					<div>
-						<h4>Einde object:</h4>
+						<h4>{{ t('zaakafhandelapp', 'End of object:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.eindeObject || '-' }}</p>
 					</div>
 					<div>
-						<h4>Versiedatum:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Version date:') }}</h4>
 						<p>{{ zaakTypeStore.zaakTypeItem?.versiedatum || '-' }}</p>
 					</div>
 				</div>

@@ -1,14 +1,15 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcModal ref="modalRef" label-id="rolForm" @close="closeModal">
 		<div class="modal__content">
-			<h2>Rol {{ IS_EDIT ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Role {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Role {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<NcNoteCard v-if="success" type="success">
-				<p>Rol succesvol {{ IS_EDIT ? 'aangepast' : 'aangemaakt' }}</p>
+				<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Role successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Role successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -18,48 +19,48 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 				<NcSelect v-bind="zaakOptions"
 					v-model="zaakOptions.value"
 					:disabled="loading"
-					input-label="Zaak"
+					:input-label="t('zaakafhandelapp', 'Case')"
 					required />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="rolItem.betrokkene"
 					maxlength="1000"
-					label="Betrokkene (url)" />
+					:label="t('zaakafhandelapp', 'Involved party (URL)')" />
 
 				<NcSelect
 					v-bind="betrokkeneTypeOptions"
 					v-model="betrokkeneTypeOptions.value"
 					:disabled="loading"
 					:clearable="false"
-					input-label="Betrokkene Type"
+					:input-label="t('zaakafhandelapp', 'Involved party type')"
 					required />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="rolItem.afwijkendeNaamBetrokkene"
 					maxlength="625"
-					label="Afwijkende Naam Betrokkene" />
+					:label="t('zaakafhandelapp', 'Deviating name involved party')" />
 
 				<NcTextField
 					:disabled="loading"
 					:value.sync="rolItem.roltype"
 					maxlength="1000"
-					label="Roltype"
+					:label="t('zaakafhandelapp', 'Role type')"
 					required />
 
 				<NcTextArea
 					:disabled="loading"
 					:value.sync="rolItem.roltoelichting"
 					maxlength="1000"
-					label="Roltoelichting"
+					:label="t('zaakafhandelapp', 'Role explanation')"
 					:error="!rolItem.roltoelichting" />
 
 				<NcSelect
 					v-bind="indicatieMachtigingOptions"
 					v-model="indicatieMachtigingOptions.value"
 					:disabled="loading"
-					input-label="Indicatie Machtiging" />
+					:input-label="t('zaakafhandelapp', 'Authorization indication')" />
 			</div>
 
 			<NcButton v-if="success === null"
@@ -74,7 +75,7 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-if="!loading" :size="20" />
 				</template>
-				Opslaan
+				{{ t('zaakafhandelapp', 'Save') }}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -141,18 +142,18 @@ export default {
 			},
 			betrokkeneTypeOptions: {
 				options: [
-					{ label: 'Natuurlijk persoon', id: 'natuurlijk_persoon' },
-					{ label: 'Niet-natuurlijk persoon', id: 'niet_natuurlijk_persoon' },
-					{ label: 'Vestiging', id: 'vestiging' },
-					{ label: 'Organisatorische eenheid', id: 'organisatorische_eenheid' },
-					{ label: 'Medewerker', id: 'medewerker' },
+					{ label: t('zaakafhandelapp', 'Natural person'), id: 'natuurlijk_persoon' },
+					{ label: t('zaakafhandelapp', 'Non-natural person'), id: 'niet_natuurlijk_persoon' },
+					{ label: t('zaakafhandelapp', 'Establishment'), id: 'vestiging' },
+					{ label: t('zaakafhandelapp', 'Organisational unit'), id: 'organisatorische_eenheid' },
+					{ label: t('zaakafhandelapp', 'Employee'), id: 'medewerker' },
 				],
-				value: { label: 'Natuurlijk persoon', id: 'natuurlijk_persoon' },
+				value: { label: t('zaakafhandelapp', 'Natural person'), id: 'natuurlijk_persoon' },
 			},
 			indicatieMachtigingOptions: {
 				options: [
-					{ label: 'Gemachtigde', id: 'gemachtigde' },
-					{ label: 'Machtiginggever', id: 'machtiginggever' },
+					{ label: t('zaakafhandelapp', 'Authorized representative'), id: 'gemachtigde' },
+					{ label: t('zaakafhandelapp', 'Authorizer'), id: 'machtiginggever' },
 				],
 				value: null,
 			},
@@ -239,7 +240,7 @@ export default {
 				})
 				.catch((e) => {
 					this.success = false
-					this.error = e.message || 'Er is iets fout gegaan met het opslaan van de rol'
+					this.error = e.message || t('zaakafhandelapp', 'Something went wrong while saving the role')
 				})
 				.finally(() => {
 					this.loading = false

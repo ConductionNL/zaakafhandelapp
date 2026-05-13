@@ -3,12 +3,14 @@
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>zaakafhandelapp</id>
 	<name>Zaak Afhandel App</name>
-	<summary>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionN</summary>	
+	<summary>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionN</summary>
 	<description><![CDATA[📰 Brinning Gateway and Service bus functionality to nextcloud
+
+**Requires:** [OpenRegister](https://apps.nextcloud.com/apps/openregister) (install from the [Nextcloud App Store](https://apps.nextcloud.com/apps/openregister)).
 
 The OpenCatalogi Nextcloud app provides a framework for federated catalogi to work together in an open data ecosystem
 
-- 📲 Synchronize your data sources 
+- 📲 Synchronize your data sources
 - 📰 Send cloud eventt
 - 🆓 Map and translate api calls
 
@@ -22,7 +24,7 @@ Create a [bug report](https://github.com/OpenCatalogi/.github/issues/new/choose)
 
 Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/choose)
     ]]></description>
-	<version>0.1.21</version>
+	<version>0.2.0</version>
 	<licence>agpl</licence>
 	<author mail="info@conduction.nl" homepage="https://www.conduction.nl/">Conduction</author>
 	<namespace>ZaakAfhandelApp</namespace>
@@ -35,9 +37,9 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
         <database min-version="10">pgsql</database>
         <database>sqlite</database>
         <database min-version="8.0">mysql</database>
-		
+
         <owncloud max-version="0" min-version="0"/>
-		<nextcloud min-version="28" max-version="30"/>
+		<nextcloud min-version="28" max-version="33"/>
 	</dependencies>
 	<navigations>
 		<navigation>
