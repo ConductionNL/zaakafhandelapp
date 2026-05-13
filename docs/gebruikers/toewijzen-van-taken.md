@@ -11,7 +11,7 @@ description: >-
 * Wanneer er nog geen taken beschikbaar zijn, verschijnt een melding: _"Nog geen taak geselecteerd."_
 * Gebruikers kunnen via de knop **"Taak toevoegen"** direct een nieuwe taak aanmaken.
 
-<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption><p>Takenmodal</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (4).png" alt="" /><figcaption><p>Takenmodal</p></figcaption></figure>
 
 #### Functionaliteit en Velden in de Modal
 
