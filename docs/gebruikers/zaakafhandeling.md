@@ -13,13 +13,13 @@ Voordat het mogelijk is om een zaak te maken, moet het zaaktype geconfigureerd z
 \
 
 
-<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (2).png" alt="" /><figcaption></figcaption></figure>
 
 ## Het starten van een zaak
 
 Via de knop **+ Zaak Starten** (boven in het menu) of de centrale knop op de pagina kunnen gebruikers eenvoudig een nieuwe zaak starten.
 
-<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption><p>Het starten van een zaak</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1).png" alt="" /><figcaption><p>Het starten van een zaak</p></figcaption></figure>
 
 Het modaal dat verschijnt na het klikken op **"Zaak starten"** biedt een interface waarmee gebruikers een nieuwe zaak kunnen starten. Het bevat waarschijnlijk een formulier waarin belangrijke gegevens over de zaak ingevuld moeten worden, zoals de naam van de zaak, het type, en eventuele aanvullende details.
 

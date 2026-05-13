@@ -21,4 +21,4 @@ die snelkoppelingen biedt naar de volgende functies:
 * **Uw Zaken**: Directe toegang tot de lijst van toegewezen zaken.
 * **Uw Taken**: Overzicht van toegewezen taken.
 
-<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image.png" alt="" /><figcaption></figcaption></figure>
