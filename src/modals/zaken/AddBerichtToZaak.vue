@@ -1,15 +1,16 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcModal ref="modalRef" label-id="addBerichtToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>Bericht toevoegen aan {{ zaakStore.zaakItem.title }}</h2>
+			<h2>{{ t('zaakafhandelapp', 'Add message') }}: {{ zaakStore.zaakItem.title }}</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>Bericht succesvol toegevoegd aan zaak</p>
+					<p>{{ t('zaakafhandelapp', 'Message successfully added to case') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -19,7 +20,7 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 			<div v-if="success === null" class="form-group">
 				<NcSelect v-bind="berichten"
 					v-model="berichten.value"
-					input-label="Bericht"
+					:input-label="t('zaakafhandelapp', 'Message')"
 					:loading="berichtenLoading"
 					:disabled="loading"
 					required />
@@ -33,7 +34,7 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<Plus v-if="!loading" :size="20" />
 				</template>
-				Toevoegen
+				{{ t('zaakafhandelapp', 'Add') }}
 			</NcButton>
 		</div>
 	</NcModal>

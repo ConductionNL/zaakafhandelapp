@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, resultaatStore } from '../../store/store.js'
 </script>
 
@@ -24,27 +25,27 @@ import { navigationStore, resultaatStore } from '../../store/store.js'
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
-						Bewerken
+						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
 					<NcActionButton @click="resultaatStore.setResultaatItem(resultaat); navigationStore.setModal('deleteResultaat')">
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
-						Verwijderen van zaak
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
 		<div v-if="!filteredResultatenList?.length && !loading">
-			Geen resultaten gevonden.
+			{{ t('zaakafhandelapp', 'No results found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!filteredResultatenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Resultaten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading results')" />
 	</div>
 </template>
 <script>

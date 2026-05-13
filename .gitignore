@@ -9,7 +9,25 @@
 /tests/.phpunit.cache
 
 /node_modules/
+
+# Docusaurus documentation site (docs/)
+/docs/node_modules/
+/docs/build/
+/docs/.docusaurus/
+/docs/.cache-loader/
+/docs/i18n/nl/
+
 /custom_apps/
 /custom-apps/
 /js/
 Zone.Identifier
+
+# Test/build artifacts
+.docusaurus
+coverage/
+.phpunit.result.cache
+
+# Playwright (journeydoc capture / regression)
+/tests/e2e/.auth/
+/tests/e2e/playwright-report/
+/tests/e2e/test-results/

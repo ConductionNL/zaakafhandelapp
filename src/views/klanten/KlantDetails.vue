@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contactMomentStore } from '../../store/store.js'
 </script>
 
@@ -13,7 +14,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 						{{ getName(klantStore.klantItem) }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -21,31 +22,31 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="taakStore.setTaakItem(); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<CalendarMonthOutline :size="20" />
 							</template>
-							Taak geven
+							{{ t('zaakafhandelapp', 'Assign task') }}
 						</NcActionButton>
 						<NcActionButton @click="berichtStore.setBerichtItem(); navigationStore.setModal('editBericht')">
 							<template #icon>
 								<ChatOutline :size="20" />
 							</template>
-							Bericht versturen
+							{{ t('zaakafhandelapp', 'Send message') }}
 						</NcActionButton>
 						<NcActionButton @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 							<template #icon>
 								<BriefcaseAccountOutline :size="20" />
 							</template>
-							Zaak starten
+							{{ t('zaakafhandelapp', 'Start case') }}
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setDialog('deleteKlant')">
+						<NcActionButton @click="navigationStore.setModal('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -53,91 +54,91 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 
 				<div class="detailGrid">
 					<div class="gridContent gridFullWidth">
-						<b>Klantnummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Customer number:') }}</b>
 						<p>{{ klantStore.klantItem.klantnummer }}</p>
 					</div>
 					<div class="gridContent gridFullWidth">
-						<b>BSN:</b>
+						<b>{{ t('zaakafhandelapp', 'BSN:') }}</b>
 						<p>{{ klantStore.klantItem.bsn }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Geboortedatum:</b>
+						<b>{{ t('zaakafhandelapp', 'Date of birth:') }}</b>
 						<p>{{ klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum).toLocaleDateString() : '-' }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Land:</b>
+						<b>{{ t('zaakafhandelapp', 'Country:') }}</b>
 						<p>{{ getLandName(klantStore.klantItem.land) }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Telefoonnummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Phone number:') }}</b>
 						<p>{{ klantStore.klantItem.telefoonnummer }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Email adres:</b>
+						<b>{{ t('zaakafhandelapp', 'Email address:') }}</b>
 						<p>{{ klantStore.klantItem.emailadres }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Plaats:</b>
+						<b>{{ t('zaakafhandelapp', 'City:') }}</b>
 						<p>{{ klantStore.klantItem.plaats }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Straatnaam:</b>
+						<b>{{ t('zaakafhandelapp', 'Street name:') }}</b>
 						<p>{{ klantStore.klantItem.straatnaam }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Postcode + Huisnummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Postal code + house number:') }}</b>
 						<p>{{ klantStore.klantItem.postcode }} {{ klantStore.klantItem.huisnummer }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Functie:</b>
+						<b>{{ t('zaakafhandelapp', 'Function:') }}</b>
 						<p>{{ klantStore.klantItem.functie }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Bedrijfsnaam:</b>
+						<b>{{ t('zaakafhandelapp', 'Company name:') }}</b>
 						<p>{{ klantStore.klantItem.bedrijfsnaam }}</p>
 					</div>
 					<div class="gridContent">
-						<b>KVK nummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Chamber of commerce number:') }}</b>
 						<p>{{ klantStore.klantItem.kvkNummer }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Website url:</b>
+						<b>{{ t('zaakafhandelapp', 'Website URL:') }}</b>
 						<p>{{ klantStore.klantItem.websiteUrl }}</p>
 					</div>
 					<div class="gridContent">
-						<b>url:</b>
+						<b>{{ t('zaakafhandelapp', 'URL:') }}</b>
 						<p>{{ klantStore.klantItem.url }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Bron organisatie:</b>
+						<b>{{ t('zaakafhandelapp', 'Source organisation:') }}</b>
 						<p>{{ klantStore.klantItem.bronorganisatie }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Aanmaakkanaal:</b>
+						<b>{{ t('zaakafhandelapp', 'Creation channel:') }}</b>
 						<p>{{ klantStore.klantItem.aanmaakkanaal }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Geverifieerd:</b>
+						<b>{{ t('zaakafhandelapp', 'Verified:') }}</b>
 						<p>{{ klantStore.klantItem.geverifieerd }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Subject Identificatie:</b>
+						<b>{{ t('zaakafhandelapp', 'Subject identification:') }}</b>
 						<p>{{ klantStore.klantItem.subjectIdentificatie }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Subject Type:</b>
+						<b>{{ t('zaakafhandelapp', 'Subject type:') }}</b>
 						<p>{{ klantStore.klantItem.subjectType }}</p>
 					</div>
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Zaken">
+						<BTab :title="t('zaakafhandelapp', 'Cases')">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
@@ -153,18 +154,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
 								<template #description>
-									Er zijn geen zaken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Taken">
+						<BTab :title="t('zaakafhandelapp', 'Tasks')">
 							<div v-if="taken.length">
 								<NcListItem v-for="(taak, key) in taken"
 									:key="key"
@@ -180,18 +181,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+							<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
 								<template #description>
-									Er zijn geen taken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Berichten">
+						<BTab :title="t('zaakafhandelapp', 'Messages')">
 							<div v-if="berichten.length">
 								<NcListItem v-for="(bericht, key) in berichten"
 									:key="key"
@@ -207,18 +208,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-mail" title="Geen berichten gevonden">
+							<NcEmptyContent v-else icon="icon-mail" :title="t('zaakafhandelapp', 'No messages found')">
 								<template #description>
-									Er zijn geen berichten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No messages were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Contact Momenten">
+						<BTab :title="t('zaakafhandelapp', 'Contact moments')">
 							<div v-if="filteredContactMomenten.length">
 								<NcListItem v-for="(contactMoment, key) in filteredContactMomenten"
 									:key="key"
@@ -236,18 +237,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-contacts" title="Geen contactmomenten gevonden">
+							<NcEmptyContent v-else icon="icon-contacts" :title="t('zaakafhandelapp', 'No contact moments found')">
 								<template #description>
-									Er zijn geen contactmomenten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Audit trail">
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')">
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -268,14 +269,14 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
 								<template #description>
-									Er is geen audit trail gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No audit trail was found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>

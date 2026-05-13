@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { zaakStore } from '../../store/store.js'
 </script>
 
@@ -36,14 +37,14 @@ import { zaakStore } from '../../store/store.js'
 		</div>
 
 		<div v-if="!zaakStore.zakenList?.length && !loading">
-			Geen zaken gevonden.
+			{{ t('zaakafhandelapp', 'No cases found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading cases')" />
 	</div>
 </template>
 <script>

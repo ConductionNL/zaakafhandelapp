@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../store/store.js'
 </script>
 
@@ -12,7 +13,7 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 					<h1 class="h1">
 						{{ taakStore.taakItem.title }}
 					</h1>
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -20,31 +21,31 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setDialog('deleteTaak')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
 				<div class="grid">
 					<div class="gridContent">
 						<div>
-							<b>Sammenvatting:</b>
+							<b>{{ t('zaakafhandelapp', 'Summary:') }}</b>
 							<span>{{ taakStore.taakItem.onderwerp }}</span>
 						</div>
 						<div v-if="taakStore.taakItem.medewerker">
-							<b>Medewerker:</b>
+							<b>{{ t('zaakafhandelapp', 'Employee:') }}</b>
 							<span v-if="medewerkerLoading || !medewerker">Loading...</span>
 							<div v-if="!medewerkerLoading && medewerker" class="buttonLinkContainer">
 								<span>{{ medewerker.displayname }}</span>
 							</div>
 						</div>
 						<div v-if="taakStore.taakItem.klant">
-							<b>Klant:</b>
+							<b>{{ t('zaakafhandelapp', 'Customer:') }}</b>
 							<span v-if="klantLoading">Loading...</span>
 							<div v-if="!klantLoading" class="buttonLinkContainer">
 								<span>{{ getKlantName(klant) }}</span>
@@ -65,7 +66,7 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Audit trail" active>
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')" active>
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -86,14 +87,14 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
 								<template #description>
-									Er is geen audit trail gevonden voor deze taak.
+									{{ t('zaakafhandelapp', 'No audit trail was found for this task.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -187,11 +188,11 @@ export default {
 		},
 		goToKlant() {
 			klantStore.setKlantItem(this.klant)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'klanten', id: this.klant.id } })
+			this.$router.push({ name: 'KlantDetail', params: { id: this.klant.id } })
 		},
 		goToMedewerker() {
 			medewerkerStore.setMedewerkerItem(this.medewerker)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: this.medewerker.id } })
+			this.$router.push({ name: 'MedewerkerDetail', params: { id: this.medewerker.id } })
 		},
 		fetchKlant(klant) {
 			this.klantLoading = true

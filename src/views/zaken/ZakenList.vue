@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -20,13 +21,13 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
-						Ververs
+						{{ t('zaakafhandelapp', 'Refresh') }}
 					</NcActionButton>
 					<NcActionButton @click="zaakStore.setZaakItem(null); navigationStore.setModal('zaakForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Zaak starten
+						{{ t('zaakafhandelapp', 'Start case') }}
 					</NcActionButton>
 				</NcActions>
 			</div>
@@ -53,13 +54,13 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton disabled>
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -67,14 +68,14 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 		</ul>
 
 		<div v-if="!zaakStore.zakenList.length && !loading">
-			Geen zaken gedefinieerd.
+			{{ t('zaakafhandelapp', 'No cases defined.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!zaakStore.zakenList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading cases')" />
 	</NcAppContentList>
 </template>
 <script>

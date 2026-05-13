@@ -14,109 +14,101 @@ use OCP\IRequest;
  */
 class DocumentenController extends Controller
 {
+    const TEST_ARRAY = [];
 
-	/**
-	 * @var IConfig
-	 */
-	private $config;
+    public function __construct(
+        string $appName,
+        IRequest $request,
+        private readonly IAppConfig $config
+    ) {
+        parent::__construct($appName, $request);
+    }//end __construct()
 
-
-	public function __construct(
-		string $appName,
-		IRequest $request,
-		IAppConfig $config
-	) {
-		parent::__construct($appName, $request);
-		$this->config = $config;
-	}
-
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{			
+    /**
+     * This returns the template of the main app's page
+     * It adds some data to the template (app version)
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return TemplateResponse
+     */
+    public function page(): TemplateResponse
+    {
         return new TemplateResponse(
-            //Application::APP_ID,
+            // Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
         );
-	}
-	
+    }//end page()
 
     /**
      * Return (and serach) all objects
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function index(): JSONResponse
     {
         $results = ["results" => self::TEST_ARRAY];
         return new JSONResponse($results);
-    }
+    }//end index()
 
     /**
      * Read a single object
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function show(string $id): JSONResponse
     {
         $result = self::TEST_ARRAY[$id];
         return new JSONResponse($result);
-    }
-
+    }//end show()
 
     /**
      * Creatue an object
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function create(): JSONResponse
     {
         // get post from requests
         return new JSONResponse([]);
-    }
+    }//end create()
 
     /**
      * Update an object
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function update(string $id): JSONResponse
     {
         $result = self::TEST_ARRAY[$id];
         return new JSONResponse($result);
-    }
+    }//end update()
 
     /**
      * Delate an object
-     * 
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function destroy(string $id): JSONResponse
     {
         return new JSONResponse([]);
-    }
-}
+    }//end destroy()
+}//end class

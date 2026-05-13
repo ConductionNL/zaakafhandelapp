@@ -9,27 +9,32 @@ describe('Contact Moment Store', () => {
 		setActivePinia(createPinia())
 	})
 
+	// mockContactMoment() builds entities with `startDate: new Date().toISOString()`,
+	// so snapshot it once and reuse — otherwise repeated calls yield timestamps that
+	// are ~1ms apart and produce spurious deep-equality mismatches.
 	it('sets contact moment item correctly', () => {
 		const store = useContactMomentStore()
+		const mocks = mockContactMoment()
 
-		store.setContactMomentItem(mockContactMoment()[0])
+		store.setContactMomentItem(mocks[0])
 
 		expect(store.contactMomentItem).toBeInstanceOf(ContactMoment)
-		expect(store.contactMomentItem).toEqual(mockContactMoment()[0])
+		expect(store.contactMomentItem).toEqual(mocks[0])
 
 		expect(store.contactMomentItem.validate().success).toBe(true)
 	})
 
 	it('sets contact moment list correctly', () => {
 		const store = useContactMomentStore()
+		const mocks = mockContactMoment()
 
-		store.setContactMomentenList(mockContactMoment())
+		store.setContactMomentenList(mocks)
 
-		expect(store.contactMomentenList).toHaveLength(mockContactMoment().length)
+		expect(store.contactMomentenList).toHaveLength(mocks.length)
 
 		store.contactMomentenList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(ContactMoment)
-			expect(item).toEqual(mockContactMoment()[index])
+			expect(item).toEqual(mocks[index])
 			expect(item.validate().success).toBe(true)
 		})
 	})

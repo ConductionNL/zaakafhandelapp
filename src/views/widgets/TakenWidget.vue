@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { taakStore, navigationStore } from '../../store/store.js'
 </script>
 
@@ -12,7 +13,7 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				@statusClose="onCloseStatus"
 				@statusHandled="onHandledStatus">
 				<template #empty-content>
-					<NcEmptyContent name="Geen open taken">
+					<NcEmptyContent :name="t('zaakafhandelapp', 'No open tasks')">
 						<template #icon>
 							<Folder />
 						</template>
@@ -26,13 +27,13 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Plus :size="20" />
 				</template>
-				Taak aanmaken
+				{{ t('zaakafhandelapp', 'Create task') }}
 			</NcButton>
 			<NcButton type="primary" @click="fetchTaakItems">
 				<template #icon>
 					<Refresh :size="20" />
 				</template>
-				Refresh
+				{{ t('zaakafhandelapp', 'Refresh') }}
 			</NcButton>
 		</div>
 
@@ -77,26 +78,28 @@ export default {
 			isModalOpen: false,
 			taakItems: [],
 			userEmail: null,
-			itemMenu: {
-				show: {
-					text: 'Bekijk',
-					icon: 'icon-toggle',
-				},
-				statusClose: {
-					text: 'Sluiten',
-					icon: iconProgressClose,
-				},
-				statusHandled: {
-					text: 'Taak Afhandelen',
-					icon: iconCalendarCheckOutline,
-				},
-			},
 		}
 	},
 
 	computed: {
 		items() {
 			return this.taakItems
+		},
+		itemMenu() {
+			return {
+				show: {
+					text: t('zaakafhandelapp', 'View'),
+					icon: 'icon-toggle',
+				},
+				statusClose: {
+					text: t('zaakafhandelapp', 'Close'),
+					icon: iconProgressClose,
+				},
+				statusHandled: {
+					text: t('zaakafhandelapp', 'Complete task'),
+					icon: iconCalendarCheckOutline,
+				},
+			}
 		},
 	},
 
@@ -108,8 +111,15 @@ export default {
 		async fetchUser() {
 			this.loading = true
 
-			const getUser = await fetch('/index.php/apps/zaakafhandelapp/me')
-			const user = await getUser.json()
+			const getUser = await fetch('/ocs/v2.php/cloud/user', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			})
+			// Destructure the response to directly access `result.ocs.data`
+			const { ocs: { data: user } } = await getUser.json()
 
 			const medewerkers = await fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
@@ -121,7 +131,7 @@ export default {
 				.then(response => response.json())
 				.then((data) => Object.values(data.ocs.data.users))
 
-			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.user.id)
+			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.id)
 
 			this.userEmail = medewerker.email
 			this.fetchTaakItems()

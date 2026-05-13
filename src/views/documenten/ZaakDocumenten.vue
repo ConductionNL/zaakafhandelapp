@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, documentStore } from '../../store/store.js'
 </script>
 
@@ -24,27 +25,27 @@ import { navigationStore, documentStore } from '../../store/store.js'
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
-						Bewerken
+						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
 					<NcActionButton @click="(documentStore.zaakId = zaakId); documentStore.setDocumentItem(document); navigationStore.setModal('deleteDocument')">
 						<template #icon>
 							<TrashCanOutline :size="20" />
 						</template>
-						Verwijderen van zaak
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
 		</div>
 
 		<div v-if="!documenten[zaakId]?.documenten?.length && !documenten[zaakId]?.loading">
-			Geen documenten gevonden.
+			{{ t('zaakafhandelapp', 'No documents found.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!documenten[zaakId]?.documenten?.length && documenten[zaakId]?.loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Documenten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading documents')" />
 	</div>
 </template>
 

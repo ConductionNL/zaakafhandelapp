@@ -1,14 +1,15 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'editKlant'"
-		name="Klant"
+		:name="t('zaakafhandelapp', 'Customer')"
 		size="normal"
 		:can-close="false">
 		<NcNoteCard v-if="success" type="success">
-			<p>Klant succesvol aangepast</p>
+			<p>{{ t('zaakafhandelapp', 'Customer successfully updated') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -19,38 +20,38 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				v-bind="typeOptions"
 				v-model="klantItem.type"
 				:disabled="loading"
-				input-label="Type klant"
+				:input-label="t('zaakafhandelapp', 'Customer type')"
 				required />
 
 			<NcTextField :disabled="loading"
-				label="Voornaam"
+				:label="t('zaakafhandelapp', 'First name')"
 				maxlength="255"
 				:value.sync="klantItem.voornaam" />
 
 			<NcTextField :disabled="loading"
-				label="Tweede voornaam"
+				:label="t('zaakafhandelapp', 'Second first name')"
 				maxlength="255"
 				:value.sync="klantItem.tweedeVoornaam" />
 
 			<NcTextField :disabled="loading"
-				label="Tussenvoegsel"
+				:label="t('zaakafhandelapp', 'Middle name')"
 				maxlength="255"
 				:value.sync="klantItem.tussenvoegsel" />
 
 			<NcTextField :disabled="loading"
-				label="Achternaam"
+				:label="t('zaakafhandelapp', 'Last name')"
 				maxlength="255"
 				:value.sync="klantItem.achternaam" />
 
 			<NcTextField :disabled="loading"
-				label="BSN"
+				:label="t('zaakafhandelapp', 'BSN')"
 				maxlength="255"
 				:value.sync="klantItem.bsn" />
 			<div>
-				<p>Geboortedatum</p>
+				<p>{{ t('zaakafhandelapp', 'Date of birth') }}</p>
 				<NcDateTimePicker v-model="klantItem.geboortedatum"
 					:disabled="loading"
-					input-label="Geboortedatum" />
+					:input-label="t('zaakafhandelapp', 'Date of birth')" />
 			</div>
 
 			<NcSelect v-bind="sexOptions"
@@ -58,97 +59,97 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:clearable="false"
 				class="wide-select"
 				:disabled="loading"
-				input-label="Geslacht" />
+				:input-label="t('zaakafhandelapp', 'Gender')" />
 
 			<NcSelect
 				v-bind="countryOptions"
 				v-model="klantItem.land"
 				class="wide-select"
 				:disabled="loading"
-				input-label="Land" />
+				:input-label="t('zaakafhandelapp', 'Country')" />
 
 			<NcTextField :disabled="loading"
-				label="Telefoonnummer"
+				:label="t('zaakafhandelapp', 'Phone number')"
 				maxlength="255"
 				:value.sync="klantItem.telefoonnummer" />
 
 			<NcTextField :disabled="loading"
-				label="Email adres"
+				:label="t('zaakafhandelapp', 'Email address')"
 				maxlength="255"
 				:value.sync="klantItem.emailadres" />
 
 			<NcTextField :disabled="loading"
-				label="Straatnaam"
+				:label="t('zaakafhandelapp', 'Street name')"
 				maxlength="255"
 				:value.sync="klantItem.straatnaam" />
 
 			<NcTextField :disabled="loading"
-				label="Plaats"
+				:label="t('zaakafhandelapp', 'City')"
 				maxlength="255"
 				:value.sync="klantItem.plaats" />
 
 			<NcTextField :disabled="loading"
-				label="Postcode"
+				:label="t('zaakafhandelapp', 'Postal code')"
 				maxlength="255"
 				:value.sync="klantItem.postcode" />
 
 			<NcTextField :disabled="loading"
-				label="Huisnummer"
+				:label="t('zaakafhandelapp', 'House number')"
 				maxlength="255"
 				:value.sync="klantItem.huisnummer" />
 
 			<NcTextField :disabled="loading"
-				label="Functie"
+				:label="t('zaakafhandelapp', 'Function')"
 				maxlength="255"
 				:value.sync="klantItem.functie" />
 
 			<NcTextField :disabled="loading"
-				label="Aanmaak kanaal"
+				:label="t('zaakafhandelapp', 'Creation channel')"
 				maxlength="255"
 				:value.sync="klantItem.aanmaakkanaal" />
 
 			<NcTextField :disabled="loading"
-				label="Bron organisatie"
+				:label="t('zaakafhandelapp', 'Source organisation')"
 				maxlength="255"
 				:value.sync="klantItem.bronorganisatie" />
 
 			<NcTextField :disabled="loading"
-				label="Bedrijfsnaam"
+				:label="t('zaakafhandelapp', 'Company name')"
 				maxlength="255"
 				:value.sync="klantItem.bedrijfsnaam" />
 
 			<NcTextField :disabled="loading"
-				label="KVK nummer"
+				:label="t('zaakafhandelapp', 'Chamber of commerce number')"
 				maxlength="255"
 				:value.sync="klantItem.kvkNummer" />
 
 			<NcTextField :disabled="loading"
-				label="Website Url"
+				:label="t('zaakafhandelapp', 'Website URL')"
 				maxlength="255"
 				:value.sync="klantItem.websiteUrl" />
 
 			<NcTextField :disabled="loading"
-				label="Url"
+				:label="t('zaakafhandelapp', 'URL')"
 				maxlength="255"
 				:value.sync="klantItem.url" />
 
 			<NcTextField :disabled="loading"
-				label="Geverifieerd"
+				:label="t('zaakafhandelapp', 'Verified')"
 				maxlength="255"
 				:value.sync="klantItem.geverifieerd" />
 
 			<NcTextField :disabled="loading"
-				label="Subject"
+				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255"
 				:value.sync="klantItem.subject" />
 
 			<NcTextField :disabled="loading"
-				label="Subject Identificatie"
+				:label="t('zaakafhandelapp', 'Subject identification')"
 				maxlength="255"
 				:value.sync="klantItem.subjectIdentificatie" />
 
 			<NcTextField :disabled="loading"
-				label="Subject Type"
+				:label="t('zaakafhandelapp', 'Subject type')"
 				maxlength="255"
 				:value.sync="klantItem.subjectType" />
 		</div>
@@ -158,7 +159,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
@@ -175,7 +176,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && klantStore.klantItem?.id" :size="20" />
 					<Plus v-if="!loading && !klantStore.klantItem?.id" :size="20" />
 				</template>
-				{{ klantStore.klantItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ klantStore.klantItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -257,15 +258,15 @@ export default {
 			},
 			typeOptions: {
 				options: [
-					{ value: 'persoon', label: 'Persoon' },
-					{ value: 'organisatie', label: 'Organisatie' },
+					{ value: 'persoon', label: t('zaakafhandelapp', 'Person') },
+					{ value: 'organisatie', label: t('zaakafhandelapp', 'Organisation') },
 				],
 			},
 			sexOptions: {
 				options: [
-					{ value: 'man', label: 'Man' },
-					{ value: 'vrouw', label: 'Vrouw' },
-					{ value: 'overige', label: 'Overige' },
+					{ value: 'man', label: t('zaakafhandelapp', 'Male') },
+					{ value: 'vrouw', label: t('zaakafhandelapp', 'Female') },
+					{ value: 'overige', label: t('zaakafhandelapp', 'Other') },
 				],
 			},
 		}
@@ -288,12 +289,12 @@ export default {
 					...klantStore.klantItem,
 					voornaam: klantStore.klantItem.voornaam || '',
 					tweedeVoornaam: klantStore.klantItem.tweedeVoornaam || '',
-					type: klantType || { value: 'persoon', label: 'Persoon' },
+					type: klantType || { value: 'persoon', label: t('zaakafhandelapp', 'Person') },
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
 					bsn: klantStore.klantItem.bsn || '',
 					geboortedatum: klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum) : '',
-					geslacht: sex || { value: 'man', label: 'Man' },
+					geslacht: sex || { value: 'man', label: t('zaakafhandelapp', 'Male') },
 					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
@@ -327,12 +328,12 @@ export default {
 			this.klantItem = {
 				voornaam: '',
 				tweedeVoornaam: '',
-				type: { value: 'persoon', label: 'Persoon' },
+				type: { value: 'persoon', label: t('zaakafhandelapp', 'Person') },
 				tussenvoegsel: '',
 				achternaam: '',
 				bsn: '',
 				geboortedatum: '',
-				geslacht: { value: 'man', label: 'Man' },
+				geslacht: { value: 'man', label: t('zaakafhandelapp', 'Male') },
 				land: '',
 				telefoonnummer: '',
 				emailadres: '',

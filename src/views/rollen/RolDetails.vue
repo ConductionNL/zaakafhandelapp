@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
@@ -10,10 +11,10 @@ import { navigationStore, rolStore } from '../../store/store.js'
 			<div v-if="rolStore.rolItem">
 				<div class="head">
 					<h1 class="h1">
-						{{ rolStore.rolItem?.roltype }}
+						{{ rolStore.rolItem?.url ?? rolStore.rolItem?.rolType }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -22,7 +23,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteRol')">
 							<template #icon>
@@ -35,8 +36,28 @@ import { navigationStore, rolStore } from '../../store/store.js'
 
 				<div class="detailGrid">
 					<div>
-						<h4>Sammenvatting:</h4>
-						<span>{{ rolStore.rolItem.summary }}</span>
+						<h4>{{ t('zaakafhandelapp', 'Description:') }}</h4>
+						<span>{{ rolStore.rolItem?.omschrijving }}</span>
+						<h4>{{ t('zaakafhandelapp', 'Generic description:') }}</h4>
+						<span>{{ rolStore.rolItem?.omschrijvingGeneriek }}</span>
+						<h4>{{ t('zaakafhandelapp', 'Role explanation:') }}</h4>
+						<span>{{ rolStore.rolItem?.roltoelichting }}</span>
+						<h4>{{ t('zaakafhandelapp', 'Registration date:') }}</h4>
+						<span>{{ rolStore.rolItem?.registratiedatum && new Date(rolStore.rolItem?.registratiedatum).toLocaleString() }}</span>
+						<h4>{{ t('zaakafhandelapp', 'Involved party type:') }}</h4>
+						<span>{{ rolStore.rolItem?.betrokkeneType }}</span>
+						<h4>{{ t('zaakafhandelapp', 'Name:') }}</h4>
+						<span>
+							{{
+								(rolStore.rolItem?.betrokkeneIdentificatie?.voornamen || "") +
+									(rolStore.rolItem?.betrokkeneIdentificatie?.voorletters ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.voorletters : "") +
+									(rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam ? " " + rolStore.rolItem?.betrokkeneIdentificatie?.geslachtsnaam : "") ||
+									t('zaakafhandelapp', 'No name available')
+							}}
+						</span>
+
+						<h4>{{ t('zaakafhandelapp', 'BSN:') }}</h4>
+						<span>{{ rolStore.rolItem?.betrokkeneIdentificatie?.inpBsn }}</span>
 					</div>
 				</div>
 			</div>
