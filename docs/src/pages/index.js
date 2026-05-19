@@ -263,7 +263,7 @@ const WIDGETS = [
 export default function Home() {
   return (
     <Layout
-      title="Zaak Afhandel App"
+      title="Zaak Afhandel App, ZGW-aligned case handling for Nextcloud"
       description="Zaak Afhandel App brings ZGW-aligned case handling into Nextcloud — intake to closure for zaken, defined status workflows, the work queue, tasks, attached documents, and a record of every decision."
     >
       <main className="marketing-page">
