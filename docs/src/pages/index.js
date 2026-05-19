@@ -264,7 +264,7 @@ export default function Home() {
   return (
     <Layout
       title="Zaak Afhandel App, ZGW-aligned case handling for Nextcloud"
-      description="Zaak Afhandel App brings ZGW-aligned case handling into Nextcloud — intake to closure for zaken, defined status workflows, the work queue, tasks, attached documents, and a record of every decision."
+      description="ZGW-aligned case handling on Nextcloud. Intake to closure for zaken, status workflows, the work queue, tasks, and a decision log."
     >
       <main className="marketing-page">
         <DetailHero
