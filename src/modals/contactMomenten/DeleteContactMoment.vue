@@ -1,18 +1,19 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { contactMomentStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog
-		name="Verwijder contact moment"
+		:name="t('zaakafhandelapp', 'Delete contact moment')"
 		size="normal"
 		:can-close="false">
 		<p v-if="!success">
-			Wil je <b>{{ contactMomentStore.contactMomentItem.titel }}</b> verwijderen? Deze actie is niet ongedaan te maken.
+			{{ t('zaakafhandelapp', 'Do you want to delete {name}? This action cannot be undone.', { name: contactMomentStore.contactMomentItem.titel }) }}
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
-			<p>Contact moment succesvol verwijderd</p>
+			<p>{{ t('zaakafhandelapp', 'Contact moment successfully deleted') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -24,7 +25,7 @@ import { contactMomentStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleren' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
 				v-if="!success"
@@ -35,7 +36,7 @@ import { contactMomentStore, navigationStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<TrashCanOutline v-if="!loading" :size="20" />
 				</template>
-				Verwijder
+				{{ t('zaakafhandelapp', 'Delete') }}
 			</NcButton>
 		</template>
 	</NcDialog>

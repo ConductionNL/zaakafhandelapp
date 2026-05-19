@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 				<NcTextField class="searchField"
 					disabled
 					:value.sync="search"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
 					@trailing-button-click="clearText">
@@ -50,14 +51,14 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton
 							@click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('deleteContactMoment')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -72,7 +73,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Contact momenten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading contact moments')" />
 	</NcAppContentList>
 </template>
 <script>
@@ -123,7 +124,7 @@ export default {
 	methods: {
 		openContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'contactmomenten', id: contactMoment.id } })
+			this.$router.push({ name: 'ContactmomentDetail', params: { id: contactMoment.id } })
 		},
 		editContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)

@@ -1,0 +1,1068 @@
+{
+	"$schema": "https://raw.githubusercontent.com/ConductionNL/nextcloud-vue/main/src/schemas/app-manifest-v2.schema.json",
+	"version": "1.0.0",
+	"dependencies": [
+		"openregister"
+	],
+	"menu": [
+		{
+			"id": "Dashboard",
+			"label": "Dashboard",
+			"icon": "icon-category-dashboard",
+			"route": "Dashboard",
+			"order": 10
+		},
+		{
+			"id": "Zaken",
+			"label": "Cases",
+			"icon": "icon-category-organization",
+			"route": "Zaken",
+			"order": 20
+		},
+		{
+			"id": "Taken",
+			"label": "Tasks",
+			"icon": "icon-checkmark",
+			"route": "Taken",
+			"order": 30
+		},
+		{
+			"id": "Klanten",
+			"label": "Customers",
+			"icon": "icon-group",
+			"route": "Klanten",
+			"order": 40
+		},
+		{
+			"id": "Medewerkers",
+			"label": "Employees",
+			"icon": "icon-user",
+			"route": "Medewerkers",
+			"order": 50
+		},
+		{
+			"id": "Contactmomenten",
+			"label": "Contact moments",
+			"icon": "icon-comment",
+			"route": "Contactmomenten",
+			"order": 60
+		},
+		{
+			"id": "Berichten",
+			"label": "Messages",
+			"icon": "icon-mail",
+			"route": "Berichten",
+			"order": 70
+		},
+		{
+			"id": "Rollen",
+			"label": "Roles",
+			"icon": "icon-user-admin",
+			"route": "Rollen",
+			"order": 80
+		},
+		{
+			"id": "Search",
+			"label": "Search",
+			"icon": "icon-search",
+			"route": "Search",
+			"order": 90
+		},
+		{
+			"id": "Zaaktypen",
+			"label": "Case types",
+			"icon": "icon-files",
+			"route": "Zaaktypen",
+			"section": "settings",
+			"order": 10
+		},
+		{
+			"id": "AuditTrail",
+			"label": "Audit trail",
+			"icon": "icon-history",
+			"route": "AuditTrail",
+			"section": "settings",
+			"order": 20
+		},
+		{
+			"id": "Documentation",
+			"label": "Documentation",
+			"icon": "icon-info",
+			"href": "https://conduction.nl",
+			"section": "settings",
+			"order": 90
+		},
+		{
+			"id": "SettingsMenu",
+			"label": "Settings",
+			"icon": "icon-settings",
+			"route": "Settings",
+			"section": "settings",
+			"order": 99
+		}
+	],
+	"pages": [
+		{
+			"id": "Dashboard",
+			"route": "/",
+			"type": "dashboard",
+			"title": "Dashboard",
+			"config": {},
+			"widgets": [
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
+						"title": "Open cases",
+						"iconClass": "icon-category-organization",
+						"props": {
+							"register": "zaakafhandelapp",
+							"schema": "zaak",
+							"countLabel": "cases",
+							"variant": "primary"
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 4,
+					"gridY": 0,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
+						"title": "Open tasks",
+						"iconClass": "icon-checkmark",
+						"props": {
+							"register": "zaakafhandelapp",
+							"schema": "taak",
+							"countLabel": "tasks",
+							"variant": "warning"
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 8,
+					"gridY": 0,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
+						"title": "Active cases",
+						"iconClass": "icon-category-organization",
+						"props": {
+							"register": "zaakafhandelapp",
+							"schema": "zaak",
+							"countLabel": "cases",
+							"variant": "success"
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
+						"title": "Contact moments",
+						"iconClass": "icon-comment",
+						"props": {
+							"register": "zaakafhandelapp",
+							"schema": "contactmoment",
+							"countLabel": "contacts",
+							"variant": "primary"
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 4,
+					"gridY": 2,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
+						"title": "Persons",
+						"iconClass": "icon-user",
+						"props": {
+							"register": "zaakafhandelapp",
+							"schema": "klant",
+							"filter": {
+								"subjectType": "natuurlijk_persoon"
+							},
+							"countLabel": "persons",
+							"variant": "primary"
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 8,
+					"gridY": 2,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
+						"title": "Organisations",
+						"iconClass": "icon-group",
+						"props": {
+							"register": "zaakafhandelapp",
+							"schema": "klant",
+							"filter": {
+								"subjectType": "niet_natuurlijk_persoon"
+							},
+							"countLabel": "organisations",
+							"variant": "primary"
+						},
+						"showTitle": true
+					}
+				}
+			]
+		},
+		{
+			"id": "Zaken",
+			"route": "/zaken",
+			"type": "index",
+			"title": "Cases",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak",
+				"columns": [
+					"identificatie",
+					"omschrijving",
+					"zaaktype",
+					{
+						"key": "status",
+						"label": "Status",
+						"widget": "badge"
+					},
+					{
+						"key": "uiterlijkeEinddatumAfdoening",
+						"label": "Deadline",
+						"formatter": "date"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "ZaakDetail",
+			"route": "/zaken/:id",
+			"type": "detail",
+			"title": "Case",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak",
+				"sidebarTabs": [
+					{
+						"id": "taken",
+						"label": "Tasks",
+						"icon": "icon-checkmark",
+						"component": "ZaakTakenTab",
+						"order": 20,
+						"_note": "Hybrid ZGW-API data path; fetches related taken via ZGW-API taak endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "rollen",
+						"label": "Roles",
+						"icon": "icon-user-admin",
+						"component": "ZaakRollenTab",
+						"order": 30,
+						"_note": "Hybrid ZGW-API data path; fetches related rollen via ZGW-API rol endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "documenten",
+						"label": "Documents",
+						"icon": "icon-files",
+						"component": "ZaakDocumentenTab",
+						"order": 40,
+						"_note": "Hybrid ZGW-API data path; fetches related zaakinformatieobjecten via ZGW-API endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "besluiten",
+						"label": "Decisions",
+						"icon": "icon-checkmark",
+						"component": "ZaakBesluitenTab",
+						"order": 50,
+						"_note": "Hybrid ZGW-API data path; fetches related besluiten via ZGW-API besluit endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "berichten",
+						"label": "Messages",
+						"icon": "icon-mail",
+						"component": "ZaakBerichtenTab",
+						"order": 60,
+						"_note": "Hybrid ZGW-API data path; fetches related berichten via ZGW-API klantcontact endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "resultaten",
+						"label": "Results",
+						"icon": "icon-checkmark",
+						"component": "ZaakResultatenTab",
+						"order": 70,
+						"_note": "Hybrid ZGW-API data path; fetches related resultaten via ZGW-API resultaat endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "statussen",
+						"label": "Statuses",
+						"icon": "icon-history",
+						"component": "ZaakStatussenTab",
+						"order": 80,
+						"_note": "Hybrid ZGW-API data path; fetches related statussen via ZGW-API status endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					}
+				]
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Taken",
+			"route": "/taken",
+			"type": "index",
+			"title": "Tasks",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "taak",
+				"columns": [
+					"title",
+					{
+						"key": "status",
+						"label": "Status",
+						"widget": "badge"
+					},
+					{
+						"key": "priority",
+						"label": "Priority",
+						"widget": "badge"
+					},
+					{
+						"key": "dueDate",
+						"label": "Due",
+						"formatter": "date"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "TaakDetail",
+			"route": "/taken/:id",
+			"type": "detail",
+			"title": "Task",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "taak"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Klanten",
+			"route": "/klanten",
+			"type": "index",
+			"title": "Customers",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "klant",
+				"columns": [
+					"naam",
+					"email",
+					"telefoon",
+					"type"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "KlantDetail",
+			"route": "/klanten/:id",
+			"type": "detail",
+			"title": "Customer",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "klant"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Medewerkers",
+			"route": "/medewerkers",
+			"type": "index",
+			"title": "Employees",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "medewerker",
+				"columns": [
+					"naam",
+					"email",
+					"afdeling"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "MedewerkerDetail",
+			"route": "/medewerkers/:id",
+			"type": "detail",
+			"title": "Employee",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "medewerker"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Contactmomenten",
+			"route": "/contactmomenten",
+			"type": "index",
+			"title": "Contact moments",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "contactmoment",
+				"columns": [
+					"onderwerp",
+					{
+						"key": "kanaal",
+						"label": "Channel",
+						"widget": "badge"
+					},
+					{
+						"key": "datum",
+						"label": "Date",
+						"formatter": "datetime"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "ContactmomentDetail",
+			"route": "/contactmomenten/:id",
+			"type": "detail",
+			"title": "Contact moment",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "contactmoment"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Berichten",
+			"route": "/berichten",
+			"type": "index",
+			"title": "Messages",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "bericht",
+				"columns": [
+					"onderwerp",
+					{
+						"key": "kanaal",
+						"label": "Channel",
+						"widget": "badge"
+					},
+					{
+						"key": "datum",
+						"label": "Date",
+						"formatter": "datetime"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "BerichtDetail",
+			"route": "/berichten/:id",
+			"type": "detail",
+			"title": "Message",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "bericht"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Rollen",
+			"route": "/rollen",
+			"type": "index",
+			"title": "Roles",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "rol",
+				"columns": [
+					"naam",
+					"type",
+					"subjectIdentificatie"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "RolDetail",
+			"route": "/rollen/:id",
+			"type": "detail",
+			"title": "Role",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "rol"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Zaaktypen",
+			"route": "/zaaktypen",
+			"type": "index",
+			"title": "Case types",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaaktype",
+				"columns": [
+					"identificatie",
+					"omschrijving",
+					"versie"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "ZaaktypeDetail",
+			"route": "/zaaktypen/:id",
+			"type": "detail",
+			"title": "Case type",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaaktype"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Besluiten",
+			"route": "/besluiten",
+			"type": "index",
+			"title": "Decisions",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "besluit",
+				"columns": [
+					"identificatie",
+					{
+						"key": "datum",
+						"label": "Date",
+						"formatter": "date"
+					},
+					{
+						"key": "status",
+						"label": "Status",
+						"widget": "badge"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "BesluitDetail",
+			"route": "/besluiten/:id",
+			"type": "detail",
+			"title": "Decision",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "besluit"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Documenten",
+			"route": "/documenten",
+			"type": "index",
+			"title": "Documents",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "document",
+				"columns": [
+					"titel",
+					"type",
+					"datum"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "DocumentDetail",
+			"route": "/documenten/:id",
+			"type": "detail",
+			"title": "Document",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "document"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Resultaten",
+			"route": "/resultaten",
+			"type": "index",
+			"title": "Results",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "resultaat",
+				"columns": [
+					"omschrijving",
+					"datum"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "ResultaatDetail",
+			"route": "/resultaten/:id",
+			"type": "detail",
+			"title": "Result",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "resultaat"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Statussen",
+			"route": "/statussen",
+			"type": "index",
+			"title": "Statuses",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "status",
+				"columns": [
+					"statustype",
+					"datum",
+					"statustoelichting"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
+			}
+		},
+		{
+			"id": "StatusDetail",
+			"route": "/statussen/:id",
+			"type": "detail",
+			"title": "Status",
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "status"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
+		},
+		{
+			"id": "Search",
+			"route": "/zoeken",
+			"type": "custom",
+			"title": "Search",
+			"component": "SearchView",
+			"_note": "Hybrid ZGW-API data path; searches across ZGW registers (zaken, taken, klanten, medewerkers, contactmomenten) via multiple ZGW-API controllers, not OR; no current typed-page analogue"
+		},
+		{
+			"id": "AuditTrail",
+			"route": "/auditTrail",
+			"type": "custom",
+			"title": "Audit trail",
+			"component": "AuditTrailView",
+			"_note": "Hybrid ZGW-API data path; fetches audit events from ZGW-API audittrail endpoint, not OR; no current typed-page analogue"
+		},
+		{
+			"id": "Settings",
+			"route": "/settings",
+			"type": "settings",
+			"title": "Settings",
+			"config": {
+				"saveEndpoint": "/index.php/apps/zaakafhandelapp/api/settings",
+				"sections": [
+					{
+						"title": "Settings",
+						"component": "SettingsForm"
+					}
+				]
+			},
+			"widgets": []
+		}
+	]
+}

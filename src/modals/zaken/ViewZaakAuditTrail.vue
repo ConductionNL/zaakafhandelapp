@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { zaakStore, navigationStore } from '../../store/store.js'
 </script>
 
@@ -10,22 +11,22 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 				<h3>Audit Trail ID: {{ auditTrail.id }}</h3>
 
 				<div class="audit-item-details">
-					<p><strong>Action:</strong> {{ auditTrail.action }}</p>
-					<p><strong>User:</strong> {{ auditTrail.userName }} ({{ auditTrail.user }})</p>
-					<p><strong>Session:</strong> {{ auditTrail.session }}</p>
-					<p><strong>IP Address:</strong> {{ auditTrail.ipAddress }}</p>
-					<p><strong>Created:</strong> {{ new Date(auditTrail.created).toLocaleString() }}</p>
+					<p><strong>{{ t('zaakafhandelapp', 'Action:') }}</strong> {{ auditTrail.action }}</p>
+					<p><strong>{{ t('zaakafhandelapp', 'User:') }}</strong> {{ auditTrail.userName }} ({{ auditTrail.user }})</p>
+					<p><strong>{{ t('zaakafhandelapp', 'Session:') }}</strong> {{ auditTrail.session }}</p>
+					<p><strong>{{ t('zaakafhandelapp', 'IP Address:') }}</strong> {{ auditTrail.ipAddress }}</p>
+					<p><strong>{{ t('zaakafhandelapp', 'Created:') }}</strong> {{ new Date(auditTrail.created).toLocaleString() }}</p>
 				</div>
 
 				<div v-if="auditTrail.changed" class="audit-trail-changes">
-					<h4>Changes:</h4>
+					<h4>{{ t('zaakafhandelapp', 'Changes:') }}</h4>
 					<div class="audit-trail-table-container">
 						<table class="audit-trail-table">
 							<thead>
 								<tr>
-									<th>Field</th>
-									<th>Old Value</th>
-									<th>New Value</th>
+									<th>{{ t('zaakafhandelapp', 'Field') }}</th>
+									<th>{{ t('zaakafhandelapp', 'Old value') }}</th>
+									<th>{{ t('zaakafhandelapp', 'New value') }}</th>
 								</tr>
 							</thead>
 							<tbody>

@@ -10,80 +10,78 @@ use OCP\IRequest;
 
 class ConfigurationController extends Controller
 {
-	public function __construct(
-		$appName,
-		IAppConfig $config,
-		IRequest $request
-	) {
-		parent::__construct($appName, $request);
-		$this->config = $config;
-		$this->request = $request;
-	}
+    public function __construct(
+        $appName,
+        private readonly IAppConfig $config,
+        IRequest $request
+    ) {
+        parent::__construct($appName, $request);
+    }//end __construct()
 
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function index(): JSONResponse
-	{
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function index(): JSONResponse
+    {
 
-		$data = [];
-		$defaults = [
-		// Getting the config
-			'drcLocation'=>'',
-			'drcKey'=>'',
-			'drcAuthType'=>'',
-			'orcLocation'=>'',
-			'orcKey'=>'',
-			'orcAuthType'=>'',
-			'zrcLocation'=>'',
-			'zrcKey'=>'',
-			'zrcAuthType'=>'',
-			'ztcLocation'=>'',
-			'ztcKey'=>'',
-			'ztcAuthType'=>'',
-			'brcLocation' => '',
-			'brcKey'=>'',
-			'brcAuthType'=>'',
-			'klantenLocation'=> '',
-			'klantenKey'=>'',
-			'klantenAuthType'=>'',
-			'elasticLocation'=>'',
-			'elasticKey'=>'',
-			'mongodbLocation'=>'',
-			'mongodbKey'=>'',
-			'mongodbCluster'=>'',
-			'organisationName'=>'',
-			'organisationOIN'=>'',
-			'organisationPKI'=>'',
-			'organisationRSIN'=>'',
-			'organisationKVK'=>''
-		];
+        $data     = [];
+        $defaults = [
+        // Getting the config
+            'drcLocation'      => '',
+            'drcKey'           => '',
+            'drcAuthType'      => '',
+            'orcLocation'      => '',
+            'orcKey'           => '',
+            'orcAuthType'      => '',
+            'zrcLocation'      => '',
+            'zrcKey'           => '',
+            'zrcAuthType'      => '',
+            'ztcLocation'      => '',
+            'ztcKey'           => '',
+            'ztcAuthType'      => '',
+            'brcLocation'      => '',
+            'brcKey'           => '',
+            'brcAuthType'      => '',
+            'klantenLocation'  => '',
+            'klantenKey'       => '',
+            'klantenAuthType'  => '',
+            'elasticLocation'  => '',
+            'elasticKey'       => '',
+            'mongodbLocation'  => '',
+            'mongodbKey'       => '',
+            'mongodbCluster'   => '',
+            'organisationName' => '',
+            'organisationOIN'  => '',
+            'organisationPKI'  => '',
+            'organisationRSIN' => '',
+            'organisationKVK'  => '',
+        ];
 
-		// We should filter out unwanted values before this
-		foreach($defaults as $key => $value){
-			$data[$key] =  $this->config->getValueString('zaakafhandelapp', $key, $value);
-		}
+        // We should filter out unwanted values before this
+        foreach ($defaults as $key => $value) {
+            $data[$key] = $this->config->getValueString('zaakafhandelapp', $key, $value);
+        }
 
-		return new JSONResponse($data);
-	}
+        return new JSONResponse($data);
+    }//end index()
 
-	/**
-	 * Handling the post request
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function create(): JSONResponse
-	{
-		$data = $this->request->getParams();
+    /**
+     * Handling the post request
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function create(): JSONResponse
+    {
+        $data = $this->request->getParams();
 
-		// We should filter out unwanted values before this
-		foreach($data as $key => $value){
-			$this->config->setValueString('zaakafhandelapp', $key, $value);
-			$data[$key] =  $this->config->getValueString('zaakafhandelapp', $key);
-		}
+        // We should filter out unwanted values before this
+        foreach ($data as $key => $value) {
+            $this->config->setValueString('zaakafhandelapp', $key, $value);
+            $data[$key] = $this->config->getValueString('zaakafhandelapp', $key);
+        }
 
-		return new JSONResponse($data);
-	}
-}
+        return new JSONResponse($data);
+    }//end create()
+}//end class

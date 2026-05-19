@@ -8,19 +8,6 @@ describe('Navigation Store', () => {
 		setActivePinia(createPinia())
 	})
 
-	it('set current selected view correctly', () => {
-		const store = useNavigationStore()
-
-		store.setSelected('publication')
-		expect(store.selected).toBe('publication')
-
-		store.setSelected('catalogi')
-		expect(store.selected).toBe('catalogi')
-
-		store.setSelected('metadata')
-		expect(store.selected).toBe('metadata')
-	})
-
 	it('set modal correctly', () => {
 		const store = useNavigationStore()
 

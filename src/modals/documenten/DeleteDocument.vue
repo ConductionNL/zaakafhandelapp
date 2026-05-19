@@ -1,23 +1,22 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { documentStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Document verwijderen"
+	<NcDialog :name="t('zaakafhandelapp', 'Delete document')"
 		size="normal"
 		:can-close="false">
 		<p v-if="success === null">
-			Weet u zeker dat u
-			<b>{{ documentStore.documentItem?.titel ?? documentStore.documentItem?.id }}</b>
-			permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+			{{ t('zaakafhandelapp', 'Are you sure you want to permanently delete {name}? This action cannot be undone.', { name: documentStore.documentItem?.titel ?? documentStore.documentItem?.id }) }}
 		</p>
 
 		<div v-if="success !== null">
 			<NcNoteCard v-if="success" type="success">
-				<p>Document succesvol verwijderd</p>
+				<p>{{ t('zaakafhandelapp', 'Document successfully deleted') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="!success && !error" type="error">
-				<p>Er is een fout opgetreden bij het verwijderen van het document</p>
+				<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the document') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -29,7 +28,7 @@ import { documentStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success === null ? 'Annuleren' : 'Sluiten' }}
+				{{ success === null ? t('zaakafhandelapp', 'Cancel') : t('zaakafhandelapp', 'Close') }}
 			</NcButton>
 			<NcButton v-if="success === null"
 				:disabled="loading"
@@ -39,7 +38,7 @@ import { documentStore, navigationStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<TrashCanOutline v-if="!loading" :size="20" />
 				</template>
-				Verwijderen
+				{{ t('zaakafhandelapp', 'Delete') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -90,7 +89,7 @@ export default {
 					response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
 				}).catch((error) => {
 					this.success = false
-					this.error = error.message || 'Er is een fout opgetreden bij het verwijderen van het document'
+					this.error = error.message || t('zaakafhandelapp', 'An error occurred while deleting the document')
 				}).finally(() => {
 					this.loading = false
 				})

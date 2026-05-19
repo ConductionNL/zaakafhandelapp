@@ -11,25 +11,21 @@ use OCP\AppFramework\Http\ContentSecurityPolicy;
 
 class KlantenController extends Controller
 {
-
-    public function __construct
-	(
-		$appName,
-		IRequest $request,
+    public function __construct(
+        $appName,
+        IRequest $request,
         private readonly ObjectService $objectService,
-	)
-    {
+    ) {
         parent::__construct($appName, $request);
-    }
-
+    }//end __construct()
 
     /**
      * Return (and serach) all objects
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function index(): JSONResponse
     {
@@ -41,12 +37,12 @@ class KlantenController extends Controller
 
         // Return JSON response
         return new JSONResponse($data);
-    }
+    }//end index()
 
     /**
      * Render no page.
      *
-     * @param string|null $getParameter Optional GET parameter
+     * @param  string|null $getParameter Optional GET parameter
      * @return TemplateResponse The rendered template response
      *
      * @NoAdminRequired
@@ -61,7 +57,7 @@ class KlantenController extends Controller
                 'index',
                 []
             );
-            
+
             // Set up Content Security Policy
             $csp = new ContentSecurityPolicy();
             $csp->addAllowedConnectDomain('*');
@@ -76,16 +72,16 @@ class KlantenController extends Controller
                 ['error' => $e->getMessage()],
                 '500'
             );
-        }
-    }
+        }//end try
+    }//end page()
 
     /**
      * Read a single object
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function show(string $id): JSONResponse
     {
@@ -94,16 +90,15 @@ class KlantenController extends Controller
 
         // Return the catalog as a JSON response
         return new JSONResponse($object);
-    }
-
+    }//end show()
 
     /**
      * Creatue an object
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function create(): JSONResponse
     {
@@ -115,18 +110,18 @@ class KlantenController extends Controller
 
         // Save the new catalog object
         $object = $this->objectService->saveObject('klanten', $data);
-        
+
         // Return the created object as a JSON response
         return new JSONResponse($object);
-    }
+    }//end create()
 
     /**
      * Update an object
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function update(string $id): JSONResponse
     {
@@ -135,18 +130,18 @@ class KlantenController extends Controller
 
         // Save the new catalog object
         $object = $this->objectService->saveObject('klanten', $data);
-        
+
         // Return the created object as a JSON response
         return new JSONResponse($object);
-    }
+    }//end update()
 
     /**
      * Delate an object
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function destroy(string $id): JSONResponse
     {
@@ -154,80 +149,80 @@ class KlantenController extends Controller
         $result = $this->objectService->deleteObject('klanten', $id);
 
         // Return the result as a JSON response
-		return new JSONResponse(['success' => $result], $result === true ? '200' : '404');
-    }
+        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+    }//end destroy()
 
     /**
      * Get zaken for a specific klant
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function getZaken(string $id): JSONResponse
     {
         $requestParams = ['klant' => $id];
-        $zaken = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
+        $zaken         = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
         return new JSONResponse($zaken);
-    }
+    }//end getZaken()
 
     /**
      * Get taken for a specific klant
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function getTaken(string $id): JSONResponse
     {
         $requestParams = ['klant' => $id];
-        $taken = $this->objectService->getResultArrayForRequest('taken', $requestParams);
+        $taken         = $this->objectService->getResultArrayForRequest('taken', $requestParams);
         return new JSONResponse($taken);
-    }
+    }//end getTaken()
 
     /**
      * Get berichten for a specific klant
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function getBerichten(string $id): JSONResponse
     {
         $requestParams = ['gebruikerID' => $id];
-        $berichten = $this->objectService->getResultArrayForRequest('klanten', $requestParams);
+        $berichten     = $this->objectService->getResultArrayForRequest('klanten', $requestParams);
         return new JSONResponse($berichten);
-    }
+    }//end getBerichten()
 
     /**
      * Get contactmomenten for a specific klant
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function getContactmomenten(string $id): JSONResponse
     {
-        $requestParams = ['klant' => $id];
+        $requestParams   = ['klant' => $id];
         $contactmomenten = $this->objectService->getResultArrayForRequest('contactmomenten', $requestParams);
         return new JSONResponse($contactmomenten);
-    }
+    }//end getContactmomenten()
 
     /**
      * Get audit trail for a specific klant
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
      */
     public function getAuditTrail(string $id): JSONResponse
     {
         $auditTrail = $this->objectService->getAuditTrail('klanten', $id);
         return new JSONResponse($auditTrail);
-    }
-}
+    }//end getAuditTrail()
+}//end class

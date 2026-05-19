@@ -85,7 +85,7 @@ export class Document implements TDocument {
 		this.vertrouwelijkheidaanduiding = source.vertrouwelijkheidaanduiding || null
 		this.auteur = source.auteur || ''
 		this.status = source.status || null
-		this.inhoudIsVervallen = source.inhoudIsVervallen || null
+		this.inhoudIsVervallen = source.inhoudIsVervallen ?? null
 		this.formaat = source.formaat || null
 		this.taal = source.taal || ''
 		this.versie = source.versie || 0
@@ -97,7 +97,7 @@ export class Document implements TDocument {
 		this.beschrijving = source.beschrijving || null
 		this.ontvangstdatum = source.ontvangstdatum || null
 		this.verzenddatum = source.verzenddatum || null
-		this.indicatieGebruiksrecht = source.indicatieGebruiksrecht || null
+		this.indicatieGebruiksrecht = source.indicatieGebruiksrecht ?? null
 		this.verschijningsvorm = source.verschijningsvorm || null
 		this.ondertekening = source.ondertekening || null
 		this.integriteit = source.integriteit || null

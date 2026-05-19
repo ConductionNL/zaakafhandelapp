@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 				<NcTextField class="searchField"
 					disabled
 					:value.sync="search"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
 					@trailing-button-click="clearText">
@@ -50,13 +51,13 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -71,7 +72,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Berichten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading messages')" />
 	</NcAppContentList>
 </template>
 <script>
@@ -119,7 +120,7 @@ export default {
 	methods: {
 		openBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'berichten', id: bericht.id } })
+			this.$router.push({ name: 'BerichtDetail', params: { id: bericht.id } })
 		},
 		editBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)

@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					class="searchField"
 					@trailing-button-click="clearText">
@@ -51,13 +52,13 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('deleteZaaktype')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -72,7 +73,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaaktypen aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading case types')" />
 	</NcAppContentList>
 </template>
 
@@ -125,7 +126,7 @@ export default {
 	methods: {
 		openZaakType(zaaktype) {
 			zaakTypeStore.setZaakTypeItem(zaaktype)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'zaaktypen', id: zaaktype.id } })
+			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaaktype.id } })
 		},
 		clearText() {
 			this.search = ''

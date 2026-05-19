@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, medewerkerStore } from '../../store/store.js'
 </script>
 
@@ -8,7 +9,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 			<div class="listHeader">
 				<NcTextField :value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -50,7 +51,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -58,14 +59,14 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 		</ul>
 
 		<div v-if="!medewerkerStore.medewerkersList?.length && !loading">
-			Geen medewerkers gedefinieerd.
+			{{ t('zaakafhandelapp', 'No employees defined.') }}
 		</div>
 
 		<NcLoadingIcon v-if="!medewerkerStore.medewerkersList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Medewerkers aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading employees')" />
 	</NcAppContentList>
 </template>
 <script>
@@ -109,7 +110,7 @@ export default {
 	methods: {
 		openMedewerker(medewerker) {
 			medewerkerStore.setMedewerkerItem(medewerker)
-			this.$router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: medewerker.id } })
+			this.$router.push({ name: 'MedewerkerDetail', params: { id: medewerker.id } })
 		},
 		fullName(medewerker) {
 			let name = medewerker.achternaam

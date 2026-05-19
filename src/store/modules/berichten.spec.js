@@ -23,11 +23,11 @@ describe('Bericht Store', () => {
 	it('sets zaken list correctly', () => {
 		const store = useBerichtStore()
 
-		store.setBerichtList(mockBericht())
+		store.setBerichtenList(mockBericht())
 
-		expect(store.berichtList).toHaveLength(mockBericht().length)
+		expect(store.berichtenList).toHaveLength(mockBericht().length)
 
-		store.berichtList.forEach((item, index) => {
+		store.berichtenList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(Bericht)
 			expect(item).toEqual(mockBericht()[index])
 			expect(item.validate().success).toBe(true)

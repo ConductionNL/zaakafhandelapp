@@ -12,38 +12,39 @@ use OCP\Mail\IMailer;
  */
 class MailService
 {
-	/**
-	 * Constructor for MailService.
-	 */
-	public function __construct(
-		private readonly IMailer $mailer,
-		private readonly IURLGenerator $urlGenerator,
-	) {
-	}
+    /**
+     * Constructor for MailService.
+     */
+    public function __construct(
+        private readonly IMailer $mailer,
+        private readonly IURLGenerator $urlGenerator,
+    ) {
+    }//end __construct()
 
-	/**
-	 * Sends an e-mail when a task is connected to an employee.
-	 *
-	 * @param array $oldObject The previous version of the object (to check if the field changes)
-	 * @param array $newObject The current version of the object.
-	 *
-	 * @return array The current version of the object.
-	 * @throws \Exception
-	 */
-	public function sendMail(array $oldObject, array $newObject): array
-	{
-		if(isset($newObject['medewerker']) === false) {
-			return $newObject;
-		} else if (isset($oldObject['medewerker']) === true && $oldObject === $newObject) {
-			return $newObject;
-		}
+    /**
+     * Sends an e-mail when a task is connected to an employee.
+     *
+     * @param array $oldObject The previous version of the object (to check if the field changes)
+     * @param array $newObject The current version of the object.
+     *
+     * @return array The current version of the object.
+     * @throws \Exception
+     */
+    public function sendMail(array $oldObject, array $newObject): array
+    {
+        if (isset($newObject['medewerker']) === false) {
+            return $newObject;
+        } else if (isset($oldObject['medewerker']) === true && $oldObject === $newObject) {
+            return $newObject;
+        }
 
-		$email = $newObject['medewerker'];
+        $email = $newObject['medewerker'];
 
-		$message = $this->mailer->createMessage();
-		$message->setSubject('KISS: Er is een taak aan u toegewezen');
-		$message->setTo([$email]);
-		$message->setHtmlBody(body: "
+        $message = $this->mailer->createMessage();
+        $message->setSubject('KISS: Er is een taak aan u toegewezen');
+        $message->setTo([$email]);
+        $message->setHtmlBody(
+          body: "
 				<!doctype html>
 				<html lang='nl'>
 					<body>
@@ -54,11 +55,10 @@ class MailService
 						om naar de taak te gaan.
 					</body>
 				</html>"
-		);
+        );
 
-		$this->mailer->send($message);
+        $this->mailer->send($message);
 
-		return $newObject;
-	}
-
-}
+        return $newObject;
+    }//end sendMail()
+}//end class

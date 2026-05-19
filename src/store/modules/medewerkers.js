@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Medewerker } from '../../entities/index.js'
-import router from '../../router/router.ts'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/medewerkers'
 
@@ -169,7 +169,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			this.refreshMedewerkersList()
-			router.push({ name: 'dynamic-view', params: { view: 'medewerkers' } })
+			router.push({ name: 'Medewerkers' })
 
 			return { response }
 		},
@@ -206,7 +206,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 			this.setMedewerkerItem(data)
 			this.refreshMedewerkersList()
-			router.push({ name: 'dynamic-view', params: { view: 'medewerkers', id: entity.id } })
+			router.push({ name: 'MedewerkerDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

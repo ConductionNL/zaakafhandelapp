@@ -1,18 +1,19 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog
-		name="Verwijder klant"
+		:name="t('zaakafhandelapp', 'Delete customer')"
 		size="normal"
 		:can-close="false">
 		<p v-if="!success">
-			Wil je <b>{{ klantStore.klantItem.type === 'persoon' ? `${klantStore.klantItem.voornaam} ${klantStore.klantItem.tussenvoegsel} ${klantStore.klantItem.achternaam}` : klantStore.klantItem.bedrijfsnaam }}</b> verwijderen? Deze actie is niet ongedaan te maken.
+			{{ t('zaakafhandelapp', 'Do you want to delete {name}? This action cannot be undone.', { name: klantStore.klantItem.type === 'persoon' ? `${klantStore.klantItem.voornaam} ${klantStore.klantItem.tussenvoegsel} ${klantStore.klantItem.achternaam}` : klantStore.klantItem.bedrijfsnaam }) }}
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
-			<p>Klant succesvol verwijderd</p>
+			<p>{{ t('zaakafhandelapp', 'Customer successfully deleted') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -24,7 +25,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleren' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
 				v-if="!success"
@@ -35,7 +36,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<TrashCanOutline v-if="!loading" :size="20" />
 				</template>
-				Verwijder
+				{{ t('zaakafhandelapp', 'Delete') }}
 			</NcButton>
 		</template>
 	</NcDialog>

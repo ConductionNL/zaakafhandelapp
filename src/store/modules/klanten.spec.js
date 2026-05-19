@@ -23,11 +23,11 @@ describe('Klant Store', () => {
 	it('sets zaken list correctly', () => {
 		const store = useKlantStore()
 
-		store.setKlantList(mockKlant())
+		store.setKlantenList(mockKlant())
 
-		expect(store.klantList).toHaveLength(mockKlant().length)
+		expect(store.klantenList).toHaveLength(mockKlant().length)
 
-		store.klantList.forEach((item, index) => {
+		store.klantenList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(Klant)
 			expect(item).toEqual(mockKlant()[index])
 			expect(item.validate().success).toBe(true)

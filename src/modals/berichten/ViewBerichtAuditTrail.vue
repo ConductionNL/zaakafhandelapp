@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { berichtStore, navigationStore } from '../../store/store.js'
 </script>
 
@@ -9,19 +10,19 @@ import { berichtStore, navigationStore } from '../../store/store.js'
 			<div class="audit-item">
 				<h3>Audit Trail ID: {{ auditTrail.id }}</h3>
 
-				<p><strong>Action:</strong> {{ auditTrail.action }}</p>
-				<p><strong>User:</strong> {{ auditTrail.userName }} ({{ auditTrail.user }})</p>
-				<p><strong>Session:</strong> {{ auditTrail.session }}</p>
-				<p><strong>IP Address:</strong> {{ auditTrail.ipAddress }}</p>
-				<p><strong>Created:</strong> {{ new Date(auditTrail.created).toLocaleString() }}</p>
+				<p><strong>{{ t('zaakafhandelapp', 'Action:') }}</strong> {{ auditTrail.action }}</p>
+				<p><strong>{{ t('zaakafhandelapp', 'User:') }}</strong> {{ auditTrail.userName }} ({{ auditTrail.user }})</p>
+				<p><strong>{{ t('zaakafhandelapp', 'Session:') }}</strong> {{ auditTrail.session }}</p>
+				<p><strong>{{ t('zaakafhandelapp', 'IP Address:') }}</strong> {{ auditTrail.ipAddress }}</p>
+				<p><strong>{{ t('zaakafhandelapp', 'Created:') }}</strong> {{ new Date(auditTrail.created).toLocaleString() }}</p>
 
 				<div v-if="auditTrail.changed">
-					<h4>Changes:</h4>
+					<h4>{{ t('zaakafhandelapp', 'Changes:') }}</h4>
 					<ul>
 						<li v-for="(change, key) in auditTrail.changed" :key="key">
 							<strong>{{ key }}:</strong><br>
-							<span>Old: {{ change.old ?? 'N/A' }}</span><br>
-							<span>New: {{ change.new ?? 'N/A' }}</span>
+							<span>{{ t('zaakafhandelapp', 'Old:') }} {{ change.old ?? 'N/A' }}</span><br>
+							<span>{{ t('zaakafhandelapp', 'New:') }} {{ change.new ?? 'N/A' }}</span>
 						</li>
 					</ul>
 				</div>

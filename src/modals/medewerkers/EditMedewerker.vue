@@ -1,11 +1,12 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { medewerkerStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Medewerker" size="normal" :can-close="false">
+	<NcDialog :name="t('zaakafhandelapp', 'Employee')" size="normal" :can-close="false">
 		<NcNoteCard v-if="success" type="success">
-			<p>Medewerker succesvol aangepast</p>
+			<p>{{ t('zaakafhandelapp', 'Employee successfully updated') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -13,27 +14,27 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 
 		<div v-if="!success" class="form-group">
 			<NcTextField :disabled="loading"
-				label="Voornaam"
+				:label="t('zaakafhandelapp', 'First name')"
 				maxlength="255"
 				:value.sync="medewerkerItem.voornaam" />
 
 			<NcTextField :disabled="loading"
-				label="Tussenvoegsel"
+				:label="t('zaakafhandelapp', 'Middle name')"
 				maxlength="255"
 				:value.sync="medewerkerItem.tussenvoegsel" />
 
 			<NcTextField :disabled="loading"
-				label="Achternaam"
+				:label="t('zaakafhandelapp', 'Last name')"
 				maxlength="255"
 				:value.sync="medewerkerItem.achternaam" />
 
 			<NcTextField :disabled="loading"
-				label="Email adres"
+				:label="t('zaakafhandelapp', 'Email address')"
 				maxlength="255"
 				:value.sync="medewerkerItem.email" />
 
 			<NcTextField :disabled="loading"
-				label="Telefoonnummer"
+				:label="t('zaakafhandelapp', 'Phone number')"
 				minlength="10"
 				maxlength="11"
 				placeholder="06 12345678"
@@ -45,7 +46,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
 				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
@@ -63,7 +64,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && medewerkerStore.medewerkerItem?.id" :size="20" />
 					<Plus v-if="!loading && !medewerkerStore.medewerkerItem?.id" :size="20" />
 				</template>
-				{{ medewerkerStore.medewerkerItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ medewerkerStore.medewerkerItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>

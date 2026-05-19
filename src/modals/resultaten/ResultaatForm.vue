@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js'
 </script>
 
@@ -7,11 +8,11 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Resultaat {{ IS_EDIT ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Result {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Result {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Resultaat succesvol {{ IS_EDIT ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Result successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Result successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -21,17 +22,17 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 			<div v-if="success === null" class="form-group">
 				<NcSelect v-bind="zaak"
 					v-model="zaak.value"
-					input-label="Zaak"
+					:input-label="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Resultaat type"
+					:label="t('zaakafhandelapp', 'Result type')"
 					maxlength="1000"
 					:value.sync="resultaat.resultaattype"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Toelichting"
+					:label="t('zaakafhandelapp', 'Explanation')"
 					maxlength="255"
 					:value.sync="resultaat.toelichting" />
 			</div>
@@ -47,7 +48,7 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 					<ContentSaveOutline v-else-if="!loading && IS_EDIT" :size="20" />
 					<Plus v-else-if="!loading && !IS_EDIT" :size="20" />
 				</template>
-				{{ IS_EDIT ? 'Opslaan' : 'Aanmaken' }}
+				{{ IS_EDIT ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</div>
 	</NcModal>

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Bericht } from '../../entities/index.js'
-import router from '../../router/router.ts'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/berichten'
 
@@ -87,7 +87,7 @@ export const useBerichtStore = defineStore('berichten', {
 			}
 
 			this.refreshBerichtenList()
-			router.push({ name: 'dynamic-view', params: { view: 'berichten' } })
+			router.push({ name: 'Berichten' })
 
 			return { response }
 		},
@@ -124,7 +124,7 @@ export const useBerichtStore = defineStore('berichten', {
 
 			this.setBerichtItem(data)
 			this.refreshBerichtenList()
-			router.push({ name: 'dynamic-view', params: { view: 'berichten', id: entity.id } })
+			router.push({ name: 'BerichtDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

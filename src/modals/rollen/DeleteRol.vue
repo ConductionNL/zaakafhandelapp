@@ -1,20 +1,20 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { rolStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog name="Rol verwijderen" size="normal" :can-close="false">
+	<NcDialog :name="t('zaakafhandelapp', 'Delete role')" size="normal" :can-close="false">
 		<p v-if="success === null">
-			Weet u zeker dat u <b>{{ rolStore.rolItem?.roltype }}</b> permanent wilt verwijderen? Deze
-			actie kan niet ongedaan worden gemaakt.
+			{{ t('zaakafhandelapp', 'Are you sure you want to permanently delete {name}? This action cannot be undone.', { name: rolStore.rolItem?.roltype }) }}
 		</p>
 
 		<div v-if="success !== null">
 			<NcNoteCard v-if="success" type="success">
-				<p>Rol succesvol verwijderd</p>
+				<p>{{ t('zaakafhandelapp', 'Role successfully deleted') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="!success && !error" type="error">
-				<p>Er is een fout opgetreden bij het verwijderen van de rol</p>
+				<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the role') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -26,7 +26,7 @@ import { rolStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success === null ? 'Annuleren' : 'Sluiten' }}
+				{{ success === null ? t('zaakafhandelapp', 'Cancel') : t('zaakafhandelapp', 'Close') }}
 			</NcButton>
 			<NcButton v-if="success === null"
 				:disabled="loading"
@@ -36,7 +36,7 @@ import { rolStore, navigationStore } from '../../store/store.js'
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<TrashCanOutline v-if="!loading" :size="20" />
 				</template>
-				Verwijderen
+				{{ t('zaakafhandelapp', 'Delete') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -86,7 +86,7 @@ export default {
 					response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
 				}).catch((error) => {
 					this.success = false
-					this.error = error.message || 'Er is een fout opgetreden bij het verwijderen van de rol'
+					this.error = error.message || t('zaakafhandelapp', 'An error occurred while deleting the role')
 				}).finally(() => {
 					this.loading = false
 				})

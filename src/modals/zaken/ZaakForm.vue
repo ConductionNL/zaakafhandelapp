@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -7,14 +8,14 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Zaak {{ zaakStore.zaakItem?.id ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ zaakStore.zaakItem?.id ? t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Zaak succesvol {{ zaak.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success" type="error">
-					<p>Zaak niet succesvol {{ zaak.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -23,53 +24,53 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 
 			<div v-if="success === null" class="form-group">
 				<NcTextField :disabled="zaakLoading"
-					label="Identificatie"
+					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
 					:value.sync="zaak.identificatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Omschrijving"
+					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255"
 					:value.sync="zaak.omschrijving" />
 				<NcTextField :disabled="zaakLoading"
-					label="Bronorganisatie"
+					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
 					:value.sync="zaak.bronorganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="VerantwoordelijkeOrganisatie"
+					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
 					:value.sync="zaak.verantwoordelijkeOrganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Startdatum"
+					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
 					:value.sync="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaakType"
 					v-model="zaakType.value"
-					input-label="Zaaktype"
+					:input-label="t('zaakafhandelapp', 'Case type')"
 					:loading="zaakTypeLoading"
 					:disabled="zaakLoading || zaakTypeLoading"
 					required />
 				<NcSelect v-bind="archiefstatus"
 					v-model="archiefstatus.value"
-					input-label="Archiefstatus"
+					:input-label="t('zaakafhandelapp', 'Archive status')"
 					:disabled="zaakLoading"
 					required />
 				<div>
-					<p>Uiterlijke Einddatum Afdoening</p>
+					<p>{{ t('zaakafhandelapp', 'Final settlement deadline') }}</p>
 					<NcDateTimePicker
 						v-model="zaak.uiterlijkeEinddatumAfdoening"
 						:disabled="zaakLoading"
 						required />
 				</div>
 				<NcTextField :disabled="zaakLoading"
-					label="Registratiedatum"
+					:label="t('zaakafhandelapp', 'Registration date')"
 					maxlength="255"
 					:value.sync="zaak.registratiedatum" />
 				<NcTextArea :disabled="zaakLoading"
-					label="Toelichting"
+					:label="t('zaakafhandelapp', 'Explanation')"
 					:value.sync="zaak.toelichting" />
 			</div>
 
@@ -82,7 +83,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 					<ContentSaveOutline v-else-if="!loading && zaak.id" :size="20" />
 					<Plus v-else-if="!loading && !zaak.id" :size="20" />
 				</template>
-				{{ zaak.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ zaak.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -157,19 +158,19 @@ export default {
 				options: [
 					{
 						id: 'nog_te_archiveren',
-						label: 'Nog te archiveren',
+						label: t('zaakafhandelapp', 'Yet to be archived'),
 					},
 					{
 						id: 'gearchiveerd',
-						label: 'Gearchiveerd',
+						label: t('zaakafhandelapp', 'Archived'),
 					},
 					{
 						id: 'gearchiveerd_procestermijn_onbekend',
-						label: 'Gearchiveerd procestermijn onbekend',
+						label: t('zaakafhandelapp', 'Archived process term unknown'),
 					},
 					{
 						id: 'overgedragen',
-						label: 'Overgedragen',
+						label: t('zaakafhandelapp', 'Transferred'),
 					},
 				],
 			},

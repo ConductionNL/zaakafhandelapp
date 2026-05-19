@@ -20,26 +20,26 @@ use OCA\ZaakAfhandelApp\Dashboard\OrganisatiesWidget;
  */
 class Application extends App implements IBootstrap
 {
-	public const APP_ID = 'zaakafhandelapp';
+    public const APP_ID = 'zaakafhandelapp';
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $urlParams
-	 */
-	public function __construct(array $urlParams = [])
-	{
-		parent::__construct(appName: self::APP_ID, urlParams: $urlParams);
-	}
+    /**
+     * Constructor
+     *
+     * @param array $urlParams
+     */
+    public function __construct(array $urlParams=[])
+    {
+        parent::__construct(appName: self::APP_ID, urlParams: $urlParams);
+    }//end __construct()
 
-	public function register(IRegistrationContext $context): void
-	{
-		$context->registerDashboardWidget(ZakenWidget::class);
-		$context->registerDashboardWidget(TakenWidget::class);
-		$context->registerDashboardWidget(OpenZakenWidget::class);
-		$context->registerDashboardWidget(ContactmomentenWidget::class);
-		$context->registerDashboardWidget(PersonenWidget::class);
-		$context->registerDashboardWidget(OrganisatiesWidget::class);
+    public function register(IRegistrationContext $context): void
+    {
+        $context->registerDashboardWidget(ZakenWidget::class);
+        $context->registerDashboardWidget(TakenWidget::class);
+        $context->registerDashboardWidget(OpenZakenWidget::class);
+        $context->registerDashboardWidget(ContactmomentenWidget::class);
+        $context->registerDashboardWidget(PersonenWidget::class);
+        $context->registerDashboardWidget(OrganisatiesWidget::class);
 
         $context->registerEventListener(
             \OCA\OpenRegister\Event\ObjectCreatedEvent::class,
@@ -65,9 +65,9 @@ class Application extends App implements IBootstrap
             \OCA\OpenRegister\Event\ObjectDeletingEvent::class,
             \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
         );
-	}
+    }//end register()
 
-	public function boot(IBootContext $context): void
-	{
-	}
-}
+    public function boot(IBootContext $context): void
+    {
+    }//end boot()
+}//end class
