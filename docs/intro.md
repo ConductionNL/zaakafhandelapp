@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: Get started with the Zaak Afhandel App, ZGW-aligned case management on Nextcloud. Workflows, tasks, documents, and a complete decision log.
 ---
 
 # Zaak Afhandel App
