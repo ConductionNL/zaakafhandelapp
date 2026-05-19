@@ -19,6 +19,7 @@
 			:manifest="manifest"
 			:custom-components="customComponents"
 			:page-types="pageTypes"
+			:registry="registry"
 			app-id="zaakafhandelapp"
 			:translate="translateForApp"
 			:permissions="permissions">
@@ -104,6 +105,18 @@ export default {
 		pageTypes: {
 			type: Object,
 			default: null,
+		},
+		/**
+		 * V2 component registry. Map of registry key →
+		 * `{ kind, component, ...kindMetadata }`. Passed to CnAppRoot
+		 * which validates entries at mount time. Recognised kinds:
+		 * `page`, `widget`, `modal`, `form-field`, `cell-renderer`.
+		 *
+		 * @type {object}
+		 */
+		registry: {
+			type: Object,
+			default: () => ({}),
 		},
 	},
 
