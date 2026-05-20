@@ -18,6 +18,7 @@ import App from './App.vue'
 import router from './router/index.js'
 import bundledManifest from './manifest.json'
 import customComponents from './customComponents.js'
+import registry from './registry.js'
 import { initializeStores } from './store/store.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
 
@@ -89,6 +90,7 @@ try {
 // the values the lib resolves at render time.
 const pageTypesProp = { ...defaultPageTypes }
 const customComponentsProp = { ...customComponents }
+const registryProp = { ...registry }
 
 new Vue({
 	pinia,
@@ -97,6 +99,7 @@ new Vue({
 		props: {
 			manifest: bundledManifest,
 			customComponents: customComponentsProp,
+			registry: registryProp,
 			pageTypes: pageTypesProp,
 		},
 	}),

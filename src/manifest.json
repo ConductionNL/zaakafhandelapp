@@ -1,6 +1,6 @@
 {
-	"$schema": "https://raw.githubusercontent.com/ConductionNL/nextcloud-vue/main/src/schemas/app-manifest.schema.json",
-	"version": "1.0.0",
+	"$schema": "https://raw.githubusercontent.com/ConductionNL/nextcloud-vue/main/src/schemas/app-manifest-v2.schema.json",
+	"version": "2.0.0",
 	"dependencies": ["openregister"],
 	"menu": [
 		{ "id": "Dashboard", "label": "Dashboard", "icon": "icon-category-dashboard", "route": "Dashboard", "order": 10 },
@@ -432,16 +432,24 @@
 		{
 			"id": "Search",
 			"route": "/zoeken",
-			"type": "custom",
+			"type": "index",
 			"title": "Search",
-			"component": "SearchView"
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak",
+				"columns": ["identificatie", "omschrijving", "zaaktype", { "key": "status", "label": "Status", "widget": "badge" }, { "key": "uiterlijkeEinddatumAfdoening", "label": "Deadline", "formatter": "date" }],
+				"sidebar": { "enabled": true, "showMetadata": true }
+			}
 		},
 		{
 			"id": "AuditTrail",
 			"route": "/auditTrail",
-			"type": "custom",
+			"type": "logs",
 			"title": "Audit trail",
-			"component": "AuditTrailView"
+			"config": {
+				"register": "audit-trail-immutable",
+				"schema": "audit-event"
+			}
 		},
 		{
 			"id": "Settings",

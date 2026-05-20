@@ -18,6 +18,7 @@
 		<CnAppRoot
 			:manifest="manifest"
 			:custom-components="customComponents"
+			:registry="registry"
 			:page-types="pageTypes"
 			app-id="zaakafhandelapp"
 			:translate="translateForApp"
@@ -91,6 +92,16 @@ export default {
 		 * @type {object}
 		 */
 		customComponents: {
+			type: Object,
+			default: () => ({}),
+		},
+		/**
+		 * 5-kind component registry (v2 manifest pattern per hydra ADR-036).
+		 * Each entry: { kind, component, ...kindMetadata }.
+		 *
+		 * @type {object}
+		 */
+		registry: {
 			type: Object,
 			default: () => ({}),
 		},

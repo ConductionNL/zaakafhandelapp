@@ -18,9 +18,11 @@
 //   - openspec/changes/zaakafhandelapp-manifest-v1/design.md
 //   - @conduction/nextcloud-vue → docs/migrating-to-manifest.md
 
-// --- Custom-fallback page components (referenced by `pages[].component`) ---
-import SearchView from './views/search/SearchIndex.vue'
-import AuditTrailView from './views/audit/AuditTrailView.vue'
+// --- Custom-fallback page components ---
+// (Search + AuditTrail placeholders eliminated in #234 — Search now type:'index'
+// on the zaak schema, AuditTrail now type:'logs' on audit-trail-immutable.
+// Their stub view files remain on disk for reference but are no longer wired
+// into the manifest dispatcher.)
 
 // --- Settings section component (referenced by settings page sections[]). ---
 // `manifest-settings-rich-sections` lets each section declare a custom
@@ -43,10 +45,6 @@ import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
 import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
 
 export default {
-	// --- Genuine exception: multi-store search; no abstract analogue. ---
-	SearchView,
-	// --- Migration cost: placeholder navigation entry. ---
-	AuditTrailView,
 	// --- Settings wrapper (lib gap). ---
 	SettingsForm,
 
