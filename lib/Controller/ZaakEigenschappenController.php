@@ -72,9 +72,6 @@ class ZaakEigenschappenController extends Controller
      */
     public function index(CallService $callService, string $zaakId): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
         return new JSONResponse($results);
     }//end index()
@@ -89,9 +86,6 @@ class ZaakEigenschappenController extends Controller
      */
     public function show(string $id, CallService $callService, string $zaakId): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
         return new JSONResponse($results);
     }//end show()
