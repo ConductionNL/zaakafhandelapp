@@ -75,9 +75,6 @@ class StatusenController extends Controller
      */
     public function index(CallService $callService): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->index(source: 'zrc', endpoint: 'statussen');
         return new JSONResponse($results);
     }//end index()
@@ -92,9 +89,6 @@ class StatusenController extends Controller
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->show(source: 'zrc', endpoint: 'statussen', id: $id);
         return new JSONResponse($results);
     }//end show()

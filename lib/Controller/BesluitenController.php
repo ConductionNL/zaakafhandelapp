@@ -76,9 +76,6 @@ class BesluitenController extends Controller
      */
     public function index(CallService $callService): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->index(source: 'brc', endpoint: 'besluiten');
         return new JSONResponse($results);
     }//end index()
@@ -93,9 +90,6 @@ class BesluitenController extends Controller
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->show(source: 'brc', endpoint: 'besluiten', id: $id);
         return new JSONResponse($results);
     }//end show()
