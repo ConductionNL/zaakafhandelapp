@@ -205,6 +205,9 @@ export default {
 		startingType: {
 			type: String,
 			required: true, // required is set to true as I want developers to be aware of the functionality they're adding / using
+			/**
+			 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+			 */
 			validator(value) {
 				return ['persoon', 'organisatie', 'all'].includes(value)
 			},
@@ -241,6 +244,9 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		searchLabel() {
 			const typeLabels = {
 				persoon: {
@@ -275,6 +281,9 @@ export default {
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		klantenSearchType(newVal) {
 			if (newVal === 'geboortedatum_achternaam') {
 				this.searchQuery = [new Date(), '']
@@ -284,20 +293,32 @@ export default {
 		},
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModalFromButton() {
 			setTimeout(() => {
 				this.closeModal()
 			}, 300)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			this.$emit('close-modal')
 
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		selectKlant() {
 			console.info('klant selected', this.selectedKlant?.id)
 			this.$emit('selected-klant', this.selectedKlant)
 			this.closeModalFromButton()
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		search() {
 			this.loading = true
@@ -332,6 +353,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -343,6 +367,9 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/office-building-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/office-building-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		getName(klant) {
 			if (klant.type === 'persoon') {
@@ -353,6 +380,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
@@ -362,6 +392,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		getSummary(klant) {
 			if (klant.type === 'persoon') {
 				const geboortedatum = getValidISOstring(klant.geboortedatum) ? new Date(klant.geboortedatum).toLocaleDateString() : 'onbekend'
@@ -373,12 +406,18 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		getSex(klant) {
 			if (klant.type === 'persoon') {
 				return `(${klant?.geslacht})`
 			}
 			return ''
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+		 */
 		setActive(klant) {
 			if (this.selectedKlant?.id === (klant?.id || Symbol('default id'))) {
 				this.selectedKlant = null

@@ -50,6 +50,8 @@ class DashboardController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-003
      */
     public function page(): TemplateResponse
     {
@@ -68,6 +70,8 @@ class DashboardController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-003
      */
     public function index(): JSONResponse
     {
@@ -82,6 +86,8 @@ class DashboardController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-003
      */
     public function show(string $id): JSONResponse
     {
@@ -96,6 +102,8 @@ class DashboardController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-003
      */
     public function create(): JSONResponse
     {
@@ -110,6 +118,8 @@ class DashboardController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-003
      */
     public function update(string $id): JSONResponse
     {
@@ -124,6 +134,8 @@ class DashboardController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-003
      */
     public function destroy(string $id): JSONResponse
     {

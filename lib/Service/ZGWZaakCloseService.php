@@ -24,6 +24,8 @@ class ZGWZaakCloseService
 
     /**
      * Close a zaak when eindstatus is set.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function closeZaak(ObjectEntity $status): void
     {
@@ -55,6 +57,8 @@ class ZGWZaakCloseService
 
     /**
      * Check if status is eindstatus for its zaaktype.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function isEindStatus(array $sa): bool
     {

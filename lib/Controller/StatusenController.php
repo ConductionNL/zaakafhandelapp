@@ -54,6 +54,8 @@ class StatusenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
      */
     public function page(): TemplateResponse
     {
@@ -72,6 +74,8 @@ class StatusenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(CallService $callService): JSONResponse
     {
@@ -86,6 +90,8 @@ class StatusenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
@@ -100,6 +106,8 @@ class StatusenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(CallService $callService): JSONResponse
     {
@@ -116,6 +124,8 @@ class StatusenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
@@ -131,6 +141,8 @@ class StatusenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {

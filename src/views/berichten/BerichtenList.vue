@@ -112,23 +112,38 @@ export default {
 			berichtenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		berichtStore.refreshBerichtenList().then(() => {
 			this.loading = false
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
 			this.$router.push({ name: 'BerichtDetail', params: { id: bericht.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		editBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
 			navigationStore.setModal('editBericht')
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		storeBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -148,6 +163,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

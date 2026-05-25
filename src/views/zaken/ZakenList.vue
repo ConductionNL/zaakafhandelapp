@@ -114,6 +114,9 @@ export default {
 			zakenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.loading = true
 
@@ -125,9 +128,15 @@ export default {
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
+		 */
 		openZaak(zaak) {
 			zaakStore.setZaakItem(zaak)
 			this.$router.push({ params: { id: zaak.id } })

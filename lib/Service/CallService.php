@@ -37,6 +37,8 @@ class CallService
      * Gets the guzzle config as an array
      *
      * @return array
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function getConfig(?string $source=null, array $query=[]): array
     {
@@ -73,6 +75,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function index(string $source, string $endpoint, array $query=[]): array | null
     {
@@ -99,6 +103,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function show(string $source, string $endpoint, string $id, array $query=[]): array | null
     {
@@ -125,6 +131,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function create(string $source, string $endpoint, array $data): array | null
     {
@@ -147,6 +155,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function update(string $source, string $endpoint, array $data, string $id): array | null
     {
@@ -168,6 +178,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function destroy(string $source, string $endpoint, string $id): array | null
     {

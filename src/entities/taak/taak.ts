@@ -16,6 +16,9 @@ export class Taak implements TTaak {
 	public klant: string
 	public contactmoment: string
 	public medewerker: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 	constructor(source: TTaak) {
 		this.id = source.id || ''
 		this.title = source.title || ''

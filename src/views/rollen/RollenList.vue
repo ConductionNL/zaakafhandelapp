@@ -112,6 +112,9 @@ export default {
 			rollenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.loading = true
 
@@ -122,9 +125,15 @@ export default {
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openRol(rol) {
 			rolStore.setRolItem(rol)
 			this.$router.push({ params: { id: rol.id } })

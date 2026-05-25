@@ -102,16 +102,25 @@ export default {
 			medewerkersList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		medewerkerStore.refreshMedewerkersList().then(() => {
 			this.loading = false
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openMedewerker(medewerker) {
 			medewerkerStore.setMedewerkerItem(medewerker)
 			this.$router.push({ name: 'MedewerkerDetail', params: { id: medewerker.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		fullName(medewerker) {
 			let name = medewerker.achternaam
 			if (medewerker.tussenvoegsel) {
@@ -125,6 +134,9 @@ export default {
 		getName(medewerker) {
 			return `${medewerker?.voornaam} ${medewerker?.tussenvoegsel} ${medewerker?.achternaam}`
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		deleteKlant() {
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/medewerkers/${medewerkerStore.medewerkerItem.id}`,
@@ -143,6 +155,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -162,6 +177,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

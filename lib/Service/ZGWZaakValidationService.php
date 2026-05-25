@@ -20,6 +20,8 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-015: Check productenOfDiensten against zaaktype.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkProductenOfDiensten(ObjectEntity $zaak): void
     {
@@ -45,6 +47,8 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-022: Check archive prerequisites.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkArchivePrerequisites(ObjectEntity $zaak): void
     {
@@ -67,6 +71,8 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-012: Check verlenging and opschorting parameters.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkGegevensgroepen(ObjectEntity $zaak): void
     {

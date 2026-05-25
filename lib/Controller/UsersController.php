@@ -39,6 +39,8 @@ class UsersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse Info about the current user.
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-004
      */
     public function me(): JSONResponse
     {

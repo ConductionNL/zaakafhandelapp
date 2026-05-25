@@ -80,6 +80,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		zaakId(newVal) {
 			this.fetchData()
 		},
@@ -88,6 +91,9 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.besluiten = {
 				...this.besluiten,
@@ -105,6 +111,9 @@ export default {
 					this.besluiten[this.zaakId].loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		toggleBesluit(besluit) {
 			if (besluitStore.besluitItem?.id === besluit.id) {
 				besluitStore.setBesluitItem(null)
@@ -112,6 +121,9 @@ export default {
 				besluitStore.setBesluitItem(besluit)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

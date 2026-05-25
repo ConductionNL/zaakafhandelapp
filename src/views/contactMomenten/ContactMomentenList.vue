@@ -113,6 +113,9 @@ export default {
 			contactMomentenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		Promise.all([
 			contactMomentStore.refreshContactMomentenList(),
@@ -122,17 +125,29 @@ export default {
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
 			this.$router.push({ name: 'ContactmomentDetail', params: { id: contactMoment.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		editContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
 			navigationStore.setModal('editContactMoment')
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		storeContactMoment(contactMoment) {
 			contactMomentStore.setContactMomentItem(contactMoment)
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getKlantName(klantId) {
 			const klant = klantStore.klantenList.find(klant => klant.id === klantId)
 			if (!klant) {
@@ -146,6 +161,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 
 		fetchData(newPage) {
 			this.loading = true
@@ -166,6 +184,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

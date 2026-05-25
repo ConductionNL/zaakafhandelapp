@@ -20,14 +20,23 @@ export const useNavigationStore = defineStore('ui', {
 		transferData: null,
 	} as NavigationStoreState),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		setModal(modal: NavigationStoreState['modal']) {
 			this.modal = modal
 			console.log('Active modal set to ' + modal)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		setViewModal(viewModal: NavigationStoreState['viewModal']) {
 			this.viewModal = viewModal
 			console.log('Active view modal set to ' + viewModal)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		setDialog(dialog: NavigationStoreState['dialog']) {
 			this.dialog = dialog
 			console.log('Active dialog set to ' + dialog)

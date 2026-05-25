@@ -84,10 +84,16 @@ export default {
 		zaakStore.refreshZakenList()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		closeDialog() {
 			navigationStore.setModal(null)
 			clearTimeout(this.closeModalTimeout)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async deleteResultaat() {
 			this.loading = true
 

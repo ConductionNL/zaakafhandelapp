@@ -26,6 +26,8 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -47,6 +49,8 @@ class ZaakTypenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -82,6 +86,8 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
@@ -99,6 +105,8 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
@@ -122,6 +130,8 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
@@ -147,6 +157,8 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {

@@ -25,6 +25,8 @@ class ObjectQueryService
 
     /**
      * Gets an object by type and id.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getObject(string $objectType, string $id, array $extend=[]): mixed
     {
@@ -37,6 +39,8 @@ class ObjectQueryService
 
     /**
      * Gets objects with filters, sorting, and extensions.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getObjects(
         string $objectType,
@@ -58,6 +62,8 @@ class ObjectQueryService
 
     /**
      * Gets facets for a specific object type.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getFacets(string $objectType, array $filters=[]): array
     {
@@ -75,6 +81,8 @@ class ObjectQueryService
 
     /**
      * Creates or updates an object.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
     {
@@ -84,6 +92,8 @@ class ObjectQueryService
 
     /**
      * Deletes an object.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function deleteObject(string $objectType, string|int $id): bool
     {
@@ -98,6 +108,8 @@ class ObjectQueryService
 
     /**
      * Get count of objects.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getCount(string $objectType, array $filters=[]): int
     {
@@ -107,6 +119,8 @@ class ObjectQueryService
 
     /**
      * Get a result array for a request.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-004
      */
     public function getResultArrayForRequest(string $objectType, array $requestParams): array
     {
@@ -121,6 +135,8 @@ class ObjectQueryService
 
     /**
      * Gets multiple objects by ids.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getMultipleObjects(string $objectType, array $ids): array
     {
@@ -139,6 +155,8 @@ class ObjectQueryService
 
     /**
      * Call a mapper method by name for an object type and id.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function callMapperMethod(string $objectType, string $method, string $id): array
     {

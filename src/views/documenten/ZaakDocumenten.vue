@@ -81,6 +81,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		zaakId(newVal) {
 			this.fetchData(newVal)
 		},
@@ -89,6 +92,9 @@ export default {
 		this.fetchData(this.zaakId)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.documenten = {
 				...this.documenten,
@@ -106,6 +112,9 @@ export default {
 					this.documenten[this.zaakId].loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		toggleDocument(document) {
 			if (documentStore.documentItem?.id === document.id) {
 				documentStore.setDocumentItem(null)
@@ -113,6 +122,9 @@ export default {
 				documentStore.setDocumentItem(document)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
