@@ -93,6 +93,14 @@
 			"order": 90
 		},
 		{
+			"id": "FeaturesRoadmapMenu",
+			"label": "Features & roadmap",
+			"icon": "icon-toggle",
+			"route": "FeaturesRoadmap",
+			"section": "footer",
+			"order": 91
+		},
+		{
 			"id": "SettingsMenu",
 			"label": "Settings",
 			"icon": "icon-settings",
@@ -102,6 +110,15 @@
 		}
 	],
 	"pages": [
+		{
+			"id": "FeaturesRoadmap",
+			"route": "/features-roadmap",
+			"type": "roadmap",
+			"title": "Features & roadmap",
+			"config": {
+				"documentationUrl": "https://zaakafhandelapp.conduction.nl"
+			}
+		},
 		{
 			"id": "Dashboard",
 			"route": "/",
