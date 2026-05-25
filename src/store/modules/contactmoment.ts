@@ -15,6 +15,8 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Set the active contact moment item.
 		 *
 		 * @param contactMomentItem - The contact moment item to set.
+		  *
+		  * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setContactMomentItem(contactMomentItem: TContactMoment | ContactMoment) {
 			this.contactMomentItem = contactMomentItem && new ContactMoment(contactMomentItem)
@@ -24,6 +26,8 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Set the list of contact moments.
 		 *
 		 * @param contactMomentenList - The list of contact moments to set.
+		  *
+		  * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setContactMomentenList(contactMomentenList: TContactMoment[] | ContactMoment[]) {
 			this.contactMomentenList = contactMomentenList.map(

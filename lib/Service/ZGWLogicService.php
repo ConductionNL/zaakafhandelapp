@@ -35,6 +35,8 @@ class ZGWLogicService
 
     /**
      * Create an OIO for a zaakinformatieobject. ZRC-005.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function createObjectInformatieObjectZaak(ObjectEntity $zio): void
     {
@@ -44,6 +46,8 @@ class ZGWLogicService
 
     /**
      * Create an OIO for a besluitinformatieobject. BRC-005.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function createObjectInformatieObjectBesluit(ObjectEntity $bio): void
     {
@@ -53,6 +57,8 @@ class ZGWLogicService
 
     /**
      * Delete OIO when a ZIO or BIO is deleted. ZRC-023 / BRC-009.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function deleteObjectInformatieObject(ObjectEntity $object, Schema $schema): void
     {
@@ -69,6 +75,8 @@ class ZGWLogicService
 
     /**
      * Create a zaakbesluit when a besluit is created.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function createZaakBesluit(ObjectEntity $besluit): void
     {
@@ -99,6 +107,8 @@ class ZGWLogicService
 
     /**
      * Cascade delete BesluitInformatieObjecten when a besluit is deleted.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function deleteBesluit(ObjectEntity $besluit): void
     {
@@ -144,6 +154,9 @@ class ZGWLogicService
     {
         return $this->getObjectByEndpointUrl($internalReference);
     }//end rewriteInternalReference()
+    /**
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
+     */
 
     public function createZaakTypeInformatieObjecttype(ObjectEntity $ztIot):  void
     {
@@ -186,6 +199,9 @@ class ZGWLogicService
         $this->objectService->clearCurrents();
 
     }//end createZaakTypeInformatieObjecttype()
+    /**
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
+     */
 
     public function deleteZaakTypeInformatieObjecttype(ObjectEntity $ztIot):  void
     {

@@ -20,10 +20,16 @@ export const useResultaatStore = defineStore('resultaten', {
 		zaakId: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setResultaatItem(resultaatItem: Resultaat | TResultaat) {
 			this.resultaatItem = resultaatItem && new Resultaat(resultaatItem)
 			console.info('Active resultaat item set to ' + resultaatItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setResultatenList(resultatenList: Resultaat[] | TResultaat[]) {
 			this.resultatenList = resultatenList.map(
 			    (resultaatItem) => new Resultaat(resultaatItem),

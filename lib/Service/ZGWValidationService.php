@@ -27,6 +27,8 @@ class ZGWValidationService
 
     /**
      * ZRC-010: Validate relevanteAndereZaken references.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkRelevanteAndereZaken(ObjectEntity $zaak): void
     {
@@ -62,6 +64,8 @@ class ZGWValidationService
 
     /**
      * Validate a BesluitInformatieObject's type against besluittype.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function validateBesluitInformatieObject(ObjectEntity $bio): void
     {

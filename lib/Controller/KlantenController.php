@@ -26,6 +26,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -47,6 +49,8 @@ class KlantenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -82,6 +86,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
@@ -99,6 +105,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
@@ -122,6 +130,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
@@ -142,6 +152,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
@@ -159,6 +171,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getZaken(string $id): JSONResponse
     {
@@ -174,6 +188,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getTaken(string $id): JSONResponse
     {
@@ -189,6 +205,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getBerichten(string $id): JSONResponse
     {
@@ -204,6 +222,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getContactmomenten(string $id): JSONResponse
     {
@@ -219,6 +239,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {

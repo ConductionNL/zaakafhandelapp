@@ -20,10 +20,16 @@ export const useDocumentStore = defineStore('documenten', {
 		zaakId: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setDocumentItem(documentItem: Document | TDocument) {
 			this.documentItem = documentItem && new Document(documentItem)
 			console.info('Active document item set to ' + documentItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setDocumentenList(documentenList: Document[] | TDocument[]) {
 			this.documentenList = documentenList.map(
 			    (documentItem) => new Document(documentItem),

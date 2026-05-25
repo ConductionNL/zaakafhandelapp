@@ -272,10 +272,16 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		filteredContactMomenten() {
 			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === this.klant?.id)
 		},
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		contactMomentStore.refreshContactMomentenList()
 
@@ -284,6 +290,9 @@ export default {
 			this.fetchKlantData(klantStore.widgetKlantId)
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+	 */
 	updated() {
 		if (klantStore.widgetKlantId && this.currentActiveKlant !== klantStore.widgetKlantId) {
 			this.currentActiveKlant = klantStore.widgetKlantId
@@ -291,6 +300,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		fetchKlantData(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
@@ -332,6 +344,9 @@ export default {
 					console.error('Error fetching berichten:', error)
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		fetchTaakItems() {
 			this.taakModalOpen = false
@@ -342,6 +357,9 @@ export default {
 					this.taken = data.results
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchZaakItems() {
 			this.zaakModalOpen = false
 			this.loading = true
@@ -351,6 +369,9 @@ export default {
 					this.zaken = data.results
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		getName(klant) {
 			if (klant.type === 'persoon') {
@@ -361,16 +382,25 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 
 		closeModalFromButton() {
 			setTimeout(() => {
 				this.closeModal()
 			}, 300)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 			if (this.dashboardWidget) this.$emit('close-modal')
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},

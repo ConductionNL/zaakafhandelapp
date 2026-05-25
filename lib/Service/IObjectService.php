@@ -60,6 +60,8 @@ interface IObjectService
      * @param boolean $updateVersion Whether to bump version
      *
      * @return mixed The saved object
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed;
 
@@ -70,6 +72,8 @@ interface IObjectService
      * @param string|integer $id         The id
      *
      * @return boolean Success
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function deleteObject(string $objectType, string|int $id): bool;
 }//end interface

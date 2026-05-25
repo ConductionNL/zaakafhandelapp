@@ -13,14 +13,23 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		auditTrailItem: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setMedewerkerItem(medewerkerItem) {
 			this.medewerkerItem = medewerkerItem && new Medewerker(medewerkerItem)
 			console.log('Active medewerker item set to ' + medewerkerItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setWidgetMedewerkerId(widgetMedewerkerId) {
 			this.widgetMedewerkerId = widgetMedewerkerId
 			console.log('Widget medewerker id set to ' + widgetMedewerkerId)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setMedewerkersList(medewerkersList) {
 			this.medewerkersList = medewerkersList.map(
 			    (medewerkerItem) => new Medewerker(medewerkerItem),
@@ -31,6 +40,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 		async refreshMedewerkersList(search = null) {
 			let endpoint = apiEndpoint
 
@@ -54,6 +66,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 
 		async searchMedewerkers(queryParams = null) {
 			let endpoint = apiEndpoint
@@ -78,6 +93,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 
 		async searchPersons(search = null) {
 			let endpoint = apiEndpoint
@@ -104,6 +122,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 
 		async searchOrganisations(search = null) {
 			let endpoint = apiEndpoint
@@ -132,6 +153,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		},
 
 		// New function to get a single medewerker
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-003
+		 */
 		async getMedewerker(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
@@ -152,6 +176,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			return { response, data, entity }
 		},
 		// Delete a medewerker
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async deleteMedewerker(medewerkerItem) {
 			if (!medewerkerItem.id) {
 				throw new Error('No medewerker item to delete')
@@ -174,6 +201,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			return { response }
 		},
 		// Create or save a medewerker from store
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async saveMedewerker(medewerkerItem) {
 			if (!medewerkerItem) {
 				throw new Error('No medewerker item to save')

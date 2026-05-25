@@ -48,6 +48,9 @@ export default {
 	},
 	watch: {
 		resultaatId: {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(resultaatId) {
 				this.fetchData(resultaatId)
 			},
@@ -58,6 +61,9 @@ export default {
 		this.fetchData(resultaatStore.resultaatItem)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(resultaatId) {
 			this.loading = true
 			fetch(

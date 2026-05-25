@@ -29,6 +29,8 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -50,6 +52,8 @@ class MedewerkersController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -85,6 +89,8 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
@@ -102,6 +108,8 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
@@ -125,6 +133,8 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
@@ -145,6 +155,8 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
@@ -162,6 +174,8 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {

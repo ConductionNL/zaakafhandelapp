@@ -17,10 +17,16 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 		zaakTypeList: [],
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZaakTypeItem(zaakTypeItem: ZaakType | TZaakType) {
 			this.zaakTypeItem = zaakTypeItem && new ZaakType(zaakTypeItem)
 			console.info('Active zaaktype item set to ' + zaakTypeItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZaakTypeList(zaakTypeList: ZaakType[] | TZaakType[]) {
 			this.zaakTypeList = zaakTypeList.map(
 			    (zaakTypeItem) => new ZaakType(zaakTypeItem),

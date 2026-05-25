@@ -78,9 +78,15 @@ export default {
 	},
 
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		items() {
 			return this.organisatieItems
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		itemMenu() {
 			return {
 				show: {
@@ -96,6 +102,9 @@ export default {
 	},
 
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchOrganisatieItems() {
 			this.loading = true
 			klantStore.searchOrganisations()
@@ -110,6 +119,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
+		 */
 		search() {
 			this.loading = true
 			klantStore.searchOrganisations(this.searchOrganisatie)
@@ -126,6 +138,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -137,6 +152,9 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/office-building-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/office-building-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 */
 		onShow(item) {
 			klantStore.setWidgetKlantId(item.id)
 			this.isModalOpen = true

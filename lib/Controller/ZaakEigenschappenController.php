@@ -51,6 +51,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function page(): TemplateResponse
     {
@@ -69,6 +71,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function index(CallService $callService, string $zaakId): JSONResponse
     {
@@ -83,6 +87,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function show(string $id, CallService $callService, string $zaakId): JSONResponse
     {
@@ -97,6 +103,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function create(CallService $callService, string $zaakId): JSONResponse
     {
@@ -113,6 +121,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function update(string $id, CallService $callService, string $zaakId): JSONResponse
     {
@@ -128,6 +138,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function destroy(string $id, CallService $callService, string $zaakId): JSONResponse
     {

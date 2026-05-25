@@ -27,6 +27,9 @@ export class Zaak implements TZaak {
 	public hoofdzaak: string
 	public klant: string
 	public berichten: string[]
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TZaak) {
 		this.id = source.id || ''

@@ -167,6 +167,9 @@ export default {
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+	 */
 	updated() {
 		if (navigationStore.modal === 'editBericht' && !this.hasUpdated) {
 			if (berichtStore.berichtItem?.id) {
@@ -194,11 +197,17 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModalFromButton() {
 			setTimeout(() => {
 				this.closeModal()
 			}, 300)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 			this.success = false
@@ -224,6 +233,9 @@ export default {
 			this.$emit('close-modal')
 
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async editBericht() {
 			this.loading = true
 			try {
@@ -244,6 +256,9 @@ export default {
 				this.error = error.message || 'An error occurred while saving the bericht'
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},

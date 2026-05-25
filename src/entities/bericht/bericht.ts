@@ -20,6 +20,9 @@ export class Bericht implements TBericht {
 	public bijlageType: string
 	public omschrijving: string
 	public volgorde: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TBericht) {
 		this.id = source.id || ''

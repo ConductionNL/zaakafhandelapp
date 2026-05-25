@@ -61,6 +61,9 @@ export default {
 		Modals,
 		Dialogs,
 	},
+	/**
+	 * @spec exclude framework DI plumbing — provides app-level injections
+	 */
 
 	provide() {
 		return {
@@ -138,6 +141,9 @@ export default {
 	},
 
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-003
+		 */
 		permissions() {
 			return window.OC?.currentUser?.permissions ?? []
 		},
@@ -151,6 +157,8 @@ export default {
 		 *
 		 * @param {string} key Translation key.
 		 * @return {string} Translated string (or the key on miss).
+		  *
+		  * @spec exclude i18n wrapper around Nextcloud t()
 		 */
 		translateForApp(key) {
 			return ncT('zaakafhandelapp', key)

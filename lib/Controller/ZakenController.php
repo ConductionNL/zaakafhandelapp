@@ -25,6 +25,8 @@ class ZakenController extends Controller
     /**
      * Return (and serach) all objects
      *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-001
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -50,6 +52,8 @@ class ZakenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -85,6 +89,8 @@ class ZakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-002
      */
     public function show(string $id): JSONResponse
     {
@@ -102,6 +108,8 @@ class ZakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
      */
     public function create(): JSONResponse
     {
@@ -125,6 +133,8 @@ class ZakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
      */
     public function update(string $id): JSONResponse
     {
@@ -145,6 +155,8 @@ class ZakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
      */
     public function destroy(string $id): JSONResponse
     {
@@ -162,6 +174,8 @@ class ZakenController extends Controller
          * @NoCSRFRequired
          *
          * @return JSONResponse
+          *
+          * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-004
          */
     public function getAuditTrail(string $id): JSONResponse
     {

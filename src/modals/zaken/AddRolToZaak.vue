@@ -73,9 +73,15 @@ export default {
 		this.fetchRollenData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchRollenData() {
 			this.rollenLoading = true
 
@@ -98,6 +104,9 @@ export default {
 					this.rollenLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		addRolToZaak() {
 			this.loading = true
 			this.error = false
@@ -121,6 +130,9 @@ export default {
 
 					// Wait for the user to read the feedback then close the model
 					const self = this
+					/**
+					 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+					 */
 					setTimeout(function() {
 						self.success = null
 						self.closeModal()

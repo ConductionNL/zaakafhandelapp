@@ -9,6 +9,9 @@ export class Medewerker implements TMedewerker {
 	public achternaam: string
 	public email: string
 	public telefoonnummer: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TMedewerker) {
 		this.id = source.id || ''

@@ -73,6 +73,9 @@ export class Document implements TDocument {
 			}
 		}
 	}
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TDocument) {
 		this.id = source.id || ''

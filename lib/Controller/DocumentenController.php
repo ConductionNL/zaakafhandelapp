@@ -32,6 +32,8 @@ class DocumentenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
      */
     public function page(): TemplateResponse
     {
@@ -50,6 +52,8 @@ class DocumentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -64,6 +68,8 @@ class DocumentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
@@ -78,6 +84,8 @@ class DocumentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
@@ -92,6 +100,8 @@ class DocumentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
@@ -106,6 +116,8 @@ class DocumentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
