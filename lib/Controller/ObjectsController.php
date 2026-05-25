@@ -22,14 +22,14 @@ class ObjectsController extends Controller
     }//end __construct()
 
     /**
-     * Return (and search) all objects
+     * Return (and search) all objects.
+     *
+     * @param string $objectType The type of object to return.
+     *
+     * @return JSONResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-     *
-     * @param string $objectType The type of object to return
-     *
-     * @return JSONResponse
      */
     public function index(string $objectType): JSONResponse
     {

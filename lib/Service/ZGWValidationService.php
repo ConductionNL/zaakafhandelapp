@@ -52,7 +52,13 @@ class ZGWValidationService
             } catch (DoesNotExistException $exception) {
                 throw new CustomValidationException(
                     "Relevante zaak bestaat niet",
-                    [['name' => "relevanteAndereZaken.$i.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]
+                    [
+                        [
+                            'name'   => "relevanteAndereZaken.$i.url",
+                            'code'   => 'bad-url',
+                            'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar',
+                        ],
+                    ]
                 );
             }
 
@@ -75,7 +81,13 @@ class ZGWValidationService
         if (in_array(needle: $iot, haystack: $besluit->jsonSerialize()['besluittype']['informatieobjecttypen']) === false) {
             throw new CustomValidationException(
                 'Informatieobjecttype niet in besluittype',
-                [['name' => 'nonFieldErrors', 'code' => 'invalid-informatieobjecttype', 'reason' => 'informatieobjecttype niet aanwezig op besluittype']]
+                [
+                    [
+                        'name'   => 'nonFieldErrors',
+                        'code'   => 'invalid-informatieobjecttype',
+                        'reason' => 'informatieobjecttype niet aanwezig op besluittype',
+                    ],
+                ]
             );
         }
     }//end validateBesluitInformatieObject()

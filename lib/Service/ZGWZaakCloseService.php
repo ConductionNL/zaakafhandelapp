@@ -66,9 +66,20 @@ class ZGWZaakCloseService
 
     private function assertGebruiksrechten(array $za): void
     {
-        $bad = array_filter($za['zaakinformatieobjecten'], fn(array $z) => count($z['informatieobject']['gebruiksrechten']) === 0 && $z['informatieobject']['indicatieGebruiksrecht'] === null);
+        $bad = array_filter(
+            $za['zaakinformatieobjecten'],
+            fn(array $z) => count($z['informatieobject']['gebruiksrechten']) === 0
+                && $z['informatieobject']['indicatieGebruiksrecht'] === null
+        );
         if (count($bad) > 0) {
-            throw new CustomValidationException("Indicatiegebruiksrecht niet geset", [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben.']]);
+            $errors = [
+                [
+                    'name'   => 'nonFieldErrors',
+                    'code'   => 'indicatiegebruiksrecht-unset',
+                    'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben.',
+                ],
+            ];
+            throw new CustomValidationException("Indicatiegebruiksrecht niet geset", $errors);
         }
     }//end assertGebruiksrechten()
 
