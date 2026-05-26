@@ -2,13 +2,14 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 /**
  * Controller for zaak eigenschappen (case properties) resources.
@@ -18,33 +19,11 @@ use OCP\IRequest;
  */
 class ZaakEigenschappenController extends Controller
 {
-    const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id"      => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "name"    => "Zaakt type 1",
-            "summary" => "summary for one",
-        ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id"      => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "name"    => "Zaakt type 12",
-            "summary" => "summary for two",
-        ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id"      => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "name"    => "Zaakt type 3",
-            "summary" => "summary for two",
-        ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id"      => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "name"    => "Zaakt type 4",
-            "summary" => "summary for two",
-        ],
-    ];
-
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly IAppConfig $config
+        private readonly IAppConfig $config,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -63,7 +42,6 @@ class ZaakEigenschappenController extends Controller
     public function page(): TemplateResponse
     {
         return new TemplateResponse(
-            // Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
@@ -82,6 +60,10 @@ class ZaakEigenschappenController extends Controller
      */
     public function index(CallService $callService, string $zaakId): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
         return new JSONResponse($results);
     }//end index()
@@ -98,6 +80,10 @@ class ZaakEigenschappenController extends Controller
      */
     public function show(string $id, CallService $callService, string $zaakId): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
         return new JSONResponse($results);
     }//end show()
@@ -114,6 +100,10 @@ class ZaakEigenschappenController extends Controller
      */
     public function create(CallService $callService, string $zaakId): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // get post from requests
         $body    = $this->request->getParams();
         $results = $callService->create(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body);
@@ -132,6 +122,10 @@ class ZaakEigenschappenController extends Controller
      */
     public function update(string $id, CallService $callService, string $zaakId): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $body    = $this->request->getParams();
         $results = $callService->update(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body, id: $id);
         return new JSONResponse($results);
@@ -149,6 +143,10 @@ class ZaakEigenschappenController extends Controller
      */
     public function destroy(string $id, CallService $callService, string $zaakId): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $callService->destroy(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
 
         return new JSONResponse([]);

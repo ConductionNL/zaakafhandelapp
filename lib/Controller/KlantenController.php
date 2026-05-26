@@ -4,10 +4,12 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
 /**
  * Controller for handling clients (klanten) operations.
@@ -21,6 +23,7 @@ class KlantenController extends Controller
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -37,6 +40,10 @@ class KlantenController extends Controller
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Retrieve all request parameters
         $requestParams = $this->request->getParams();
 
@@ -97,6 +104,10 @@ class KlantenController extends Controller
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the catalog object by its ID
         $object = $this->objectService->getObject('klanten', $id);
 
@@ -116,6 +127,10 @@ class KlantenController extends Controller
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -141,6 +156,10 @@ class KlantenController extends Controller
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -163,6 +182,10 @@ class KlantenController extends Controller
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the catalog object
         $result = $this->objectService->deleteObject('klanten', $id);
 
@@ -182,6 +205,10 @@ class KlantenController extends Controller
      */
     public function getZaken(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams = ['klant' => $id];
         $zaken         = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
         return new JSONResponse($zaken);
@@ -199,6 +226,10 @@ class KlantenController extends Controller
      */
     public function getTaken(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams = ['klant' => $id];
         $taken         = $this->objectService->getResultArrayForRequest('taken', $requestParams);
         return new JSONResponse($taken);
@@ -216,6 +247,10 @@ class KlantenController extends Controller
      */
     public function getBerichten(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams = ['gebruikerID' => $id];
         $berichten     = $this->objectService->getResultArrayForRequest('klanten', $requestParams);
         return new JSONResponse($berichten);
@@ -233,6 +268,10 @@ class KlantenController extends Controller
      */
     public function getContactmomenten(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams   = ['klant' => $id];
         $contactmomenten = $this->objectService->getResultArrayForRequest('contactmomenten', $requestParams);
         return new JSONResponse($contactmomenten);
@@ -250,6 +289,10 @@ class KlantenController extends Controller
      */
     public function getAuditTrail(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('klanten', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()

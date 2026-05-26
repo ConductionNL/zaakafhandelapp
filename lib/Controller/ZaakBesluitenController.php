@@ -2,12 +2,13 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 /**
  * Controller for zaakbesluiten (case decisions) resources.
@@ -43,7 +44,8 @@ class ZaakBesluitenController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly IAppConfig $config
+        private readonly IAppConfig $config,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -62,7 +64,6 @@ class ZaakBesluitenController extends Controller
     public function page(): TemplateResponse
     {
         return new TemplateResponse(
-            // Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
@@ -81,6 +82,10 @@ class ZaakBesluitenController extends Controller
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $results = ["results" => self::TEST_ARRAY];
         return new JSONResponse($results);
     }//end index()
@@ -97,6 +102,10 @@ class ZaakBesluitenController extends Controller
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $result = self::TEST_ARRAY[$id];
         return new JSONResponse($result);
     }//end show()
@@ -113,6 +122,10 @@ class ZaakBesluitenController extends Controller
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // get post from requests
         return new JSONResponse([]);
     }//end create()
@@ -129,6 +142,10 @@ class ZaakBesluitenController extends Controller
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $result = self::TEST_ARRAY[$id];
         return new JSONResponse($result);
     }//end update()
@@ -145,6 +162,10 @@ class ZaakBesluitenController extends Controller
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         return new JSONResponse([]);
     }//end destroy()
 }//end class
