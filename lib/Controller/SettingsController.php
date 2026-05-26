@@ -12,6 +12,9 @@ use OCA\ZaakAfhandelApp\Service\ObjectMapperService;
  * Class SettingsController
  *
  * Controller for handling settings-related operations in the ZaakAfhandelApp.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class SettingsController extends Controller
 {

@@ -8,6 +8,9 @@ use OCA\OpenRegister\Exception\CustomValidationException;
 
 /**
  * Handles closing a zaak (setting eindstatus). ZRC-007/ZRC-021.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWZaakCloseService
 {

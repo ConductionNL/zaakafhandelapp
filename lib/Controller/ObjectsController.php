@@ -10,6 +10,9 @@ use Exception;
 
 /**
  * Controller class for handling object-related operations
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectsController extends Controller
 {

@@ -10,6 +10,9 @@ use InvalidArgumentException;
  *
  * Uses ObjectMapperService for mapper resolution
  * and RequestParamsParser for request parameter parsing.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectQueryService
 {

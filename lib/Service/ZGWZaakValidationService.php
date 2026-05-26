@@ -7,6 +7,9 @@ use OCA\OpenRegister\Exception\CustomValidationException;
 
 /**
  * Validation service for zaak-specific field validation.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWZaakValidationService
 {

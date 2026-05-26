@@ -9,6 +9,9 @@ use OCP\Mail\IMailer;
  * Service class for sending e-mails
  *
  * This service sends e-mails when an 'medewerker' field is filled on an object.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class MailService
 {
