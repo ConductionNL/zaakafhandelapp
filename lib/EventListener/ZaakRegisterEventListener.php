@@ -35,14 +35,6 @@ use Psr\Log\LoggerInterface;
 class ZaakRegisterEventListener implements IEventListener
 {
 
-    private const EVENT_HANDLERS = [
-        ObjectCreatedEvent::class  => 'handleObjectCreated',
-        ObjectUpdatedEvent::class  => 'handleObjectUpdated',
-        ObjectDeletedEvent::class  => 'handleObjectDeleted',
-        ObjectCreatingEvent::class => 'handleObjectCreating',
-        ObjectUpdatingEvent::class => 'handleObjectUpdating',
-    ];
-
     public function __construct(
         private readonly ZGWLogicService $logicService,
         private readonly ZGWZaakLifecycleService $lifecycleService,
@@ -56,9 +48,16 @@ class ZaakRegisterEventListener implements IEventListener
     public function handle(Event $event): void
     {
         try {
-            $handler = self::EVENT_HANDLERS[get_class($event)] ?? null;
-            if ($handler !== null) {
-                $this->$handler($event);
+            if ($event instanceof ObjectCreatedEvent) {
+                $this->handleObjectCreated($event);
+            } elseif ($event instanceof ObjectUpdatedEvent) {
+                $this->handleObjectUpdated($event);
+            } elseif ($event instanceof ObjectDeletedEvent) {
+                $this->handleObjectDeleted($event);
+            } elseif ($event instanceof ObjectCreatingEvent) {
+                $this->handleObjectCreating($event);
+            } elseif ($event instanceof ObjectUpdatingEvent) {
+                $this->handleObjectUpdating($event);
             }
         } catch (CustomValidationException $e) {
             throw $e;
