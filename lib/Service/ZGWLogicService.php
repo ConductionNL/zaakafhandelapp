@@ -155,7 +155,7 @@ class ZGWLogicService
 
     private function rewriteInternalReference(string $internalReference): string
     {
-        return $this->getObjectByEndpointUrl($internalReference);
+        return $this->getObjectByEndpointUrl($internalReference)->getUuid() ?? $internalReference;
     }//end rewriteInternalReference()
     /**
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
