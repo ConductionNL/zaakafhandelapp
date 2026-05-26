@@ -6,27 +6,25 @@ return [
 		'zaken' => ['url' => 'api/zrc/zaken'],
 		'resultaten' => ['url' => 'api/zrc/resultaten'],
 		'rollen' => ['url' => 'api/zrc/rollen'],
-		'statussen' => ['url' => 'api/zrc/statussen'],
-		'zaakinformatieobjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
-		'zaakobjecten' => ['url' => 'api/zrc/zaakobjecten'],
-		'zaakbesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
-		'zaakeigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
-		'zaakaudittrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
+		'statusen' => ['url' => 'api/zrc/statussen'],
+		'zaakInformatieObjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
+		'zaakObjecten' => ['url' => 'api/zrc/zaakobjecten'],
+		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
+		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
-		'zaakTypen' => ['url' => 'api/ztc'],
+		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
 		'documenten' => ['url' => 'api/drc'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/redoc-1.0.2
 		'besluiten' => ['url' => 'api/brc'],
 		// Conform ???
-		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
-		// Conform ???
 		'taken' => ['url' => 'api/taken'],
 		'klanten' => ['url' => 'api/klanten'],
 		'berichten' => ['url' => 'api/berichten'],
-		'contactmomenten' => ['url' => 'api/contactmomenten'],
+		'contactMomenten' => ['url' => 'api/contactmomenten'],
 		'medewerkers' => ['url' => 'api/medewerkers'],
-
+		'dashboard' => ['url' => 'api/dashboard'],
 	],
 	'routes' => [
 		// Audit trail routes
@@ -51,8 +49,8 @@ return [
 		['name' => 'zaken#page', 'postfix'  => 'details', 'url' => '/zaken/{id}', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'postfix'  => 'details', 'url' => '/rollen/{id}', 'verb' => 'GET'],
-		['name' => 'statussen#page', 'url' => '/statussen', 'verb' => 'GET'],
-		['name' => 'zaakinformatieobjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
+		['name' => 'statusen#page', 'url' => '/statussen', 'verb' => 'GET'],
+		['name' => 'zaakInformatieObjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','url' => '/zaaktypen', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','postfix' => 'details', 'url' => '/zaaktypen/{id}', 'verb' => 'GET'],
 		['name' => 'taken#page','url' => '/taken', 'verb' => 'GET'],
@@ -72,7 +70,7 @@ return [
 		['name' => 'preferences#setPreference', 'url' => '/api/preferences/{key}', 'verb' => 'PUT'],
 		// User
 		['name' => 'users#me', 'url' => '/me', 'verb' => 'GET'],
-		// Object API routes	
+		// Object API routes
 		['name' => 'objects#index', 'url' => 'api/objects/{objectType}', 'verb' => 'GET'],
 		['name' => 'objects#create', 'url' => 'api/objects/{objectType}', 'verb' => 'POST'],
 		['name' => 'objects#show', 'url' => 'api/objects/{objectType}/{id}', 'verb' => 'GET'],

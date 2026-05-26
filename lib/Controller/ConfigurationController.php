@@ -3,10 +3,12 @@
 namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 /**
  * Controller for application configuration operations.
@@ -19,7 +21,8 @@ class ConfigurationController extends Controller
     public function __construct(
         $appName,
         private readonly IAppConfig $config,
-        IRequest $request
+        IRequest $request,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -32,6 +35,9 @@ class ConfigurationController extends Controller
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
         $data     = [];
         $defaults = [
@@ -84,6 +90,10 @@ class ConfigurationController extends Controller
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $data = $this->request->getParams();
 
         // We should filter out unwanted values before this

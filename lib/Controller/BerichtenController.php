@@ -4,10 +4,12 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
 /**
  * Controller for handling messages (berichten) operations.
@@ -21,6 +23,7 @@ class BerichtenController extends Controller
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -37,6 +40,10 @@ class BerichtenController extends Controller
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
          // Retrieve all request parameters
          $requestParams = $this->request->getParams();
 
@@ -97,6 +104,10 @@ class BerichtenController extends Controller
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the catalog object by its ID
         $object = $this->objectService->getObject('berichten', $id);
 
@@ -116,6 +127,10 @@ class BerichtenController extends Controller
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -141,6 +156,10 @@ class BerichtenController extends Controller
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -163,6 +182,10 @@ class BerichtenController extends Controller
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the catalog object
         $result = $this->objectService->deleteObject('berichten', $id);
 
@@ -170,18 +193,22 @@ class BerichtenController extends Controller
         return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
     }//end destroy()
 
-        /**
-         * Get audit trail for a specific klant
-         *
-         * @NoAdminRequired
-         * @NoCSRFRequired
-         *
-         * @return JSONResponse
-          *
-          * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
-         */
+    /**
+     * Get audit trail for a specific klant
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     */
     public function getAuditTrail(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('berichten', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()

@@ -4,8 +4,10 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
+use OCP\IUserSession;
 use Exception;
 
 /**
@@ -19,7 +21,8 @@ class ObjectsController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly ObjectService $objectService
+        private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -38,6 +41,10 @@ class ObjectsController extends Controller
      */
     public function index(string $objectType): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Retrieve all request parameters
         $requestParams = $this->request->getParams();
 
@@ -63,6 +70,10 @@ class ObjectsController extends Controller
      */
     public function show(string $objectType, string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         try {
             // Retrieve all request parameters
             $requestParams = $this->request->getParams();
@@ -98,6 +109,10 @@ class ObjectsController extends Controller
      */
     public function create(string $objectType): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
@@ -130,6 +145,10 @@ class ObjectsController extends Controller
      */
     public function update(string $objectType, string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
@@ -162,6 +181,10 @@ class ObjectsController extends Controller
      */
     public function destroy(string $objectType, string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         try {
             // Delete the object
             $result = $this->objectService->deleteObject($objectType, $id);
@@ -188,6 +211,10 @@ class ObjectsController extends Controller
      */
     public function getAuditTrail(string $objectType, string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         try {
             $auditTrail = $this->objectService->getAuditTrail($objectType, $id);
             return new JSONResponse($auditTrail);
@@ -211,6 +238,10 @@ class ObjectsController extends Controller
      */
     public function getRelations(string $objectType, string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         try {
             // Fetch the object by its ID
             $relations = $this->objectService->getRelations($objectType, $id);
@@ -237,6 +268,10 @@ class ObjectsController extends Controller
      */
     public function getUses(string $objectType, string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $uses = $this->objectService->getUses($objectType, $id);
         return new JSONResponse($uses);
     }//end getUses()
