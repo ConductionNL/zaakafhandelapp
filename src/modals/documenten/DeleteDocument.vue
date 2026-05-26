@@ -75,11 +75,17 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		closeDialog() {
 			navigationStore.setModal(null)
 			documentStore.zaakId = null
 			clearTimeout(this.closeModalTimeout)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async deleteDocument() {
 			this.loading = true
 

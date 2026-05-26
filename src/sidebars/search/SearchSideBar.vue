@@ -265,15 +265,27 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		klantenSearch() {
 			this.debouncedFetchKlanten()
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		personenSearch() {
 			this.debouncedFetchKlanten()
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		organisatiesSearch() {
 			this.debouncedFetchKlanten()
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		activeTab() {
 			this.fetchKlanten()
 		},
@@ -281,11 +293,17 @@ export default {
 	mounted() {
 		this.fetchKlanten()
 	},
+	/**
+	 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+	 */
 	created() {
 		// Initialize the debounced function
 		this.debouncedFetchKlanten = this.debounce(() => this.fetchKlanten(), 100)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		debounce(func, timeout = 300) {
 			let timer
 			return (...args) => {
@@ -293,6 +311,9 @@ export default {
 				timer = setTimeout(() => { func.apply(this, args) }, timeout)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		getName(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.voornaam ?? 'onbekend'
@@ -302,6 +323,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
@@ -311,6 +335,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
+		 */
 		fetchKlanten() {
 			this.loading = true
 			let activeFilter = null

@@ -1,33 +1,139 @@
 {
-	"$schema": "https://raw.githubusercontent.com/ConductionNL/nextcloud-vue/main/src/schemas/app-manifest.schema.json",
+	"$schema": "https://raw.githubusercontent.com/ConductionNL/nextcloud-vue/main/src/schemas/app-manifest-v2.schema.json",
 	"version": "1.0.0",
-	"dependencies": ["openregister"],
+	"dependencies": [
+		"openregister"
+	],
 	"menu": [
-		{ "id": "Dashboard", "label": "Dashboard", "icon": "icon-category-dashboard", "route": "Dashboard", "order": 10 },
-		{ "id": "Zaken", "label": "Cases", "icon": "icon-category-organization", "route": "Zaken", "order": 20 },
-		{ "id": "Taken", "label": "Tasks", "icon": "icon-checkmark", "route": "Taken", "order": 30 },
-		{ "id": "Klanten", "label": "Customers", "icon": "icon-group", "route": "Klanten", "order": 40 },
-		{ "id": "Medewerkers", "label": "Employees", "icon": "icon-user", "route": "Medewerkers", "order": 50 },
-		{ "id": "Contactmomenten", "label": "Contact moments", "icon": "icon-comment", "route": "Contactmomenten", "order": 60 },
-		{ "id": "Berichten", "label": "Messages", "icon": "icon-mail", "route": "Berichten", "order": 70 },
-		{ "id": "Rollen", "label": "Roles", "icon": "icon-user-admin", "route": "Rollen", "order": 80 },
-		{ "id": "Search", "label": "Search", "icon": "icon-search", "route": "Search", "order": 90 },
-		{ "id": "Zaaktypen", "label": "Case types", "icon": "icon-files", "route": "Zaaktypen", "section": "settings", "order": 10 },
-		{ "id": "AuditTrail", "label": "Audit trail", "icon": "icon-history", "route": "AuditTrail", "section": "settings", "order": 20 },
-		{ "id": "Documentation", "label": "Documentation", "icon": "icon-info", "href": "https://conduction.nl", "section": "settings", "order": 90 },
-		{ "id": "SettingsMenu", "label": "Settings", "icon": "icon-settings", "route": "Settings", "section": "settings", "order": 99 }
+		{
+			"id": "Dashboard",
+			"label": "Dashboard",
+			"icon": "icon-category-dashboard",
+			"route": "Dashboard",
+			"order": 10
+		},
+		{
+			"id": "Zaken",
+			"label": "Cases",
+			"icon": "icon-category-organization",
+			"route": "Zaken",
+			"order": 20
+		},
+		{
+			"id": "Taken",
+			"label": "Tasks",
+			"icon": "icon-checkmark",
+			"route": "Taken",
+			"order": 30
+		},
+		{
+			"id": "Klanten",
+			"label": "Customers",
+			"icon": "icon-group",
+			"route": "Klanten",
+			"order": 40
+		},
+		{
+			"id": "Medewerkers",
+			"label": "Employees",
+			"icon": "icon-user",
+			"route": "Medewerkers",
+			"order": 50
+		},
+		{
+			"id": "Contactmomenten",
+			"label": "Contact moments",
+			"icon": "icon-comment",
+			"route": "Contactmomenten",
+			"order": 60
+		},
+		{
+			"id": "Berichten",
+			"label": "Messages",
+			"icon": "icon-mail",
+			"route": "Berichten",
+			"order": 70
+		},
+		{
+			"id": "Rollen",
+			"label": "Roles",
+			"icon": "icon-user-admin",
+			"route": "Rollen",
+			"order": 80
+		},
+		{
+			"id": "Search",
+			"label": "Search",
+			"icon": "icon-search",
+			"route": "Search",
+			"order": 90
+		},
+		{
+			"id": "Zaaktypen",
+			"label": "Case types",
+			"icon": "icon-files",
+			"route": "Zaaktypen",
+			"section": "settings",
+			"order": 10
+		},
+		{
+			"id": "AuditTrail",
+			"label": "Audit trail",
+			"icon": "icon-history",
+			"route": "AuditTrail",
+			"section": "settings",
+			"order": 20
+		},
+		{
+			"id": "Documentation",
+			"label": "Documentation",
+			"icon": "icon-info",
+			"href": "https://conduction.nl",
+			"section": "footer",
+			"order": 90
+		},
+		{
+			"id": "FeaturesRoadmapMenu",
+			"label": "Features & roadmap",
+			"icon": "icon-toggle",
+			"route": "FeaturesRoadmap",
+			"section": "footer",
+			"order": 91
+		},
+		{
+			"id": "SettingsMenu",
+			"label": "Settings",
+			"icon": "icon-settings",
+			"route": "Settings",
+			"section": "settings",
+			"order": 99
+		}
 	],
 	"pages": [
+		{
+			"id": "FeaturesRoadmap",
+			"route": "/features-roadmap",
+			"type": "roadmap",
+			"title": "Features & roadmap",
+			"config": {
+				"documentationUrl": "https://zaakafhandelapp.conduction.nl"
+			}
+		},
 		{
 			"id": "Dashboard",
 			"route": "/",
 			"type": "dashboard",
 			"title": "Dashboard",
-			"config": {
-				"widgets": [
-					{
-						"id": "zaken-kpi",
-						"type": "stats-block",
+			"config": {},
+			"widgets": [
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
 						"title": "Open cases",
 						"iconClass": "icon-category-organization",
 						"props": {
@@ -35,11 +141,18 @@
 							"schema": "zaak",
 							"countLabel": "cases",
 							"variant": "primary"
-						}
-					},
-					{
-						"id": "taken-kpi",
-						"type": "stats-block",
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 4,
+					"gridY": 0,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
 						"title": "Open tasks",
 						"iconClass": "icon-checkmark",
 						"props": {
@@ -47,11 +160,18 @@
 							"schema": "taak",
 							"countLabel": "tasks",
 							"variant": "warning"
-						}
-					},
-					{
-						"id": "open-zaken-kpi",
-						"type": "stats-block",
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 8,
+					"gridY": 0,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
 						"title": "Active cases",
 						"iconClass": "icon-category-organization",
 						"props": {
@@ -59,11 +179,18 @@
 							"schema": "zaak",
 							"countLabel": "cases",
 							"variant": "success"
-						}
-					},
-					{
-						"id": "contactmomenten-kpi",
-						"type": "stats-block",
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
 						"title": "Contact moments",
 						"iconClass": "icon-comment",
 						"props": {
@@ -71,44 +198,55 @@
 							"schema": "contactmoment",
 							"countLabel": "contacts",
 							"variant": "primary"
-						}
-					},
-					{
-						"id": "personen-kpi",
-						"type": "stats-block",
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 4,
+					"gridY": 2,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
 						"title": "Persons",
 						"iconClass": "icon-user",
 						"props": {
 							"register": "zaakafhandelapp",
 							"schema": "klant",
-							"filter": { "subjectType": "natuurlijk_persoon" },
+							"filter": {
+								"subjectType": "natuurlijk_persoon"
+							},
 							"countLabel": "persons",
 							"variant": "primary"
-						}
-					},
-					{
-						"id": "organisaties-kpi",
-						"type": "stats-block",
+						},
+						"showTitle": true
+					}
+				},
+				{
+					"widgetKey": "stats-block",
+					"slot": "body",
+					"gridX": 8,
+					"gridY": 2,
+					"gridWidth": 4,
+					"gridHeight": 2,
+					"props": {
 						"title": "Organisations",
 						"iconClass": "icon-group",
 						"props": {
 							"register": "zaakafhandelapp",
 							"schema": "klant",
-							"filter": { "subjectType": "niet_natuurlijk_persoon" },
+							"filter": {
+								"subjectType": "niet_natuurlijk_persoon"
+							},
 							"countLabel": "organisations",
 							"variant": "primary"
-						}
+						},
+						"showTitle": true
 					}
-				],
-				"layout": [
-					{ "id": "zaken-kpi",            "widgetId": "zaken-kpi",            "gridX": 0, "gridY": 0, "gridWidth": 4, "gridHeight": 2, "showTitle": true },
-					{ "id": "taken-kpi",            "widgetId": "taken-kpi",            "gridX": 4, "gridY": 0, "gridWidth": 4, "gridHeight": 2, "showTitle": true },
-					{ "id": "open-zaken-kpi",       "widgetId": "open-zaken-kpi",       "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 2, "showTitle": true },
-					{ "id": "contactmomenten-kpi",  "widgetId": "contactmomenten-kpi",  "gridX": 0, "gridY": 2, "gridWidth": 4, "gridHeight": 2, "showTitle": true },
-					{ "id": "personen-kpi",         "widgetId": "personen-kpi",         "gridX": 4, "gridY": 2, "gridWidth": 4, "gridHeight": 2, "showTitle": true },
-					{ "id": "organisaties-kpi",     "widgetId": "organisaties-kpi",     "gridX": 8, "gridY": 2, "gridWidth": 4, "gridHeight": 2, "showTitle": true }
-				]
-			}
+				}
+			]
 		},
 		{
 			"id": "Zaken",
@@ -118,8 +256,25 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "zaak",
-				"columns": ["identificatie", "omschrijving", "zaaktype", "status", "uiterlijkeEinddatumAfdoening"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"identificatie",
+					"omschrijving",
+					"zaaktype",
+					{
+						"key": "status",
+						"label": "Status",
+						"widget": "badge"
+					},
+					{
+						"key": "uiterlijkeEinddatumAfdoening",
+						"label": "Deadline",
+						"formatter": "date"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -131,17 +286,93 @@
 				"register": "zaakafhandelapp",
 				"schema": "zaak",
 				"sidebarTabs": [
-					{ "id": "overview",    "label": "Overview",    "icon": "icon-info",     "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "taken",       "label": "Tasks",       "icon": "icon-checkmark","component": "ZaakTakenTab",                              "order": 20 },
-					{ "id": "rollen",      "label": "Roles",       "icon": "icon-user-admin","component": "ZaakRollenTab",                            "order": 30 },
-					{ "id": "documenten",  "label": "Documents",   "icon": "icon-files",    "component": "ZaakDocumentenTab",                         "order": 40 },
-					{ "id": "besluiten",   "label": "Decisions",   "icon": "icon-checkmark","component": "ZaakBesluitenTab",                          "order": 50 },
-					{ "id": "berichten",   "label": "Messages",    "icon": "icon-mail",     "component": "ZaakBerichtenTab",                          "order": 60 },
-					{ "id": "resultaten",  "label": "Results",     "icon": "icon-checkmark","component": "ZaakResultatenTab",                         "order": 70 },
-					{ "id": "statussen",   "label": "Statuses",    "icon": "icon-history",  "component": "ZaakStatussenTab",                          "order": 80 },
-					{ "id": "audit",       "label": "Audit trail", "icon": "icon-history",  "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
+					{
+						"id": "taken",
+						"label": "Tasks",
+						"icon": "icon-checkmark",
+						"component": "ZaakTakenTab",
+						"order": 20,
+						"_note": "Hybrid ZGW-API data path; fetches related taken via ZGW-API taak endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "rollen",
+						"label": "Roles",
+						"icon": "icon-user-admin",
+						"component": "ZaakRollenTab",
+						"order": 30,
+						"_note": "Hybrid ZGW-API data path; fetches related rollen via ZGW-API rol endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "documenten",
+						"label": "Documents",
+						"icon": "icon-files",
+						"component": "ZaakDocumentenTab",
+						"order": 40,
+						"_note": "Hybrid ZGW-API data path; fetches related zaakinformatieobjecten via ZGW-API endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "besluiten",
+						"label": "Decisions",
+						"icon": "icon-checkmark",
+						"component": "ZaakBesluitenTab",
+						"order": 50,
+						"_note": "Hybrid ZGW-API data path; fetches related besluiten via ZGW-API besluit endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "berichten",
+						"label": "Messages",
+						"icon": "icon-mail",
+						"component": "ZaakBerichtenTab",
+						"order": 60,
+						"_note": "Hybrid ZGW-API data path; fetches related berichten via ZGW-API klantcontact endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "resultaten",
+						"label": "Results",
+						"icon": "icon-checkmark",
+						"component": "ZaakResultatenTab",
+						"order": 70,
+						"_note": "Hybrid ZGW-API data path; fetches related resultaten via ZGW-API resultaat endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					},
+					{
+						"id": "statussen",
+						"label": "Statuses",
+						"icon": "icon-history",
+						"component": "ZaakStatussenTab",
+						"order": 80,
+						"_note": "Hybrid ZGW-API data path; fetches related statussen via ZGW-API status endpoint filtered by zaakUrl, not OR; no current widget analogue"
+					}
 				]
-			}
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Taken",
@@ -151,8 +382,28 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "taak",
-				"columns": ["title", "status", "priority", "dueDate"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"title",
+					{
+						"key": "status",
+						"label": "Status",
+						"widget": "badge"
+					},
+					{
+						"key": "priority",
+						"label": "Priority",
+						"widget": "badge"
+					},
+					{
+						"key": "dueDate",
+						"label": "Due",
+						"formatter": "date"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -162,12 +413,37 @@
 			"title": "Task",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "taak",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "taak"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Klanten",
@@ -177,8 +453,16 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "klant",
-				"columns": ["naam", "email", "telefoon", "type"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"naam",
+					"email",
+					"telefoon",
+					"type"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -188,12 +472,37 @@
 			"title": "Customer",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "klant",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "klant"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Medewerkers",
@@ -203,8 +512,15 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "medewerker",
-				"columns": ["naam", "email", "afdeling"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"naam",
+					"email",
+					"afdeling"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -214,12 +530,37 @@
 			"title": "Employee",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "medewerker",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "medewerker"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Contactmomenten",
@@ -229,8 +570,23 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "contactmoment",
-				"columns": ["onderwerp", "kanaal", "datum"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"onderwerp",
+					{
+						"key": "kanaal",
+						"label": "Channel",
+						"widget": "badge"
+					},
+					{
+						"key": "datum",
+						"label": "Date",
+						"formatter": "datetime"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -240,12 +596,37 @@
 			"title": "Contact moment",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "contactmoment",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "contactmoment"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Berichten",
@@ -255,8 +636,23 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "bericht",
-				"columns": ["onderwerp", "kanaal", "datum"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"onderwerp",
+					{
+						"key": "kanaal",
+						"label": "Channel",
+						"widget": "badge"
+					},
+					{
+						"key": "datum",
+						"label": "Date",
+						"formatter": "datetime"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -266,12 +662,37 @@
 			"title": "Message",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "bericht",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "bericht"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Rollen",
@@ -281,8 +702,15 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "rol",
-				"columns": ["naam", "type", "subjectIdentificatie"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"naam",
+					"type",
+					"subjectIdentificatie"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -292,12 +720,37 @@
 			"title": "Role",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "rol",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "rol"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Zaaktypen",
@@ -307,8 +760,15 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "zaaktype",
-				"columns": ["identificatie", "omschrijving", "versie"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"identificatie",
+					"omschrijving",
+					"versie"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -318,12 +778,37 @@
 			"title": "Case type",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "zaaktype",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "zaaktype"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Besluiten",
@@ -333,8 +818,23 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "besluit",
-				"columns": ["identificatie", "datum", "status"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"identificatie",
+					{
+						"key": "datum",
+						"label": "Date",
+						"formatter": "date"
+					},
+					{
+						"key": "status",
+						"label": "Status",
+						"widget": "badge"
+					}
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -344,12 +844,37 @@
 			"title": "Decision",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "besluit",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "besluit"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Documenten",
@@ -359,8 +884,15 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "document",
-				"columns": ["titel", "type", "datum"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"titel",
+					"type",
+					"datum"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -370,12 +902,37 @@
 			"title": "Document",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "document",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "document"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Resultaten",
@@ -385,8 +942,14 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "resultaat",
-				"columns": ["omschrijving", "datum"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"omschrijving",
+					"datum"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -396,12 +959,37 @@
 			"title": "Result",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "resultaat",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "resultaat"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Statussen",
@@ -411,8 +999,15 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "status",
-				"columns": ["statustype", "datum", "statustoelichting"],
-				"sidebar": { "enabled": true, "showMetadata": true }
+				"columns": [
+					"statustype",
+					"datum",
+					"statustoelichting"
+				],
+				"sidebar": {
+					"enabled": true,
+					"showMetadata": true
+				}
 			}
 		},
 		{
@@ -422,26 +1017,61 @@
 			"title": "Status",
 			"config": {
 				"register": "zaakafhandelapp",
-				"schema": "status",
-				"sidebarTabs": [
-					{ "id": "overview", "label": "Overview",    "icon": "icon-info",    "widgets": [{ "type": "data" }, { "type": "metadata" }], "order": 10 },
-					{ "id": "audit",    "label": "Audit trail", "icon": "icon-history", "widgets": [{ "type": "audit-trail" }],                   "order": 90 }
-				]
-			}
+				"schema": "status"
+			},
+			"widgets": [
+				{
+					"widgetKey": "data",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 0,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "metadata",
+					"slot": "sidebar",
+					"tabGroup": "overview",
+					"gridX": 0,
+					"gridY": 1,
+					"gridWidth": 1,
+					"gridHeight": 1
+				},
+				{
+					"widgetKey": "audit-trail",
+					"slot": "sidebar",
+					"tabGroup": "audit",
+					"gridX": 0,
+					"gridY": 2,
+					"gridWidth": 1,
+					"gridHeight": 1
+				}
+			]
 		},
 		{
 			"id": "Search",
 			"route": "/zoeken",
-			"type": "custom",
+			"type": "index",
 			"title": "Search",
-			"component": "SearchView"
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak",
+				"columns": ["identificatie", "omschrijving", "zaaktype", "status", "uiterlijkeEinddatumAfdoening"],
+				"sidebar": { "enabled": true, "showMetadata": true }
+			},
+			"_note": "Cross-register search surface — defaults to the zaak index; richer ZGW-API multi-register search lands when the lib gains a non-OR data-source abstraction"
 		},
 		{
 			"id": "AuditTrail",
 			"route": "/auditTrail",
-			"type": "custom",
+			"type": "logs",
 			"title": "Audit trail",
-			"component": "AuditTrailView"
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak"
+			},
+			"_note": "ZGW-API audittrail endpoint integration deferred; uses the OR audit-trail surface for now"
 		},
 		{
 			"id": "Settings",
@@ -456,7 +1086,8 @@
 						"component": "SettingsForm"
 					}
 				]
-			}
+			},
+			"widgets": []
 		}
 	]
 }

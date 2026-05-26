@@ -67,6 +67,9 @@ return [
 		// user Settings
 		['name' => 'settings#index','url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#create', 'url' => '/settings', 'verb' => 'POST'],
+		// Generic per-user preferences (used by shared nextcloud-vue widgets, e.g. CnSupportDialog).
+		['name' => 'preferences#getPreference', 'url' => '/api/preferences/{key}', 'verb' => 'GET'],
+		['name' => 'preferences#setPreference', 'url' => '/api/preferences/{key}', 'verb' => 'PUT'],
 		// User
 		['name' => 'users#me', 'url' => '/me', 'verb' => 'GET'],
 		// Object API routes	

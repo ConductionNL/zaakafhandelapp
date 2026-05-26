@@ -71,15 +71,24 @@ export default {
 			auditTrail: {}, // Initialize with an empty object
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		// Assuming zaakStore.auditTrailItem is a single audit trail object
 		this.auditTrail = zaakStore.auditTrailItem || {}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		closeDialog() {
 			navigationStore.setModal(null)
 			zaakStore.setAuditTrailItem(null)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		formatValue(value) {
 			if (value === null || value === undefined) {
 				return 'N/A' // Handle null or undefined

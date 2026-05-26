@@ -10,6 +10,12 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
 
+/**
+ * Controller for zaak eigenschappen (case properties) resources.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class ZaakEigenschappenController extends Controller
 {
     const TEST_ARRAY = [
@@ -51,6 +57,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function page(): TemplateResponse
     {
@@ -69,12 +77,11 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function index(CallService $callService, string $zaakId): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
         return new JSONResponse($results);
     }//end index()
@@ -86,12 +93,11 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function show(string $id, CallService $callService, string $zaakId): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
         return new JSONResponse($results);
     }//end show()
@@ -103,6 +109,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function create(CallService $callService, string $zaakId): JSONResponse
     {
@@ -119,6 +127,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function update(string $id, CallService $callService, string $zaakId): JSONResponse
     {
@@ -134,6 +144,8 @@ class ZaakEigenschappenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function destroy(string $id, CallService $callService, string $zaakId): JSONResponse
     {

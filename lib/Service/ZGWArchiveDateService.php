@@ -10,6 +10,9 @@ use OCA\OpenRegister\Db\ObjectEntity;
  * Service for calculating archive dates based on afleidingswijze.
  *
  * Extracted from ZGWLogicService to reduce class complexity.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWArchiveDateService
 {
@@ -40,6 +43,8 @@ class ZGWArchiveDateService
      * @param string      $besluitSchema      The besluit schema slug
      *
      * @return string|null The calculated archive action date, or null
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-004
      */
     public function calculateArchiveDate(
         ?string $afleidingswijze,

@@ -26,3 +26,8 @@ Zone.Identifier
 .docusaurus
 coverage/
 .phpunit.result.cache
+
+# Playwright (journeydoc capture / regression)
+/tests/e2e/.auth/
+/tests/e2e/playwright-report/
+/tests/e2e/test-results/

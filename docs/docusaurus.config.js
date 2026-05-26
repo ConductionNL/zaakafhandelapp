@@ -114,6 +114,7 @@ const config = createConfig({
      (colorMode + navbar + footer). prism + mermaid land alongside.
      The deprecation announcement bar carries over from the old site. */
   themeConfig: {
+    image: 'img/og-zaakafhandelapp.png',
     announcementBar: {
       id: 'deprecated',
       content:

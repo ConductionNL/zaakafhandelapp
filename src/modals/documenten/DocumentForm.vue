@@ -255,6 +255,9 @@ export default {
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		if (documentStore.documentItem?.id) {
 			this.IS_EDIT = true
@@ -273,11 +276,17 @@ export default {
 		this.fetchZaak()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(null)
 			documentStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchZaak() {
 			this.zaakLoading = true
 
@@ -303,6 +312,9 @@ export default {
 					this.zaakLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		isValid() {
 			return this.document.bronorganisatie
 				&& this.document.creatiedatum
@@ -311,6 +323,9 @@ export default {
 				&& this.document.taal
 				&& this.document.informatieobjecttype
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		saveDocument() {
 			this.loading = true
 

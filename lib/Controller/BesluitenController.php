@@ -13,6 +13,9 @@ use OCP\IRequest;
 
 /**
  * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class BesluitenController extends Controller
 {
@@ -55,6 +58,8 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
      */
     public function page(): TemplateResponse
     {
@@ -73,12 +78,11 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(CallService $callService): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->index(source: 'brc', endpoint: 'besluiten');
         return new JSONResponse($results);
     }//end index()
@@ -90,12 +94,11 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
-        // Latere zorg
-        $query = $this->request->getParams();
-
         $results = $callService->show(source: 'brc', endpoint: 'besluiten', id: $id);
         return new JSONResponse($results);
     }//end show()
@@ -107,6 +110,8 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(CallService $callService): JSONResponse
     {
@@ -123,6 +128,8 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
@@ -138,6 +145,8 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {

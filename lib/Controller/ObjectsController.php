@@ -10,6 +10,9 @@ use Exception;
 
 /**
  * Controller class for handling object-related operations
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectsController extends Controller
 {
@@ -30,6 +33,8 @@ class ObjectsController extends Controller
      * @param string $objectType The type of object to return
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function index(string $objectType): JSONResponse
     {
@@ -53,6 +58,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function show(string $objectType, string $id): JSONResponse
     {
@@ -86,6 +93,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function create(string $objectType): JSONResponse
     {
@@ -116,6 +125,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function update(string $objectType, string $id): JSONResponse
     {
@@ -146,6 +157,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function destroy(string $objectType, string $id): JSONResponse
     {
@@ -170,6 +183,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getAuditTrail(string $objectType, string $id): JSONResponse
     {
@@ -191,6 +206,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getRelations(string $objectType, string $id): JSONResponse
     {
@@ -215,6 +232,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getUses(string $objectType, string $id): JSONResponse
     {

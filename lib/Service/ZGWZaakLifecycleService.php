@@ -7,6 +7,9 @@ use OCA\OpenRegister\Db\ObjectEntity;
 /**
  * Handles zaak lifecycle: reopen, delete, vertrouwelijkheidaanduiding.
  * Close is handled by ZGWZaakCloseService.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWZaakLifecycleService
 {
@@ -23,6 +26,8 @@ class ZGWZaakLifecycleService
 
     /**
      * Close a zaak. Delegates to ZGWZaakCloseService.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function closeZaak(ObjectEntity $status): void
     {
@@ -31,6 +36,8 @@ class ZGWZaakLifecycleService
 
     /**
      * Reopen a zaak when non-eindstatus is set. ZRC-008.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function reopenZaak(ObjectEntity $status): void
     {
@@ -48,6 +55,8 @@ class ZGWZaakLifecycleService
 
     /**
      * Delete dependent objects. ZRC-023.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
      */
     public function deleteZaak(ObjectEntity $zaak): void
     {
@@ -64,6 +73,8 @@ class ZGWZaakLifecycleService
 
     /**
      * ZRC-009: Set derived vertrouwelijkheidaanduiding.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
      */
     public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
     {

@@ -6,6 +6,12 @@ use GuzzleHttp\Client;
 use Symfony\Component\Uid\Uuid;
 use OCP\IAppConfig;
 
+/**
+ * Service for performing outbound HTTP calls to external ZGW sources.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class CallService
 {
     public function __construct(
@@ -37,6 +43,8 @@ class CallService
      * Gets the guzzle config as an array
      *
      * @return array
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function getConfig(?string $source=null, array $query=[]): array
     {
@@ -73,6 +81,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function index(string $source, string $endpoint, array $query=[]): array | null
     {
@@ -99,6 +109,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function show(string $source, string $endpoint, string $id, array $query=[]): array | null
     {
@@ -125,6 +137,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function create(string $source, string $endpoint, array $data): array | null
     {
@@ -147,6 +161,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function update(string $source, string $endpoint, array $data, string $id): array | null
     {
@@ -168,6 +184,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function destroy(string $source, string $endpoint, string $id): array | null
     {

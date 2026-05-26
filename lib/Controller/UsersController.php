@@ -13,6 +13,9 @@ use OCP\IUserSession;
  * Class SettingsController
  *
  * Controller for handling settings-related operations in the OpenCatalogi app.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class UsersController extends Controller
 {
@@ -39,6 +42,8 @@ class UsersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse Info about the current user.
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-004
      */
     public function me(): JSONResponse
     {

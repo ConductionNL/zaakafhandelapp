@@ -10,6 +10,9 @@ use InvalidArgumentException;
  *
  * Delegates mapper resolution to ObjectMapperService and
  * query operations to ObjectQueryService.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectService implements IObjectService
 {
@@ -73,6 +76,8 @@ class ObjectService implements IObjectService
      * @param array|null   $extend     Extensions
      *
      * @return array The retrieved objects as arrays
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getObjects(
         string $objectType,
@@ -104,6 +109,8 @@ class ObjectService implements IObjectService
 
     /**
      * Creates or updates an object.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
     {
@@ -112,6 +119,8 @@ class ObjectService implements IObjectService
 
     /**
      * Deletes an object.
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function deleteObject(string $objectType, string|int $id): bool
     {

@@ -34,6 +34,9 @@ export class Klant implements TKlant {
 	public subject: string
 	public subjectIdentificatie: string
 	public subjectType: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TKlant) {
 		this.id = source.id || ''

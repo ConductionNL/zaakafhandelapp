@@ -12,10 +12,16 @@ export const useBerichtStore = defineStore('berichten', {
 		auditTrailItem: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setBerichtItem(berichtItem) {
 			this.berichtItem = berichtItem && new Bericht(berichtItem)
 			console.log('Active bericht item set to ' + berichtItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setBerichtenList(berichtenList) {
 			this.berichtenList = berichtenList.map(
 			    (berichtItem) => new Bericht(berichtItem),
@@ -26,6 +32,9 @@ export const useBerichtStore = defineStore('berichten', {
 			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 		async refreshBerichtenList(search = null) {
 			let endpoint = apiEndpoint
 
@@ -50,6 +59,9 @@ export const useBerichtStore = defineStore('berichten', {
 			return { response, data, entities }
 		},
 		// New function to get a single bericht
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-003
+		 */
 		async getBericht(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
@@ -70,6 +82,9 @@ export const useBerichtStore = defineStore('berichten', {
 			return { response, data, entity }
 		},
 		// Delete a bericht
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async deleteBericht(berichtItem) {
 			if (!berichtItem.id) {
 				throw new Error('No bericht item to delete')
@@ -92,6 +107,9 @@ export const useBerichtStore = defineStore('berichten', {
 			return { response }
 		},
 		// Create or save a bericht from store
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async saveBericht(berichtItem) {
 			if (!berichtItem) {
 				throw new Error('No bericht item to save')

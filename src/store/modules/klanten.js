@@ -13,14 +13,23 @@ export const useKlantStore = defineStore('klanten', {
 		auditTrailItem: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setKlantItem(klantItem) {
 			this.klantItem = klantItem && new Klant(klantItem)
 			console.log('Active klant item set to ' + klantItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setWidgetKlantId(widgetKlantId) {
 			this.widgetKlantId = widgetKlantId
 			console.log('Widget klant id set to ' + widgetKlantId)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setKlantenList(klantenList) {
 			this.klantenList = klantenList.map(
 			    (klantItem) => new Klant(klantItem),
@@ -31,6 +40,9 @@ export const useKlantStore = defineStore('klanten', {
 			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 		async refreshKlantenList(search = null) {
 			let endpoint = apiEndpoint
 
@@ -54,6 +66,9 @@ export const useKlantStore = defineStore('klanten', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 
 		async searchKlanten(queryParams = null) {
 			let endpoint = apiEndpoint
@@ -78,6 +93,9 @@ export const useKlantStore = defineStore('klanten', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 
 		async searchPersons(search = null) {
 			let endpoint = apiEndpoint
@@ -104,6 +122,9 @@ export const useKlantStore = defineStore('klanten', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 
 		async searchOrganisations(search = null) {
 			let endpoint = apiEndpoint
@@ -132,6 +153,9 @@ export const useKlantStore = defineStore('klanten', {
 		},
 
 		// New function to get a single klant
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-003
+		 */
 		async getKlant(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
@@ -152,6 +176,9 @@ export const useKlantStore = defineStore('klanten', {
 			return { response, data, entity }
 		},
 		// Delete a klant
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async deleteKlant(klantItem) {
 			if (!klantItem.id) {
 				throw new Error('No klant item to delete')
@@ -174,6 +201,9 @@ export const useKlantStore = defineStore('klanten', {
 			return { response }
 		},
 		// Create or save a klant from store
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async saveKlant(klantItem) {
 			if (!klantItem) {
 				throw new Error('No klant item to save')

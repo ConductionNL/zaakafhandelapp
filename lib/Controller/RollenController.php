@@ -13,6 +13,9 @@ use OCP\IRequest;
  * Controller for rollen (roles) resources.
  *
  * @see https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class RollenController extends Controller
 {
@@ -38,6 +41,8 @@ class RollenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
      */
     public function page(): TemplateResponse
     {
@@ -53,6 +58,8 @@ class RollenController extends Controller
      * @param CallService $callService The call service
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(CallService $callService): JSONResponse
     {
@@ -70,6 +77,8 @@ class RollenController extends Controller
      * @param CallService $callService The call service
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
@@ -86,6 +95,8 @@ class RollenController extends Controller
      * @param CallService $callService The call service
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(CallService $callService): JSONResponse
     {
@@ -104,6 +115,8 @@ class RollenController extends Controller
      * @param CallService $callService The call service
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
@@ -122,6 +135,8 @@ class RollenController extends Controller
      * @param CallService $callService The call service
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {

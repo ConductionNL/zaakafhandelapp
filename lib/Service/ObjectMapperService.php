@@ -13,6 +13,9 @@ use OCP\IAppConfig;
  *
  * Handles the mapping between object types and their data sources
  * (internal mappers or OpenRegister).
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectMapperService
 {
@@ -44,6 +47,8 @@ class ObjectMapperService
      *
      * @return mixed The appropriate mapper
      * @throws InvalidArgumentException|Exception
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
      */
     public function getMapper(string $objectType): mixed
     {
@@ -91,6 +96,8 @@ class ObjectMapperService
      * Attempts to retrieve the OpenRegister service.
      *
      * @return \OCA\OpenRegister\Service\ObjectService|null The service or null
+      *
+      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
      */
     public function getOpenRegisters(): ?\OCA\OpenRegister\Service\ObjectService
     {

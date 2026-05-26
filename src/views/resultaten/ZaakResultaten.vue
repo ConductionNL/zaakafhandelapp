@@ -77,11 +77,17 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		filteredResultatenList() {
 			return resultaatStore.resultatenList.filter((resultaat) => resultaat.zaak === this.zaakId)
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		zaakId(newVal) {
 			this.fetchData()
 		},
@@ -90,6 +96,9 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.loading = true
 
@@ -98,6 +107,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		toggleResultaat(resultaat) {
 			if (resultaatStore.resultaatItem?.id === resultaat.id) {
 				resultaatStore.setResultaatItem(null)
@@ -105,6 +117,9 @@ export default {
 				resultaatStore.setResultaatItem(resultaat)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

@@ -11,6 +11,9 @@ use OCP\AppFramework\Http\ContentSecurityPolicy;
 
 /**
  * Controller for handling contact moments (contactmomenten) operations
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ContactMomentenController extends Controller
 {
@@ -29,6 +32,8 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -50,6 +55,8 @@ class ContactMomentenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -85,6 +92,8 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
@@ -102,6 +111,8 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
@@ -125,6 +136,8 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
@@ -145,6 +158,8 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
@@ -162,6 +177,8 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+      *
+      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {

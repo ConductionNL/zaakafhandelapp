@@ -8,6 +8,12 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
 
+/**
+ * Controller for application configuration operations.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class ConfigurationController extends Controller
 {
     public function __construct(
@@ -21,6 +27,8 @@ class ConfigurationController extends Controller
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -71,6 +79,8 @@ class ConfigurationController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+      *
+      * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
     public function create(): JSONResponse
     {

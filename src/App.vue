@@ -19,6 +19,7 @@
 			:manifest="manifest"
 			:custom-components="customComponents"
 			:page-types="pageTypes"
+			:registry="registry"
 			app-id="zaakafhandelapp"
 			:translate="translateForApp"
 			:permissions="permissions">
@@ -60,6 +61,9 @@ export default {
 		Modals,
 		Dialogs,
 	},
+	/**
+	 * @spec exclude framework DI plumbing — provides app-level injections
+	 */
 
 	provide() {
 		return {
@@ -105,6 +109,18 @@ export default {
 			type: Object,
 			default: null,
 		},
+		/**
+		 * V2 component registry. Map of registry key →
+		 * `{ kind, component, ...kindMetadata }`. Passed to CnAppRoot
+		 * which validates entries at mount time. Recognised kinds:
+		 * `page`, `widget`, `modal`, `form-field`, `cell-renderer`.
+		 *
+		 * @type {object}
+		 */
+		registry: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 
 	data() {
@@ -125,6 +141,9 @@ export default {
 	},
 
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-003
+		 */
 		permissions() {
 			return window.OC?.currentUser?.permissions ?? []
 		},
@@ -138,6 +157,8 @@ export default {
 		 *
 		 * @param {string} key Translation key.
 		 * @return {string} Translated string (or the key on miss).
+		  *
+		  * @spec exclude i18n wrapper around Nextcloud t()
 		 */
 		translateForApp(key) {
 			return ncT('zaakafhandelapp', key)

@@ -152,6 +152,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchData(newId)
 		},
@@ -160,6 +163,9 @@ export default {
 		this.fetchData(this.id)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(id) {
 			this.loading = true
 
@@ -168,6 +174,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/contact_momenten/${id}/audit_trail`)
 				.then(response => response.json())
@@ -177,6 +186,9 @@ export default {
 					}
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		async closeContactMoment() {
 			if (contactMomentStore.contactMomentItem?.status === 'gesloten') {
 				console.info('Contact moment is already closed')

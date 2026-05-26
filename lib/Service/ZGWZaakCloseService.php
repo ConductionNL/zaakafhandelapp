@@ -8,6 +8,9 @@ use OCA\OpenRegister\Exception\CustomValidationException;
 
 /**
  * Handles closing a zaak (setting eindstatus). ZRC-007/ZRC-021.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWZaakCloseService
 {
@@ -24,6 +27,8 @@ class ZGWZaakCloseService
 
     /**
      * Close a zaak when eindstatus is set.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function closeZaak(ObjectEntity $status): void
     {
@@ -55,6 +60,8 @@ class ZGWZaakCloseService
 
     /**
      * Check if status is eindstatus for its zaaktype.
+      *
+      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function isEindStatus(array $sa): bool
     {
