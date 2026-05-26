@@ -6,6 +6,9 @@ namespace OCA\ZaakAfhandelApp\Service;
  * Interface for object service operations.
  *
  * Provides a contract for CRUD and query operations on typed objects.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 interface IObjectService
 {

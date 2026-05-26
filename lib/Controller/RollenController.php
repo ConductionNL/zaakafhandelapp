@@ -13,6 +13,9 @@ use OCP\IRequest;
  * Controller for rollen (roles) resources.
  *
  * @see https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class RollenController extends Controller
 {

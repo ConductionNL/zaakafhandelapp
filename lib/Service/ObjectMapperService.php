@@ -13,6 +13,9 @@ use OCP\IAppConfig;
  *
  * Handles the mapping between object types and their data sources
  * (internal mappers or OpenRegister).
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectMapperService
 {

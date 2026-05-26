@@ -11,6 +11,9 @@ use OCP\AppFramework\Db\DoesNotExistException;
  *
  * Handles relevanteAndereZaken and besluitInformatieObject validation.
  * Zaak-specific field validation is in ZGWZaakValidationService.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWValidationService
 {

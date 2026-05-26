@@ -7,6 +7,9 @@ namespace OCA\ZaakAfhandelApp\Service;
  *
  * Provides a centralized place for register and schema identifiers
  * used across ZGW services.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWRegistryService
 {

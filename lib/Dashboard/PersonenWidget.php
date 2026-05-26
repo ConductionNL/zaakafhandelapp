@@ -10,6 +10,12 @@ use OCP\Util;
 
 use OCA\ZaakAfhandelApp\AppInfo\Application;
 
+/**
+ * Dashboard widget showing personen (persons).
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class PersonenWidget implements IWidget
 {
     public function __construct(

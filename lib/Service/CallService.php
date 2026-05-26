@@ -6,6 +6,12 @@ use GuzzleHttp\Client;
 use Symfony\Component\Uid\Uuid;
 use OCP\IAppConfig;
 
+/**
+ * Service for performing outbound HTTP calls to external ZGW sources.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class CallService
 {
     public function __construct(
