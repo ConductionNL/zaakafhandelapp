@@ -22,4 +22,4 @@ Util::addStyle($appId, 'main');
 ?>
 
 
-<div id="zaakafhandelapp"></div>
+<div id="content"></div>
