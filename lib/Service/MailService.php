@@ -27,6 +27,14 @@ class MailService
     /**
      * Sends an e-mail when a task is connected to an employee.
      *
+     * Security notes:
+     * - medewerker is validated as a well-formed e-mail address before use as To address to
+     *   prevent open-relay / spam-primitive abuse (#272).
+     * - The deep-equality guard now compares the medewerker field specifically rather than
+     *   using === on full object arrays (distinct PHP arrays are never ===; the old guard
+     *   was never true and mail was sent on every update regardless of change — #272).
+     * - User-supplied values are HTML-escaped before interpolation into the mail body (#272).
+     *
      * @param array $oldObject The previous version of the object (to check if the field changes)
      * @param array $newObject The current version of the object.
      *
@@ -39,27 +47,40 @@ class MailService
     {
         if (isset($newObject['medewerker']) === false) {
             return $newObject;
-        } else if (isset($oldObject['medewerker']) === true && $oldObject === $newObject) {
+        }
+
+        // Skip if the medewerker field has not changed compared to the previous version.
+        if (isset($oldObject['medewerker']) === true && $oldObject['medewerker'] === $newObject['medewerker']) {
             return $newObject;
         }
 
         $email = $newObject['medewerker'];
 
+        // Validate that the medewerker value is a properly-formatted e-mail address before
+        // using it as the To address, to prevent open-relay abuse (#272).
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            // Not a valid e-mail; skip silently to avoid leaking validation errors in the
+            // object response, but do not send the message.
+            return $newObject;
+        }
+
+        // HTML-escape task data before interpolation to prevent stored-HTML injection (#272).
+        $taskId    = htmlspecialchars((string) ($newObject['id'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $taskTitle = htmlspecialchars((string) ($newObject['title'] ?? 'taak'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $baseUrl   = htmlspecialchars($this->urlGenerator->getBaseUrl(), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
         $message = $this->mailer->createMessage();
         $message->setSubject('KISS: Er is een taak aan u toegewezen');
         $message->setTo([$email]);
         $message->setHtmlBody(
-          body: "
-				<!doctype html>
-				<html lang='nl'>
-					<body>
-						Er is een taak aan u toegewezen. Klik
-						<a href='".$this->urlGenerator->getBaseUrl()."/apps/zaakafhandelapp/taken/{$newObject["id"]}'>
-							hier
-						</a>
-						om naar de taak te gaan.
-					</body>
-				</html>"
+            body: "<!doctype html>
+<html lang='nl'>
+<body>
+<p>Er is een taak (<strong>$taskTitle</strong>) aan u toegewezen. Klik
+<a href='$baseUrl/apps/zaakafhandelapp/taken/$taskId'>hier</a>
+om naar de taak te gaan.</p>
+</body>
+</html>"
         );
 
         $this->mailer->send($message);
