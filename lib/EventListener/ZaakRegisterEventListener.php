@@ -71,6 +71,10 @@ class ZaakRegisterEventListener implements IEventListener
         $obj  = $event->getObject();
 
         if ($slug === $this->registry->getStatusSchema()) {
+            // Re-open or close the zaak now that the status record is confirmed persisted.
+            // closeZaak MUST run in ObjectCreated (not ObjectCreating) so the zaak is only
+            // mutated when the triggering status write is known-successful — fixes #274.
+            $this->lifecycleService->closeZaak($obj);
             $this->lifecycleService->reopenZaak($obj);
         }
 
@@ -129,9 +133,8 @@ class ZaakRegisterEventListener implements IEventListener
         $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
         $obj  = $event->getObject();
 
-        if ($slug === $this->registry->getStatusSchema()) {
-            $this->lifecycleService->closeZaak($obj);
-        }
+        // Note: closeZaak has been moved to handleObjectCreated to avoid a race condition
+        // where the zaak was permanently mutated before the status record was persisted (#274).
 
         if ($slug === $this->registry->getZaakSchema()) {
             $this->zaakValidationService->checkProductenOfDiensten($obj);

@@ -99,7 +99,23 @@ class RollenController extends Controller
     }//end show()
 
     /**
+     * Valid ZGW betrokkeneType values per VNG API standard.
+     */
+    private const BETROKKENE_TYPES = [
+        'natuurlijk_persoon',
+        'niet_natuurlijk_persoon',
+        'vestiging',
+        'organisatorische_eenheid',
+        'medewerker',
+    ];
+
+    /**
      * Create a rol.
+     *
+     * Validates ZGW mandatory invariants before forwarding to the ZRC:
+     * - betrokkeneType must be a known enum value.
+     * - roltoelichting is mandatory as the AVG legal basis for processing personal data
+     *   (BSN stored in betrokkeneIdentificatie.inpBsn) — fixes #279.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -116,7 +132,25 @@ class RollenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        $body    = $this->request->getParams();
+        $body = $this->request->getParams();
+
+        // Validate betrokkeneType enum.
+        if (isset($body['betrokkeneType']) && in_array($body['betrokkeneType'], self::BETROKKENE_TYPES, true) === false) {
+            return new JSONResponse(
+                ['betrokkeneType' => ['Waarde \''.$body['betrokkeneType'].'\' is geen geldige betrokkeneType.']],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
+
+        // Enforce roltoelichting: required for AVG Article 5(1)(b) purpose-limitation
+        // when personal data (e.g. BSN) is associated with the rol.
+        if (empty($body['roltoelichting']) === true) {
+            return new JSONResponse(
+                ['roltoelichting' => ['Dit veld is verplicht. Geef de juridische grondslag op voor het verwerken van persoonsgegevens in deze rol.']],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
+
         $results = $callService->create(source: 'zrc', endpoint: 'rollen', data: $body);
         return new JSONResponse($results);
     }//end create()

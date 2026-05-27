@@ -5,6 +5,8 @@ namespace OCA\ZaakAfhandelApp\Service;
 use DateInterval;
 use DateTime;
 use OCA\OpenRegister\Db\ObjectEntity;
+use OCA\OpenRegister\Db\RegisterMapper;
+use OCA\OpenRegister\Db\SchemaMapper;
 
 /**
  * Service for calculating archive dates based on afleidingswijze.
@@ -22,13 +24,17 @@ class ZGWArchiveDateService
     /**
      * Constructor for ZGWArchiveDateService.
      *
-     * @param ObjectService $objectService The object service wrapper
+     * @param ObjectMapperService $mapperService   The object service wrapper
+     * @param RegisterMapper      $registerMapper  Mapper for resolving register slug → ID
+     * @param SchemaMapper        $schemaMapper    Mapper for resolving schema slug → ID
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct(
         ObjectMapperService $mapperService,
+        private RegisterMapper $registerMapper,
+        private SchemaMapper $schemaMapper,
     ) {
         $this->objectService = $mapperService->getOpenRegisters();
     }//end __construct()
@@ -145,24 +151,30 @@ class ZGWArchiveDateService
         string $brcRegister,
         string $besluitSchema,
     ): ?string {
+        // OpenRegister findAll expects numeric IDs for register/schema filters, not slugs.
+        // Resolve the slugs to their database IDs first (fixes #277).
+        $registerId = $this->registerMapper->find($brcRegister)->getId();
+        $schemaId   = $this->schemaMapper->find($besluitSchema)->getId();
+
         $this->objectService->clearCurrents();
         $besluiten = $this->objectService->findAll(
                 [
                     'filters' => [
                         'zaak'     => $zaakArray['url'],
-                        'register' => $brcRegister,
-                        'schema'   => $besluitSchema,
+                        'register' => $registerId,
+                        'schema'   => $schemaId,
                     ],
                 ]
                 );
 
-        $data = array_map(
-                function (ObjectEntity $besluit) use ($dateField) {
-                    return $besluit->jsonSerialize()[$dateField];
-                },
-                $besluiten
-                );
+        $data = array_filter(array_map(
+            function (ObjectEntity $besluit) use ($dateField) {
+                return $besluit->jsonSerialize()[$dateField] ?? null;
+            },
+            $besluiten
+        ));
 
-        return max($data);
+        // max([]) returns false; return null when there are no dated besluiten.
+        return empty($data) === false ? max($data) : null;
     }//end calculateFromBesluit()
 }//end class

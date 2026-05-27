@@ -72,19 +72,62 @@ class ZGWZaakLifecycleService
     }//end deleteZaak()
 
     /**
+     * ZGW confidentiality ordering, lowest to highest.
+     * A zaak may only have a classification equal to or more restrictive than its zaaktype.
+     */
+    private const VERTROUWELIJKHEID_ORDER = [
+        'openbaar'             => 0,
+        'beperkt_openbaar'     => 1,
+        'intern'               => 2,
+        'zaakvertrouwelijk'    => 3,
+        'vertrouwelijk'        => 4,
+        'confidentieel'        => 5,
+        'geheim'               => 6,
+        'zeer_geheim'          => 7,
+    ];
+
+    /**
      * ZRC-009: Set derived vertrouwelijkheidaanduiding.
+     *
+     * When the zaak has no classification yet, inherit the zaaktype default.
+     * When the zaak already has a classification, enforce that it is at least as
+     * restrictive as the zaaktype minimum — a lower classification is replaced with
+     * the zaaktype value (fixes #281, ZGW confidentiality lowering rule).
      *
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
      */
     public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
     {
-        $zaakArray = $zaak->jsonSerialize();
-        if ($zaakArray['vertrouwelijkheidaanduiding'] !== null) {
+        $zaakArray   = $zaak->jsonSerialize();
+        $zaaktype    = $this->find($zaakArray['zaaktype']);
+        $ztMinimum   = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
+
+        if ($ztMinimum === null) {
+            // Zaaktype has no classification configured; nothing to enforce.
             return;
         }
 
-        $zaaktype = $this->find($zaakArray['zaaktype']);
-        $zaakArray['vertrouwelijkheidaanduiding'] = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'];
+        $current = $zaakArray['vertrouwelijkheidaanduiding'] ?? null;
+
+        if ($current === null) {
+            // Inherit the zaaktype default when no classification has been set yet.
+            $zaakArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
+        } else {
+            // Enforce minimum: if the zaak's classification is lower than the zaaktype
+            // minimum, raise it to the minimum.
+            $currentRank = self::VERTROUWELIJKHEID_ORDER[$current] ?? -1;
+            $minimumRank = self::VERTROUWELIJKHEID_ORDER[$ztMinimum] ?? 0;
+
+            if ($currentRank < $minimumRank) {
+                $zaakArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
+            }
+        }
+
+        if ($zaakArray['vertrouwelijkheidaanduiding'] === ($zaak->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null)) {
+            // No change needed; skip the save to avoid an unnecessary write.
+            return;
+        }
+
         $zaak->setObject($zaakArray);
         $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
     }//end setVertrouwelijkheidaanduiding()

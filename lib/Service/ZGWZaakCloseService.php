@@ -5,6 +5,7 @@ namespace OCA\ZaakAfhandelApp\Service;
 use DateTime;
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Exception\CustomValidationException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Handles closing a zaak (setting eindstatus). ZRC-007/ZRC-021.
@@ -21,12 +22,17 @@ class ZGWZaakCloseService
         ObjectMapperService $mapperService,
         private ZGWArchiveDateService $archiveService,
         private ZGWRegistryService $registry,
+        private LoggerInterface $logger,
     ) {
         $this->objectService = $mapperService->getOpenRegisters();
     }//end __construct()
 
     /**
      * Close a zaak when eindstatus is set.
+     *
+     * Throws CustomValidationException when a required field (resultaat, zaaktype, etc.)
+     * is missing or malformed so that the caller can surface the error rather than silently
+     * leaving the zaak without required archive metadata (Archiefwet) — fixes #273.
      *
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
@@ -42,15 +48,41 @@ class ZGWZaakCloseService
         $zaakArray = $zaak->jsonSerialize();
         $this->assertGebruiksrechten($zaakArray);
 
-        $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
-        $resultaattype          = $this->find($this->find($zaakArray['resultaat'])->jsonSerialize()['resultaattype'])->jsonSerialize();
+        // Guard: zaak must have a resultaat before it can be closed with archive metadata.
+        if (empty($zaakArray['resultaat']) === true) {
+            throw new CustomValidationException(
+                'Zaak heeft geen resultaat',
+                [['name' => 'resultaat', 'code' => 'required', 'reason' => 'Een zaak moet een resultaat hebben voordat hij gesloten kan worden']]
+            );
+        }
+
+        try {
+            $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
+        } catch (\Exception $e) {
+            throw new CustomValidationException(
+                'Ongeldige datumStatusGezet',
+                [['name' => 'datumStatusGezet', 'code' => 'invalid', 'reason' => 'datumStatusGezet bevat geen geldige ISO 8601 datum: '.$e->getMessage()]]
+            );
+        }
+
+        try {
+            $resultaatRecord = $this->find($zaakArray['resultaat']);
+            $resultaattype   = $this->find($resultaatRecord->jsonSerialize()['resultaattype'])->jsonSerialize();
+        } catch (\Exception $e) {
+            $this->logger->error('ZaakAfhandelApp: closeZaak cannot resolve resultaattype', ['exception' => $e->getMessage()]);
+            throw new CustomValidationException(
+                'Resultaattype niet gevonden',
+                [['name' => 'resultaattype', 'code' => 'not-found', 'reason' => 'Het resultaattype kon niet worden opgehaald: '.$e->getMessage()]]
+            );
+        }
+
         $zaakArray['archiefnominatie']  = $resultaattype['archiefnominatie'];
         $zaakArray['archiefactiedatum'] = $this->archiveService->calculateArchiveDate(
             $resultaattype['brondatumArchiefprocedure']['afleidingswijze'] ?? null,
             $zaakArray,
-                $resultaattype,
-                $this->registry->getBrcRegister(),
-                $this->registry->getBesluitSchema()
+            $resultaattype,
+            $this->registry->getBrcRegister(),
+            $this->registry->getBesluitSchema()
         );
 
         $this->objectService->clearCurrents();
