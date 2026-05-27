@@ -48,6 +48,29 @@ class ZaakEigenschappenController extends Controller
         );
     }//end page()
 
+    /** UUID v4 pattern used to validate path segments before interpolation into URLs. */
+    private const UUID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+
+    /**
+     * Validate that $value is a strict UUID to prevent path-traversal / SSRF (#270).
+     *
+     * @param string $value The value to validate.
+     * @param string $field The field name for the error message.
+     *
+     * @return JSONResponse|null Returns a 400 response when invalid, null when valid.
+     */
+    private function assertUuid(string $value, string $field): ?JSONResponse
+    {
+        if (preg_match(self::UUID_PATTERN, $value) !== 1) {
+            return new JSONResponse(
+                ['error' => "$field must be a valid UUID"],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
+
+        return null;
+    }//end assertUuid()
+
     /**
      * Return (and serach) all objects
      *
@@ -62,6 +85,11 @@ class ZaakEigenschappenController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
         }
 
         $results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
@@ -84,6 +112,11 @@ class ZaakEigenschappenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
+
         $results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
         return new JSONResponse($results);
     }//end show()
@@ -102,6 +135,11 @@ class ZaakEigenschappenController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
         }
 
         // get post from requests
@@ -126,6 +164,11 @@ class ZaakEigenschappenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
+
         $body    = $this->request->getParams();
         $results = $callService->update(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body, id: $id);
         return new JSONResponse($results);
@@ -145,6 +188,11 @@ class ZaakEigenschappenController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
         }
 
         $callService->destroy(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
