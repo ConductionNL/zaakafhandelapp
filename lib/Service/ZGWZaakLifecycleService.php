@@ -60,13 +60,24 @@ class ZGWZaakLifecycleService
      */
     public function deleteZaak(ObjectEntity $zaak): void
     {
-        $arr  = $this->objectService->renderEntity($zaak);
-        $urls = array_merge($arr['rollen'] ?? [], $arr['eigenschappen'] ?? [], [$arr['resultaat']], $arr['statussen'] ?? [], $arr['deelzaken'] ?? [], $arr['zaakobjecten'] ?? [], [$arr['klantcontact']]);
+        $arr = $this->objectService->renderEntity($zaak);
+
+        // Build the URL list; resultaat and klantcontact are nullable singletons — guard
+        // with array_filter so null entries never reach getObjectIdByEndpointUrl (#278).
+        $singletons = array_filter([$arr['resultaat'] ?? null, $arr['klantcontact'] ?? null]);
+        $urls       = array_merge(
+            $arr['rollen'] ?? [],
+            $arr['eigenschappen'] ?? [],
+            $singletons,
+            $arr['statussen'] ?? [],
+            $arr['deelzaken'] ?? [],
+            $arr['zaakobjecten'] ?? []
+        );
 
         $ids = array_filter(array_map(fn(?string $url) => $url ? $this->registry->getObjectIdByEndpointUrl($url) : null, $urls));
         $this->objectService->deleteObjects($ids);
 
-        foreach ($arr['zaakinformatieobjecten'] as $zioUrl) {
+        foreach ($arr['zaakinformatieobjecten'] ?? [] as $zioUrl) {
             $this->objectService->deleteObject($this->registry->getObjectIdByEndpointUrl($zioUrl));
         }
     }//end deleteZaak()

@@ -94,7 +94,8 @@ class ZGWLogicService
         $this->objectService->clearCurrents();
         $besluittype = $this->objectService->find($this->registry->getObjectIdByEndpointUrl($arr['besluittype']));
 
-        if (in_array(needle: $besluittype->jsonSerialize()['omschrijving'], haystack: $zaak->jsonSerialize()['zaaktype']['besluittypen']) === false) {
+        // besluittypen may be null when the zaaktype has no besluittypen configured (#282 bug-2).
+        if (in_array(needle: $besluittype->jsonSerialize()['omschrijving'], haystack: $zaak->jsonSerialize()['zaaktype']['besluittypen'] ?? []) === false) {
             throw new CustomValidationException(
                 'Besluittype niet in zaaktype',
                 [['name' => 'nonFieldErrors', 'code' => 'invalid-besluittype', 'reason' => 'besluittype hoort niet bij het zaaktype van de zaak']]
@@ -214,7 +215,13 @@ class ZGWLogicService
 
         $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
 
-        $iot      = array_shift($iots);
+        $iot = array_shift($iots);
+
+        // Guard: array_shift returns null when no informatieobjecttype was found (#282 bug-3).
+        if ($iot === null) {
+            return;
+        }
+
         $iotArray = $iot->jsonSerialize();
 
         $removeZaaktype = $ztIotArray['zaaktype'];
