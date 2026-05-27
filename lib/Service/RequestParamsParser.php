@@ -38,8 +38,8 @@ class RequestParamsParser
      * @param array $requestParams The raw request parameters
      *
      * @return array Parsed parameters with keys: limit, offset, order, extend, search, filters
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-004
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-004
      */
     public function parse(array $requestParams): array
     {

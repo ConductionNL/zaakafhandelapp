@@ -65,8 +65,8 @@ class SettingsController extends Controller
      * @return JSONResponse JSON response containing the current settings
      *
      * @NoCSRFRequired
-      *
-      * @spec openspec/specs/app-configuration/spec.md#REQ-002
+     *
+     * @spec openspec/specs/app-configuration/spec.md#REQ-002
      */
     public function index(): JSONResponse
     {
@@ -101,8 +101,8 @@ class SettingsController extends Controller
      * @return JSONResponse JSON response containing the updated settings
      *
      * @NoCSRFRequired
-      *
-      * @spec openspec/specs/app-configuration/spec.md#REQ-002
+     *
+     * @spec openspec/specs/app-configuration/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {

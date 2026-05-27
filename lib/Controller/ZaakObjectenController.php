@@ -36,8 +36,8 @@ class ZaakObjectenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function page(): TemplateResponse
     {
@@ -55,8 +55,8 @@ class ZaakObjectenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function index(CallService $callService): JSONResponse
     {
@@ -75,8 +75,8 @@ class ZaakObjectenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
@@ -95,8 +95,8 @@ class ZaakObjectenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function create(CallService $callService): JSONResponse
     {
@@ -117,8 +117,8 @@ class ZaakObjectenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
@@ -138,8 +138,8 @@ class ZaakObjectenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {

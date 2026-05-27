@@ -76,8 +76,8 @@ class ObjectService implements IObjectService
      * @param array|null   $extend     Extensions
      *
      * @return array The retrieved objects as arrays
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getObjects(
         string $objectType,
@@ -109,8 +109,8 @@ class ObjectService implements IObjectService
 
     /**
      * Creates or updates an object.
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
     {
@@ -119,8 +119,8 @@ class ObjectService implements IObjectService
 
     /**
      * Deletes an object.
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function deleteObject(string $objectType, string|int $id): bool
     {

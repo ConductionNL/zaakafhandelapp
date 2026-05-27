@@ -47,8 +47,8 @@ class ObjectMapperService
      *
      * @return mixed The appropriate mapper
      * @throws InvalidArgumentException|Exception
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
      */
     public function getMapper(string $objectType): mixed
     {
@@ -96,8 +96,8 @@ class ObjectMapperService
      * Attempts to retrieve the OpenRegister service.
      *
      * @return \OCA\OpenRegister\Service\ObjectService|null The service or null
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
      */
     public function getOpenRegisters(): ?\OCA\OpenRegister\Service\ObjectService
     {

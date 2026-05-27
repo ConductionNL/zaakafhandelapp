@@ -66,6 +66,9 @@ class TakenWidget implements IWidget
 
     /**
      * @inheritDoc
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess) — OCP\Util::addScript/addStyle is the
+     *   Nextcloud-prescribed static API for enqueuing assets in Dashboard widgets.
      */
     public function load(): void
     {

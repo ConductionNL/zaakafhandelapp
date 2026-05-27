@@ -58,8 +58,8 @@ class ZaakBesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function page(): TemplateResponse
     {
@@ -77,8 +77,8 @@ class ZaakBesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function index(): JSONResponse
     {
@@ -97,8 +97,8 @@ class ZaakBesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function show(string $id): JSONResponse
     {
@@ -117,8 +117,8 @@ class ZaakBesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function create(): JSONResponse
     {
@@ -137,8 +137,8 @@ class ZaakBesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
      */
     public function update(string $id): JSONResponse
     {
@@ -157,8 +157,11 @@ class ZaakBesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
+     *   stub implementation returns empty response (resource management handled client-side).
      */
     public function destroy(string $id): JSONResponse
     {

@@ -36,8 +36,8 @@ class ObjectsController extends Controller
      * @param string $objectType The type of object to return
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function index(string $objectType): JSONResponse
     {
@@ -65,8 +65,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function show(string $objectType, string $id): JSONResponse
     {
@@ -104,8 +104,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function create(string $objectType): JSONResponse
     {
@@ -140,8 +140,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function update(string $objectType, string $id): JSONResponse
     {
@@ -176,8 +176,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function destroy(string $objectType, string $id): JSONResponse
     {
@@ -206,8 +206,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getAuditTrail(string $objectType, string $id): JSONResponse
     {
@@ -233,8 +233,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getRelations(string $objectType, string $id): JSONResponse
     {
@@ -263,8 +263,8 @@ class ObjectsController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getUses(string $objectType, string $id): JSONResponse
     {

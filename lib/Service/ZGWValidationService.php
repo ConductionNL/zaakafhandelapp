@@ -30,8 +30,8 @@ class ZGWValidationService
 
     /**
      * ZRC-010: Validate relevanteAndereZaken references.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkRelevanteAndereZaken(ObjectEntity $zaak): void
     {
@@ -41,11 +41,11 @@ class ZGWValidationService
             return;
         }
 
-        $i = 0;
+        $index = 0;
         foreach ($zaakArray['relevanteAndereZaken'] as $relevanteZaak) {
             $this->objectService->clearCurrents();
             if (isset($relevanteZaak['url']) === false) {
-                $i++;
+                $index++;
                 continue;
             }
 
@@ -57,18 +57,18 @@ class ZGWValidationService
             } catch (DoesNotExistException $exception) {
                 throw new CustomValidationException(
                     "Relevante zaak bestaat niet",
-                    [['name' => "relevanteAndereZaken.$i.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]
+                    [['name' => "relevanteAndereZaken.$index.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]
                 );
             }
 
-            $i++;
+            $index++;
         }//end foreach
     }//end checkRelevanteAndereZaken()
 
     /**
      * Validate a BesluitInformatieObject's type against besluittype.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function validateBesluitInformatieObject(ObjectEntity $bio): void
     {

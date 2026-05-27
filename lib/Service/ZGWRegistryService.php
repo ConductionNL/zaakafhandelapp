@@ -122,8 +122,8 @@ class ZGWRegistryService
      * @param string $url The endpoint URL
      *
      * @return string The extracted object ID
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function getObjectIdByEndpointUrl(string $url): string
     {

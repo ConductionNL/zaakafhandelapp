@@ -32,8 +32,8 @@ class MailService
      *
      * @return array The current version of the object.
      * @throws \Exception
-      *
-      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function sendMail(array $oldObject, array $newObject): array
     {

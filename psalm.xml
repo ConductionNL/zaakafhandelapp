@@ -69,6 +69,11 @@
                 <referencedClass name="OCA\OpenRegister\Event\ObjectUpdatingEvent"/>
                 <referencedClass name="OCA\OpenRegister\Event\ObjectUpdatedEvent"/>
                 <referencedClass name="OCA\OpenRegister\Event\ObjectDeletedEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectDeletingEvent"/>
+                <!-- OR-peer stub gap: CustomValidationException and Schema exist in OR ≥ 0.7 but are not
+                     available in this app's install-time stubs. Suppress until OR ships Psalm stubs. -->
+                <referencedClass name="OCA\OpenRegister\Exception\CustomValidationException"/>
+                <referencedClass name="OCA\OpenRegister\Db\Schema"/>
                 <referencedClass name="OCA\OpenRegister\Service\ObjectService"/>
                 <referencedClass name="OCA\OpenRegister\Service\ConfigurationService"/>
                 <referencedClass name="OCA\OpenRegister\Service\RegisterService"/>
@@ -91,6 +96,8 @@
             </errorLevel>
         </UndefinedClass>
         <UndefinedMagicMethod errorLevel="suppress"/>
+        <!-- InvalidThrow cascades from OR-peer UndefinedClass stubs; suppress at fleet level -->
+        <InvalidThrow errorLevel="suppress"/>
         <UnusedClass errorLevel="suppress"/>
         <PossiblyUnusedMethod errorLevel="suppress"/>
         <UnusedMethod errorLevel="suppress"/>
