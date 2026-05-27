@@ -89,7 +89,16 @@ class ZaakInformatieObjectenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create a ZIO (zaak-informatieobject link).
+     *
+     * Guards (#280):
+     * - Both `zaak` and `informatieobject` URL fields must be present and non-empty.
+     * - Both values must be syntactically valid HTTP(S) URLs.
+     *
+     * Note: full object-level authorization (verify the current user has write access on the
+     * zaak and read access on the informatieobject) requires a ZRC/DRC look-up that is beyond
+     * the scope of this controller. That check is tracked in GitHub issue #280 and should be
+     * implemented once per-object ACLs are available via the configured ZRC/DRC sources.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -105,7 +114,25 @@ class ZaakInformatieObjectenController extends Controller
         }
 
         // get post from requests
-        $body    = $this->request->getParams();
+        $body = $this->request->getParams();
+
+        // Validate that required URL fields are present and syntactically valid (#280).
+        foreach (['zaak', 'informatieobject'] as $field) {
+            if (empty($body[$field]) === true) {
+                return new JSONResponse(
+                    [$field => ["Het veld $field is verplicht."]],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+
+            if (filter_var($body[$field], FILTER_VALIDATE_URL) === false) {
+                return new JSONResponse(
+                    [$field => ["Het veld $field moet een geldige URL zijn."]],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+        }
+
         $results = $callService->create(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body);
         return new JSONResponse($results);
     }//end create()

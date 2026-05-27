@@ -74,12 +74,17 @@ class ZGWArchiveDateService
      */
     private function calculateFromHoofdzaak(array $zaakArray): ?string
     {
+        // Guard: hoofdzaak may be null when this zaak is not a deelzaak (#278).
+        if (empty($zaakArray['hoofdzaak']) === true) {
+            return null;
+        }
+
         $hoofdzaakId = explode('/', $zaakArray['hoofdzaak']);
         $hoofdzaakId = end($hoofdzaakId);
         $this->objectService->clearCurrents();
         $hoofdzaak = $this->objectService->find($hoofdzaakId);
 
-        return $hoofdzaak->jsonSerialize()['einddatum'];
+        return $hoofdzaak->jsonSerialize()['einddatum'] ?? null;
     }//end calculateFromHoofdzaak()
 
     /**
@@ -108,9 +113,14 @@ class ZGWArchiveDateService
                 return $eigenschapObject->jsonSerialize()['naam'] === $eigenschap;
             }
         );
-        $eigenschapObject  = array_shift($eigenschapObjects);
+        $eigenschapObject = array_shift($eigenschapObjects);
 
-        return $eigenschapObject->jsonSerialize()['waarde'];
+        // Guard: array_shift returns null when no matching eigenschap was found (#278).
+        if ($eigenschapObject === null) {
+            return null;
+        }
+
+        return $eigenschapObject->jsonSerialize()['waarde'] ?? null;
     }//end calculateFromEigenschap()
 
     /**

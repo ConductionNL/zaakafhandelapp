@@ -49,9 +49,13 @@ class CallService
     public function getConfig(?string $source=null, array $query=[]): array
     {
         $result = [
-            'base_uri' => $this->config->getValueString('zaakafhandelapp', "{$source}Location"),
-            'query'    => $query,
-            'headers'  => [],
+            'base_uri'    => $this->config->getValueString('zaakafhandelapp', "{$source}Location"),
+            'query'       => $query,
+            'headers'     => [],
+            // Disable Guzzle's default behaviour of throwing on non-2xx responses so that
+            // ZGW backend error bodies (validation details, 404 etc.) are returned to the
+            // caller rather than bubbling as an unhandled GuzzleException → HTTP 500 (#282 bug-4).
+            'http_errors' => false,
         ];
 
         return array_merge_recursive($result, $this->getAuthorization($source));
@@ -74,6 +78,28 @@ class CallService
     }//end getClient()
 
     /**
+     * Decode a Guzzle response body as JSON, returning null on empty or malformed content (#282 bug-4).
+     *
+     * @param string $body The raw response body.
+     *
+     * @return array|null Decoded associative array or null.
+     */
+    private function decodeJson(string $body): ?array
+    {
+        if ($body === '') {
+            return null;
+        }
+
+        $decoded = json_decode($body, associative: true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return null;
+        }
+
+        return $decoded;
+    }//end decodeJson()
+
+    /**
      * Finds objects based upon a set of filters.
      *
      * @param array $query The filters to compare the object to.
@@ -93,11 +119,7 @@ class CallService
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source, config: $config)->get("$endpoint");
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end index()
 
     /**
@@ -122,11 +144,7 @@ class CallService
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source, config: $config)->get($this->config->getValueString('zaakafhandelapp', "{$source}Location")."/$endpoint/$id");
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end show()
 
     /**
@@ -145,11 +163,7 @@ class CallService
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source)->post(uri: "$endpoint", options: ['json' => $data]);
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end create()
 
     /**
@@ -169,11 +183,7 @@ class CallService
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source)->put("$endpoint/$id", options: ['json' => $data]);
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end update()
 
     /**
@@ -192,10 +202,6 @@ class CallService
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source)->delete("$endpoint/$id");
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end destroy()
 }//end class
