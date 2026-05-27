@@ -119,9 +119,8 @@ class KlantenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create an object. Admin-only: klanten are master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
@@ -148,9 +147,8 @@ class KlantenController extends Controller
     }//end create()
 
     /**
-     * Update an object
+     * Update an object. Admin-only: klanten are master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
@@ -177,9 +175,8 @@ class KlantenController extends Controller
     }//end update()
 
     /**
-     * Delate an object
+     * Delete an object. Admin-only: klanten are master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
