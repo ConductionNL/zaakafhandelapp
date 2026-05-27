@@ -70,6 +70,14 @@ class Application extends App implements IBootstrap
         );
     }//end register()
 
+    /**
+     * Boot the application.
+     *
+     * @param IBootContext $context The boot context.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $context is required by IBootstrap::boot();
+     *   this app has no boot-time logic but must implement the interface method.
+     */
     public function boot(IBootContext $context): void
     {
     }//end boot()

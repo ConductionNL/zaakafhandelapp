@@ -27,53 +27,53 @@ class ZGWZaakCloseService
 
     /**
      * Close a zaak when eindstatus is set.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function closeZaak(ObjectEntity $status): void
     {
-        $sa = $status->jsonSerialize();
+        $statusArray = $status->jsonSerialize();
 
-        if ($this->isEindStatus($sa) === false) {
+        if ($this->isEindStatus($statusArray) === false) {
             return;
         }
 
-        $zaak = $this->find($sa['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']);
-        $za   = $zaak->jsonSerialize();
-        $this->assertGebruiksrechten($za);
+        $zaak      = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']);
+        $zaakArray = $zaak->jsonSerialize();
+        $this->assertGebruiksrechten($zaakArray);
 
-        $za['einddatum'] = (new DateTime($sa['datumStatusGezet']))->format("Y-m-d");
-        $rt = $this->find($this->find($za['resultaat'])->jsonSerialize()['resultaattype'])->jsonSerialize();
-        $za['archiefnominatie']  = $rt['archiefnominatie'];
-        $za['archiefactiedatum'] = $this->archiveService->calculateArchiveDate(
-            $rt['brondatumArchiefprocedure']['afleidingswijze'] ?? null,
-            $za,
-                $rt,
+        $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
+        $resultaattype          = $this->find($this->find($zaakArray['resultaat'])->jsonSerialize()['resultaattype'])->jsonSerialize();
+        $zaakArray['archiefnominatie']  = $resultaattype['archiefnominatie'];
+        $zaakArray['archiefactiedatum'] = $this->archiveService->calculateArchiveDate(
+            $resultaattype['brondatumArchiefprocedure']['afleidingswijze'] ?? null,
+            $zaakArray,
+                $resultaattype,
                 $this->registry->getBrcRegister(),
                 $this->registry->getBesluitSchema()
         );
 
         $this->objectService->clearCurrents();
-        $zaak->setObject($za);
+        $zaak->setObject($zaakArray);
         $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
     }//end closeZaak()
 
     /**
      * Check if status is eindstatus for its zaaktype.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
-    public function isEindStatus(array $sa): bool
+    public function isEindStatus(array $statusArray): bool
     {
-        $st  = $this->find($sa['statustype'], ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' => 'zaaktype.statustypen']);
-        $d   = $st->jsonSerialize();
-        $max = max(array_map(fn(array $s) => $s['volgnummer'], $d['_extend']['zaaktype']['_extend']['statustypen']));
-        return $d['volgnummer'] === $max;
+        $statustype = $this->find($statusArray['statustype'], ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' => 'zaaktype.statustypen']);
+        $statusData = $statustype->jsonSerialize();
+        $max        = max(array_map(fn(array $statusItem) => $statusItem['volgnummer'], $statusData['_extend']['zaaktype']['_extend']['statustypen']));
+        return $statusData['volgnummer'] === $max;
     }//end isEindStatus()
 
-    private function assertGebruiksrechten(array $za): void
+    private function assertGebruiksrechten(array $zaakArray): void
     {
-        $bad = array_filter($za['zaakinformatieobjecten'], fn(array $z) => count($z['informatieobject']['gebruiksrechten']) === 0 && $z['informatieobject']['indicatieGebruiksrecht'] === null);
+        $bad = array_filter($zaakArray['zaakinformatieobjecten'], fn(array $zio) => count($zio['informatieobject']['gebruiksrechten']) === 0 && $zio['informatieobject']['indicatieGebruiksrecht'] === null);
         if (count($bad) > 0) {
             throw new CustomValidationException("Indicatiegebruiksrecht niet geset", [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben.']]);
         }

@@ -35,8 +35,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -62,8 +62,11 @@ class KlantenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $getParameter is an NC route param
+     *   reserved for future SPA deep-linking; the PHP layer renders a shell template only.
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -99,8 +102,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
@@ -122,8 +125,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
@@ -151,8 +154,11 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
+     *   the full payload is consumed via $this->request->getParams() instead.
      */
     public function update(string $id): JSONResponse
     {
@@ -177,8 +183,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
@@ -200,8 +206,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getZaken(string $id): JSONResponse
     {
@@ -221,8 +227,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getTaken(string $id): JSONResponse
     {
@@ -242,8 +248,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getBerichten(string $id): JSONResponse
     {
@@ -263,8 +269,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getContactmomenten(string $id): JSONResponse
     {
@@ -284,8 +290,8 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-      *
-      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {

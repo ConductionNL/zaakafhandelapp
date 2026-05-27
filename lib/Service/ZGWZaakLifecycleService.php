@@ -26,8 +26,8 @@ class ZGWZaakLifecycleService
 
     /**
      * Close a zaak. Delegates to ZGWZaakCloseService.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function closeZaak(ObjectEntity $status): void
     {
@@ -36,56 +36,56 @@ class ZGWZaakLifecycleService
 
     /**
      * Reopen a zaak when non-eindstatus is set. ZRC-008.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
     public function reopenZaak(ObjectEntity $status): void
     {
-        $sa = $status->jsonSerialize();
-        if ($this->closeService->isEindStatus($sa)) {
+        $statusArray = $status->jsonSerialize();
+        if ($this->closeService->isEindStatus($statusArray)) {
             return;
         }
 
-        $zaak = $this->find($sa['zaak']);
-        $za   = $zaak->jsonSerialize();
-        $za['einddatum'] = $za['archiefactiedatum'] = $za['archiefnominatie'] = null;
-        $zaak->setObject($za);
+        $zaak      = $this->find($statusArray['zaak']);
+        $zaakArray = $zaak->jsonSerialize();
+        $zaakArray['einddatum'] = $zaakArray['archiefactiedatum'] = $zaakArray['archiefnominatie'] = null;
+        $zaak->setObject($zaakArray);
         $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
     }//end reopenZaak()
 
     /**
      * Delete dependent objects. ZRC-023.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
      */
     public function deleteZaak(ObjectEntity $zaak): void
     {
-        $a    = $this->objectService->renderEntity($zaak);
-        $urls = array_merge($a['rollen'] ?? [], $a['eigenschappen'] ?? [], [$a['resultaat']], $a['statussen'] ?? [], $a['deelzaken'] ?? [], $a['zaakobjecten'] ?? [], [$a['klantcontact']]);
+        $arr  = $this->objectService->renderEntity($zaak);
+        $urls = array_merge($arr['rollen'] ?? [], $arr['eigenschappen'] ?? [], [$arr['resultaat']], $arr['statussen'] ?? [], $arr['deelzaken'] ?? [], $arr['zaakobjecten'] ?? [], [$arr['klantcontact']]);
 
-        $ids = array_filter(array_map(fn(?string $u) => $u ? $this->registry->getObjectIdByEndpointUrl($u) : null, $urls));
+        $ids = array_filter(array_map(fn(?string $url) => $url ? $this->registry->getObjectIdByEndpointUrl($url) : null, $urls));
         $this->objectService->deleteObjects($ids);
 
-        foreach ($a['zaakinformatieobjecten'] as $u) {
-            $this->objectService->deleteObject($this->registry->getObjectIdByEndpointUrl($u));
+        foreach ($arr['zaakinformatieobjecten'] as $zioUrl) {
+            $this->objectService->deleteObject($this->registry->getObjectIdByEndpointUrl($zioUrl));
         }
     }//end deleteZaak()
 
     /**
      * ZRC-009: Set derived vertrouwelijkheidaanduiding.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
      */
     public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
     {
-        $za = $zaak->jsonSerialize();
-        if ($za['vertrouwelijkheidaanduiding'] !== null) {
+        $zaakArray = $zaak->jsonSerialize();
+        if ($zaakArray['vertrouwelijkheidaanduiding'] !== null) {
             return;
         }
 
-        $zt = $this->find($za['zaaktype']);
-        $za['vertrouwelijkheidaanduiding'] = $zt->jsonSerialize()['vertrouwelijkheidaanduiding'];
-        $zaak->setObject($za);
+        $zaaktype = $this->find($zaakArray['zaaktype']);
+        $zaakArray['vertrouwelijkheidaanduiding'] = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'];
+        $zaak->setObject($zaakArray);
         $this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
     }//end setVertrouwelijkheidaanduiding()
 

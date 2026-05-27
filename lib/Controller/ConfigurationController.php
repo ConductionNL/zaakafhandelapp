@@ -30,8 +30,8 @@ class ConfigurationController extends Controller
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
-      *
-      * @spec openspec/specs/app-configuration/spec.md#REQ-001
+     *
+     * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
@@ -85,8 +85,8 @@ class ConfigurationController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
-      *
-      * @spec openspec/specs/app-configuration/spec.md#REQ-001
+     *
+     * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
     public function create(): JSONResponse
     {

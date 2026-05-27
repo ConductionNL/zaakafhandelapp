@@ -44,8 +44,11 @@ class UsersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse Info about the current user.
-      *
-      * @spec openspec/specs/app-configuration/spec.md#REQ-004
+     *
+     * @spec openspec/specs/app-configuration/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.ShortMethodName) — "me" is the canonical REST resource name
+     *   for the current-user endpoint; renaming would break the registered NC route.
      */
     public function me(): JSONResponse
     {

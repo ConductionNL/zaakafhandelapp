@@ -34,7 +34,6 @@ use Psr\Log\LoggerInterface;
  */
 class ZaakRegisterEventListener implements IEventListener
 {
-
     public function __construct(
         private readonly ZGWLogicService $logicService,
         private readonly ZGWZaakLifecycleService $lifecycleService,
@@ -50,13 +49,13 @@ class ZaakRegisterEventListener implements IEventListener
         try {
             if ($event instanceof ObjectCreatedEvent) {
                 $this->handleObjectCreated($event);
-            } elseif ($event instanceof ObjectUpdatedEvent) {
+            } else if ($event instanceof ObjectUpdatedEvent) {
                 $this->handleObjectUpdated($event);
-            } elseif ($event instanceof ObjectDeletedEvent) {
+            } else if ($event instanceof ObjectDeletedEvent) {
                 $this->handleObjectDeleted($event);
-            } elseif ($event instanceof ObjectCreatingEvent) {
+            } else if ($event instanceof ObjectCreatingEvent) {
                 $this->handleObjectCreating($event);
-            } elseif ($event instanceof ObjectUpdatingEvent) {
+            } else if ($event instanceof ObjectUpdatingEvent) {
                 $this->handleObjectUpdating($event);
             }
         } catch (CustomValidationException $e) {
@@ -163,6 +162,12 @@ class ZaakRegisterEventListener implements IEventListener
         }
     }//end handleObjectUpdating()
 
+    /**
+     * Log an error that occurred during event handling.
+     *
+     * @psalm-suppress UnusedParam — $event and $e are consumed via get_class()/$e->getMessage();
+     *                 Psalm cannot trace usage through \OC::$server->get() (OC is an env stub).
+     */
     private function logError(Event $event, \Exception $e): void
     {
         try {

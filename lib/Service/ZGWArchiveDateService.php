@@ -43,8 +43,8 @@ class ZGWArchiveDateService
      * @param string      $besluitSchema      The besluit schema slug
      *
      * @return string|null The calculated archive action date, or null
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-004
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-004
      */
     public function calculateArchiveDate(
         ?string $afleidingswijze,

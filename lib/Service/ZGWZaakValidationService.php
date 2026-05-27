@@ -23,8 +23,8 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-015: Check productenOfDiensten against zaaktype.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkProductenOfDiensten(ObjectEntity $zaak): void
     {
@@ -36,9 +36,9 @@ class ZGWZaakValidationService
 
         $ztId = explode('/', $arr['zaaktype']);
         $this->objectService->clearCurrents();
-        $zt = $this->objectService->find(end($ztId));
+        $zaaktype = $this->objectService->find(end($ztId));
 
-        if (array_diff($arr['productenOfDiensten'], $zt->jsonSerialize()['productenOfDiensten']) !== []) {
+        if (array_diff($arr['productenOfDiensten'], $zaaktype->jsonSerialize()['productenOfDiensten']) !== []) {
             $this->throwValidationError('productenOfDiensten', 'invalid-products-services', 'Producten niet aanwezig op zaaktype');
         }
     }//end checkProductenOfDiensten()
@@ -50,8 +50,8 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-022: Check archive prerequisites.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkArchivePrerequisites(ObjectEntity $zaak): void
     {
@@ -74,8 +74,8 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-012: Check verlenging and opschorting parameters.
-      *
-      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkGegevensgroepen(ObjectEntity $zaak): void
     {
@@ -102,7 +102,7 @@ class ZGWZaakValidationService
 
         $this->objectService->clearCurrents();
         $zios     = $this->objectService->findAll(['ids' => $zioIds, 'extend' => ['informatieobject']]);
-        $statuses = array_unique(array_map(fn(ObjectEntity $z) => $z->jsonSerialize()['informatieobject']['status'] ?? null, $zios));
+        $statuses = array_unique(array_map(fn(ObjectEntity $zio) => $zio->jsonSerialize()['informatieobject']['status'] ?? null, $zios));
 
         if (count($statuses) !== 1 || $statuses[0] !== 'gearchiveerd') {
             $this->throwValidationError('zaakinformatieobjecten', 'informatieobject-status-not-set', 'Alle informatieobjecten moeten status gearchiveerd hebben.');
