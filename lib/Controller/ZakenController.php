@@ -140,6 +140,9 @@ class ZakenController extends Controller
         // Remove the 'id' field if it exists, as we're creating a new object
         unset($data['id']);
 
+        // Strip system-managed ZGW fields that must be set server-side (ZGW API-principes).
+        unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
+
         // Save the new catalog object
         $object = $this->objectService->saveObject('zaken', $data);
 
@@ -156,9 +159,6 @@ class ZakenController extends Controller
      * @return JSONResponse
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
-     *   the full payload is consumed via $this->request->getParams() instead.
      */
     public function update(string $id): JSONResponse
     {
@@ -169,7 +169,13 @@ class ZakenController extends Controller
         // Get all parameters from the request
         $data = $this->request->getParams();
 
-        // Save the new catalog object
+        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+        $data['id'] = $id;
+
+        // Strip system-managed ZGW fields that must not be overwritten via the request body.
+        unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
+
+        // Save the updated object
         $object = $this->objectService->saveObject('zaken', $data);
 
         // Return the created object as a JSON response
