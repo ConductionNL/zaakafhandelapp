@@ -3,20 +3,27 @@
 namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 /**
- * Controller for reading and writing ZGW service configuration.
+ * Controller for application configuration operations.
  *
- * Both GET and POST require admin privileges: the configuration contains
- * service-account API keys that must never be exposed to regular users.
+ * Both GET and POST require admin: the configuration holds ZGW service-account
+ * API keys that must never be exposed to non-admin users (issue #267).
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ConfigurationController extends Controller
 {
     /**
      * Keys that hold credentials — returned as "***" on read.
+     *
+     * @var string[]
      */
     private const CREDENTIAL_KEYS = [
         'drcKey',
@@ -30,7 +37,9 @@ class ConfigurationController extends Controller
     ];
 
     /**
-     * Exhaustive allow-list of keys that may be written via POST.
+     * Exhaustive allow-list of keys accepted on POST.
+     *
+     * @var string[]
      */
     private const WRITABLE_KEYS = [
         'drcLocation',
@@ -66,7 +75,8 @@ class ConfigurationController extends Controller
     public function __construct(
         $appName,
         private readonly IAppConfig $config,
-        IRequest $request
+        IRequest $request,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -74,26 +84,25 @@ class ConfigurationController extends Controller
     /**
      * Return the current configuration.
      *
-     * Credential fields are redacted: only their presence (non-empty) is
-     * indicated. This prevents exfiltration of API keys.
+     * Credential fields are redacted (returned as "***") so that API keys are
+     * never transmitted to the browser. Admin-only: @NoAdminRequired omitted.
      *
      * @NoCSRFRequired
      *
-     * @return JSONResponse
+     * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $defaults = array_fill_keys(self::WRITABLE_KEYS, '');
 
         $data = [];
         foreach ($defaults as $key => $default) {
-            $value = $this->config->getValueString('zaakafhandelapp', $key, $default);
-            // Redact credential values so they are never transmitted to the client.
-            if (in_array($key, self::CREDENTIAL_KEYS, true)) {
-                $data[$key] = $value !== '' ? '***' : '';
-            } else {
-                $data[$key] = $value;
-            }
+            $value      = $this->config->getValueString('zaakafhandelapp', $key, $default);
+            $data[$key] = in_array($key, self::CREDENTIAL_KEYS, true) ? ($value !== '' ? '***' : '') : $value;
         }
 
         return new JSONResponse($data);
@@ -102,15 +111,19 @@ class ConfigurationController extends Controller
     /**
      * Persist configuration values supplied by an admin.
      *
-     * Only keys present in WRITABLE_KEYS are accepted; all other keys in the
-     * request body are silently ignored.
+     * Only keys present in WRITABLE_KEYS are accepted; all others are ignored.
+     * Credential values are redacted in the response. Admin-only: @NoAdminRequired omitted.
      *
      * @NoCSRFRequired
      *
-     * @return JSONResponse
+     * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestData = $this->request->getParams();
 
         $data = [];
@@ -120,12 +133,9 @@ class ConfigurationController extends Controller
             }
 
             $this->config->setValueString('zaakafhandelapp', $key, (string) $requestData[$key]);
-            // Redact credential values in the response.
-            if (in_array($key, self::CREDENTIAL_KEYS, true)) {
-                $data[$key] = '***';
-            } else {
-                $data[$key] = $this->config->getValueString('zaakafhandelapp', $key);
-            }
+            $data[$key] = in_array($key, self::CREDENTIAL_KEYS, true)
+                ? '***'
+                : $this->config->getValueString('zaakafhandelapp', $key);
         }
 
         return new JSONResponse($data);
