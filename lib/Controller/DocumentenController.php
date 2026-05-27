@@ -11,15 +11,19 @@ use OCP\IRequest;
 use OCP\IUserSession;
 
 /**
- * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ * Stub controller for the ZGW documenten resource.
+ *
+ * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/
+ *
+ * Real documenten data has not yet been implemented. All data endpoints return
+ * 501 Not Implemented so that clients never receive fabricated test data in place
+ * of real DRC document records (issue #268).
  *
  * @copyright 2024 Conduction B.V. <info@conduction.nl>
  * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class DocumentenController extends Controller
 {
-    const TEST_ARRAY = [];
-
     public function __construct(
         string $appName,
         IRequest $request,
@@ -30,8 +34,7 @@ class DocumentenController extends Controller
     }//end __construct()
 
     /**
-     * This returns the template of the main app's page
-     * It adds some data to the template (app version)
+     * This returns the template of the main app's page.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -50,7 +53,7 @@ class DocumentenController extends Controller
     }//end page()
 
     /**
-     * Return (and serach) all objects
+     * Return (and search) all objects.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -65,12 +68,14 @@ class DocumentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end index()
 
     /**
-     * Read a single object
+     * Read a single object.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -85,12 +90,14 @@ class DocumentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end show()
 
     /**
-     * Creatue an object
+     * Create an object.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -105,12 +112,14 @@ class DocumentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // get post from requests
-        return new JSONResponse([]);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end create()
 
     /**
-     * Update an object
+     * Update an object.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -125,12 +134,14 @@ class DocumentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end update()
 
     /**
-     * Delate an object
+     * Delete an object.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -139,8 +150,7 @@ class DocumentenController extends Controller
      *
      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
-     *   stub implementation returns empty response (resource management handled client-side).
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature.
      */
     public function destroy(string $id): JSONResponse
     {
@@ -148,6 +158,9 @@ class DocumentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        return new JSONResponse([]);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end destroy()
 }//end class

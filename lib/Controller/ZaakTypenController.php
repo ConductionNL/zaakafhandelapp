@@ -119,9 +119,8 @@ class ZaakTypenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
@@ -148,9 +147,8 @@ class ZaakTypenController extends Controller
     }//end create()
 
     /**
-     * Update an object
+     * Update an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
@@ -182,9 +180,8 @@ class ZaakTypenController extends Controller
     }//end update()
 
     /**
-     * Delate an object
+     * Delete an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
