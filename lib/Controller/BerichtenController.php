@@ -156,9 +156,6 @@ class BerichtenController extends Controller
      * @return JSONResponse
      *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
-     *   the full payload is consumed via $this->request->getParams() instead.
      */
     public function update(string $id): JSONResponse
     {
@@ -169,7 +166,13 @@ class BerichtenController extends Controller
         // Get all parameters from the request
         $data = $this->request->getParams();
 
-        // Save the new catalog object
+        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+        $data['id'] = $id;
+
+        // Strip server-managed fields that callers must not overwrite directly.
+        unset($data['created'], $data['updated']);
+
+        // Save the updated object
         $object = $this->objectService->saveObject('berichten', $data);
 
         // Return the created object as a JSON response

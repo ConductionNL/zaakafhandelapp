@@ -18,6 +18,33 @@ use Exception;
  */
 class ObjectsController extends Controller
 {
+    /**
+     * Explicit allow-list of object types exposed through the generic objects endpoint.
+     * Any objectType not in this list is rejected with HTTP 400 to prevent access to
+     * unintended or internal schemas (#276 — unvalidated objectType).
+     *
+     * Keep in sync with SettingsController::OBJECT_TYPES.
+     */
+    private const ALLOWED_OBJECT_TYPES = [
+        'berichten',
+        'besluiten',
+        'documenten',
+        'klanten',
+        'resultaten',
+        'taken',
+        'informatieobjecten',
+        'organisaties',
+        'personen',
+        'zaken',
+        'rollen',
+        'statusen',
+        'zaakeigenschappen',
+        'zaaktypen',
+        'contactmomenten',
+        'medewerkers',
+        'producten',
+    ];
+
     public function __construct(
         $appName,
         IRequest $request,
@@ -26,6 +53,25 @@ class ObjectsController extends Controller
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
+
+    /**
+     * Validate that the requested objectType is in the known allow-list.
+     *
+     * @param string $objectType The object type from the URL.
+     *
+     * @return JSONResponse|null Returns a 400 response on invalid type, null when valid.
+     */
+    private function validateObjectType(string $objectType): ?JSONResponse
+    {
+        if (in_array($objectType, self::ALLOWED_OBJECT_TYPES, true) === false) {
+            return new JSONResponse(
+                ['error' => "Unknown object type: $objectType"],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
+
+        return null;
+    }//end validateObjectType()
 
     /**
      * Return (and search) all objects
@@ -43,6 +89,11 @@ class ObjectsController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
         }
 
         // Retrieve all request parameters
@@ -72,6 +123,11 @@ class ObjectsController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
         }
 
         try {
@@ -113,6 +169,11 @@ class ObjectsController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
+        }
+
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
@@ -147,6 +208,11 @@ class ObjectsController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
         }
 
         try {
@@ -185,6 +251,11 @@ class ObjectsController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
+        }
+
         try {
             // Delete the object
             $result = $this->objectService->deleteObject($objectType, $id);
@@ -215,6 +286,11 @@ class ObjectsController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
+        }
+
         try {
             $auditTrail = $this->objectService->getAuditTrail($objectType, $id);
             return new JSONResponse($auditTrail);
@@ -240,6 +316,11 @@ class ObjectsController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
         }
 
         try {
@@ -270,6 +351,11 @@ class ObjectsController extends Controller
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $typeError = $this->validateObjectType($objectType);
+        if ($typeError !== null) {
+            return $typeError;
         }
 
         $uses = $this->objectService->getUses($objectType, $id);
