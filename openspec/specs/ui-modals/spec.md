@@ -4,8 +4,6 @@ retrofit: true
 
 # UI — Modals & Dialogs
 
-@e2e exclude SPA does not mount on current env (white-screen, #content empty after JS load) — tracked in ConductionNL/zaakafhandelapp#264; re-enable once mount is fixed
-
 The create/edit/view/delete modals for every ZGW resource (zaken, klanten,
 contactmomenten, berichten, medewerkers, taken, besluiten, documenten, rollen,
 resultaten, zaaktypen). Each modal collects or displays a resource's data,

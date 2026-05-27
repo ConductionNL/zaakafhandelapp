@@ -4,8 +4,6 @@ retrofit: true
 
 # UI — Search, Navigation & Utilities
 
-@e2e exclude SPA does not mount on current env (white-screen, #content empty after JS load) — tracked in ConductionNL/zaakafhandelapp#264; re-enable once mount is fixed
-
 Cross-cutting frontend surfaces: the search sidebar (searching klanten,
 personen and organisaties with debounced input), the configuration navigation
 panel, the app permissions surface, and shared presentational utilities (theme

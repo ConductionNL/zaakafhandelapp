@@ -4,8 +4,6 @@ retrofit: true
 
 # UI — Case Views
 
-@e2e exclude SPA does not mount on current env (white-screen, #content empty after JS load) — tracked in ConductionNL/zaakafhandelapp#264; re-enable once mount is fixed
-
 The list and detail views for the case-side ZGW resources: zaken, zaaktypen,
 zaakeigenschappen, statussen, besluiten, resultaten and documenten. These views
 fetch their data from the corresponding stores, present master/detail layouts,
