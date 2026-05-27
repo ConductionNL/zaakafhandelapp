@@ -4,6 +4,8 @@ retrofit: true
 
 # State — Pinia Stores
 
+@e2e exclude Pinia store unit tests — scenarios covered by the existing Jest spec suite, not Playwright UI tests
+
 The Pinia stores that own the client-side state for every ZGW resource (zaken,
 besluiten, contactmoment, documenten, resultaten, rol, zaakTypen, berichten,
 klanten, medewerkers, taak) plus navigation and search state. Each store holds the

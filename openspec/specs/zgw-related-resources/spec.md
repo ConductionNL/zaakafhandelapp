@@ -4,6 +4,8 @@ retrofit: true
 
 # ZGW Related Resources
 
+@e2e exclude pure-backend REST controller spec — scenarios covered by PHPUnit/Newman, not Playwright UI tests
+
 REST management of the ZGW catalogue and decision resources that exist alongside
 zaken: besluiten (decisions), documenten/informatieobjecten, resultaten,
 rollen, statussen, and zaaktypen. Each is exposed as a uniform REST collection

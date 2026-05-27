@@ -4,6 +4,8 @@ retrofit: true
 
 # ZGW Zaak Management
 
+@e2e exclude pure-backend REST controller spec — scenarios covered by PHPUnit/Newman, not Playwright UI tests
+
 Case (zaak) management surface implementing the VNG GEMMA Zaken standard
 (https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/). Exposes a REST
 collection over the `zaken` register, plus the case-bound sub-resources that the

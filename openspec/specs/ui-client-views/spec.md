@@ -4,6 +4,8 @@ retrofit: true
 
 # UI — Client Interaction Views
 
+@e2e exclude SPA does not mount on current env (white-screen, #content empty after JS load) — tracked in ConductionNL/zaakafhandelapp#264; re-enable once mount is fixed
+
 The list and detail views for the people-and-communication ZGW resources:
 klanten, contactmomenten, berichten, medewerkers, rollen and taken. These views
 fetch their data from the corresponding stores, present master/detail layouts,

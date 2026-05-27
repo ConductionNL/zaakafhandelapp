@@ -4,6 +4,8 @@ retrofit: true
 
 # UI — Dashboard Widgets
 
+@e2e exclude SPA does not mount on current env (white-screen, #content empty after JS load) — tracked in ConductionNL/zaakafhandelapp#264; re-enable once mount is fixed
+
 The Nextcloud dashboard widgets that surface case-handling data on the home
 dashboard: open zaken, taken, contactmomenten, personen, organisaties and a
 general zaken widget. Each widget fetches a scoped set of items, presents them

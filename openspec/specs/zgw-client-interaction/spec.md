@@ -4,6 +4,8 @@ retrofit: true
 
 # ZGW Client Interaction
 
+@e2e exclude pure-backend REST controller spec — scenarios covered by PHPUnit/Newman, not Playwright UI tests
+
 Management of the people-and-communication resources around case handling:
 klanten (customers/citizens), medewerkers (employees), contactmomenten (contact
 moments), berichten (messages) and taken (tasks). Each is a uniform REST

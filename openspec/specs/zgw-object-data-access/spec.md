@@ -4,6 +4,8 @@ retrofit: true
 
 # ZGW Object Data Access
 
+@e2e exclude pure-backend PHP data-access layer spec — scenarios covered by PHPUnit, not Playwright UI tests
+
 The data-access layer that controllers use to read and persist ZGW objects. It
 resolves the right mapper per object type (OpenRegister-backed or local),
 translates request parameters into filters/order/pagination, and provides
