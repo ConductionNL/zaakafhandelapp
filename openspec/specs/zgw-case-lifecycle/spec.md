@@ -4,6 +4,8 @@ retrofit: true
 
 # ZGW Case Lifecycle
 
+@e2e exclude pure-backend PHP service logic spec — scenarios covered by PHPUnit, not Playwright UI tests
+
 Business logic that enforces the ZGW lifecycle and integrity rules as objects are
 created, related, transitioned and archived. Covers the cascade relations between
 zaken, besluiten and informatieobjecten; status-driven case open/close/reopen

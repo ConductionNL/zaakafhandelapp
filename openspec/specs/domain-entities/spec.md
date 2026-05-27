@@ -4,6 +4,8 @@ retrofit: true
 
 # Domain Entities
 
+@e2e exclude TypeScript entity unit tests — scenarios covered by the existing Jest spec suite, not Playwright UI tests
+
 The TypeScript entity classes that model each ZGW resource on the client (bericht,
 besluit, contactmoment, document, klanten, medewerkers, resultaat, rol, taak,
 zaak, zaakTypen). Each entity normalises a raw API record into a typed object on

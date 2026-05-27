@@ -4,6 +4,8 @@ retrofit: true
 
 # App Configuration
 
+@e2e exclude pure-backend REST+controller spec — scenarios covered by PHPUnit/Newman, not Playwright UI tests
+
 Administrative configuration, settings, dashboard and current-user surfaces of the
 case-handling app. Covers reading and persisting the ZGW source connection config
 (DRC/ORC/ZRC/ZTC/BRC + klanten/elastic/mongodb + organisation identifiers),
