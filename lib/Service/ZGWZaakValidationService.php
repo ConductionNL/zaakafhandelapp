@@ -97,6 +97,11 @@ class ZGWZaakValidationService
 
     private function validateEioStatuses(array $arr): void
     {
+        // Guard: a brand-new zaak may have no informatieobjecten yet; skip the check in that case.
+        if (empty($arr['zaakinformatieobjecten']) === true) {
+            return;
+        }
+
         $zioIds = array_map(
                 function ($zio) {
                     $e = explode('/', $zio);

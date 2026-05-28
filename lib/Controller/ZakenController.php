@@ -143,6 +143,11 @@ class ZakenController extends Controller
         // Strip system-managed ZGW fields that must be set server-side (ZGW API-principes).
         unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
 
+        // Default archiefstatus to 'nog_te_archiveren' for new zaken so that
+        // ZGWZaakValidationService::checkArchivePrerequisites passes on deployments
+        // whose schema does not define this default (C2 fix).
+        $data['archiefstatus'] = 'nog_te_archiveren';
+
         // Save the new catalog object
         $object = $this->objectService->saveObject('zaken', $data);
 

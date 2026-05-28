@@ -7,6 +7,7 @@ use DateTime;
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Db\RegisterMapper;
 use OCA\OpenRegister\Db\SchemaMapper;
+use Psr\Log\LoggerInterface;
 
 /**
  * Service for calculating archive dates based on afleidingswijze.
@@ -27,6 +28,7 @@ class ZGWArchiveDateService
      * @param ObjectMapperService $mapperService   The object service wrapper
      * @param RegisterMapper      $registerMapper  Mapper for resolving register slug → ID
      * @param SchemaMapper        $schemaMapper    Mapper for resolving schema slug → ID
+     * @param LoggerInterface     $logger          Logger for unknown afleidingswijze warnings
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -35,6 +37,7 @@ class ZGWArchiveDateService
         ObjectMapperService $mapperService,
         private RegisterMapper $registerMapper,
         private SchemaMapper $schemaMapper,
+        private LoggerInterface $logger,
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
@@ -64,16 +67,29 @@ class ZGWArchiveDateService
         string $brcRegister,
         string $besluitSchema,
     ): ?string {
-        return match ($afleidingswijze) {
-            'afgehandeld' => $zaakArray['einddatum'],
-            'hoofdzaak' => $this->calculateFromHoofdzaak($zaakArray),
-            'eigenschap' => $this->calculateFromEigenschap($zaakArray, $resultaattypeArray),
-            'ander_datumkenmerk' => null,
-            'termijn' => $this->calculateFromTermijn($zaakArray, $resultaattypeArray),
+        // Per ZGW spec and Archiefwet: brondatum + resultaattype.archiefactietermijn = archiefactiedatum.
+        // 'termijn' already includes the interval via procestermijn; all other branches derive only
+        // the brondatum and must still add archiefactietermijn. (C3/C4 fix)
+        $brondatum = match ($afleidingswijze) {
+            'afgehandeld'         => $zaakArray['einddatum'],
+            'hoofdzaak'           => $this->calculateFromHoofdzaak($zaakArray),
+            'eigenschap'          => $this->calculateFromEigenschap($zaakArray, $resultaattypeArray),
+            'ander_datumkenmerk'  => null,
+            'termijn'             => $this->calculateFromTermijn($zaakArray, $resultaattypeArray),
             'ingangsdatum_besluit' => $this->calculateFromBesluit($zaakArray, 'ingangsdatum', $brcRegister, $besluitSchema),
             'vervaldatum_besluit' => $this->calculateFromBesluit($zaakArray, 'vervaldatum', $brcRegister, $besluitSchema),
-            default => null,
+            'gerelateerde_zaak'   => $this->calculateFromGerelateerdeZaak($zaakArray),
+            'zaakobject'          => $this->calculateFromZaakobject($zaakArray, $resultaattypeArray),
+            default               => $this->handleUnknownAfleidingswijze($afleidingswijze),
         };
+
+        // 'termijn' already adds procestermijn inside calculateFromTermijn; for all other afleidingswijze
+        // we must add the resultaattype's archiefactietermijn on top of the derived brondatum.
+        if ($afleidingswijze === 'termijn' || $brondatum === null) {
+            return $brondatum;
+        }
+
+        return $this->applyArchiefactietermijn($brondatum, $resultaattypeArray);
     }//end calculateArchiveDate()
 
     /**
@@ -124,14 +140,14 @@ class ZGWArchiveDateService
         }
 
         $this->objectService->clearCurrents();
-        $eigenschappen = $this->objectService->findAll(['ids' => $eigenschapIds]);
+        $eigenschappen     = $this->objectService->findAll(['ids' => $eigenschapIds]);
         $eigenschapObjects = array_filter(
             $eigenschappen,
             function (ObjectEntity $eigenschapObject) use ($eigenschap) {
                 return $eigenschapObject->jsonSerialize()['naam'] === $eigenschap;
             }
         );
-        $eigenschapObject = array_shift($eigenschapObjects);
+        $eigenschapObject  = array_shift($eigenschapObjects);
 
         // Guard: array_shift returns null when no matching eigenschap was found (#278).
         if ($eigenschapObject === null) {
@@ -189,14 +205,165 @@ class ZGWArchiveDateService
                 ]
                 );
 
-        $data = array_filter(array_map(
+        $mapped = array_map(
             function (ObjectEntity $besluit) use ($dateField) {
                 return $besluit->jsonSerialize()[$dateField] ?? null;
             },
             $besluiten
-        ));
+        );
+        $data   = array_filter($mapped);
 
         // max([]) returns false; return null when there are no dated besluiten.
         return empty($data) === false ? max($data) : null;
     }//end calculateFromBesluit()
+
+    /**
+     * Calculate brondatum from gerelateerde_zaak.
+     *
+     * Per VNG ZGW: use the einddatum of the related zaak referenced by the resultaattype's
+     * brondatumArchiefprocedure.objecttype context.
+     *
+     * @param array $zaakArray The zaak data array
+     *
+     * @return string|null The brondatum
+     */
+    private function calculateFromGerelateerdeZaak(array $zaakArray): ?string
+    {
+        $relevanteAndereZaken = $zaakArray['relevanteAndereZaken'] ?? [];
+        if (empty($relevanteAndereZaken) === true) {
+            return null;
+        }
+
+        $dates = [];
+        foreach ($relevanteAndereZaken as $relatie) {
+            $zaakUrl = is_array($relatie) ? ($relatie['url'] ?? $relatie) : $relatie;
+            $zaakId  = explode('/', rtrim((string) $zaakUrl, '/'));
+            $zaakId  = end($zaakId);
+            if (empty($zaakId) === true) {
+                continue;
+            }
+
+            $this->objectService->clearCurrents();
+            try {
+                $relatedZaak = $this->objectService->find($zaakId);
+                $einddatum   = $relatedZaak->jsonSerialize()['einddatum'] ?? null;
+                if ($einddatum !== null) {
+                    $dates[] = $einddatum;
+                }
+            } catch (\Exception $e) {
+                // Related zaak not found; skip it.
+            }
+        }//end foreach
+
+        return empty($dates) === false ? max($dates) : null;
+    }//end calculateFromGerelateerdeZaak()
+
+    /**
+     * Calculate brondatum from zaakobject.
+     *
+     * Per VNG ZGW: use the datumkenmerk field value from the zaakobject identified by
+     * the resultaattype's brondatumArchiefprocedure.objecttype.
+     *
+     * @param array $zaakArray          The zaak data array
+     * @param array $resultaattypeArray The resultaattype data array
+     *
+     * @return string|null The brondatum
+     */
+    private function calculateFromZaakobject(array $zaakArray, array $resultaattypeArray): ?string
+    {
+        $datumkenmerk = $resultaattypeArray['brondatumArchiefprocedure']['datumkenmerk'] ?? null;
+        $objecttype   = $resultaattypeArray['brondatumArchiefprocedure']['objecttype'] ?? null;
+        $zaakobjecten = $zaakArray['zaakobjecten'] ?? [];
+
+        if ($datumkenmerk === null || empty($zaakobjecten) === true) {
+            return null;
+        }
+
+        foreach ($zaakobjecten as $zaakobjectRef) {
+            $zaakobjectId = explode('/', rtrim((string) $zaakobjectRef, '/'));
+            $zaakobjectId = end($zaakobjectId);
+            if (empty($zaakobjectId) === true) {
+                continue;
+            }
+
+            $this->objectService->clearCurrents();
+            try {
+                $zaakobject     = $this->objectService->find($zaakobjectId);
+                $zaakobjectData = $zaakobject->jsonSerialize();
+                if ($objecttype !== null && ($zaakobjectData['objectType'] ?? null) !== $objecttype) {
+                    continue;
+                }
+
+                $datum = $zaakobjectData['object'][$datumkenmerk] ?? $zaakobjectData[$datumkenmerk] ?? null;
+                if ($datum !== null) {
+                    return (string) $datum;
+                }
+            } catch (\Exception $e) {
+                // Zaakobject not found; skip it.
+            }
+        }//end foreach
+
+        return null;
+    }//end calculateFromZaakobject()
+
+    /**
+     * Add the resultaattype's archiefactietermijn to the brondatum.
+     *
+     * Per Archiefwet/ZGW: archiefactiedatum = brondatum + archiefactietermijn.
+     * If archiefactietermijn is absent or invalid, the brondatum itself is returned so
+     * that a date is always set (rather than silently dropping the archive date).
+     *
+     * @param string $brondatum         ISO-8601 date string (Y-m-d)
+     * @param array  $resultaattypeArray The resultaattype data array
+     *
+     * @return string The archive action date (Y-m-d)
+     */
+    private function applyArchiefactietermijn(string $brondatum, array $resultaattypeArray): string
+    {
+        $termijn = $resultaattypeArray['archiefactietermijn'] ?? null;
+
+        if ($termijn === null || $termijn === '') {
+            // No termijn defined on the resultaattype; fall back to brondatum as-is.
+            $this->logger->warning(
+                'ZGWArchiveDateService: resultaattype has no archiefactietermijn; using brondatum as archiefactiedatum',
+                [
+                    'brondatum'        => $brondatum,
+                    'resultaattype_id' => $resultaattypeArray['url'] ?? $resultaattypeArray['id'] ?? 'unknown',
+                ]
+            );
+            return $brondatum;
+        }
+
+        try {
+            $date     = new DateTime($brondatum);
+            $interval = new DateInterval($termijn);
+            return $date->add($interval)->format('Y-m-d');
+        } catch (\Exception $e) {
+            $this->logger->warning(
+                'ZGWArchiveDateService: could not apply archiefactietermijn; using brondatum as archiefactiedatum',
+                [
+                    'brondatum' => $brondatum,
+                    'termijn'   => $termijn,
+                    'error'     => $e->getMessage(),
+                ]
+            );
+            return $brondatum;
+        }
+    }//end applyArchiefactietermijn()
+
+    /**
+     * Handle an unknown afleidingswijze by logging a warning and returning null.
+     *
+     * @param string|null $afleidingswijze The unknown value
+     *
+     * @return null Always returns null
+     */
+    private function handleUnknownAfleidingswijze(?string $afleidingswijze): null
+    {
+        $this->logger->warning(
+            'ZGWArchiveDateService: unknown afleidingswijze encountered; archiefactiedatum will not be set',
+            ['afleidingswijze' => $afleidingswijze]
+        );
+        return null;
+    }//end handleUnknownAfleidingswijze()
 }//end class

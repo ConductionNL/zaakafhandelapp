@@ -131,10 +131,10 @@ parameters:
 			path: lib/Dashboard/ZakenWidget.php
 
 		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$objectService$#'
-			identifier: parameter.notFound
+			message: '#^PHPDoc tag @SuppressWarnings has invalid value#'
+			identifier: phpDoc.parseError
 			count: 1
-			path: lib/Service/ZGWArchiveDateService.php
+			path: lib/Controller/ZakenController.php
 
 		-
 			message: '#^Property OCA\\ZaakAfhandelApp\\Settings\\ZaakAfhandelAppAdmin\:\:\$l is never read, only written\.$#'

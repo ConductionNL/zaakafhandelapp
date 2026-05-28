@@ -20,6 +20,68 @@ class SettingsController extends Controller
 {
 
     /**
+     * Exhaustive allow-list of keys accepted on POST.
+     *
+     * Derived from OBJECT_TYPES: each type contributes three keys (_source, _schema, _register).
+     * Unlisted keys are silently ignored to prevent admin footgun on arbitrary appconfig writes.
+     *
+     * @var string[]
+     */
+    private const WRITABLE_KEYS = [
+        'berichten_source',
+        'berichten_schema',
+        'berichten_register',
+        'besluiten_source',
+        'besluiten_schema',
+        'besluiten_register',
+        'documenten_source',
+        'documenten_schema',
+        'documenten_register',
+        'klanten_source',
+        'klanten_schema',
+        'klanten_register',
+        'resultaten_source',
+        'resultaten_schema',
+        'resultaten_register',
+        'taken_source',
+        'taken_schema',
+        'taken_register',
+        'informatieobjecten_source',
+        'informatieobjecten_schema',
+        'informatieobjecten_register',
+        'organisaties_source',
+        'organisaties_schema',
+        'organisaties_register',
+        'personen_source',
+        'personen_schema',
+        'personen_register',
+        'zaken_source',
+        'zaken_schema',
+        'zaken_register',
+        'rollen_source',
+        'rollen_schema',
+        'rollen_register',
+        'statusen_source',
+        'statusen_schema',
+        'statusen_register',
+        'zaakeigenschappen_source',
+        'zaakeigenschappen_schema',
+        'zaakeigenschappen_register',
+        'zaaktypen_source',
+        'zaaktypen_schema',
+        'zaaktypen_register',
+        'contactmomenten_source',
+        'contactmomenten_schema',
+        'contactmomenten_register',
+        'medewerkers_source',
+        'medewerkers_schema',
+        'medewerkers_register',
+        'producten_source',
+        'producten_schema',
+        'producten_register',
+    ];
+
+    /**
      * Object types that have configurable source, schema and register settings.
      */
     private const OBJECT_TYPES = [
@@ -98,19 +160,25 @@ class SettingsController extends Controller
     /**
      * Handle the post request to update settings.
      *
-     * @return JSONResponse JSON response containing the updated settings
+     * Only keys present in WRITABLE_KEYS are accepted; all others are silently ignored.
+     * Values are cast to string to avoid TypeError from array inputs on setValueString().
      *
-     * @NoCSRFRequired
+     * @return JSONResponse JSON response containing the updated settings
      *
      * @spec openspec/specs/app-configuration/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
-        $data = $this->request->getParams();
+        $requestData = $this->request->getParams();
 
         try {
-            foreach ($data as $key => $value) {
-                $this->config->setValueString($this->appName, $key, $value);
+            $data = [];
+            foreach (self::WRITABLE_KEYS as $key) {
+                if (array_key_exists($key, $requestData) === false) {
+                    continue;
+                }
+
+                $this->config->setValueString($this->appName, $key, (string) $requestData[$key]);
                 $data[$key] = $this->config->getValueString($this->appName, $key);
             }
 
