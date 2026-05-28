@@ -44,7 +44,10 @@
 		"phpmetrics:csv": "./vendor/bin/phpmetrics --report-csv=phpmetrics/report.csv lib/",
 		"phpmetrics:violations": "./vendor/bin/phpmetrics --report-violations=phpmetrics/violations.xml lib/",
 		"test:unit": "./vendor/bin/phpunit -c phpunit.xml --colors=always || echo 'Tests require Nextcloud environment, skipping...'",
-		"openapi": "generate-spec"
+		"openapi": "generate-spec",
+		"phpstan:strict": "./vendor/bin/phpstan analyse --memory-limit=1G",
+		"check": "E=0; for CMD in lint cs:check psalm phpstan:strict; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E",
+		"check:strict": "E=0; for CMD in lint cs:check psalm phpstan:strict; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E"
 	},
 	"require": {
 		"php": "^8.3",
