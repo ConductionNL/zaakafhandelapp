@@ -141,8 +141,10 @@ class CallService
             'query'   => $query,
         ];
 
-        // Setuo the client & make the call
-        $returnData = $this->getClient(source: $source, config: $config)->get($this->config->getValueString('zaakafhandelapp', "{$source}Location")."/$endpoint/$id");
+        // Use a relative path so Guzzle appends it to the base_uri configured in getConfig().
+        // Previously the full absolute URL was constructed here, duplicating the base_uri that
+        // getClient() already sets — causing double-prefixing on the request (M2).
+        $returnData = $this->getClient(source: $source, config: $config)->get("$endpoint/$id");
 
         return $this->decodeJson($returnData->getBody()->getContents());
     }//end show()

@@ -43,7 +43,7 @@ return [
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
-		['name' => 'configuration#create', 'url' => '/api/configuration', 'verb' => 'POST'],
+		['name' => 'configuration#save', 'url' => '/api/configuration', 'verb' => 'POST'],
 		['name' => 'contactMomenten#page', 'url' => '/contactmomenten', 'verb' => 'GET'],
 		['name' => 'contactMomenten#page', 'postfix' => 'details', 'url' => '/contactmomenten/{id}', 'verb' => 'GET'],
 		['name' => 'zaken#page', 'url' => '/zaken', 'verb' => 'GET'],

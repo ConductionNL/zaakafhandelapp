@@ -116,8 +116,15 @@ class ZGWArchiveDateService
                 },
                 $zaakArray['eigenschappen']
                 );
+
+        // Guard: an empty ids array would cause findAll to return ALL objects (M1).
+        // Return null immediately when the zaak has no eigenschappen.
+        if (empty($eigenschapIds) === true) {
+            return null;
+        }
+
         $this->objectService->clearCurrents();
-        $eigenschappen     = $this->objectService->findAll(['ids' => $eigenschapIds]);
+        $eigenschappen = $this->objectService->findAll(['ids' => $eigenschapIds]);
         $eigenschapObjects = array_filter(
             $eigenschappen,
             function (ObjectEntity $eigenschapObject) use ($eigenschap) {

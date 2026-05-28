@@ -109,16 +109,19 @@ class ConfigurationController extends Controller
     }//end index()
 
     /**
-     * Persist configuration values supplied by an admin.
+     * Persist (upsert) configuration values supplied by an admin.
      *
      * Only keys present in WRITABLE_KEYS are accepted; all others are ignored.
      * Credential values are redacted in the response. Admin-only: @NoAdminRequired omitted.
+     *
+     * The method is named "save" rather than "create" because it behaves as an upsert —
+     * it creates or updates configuration keys in a single idempotent POST (L3).
      *
      * @NoCSRFRequired
      *
      * @spec openspec/specs/app-configuration/spec.md#REQ-001
      */
-    public function create(): JSONResponse
+    public function save(): JSONResponse
     {
         if ($this->userSession->getUser() === null) {
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
@@ -139,5 +142,5 @@ class ConfigurationController extends Controller
         }
 
         return new JSONResponse($data);
-    }//end create()
+    }//end save()
 }//end class
