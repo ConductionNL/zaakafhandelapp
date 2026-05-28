@@ -19,6 +19,23 @@ use Exception;
 class ObjectsController extends Controller
 {
     /**
+     * Fields that are system-managed per object type.
+     * These must be stripped from create/update payloads to prevent mass-assignment
+     * of values that are set exclusively by business logic or the platform itself.
+     *
+     * @var array<string,string[]>
+     */
+    private const SYSTEM_MANAGED_FIELDS = [
+        'zaken'      => ['bronorganisatie', 'verantwoordelijkeOrganisatie', 'identificatie', 'archiefstatus', 'created', 'updated'],
+        'klanten'    => ['created', 'updated'],
+        'berichten'  => ['created', 'updated'],
+        'taken'      => ['created', 'updated'],
+        'resultaten' => ['created', 'updated'],
+        'statusen'   => ['created', 'updated'],
+        'besluiten'  => ['created', 'updated'],
+    ];
+
+    /**
      * Explicit allow-list of object types exposed through the generic objects endpoint.
      * Any objectType not in this list is rejected with HTTP 400 to prevent access to
      * unintended or internal schemas (#276 — unvalidated objectType).
@@ -72,6 +89,28 @@ class ObjectsController extends Controller
 
         return null;
     }//end validateObjectType()
+
+    /**
+     * Strip system-managed fields from a write payload.
+     *
+     * Removes fields listed in SYSTEM_MANAGED_FIELDS for the given objectType so that
+     * callers cannot mass-assign values that are set exclusively by business logic or
+     * the platform itself (e.g. bronorganisatie, archiefstatus, created/updated).
+     *
+     * @param string $objectType The object type being written.
+     * @param array  $data       The raw request payload.
+     *
+     * @return array The payload with system-managed fields removed.
+     */
+    private function stripSystemManagedFields(string $objectType, array $data): array
+    {
+        $protected = self::SYSTEM_MANAGED_FIELDS[$objectType] ?? [];
+        foreach ($protected as $field) {
+            unset($data[$field]);
+        }
+
+        return $data;
+    }//end stripSystemManagedFields()
 
     /**
      * Return (and search) all objects
@@ -181,6 +220,9 @@ class ObjectsController extends Controller
             // Remove the 'id' field if it exists, as we're creating a new object
             unset($data['id']);
 
+            // Strip system-managed fields to prevent mass-assignment of platform-controlled values.
+            $data = $this->stripSystemManagedFields($objectType, $data);
+
             // Save the new object
             $object = $this->objectService->saveObject($objectType, $data);
 
@@ -221,6 +263,9 @@ class ObjectsController extends Controller
 
             // Ensure ID in data matches URL parameter
             $data['id'] = $id;
+
+            // Strip system-managed fields to prevent mass-assignment of platform-controlled values.
+            $data = $this->stripSystemManagedFields($objectType, $data);
 
             // Save the updated object
             $object = $this->objectService->saveObject($objectType, $data);
@@ -292,6 +337,14 @@ class ObjectsController extends Controller
         }
 
         try {
+            // IDOR guard: verify the object exists (and that the current user has read access
+            // via OR's RBAC) before returning its audit trail. A null return means the object
+            // does not exist or is not accessible to the caller.
+            $object = $this->objectService->getObject($objectType, $id);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
+
             $auditTrail = $this->objectService->getAuditTrail($objectType, $id);
             return new JSONResponse($auditTrail);
         } catch (Exception $e) {

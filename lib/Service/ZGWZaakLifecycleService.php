@@ -21,7 +21,12 @@ class ZGWZaakLifecycleService
         private ZGWZaakCloseService $closeService,
         private ZGWRegistryService $registry,
     ) {
-        $this->objectService = $mapperService->getOpenRegisters();
+        $objectService = $mapperService->getOpenRegisters();
+        if ($objectService === null) {
+            throw new \RuntimeException('ZGWZaakLifecycleService requires the OpenRegister app to be installed and enabled.');
+        }
+
+        $this->objectService = $objectService;
     }//end __construct()
 
     /**

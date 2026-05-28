@@ -18,7 +18,12 @@ class ZGWZaakValidationService
 
     public function __construct(ObjectMapperService $mapperService)
     {
-        $this->objectService = $mapperService->getOpenRegisters();
+        $objectService = $mapperService->getOpenRegisters();
+        if ($objectService === null) {
+            throw new \RuntimeException('ZGWZaakValidationService requires the OpenRegister app to be installed and enabled.');
+        }
+
+        $this->objectService = $objectService;
     }//end __construct()
 
     /**
