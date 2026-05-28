@@ -133,8 +133,14 @@ class ZaakRegisterEventListener implements IEventListener
         $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
         $obj  = $event->getObject();
 
-        // Note: closeZaak has been moved to handleObjectCreated to avoid a race condition
-        // where the zaak was permanently mutated before the status record was persisted (#274).
+        // Validate close prerequisites (resultaat, gebruiksrechten, date) before the status is
+        // persisted. If any check fails, a CustomValidationException is thrown here and the status
+        // write is aborted entirely — preventing an eindstatus from existing without the zaak's
+        // archive metadata being set (H3 fix). The actual zaak mutations still happen in
+        // handleObjectCreated after successful persist.
+        if ($slug === $this->registry->getStatusSchema()) {
+            $this->lifecycleService->validateClosePrerequisites($obj);
+        }
 
         if ($slug === $this->registry->getZaakSchema()) {
             $this->zaakValidationService->checkProductenOfDiensten($obj);

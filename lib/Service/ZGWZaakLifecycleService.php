@@ -30,6 +30,21 @@ class ZGWZaakLifecycleService
     }//end __construct()
 
     /**
+     * Validate close prerequisites before the status record is persisted.
+     *
+     * Delegates to ZGWZaakCloseService::validateClosePrerequisites. Must be called from
+     * handleObjectCreating so that a failed check aborts the status write entirely (H3 fix).
+     *
+     * @param ObjectEntity $status The status entity about to be created.
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
+     */
+    public function validateClosePrerequisites(ObjectEntity $status): void
+    {
+        $this->closeService->validateClosePrerequisites($status);
+    }//end validateClosePrerequisites()
+
+    /**
      * Close a zaak. Delegates to ZGWZaakCloseService.
      *
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002

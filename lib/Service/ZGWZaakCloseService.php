@@ -33,11 +33,68 @@ class ZGWZaakCloseService
     }//end __construct()
 
     /**
+     * Validate that all prerequisites for closing a zaak are met, without making any mutations.
+     *
+     * Called from handleObjectCreating (before the status record is persisted) so that a failed
+     * prerequisite check aborts the status write entirely, preventing an inconsistent state where
+     * the eindstatus is persisted but the zaak's archive metadata is never set (H3).
+     *
+     * Checks performed:
+     * - Is the status an eindstatus for its zaaktype?
+     * - Does the associated zaak have a resultaat?
+     * - Are all informatieobjecten linked to the zaak properly tagged with gebruiksrechten?
+     * - Is datumStatusGezet a valid ISO 8601 date string?
+     *
+     * If any check fails, a CustomValidationException is thrown and the status write is rejected
+     * before any data is committed.
+     *
+     * @param ObjectEntity $status The status entity that is about to be created.
+     *
+     * @return void
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
+     */
+    public function validateClosePrerequisites(ObjectEntity $status): void
+    {
+        $statusArray = $status->jsonSerialize();
+
+        if ($this->isEindStatus($statusArray) === false) {
+            // Not an eindstatus — no prerequisites to check.
+            return;
+        }
+
+        // Load the zaak with its informatieobjecten so gebruiksrechten can be inspected.
+        $zaakArray = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject'])->jsonSerialize();
+
+        // Guard: zaak must have a resultaat.
+        if (empty($zaakArray['resultaat']) === true) {
+            throw new CustomValidationException(
+                'Zaak heeft geen resultaat',
+                [['name' => 'resultaat', 'code' => 'required', 'reason' => 'Een zaak moet een resultaat hebben voordat hij gesloten kan worden']]
+            );
+        }
+
+        // Guard: all informatieobjecten must have gebruiksrechten configured.
+        $this->assertGebruiksrechten($zaakArray);
+
+        // Guard: datumStatusGezet must be a valid ISO 8601 date.
+        try {
+            (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
+        } catch (\Exception $e) {
+            throw new CustomValidationException(
+                'Ongeldige datumStatusGezet',
+                [['name' => 'datumStatusGezet', 'code' => 'invalid', 'reason' => 'datumStatusGezet bevat geen geldige ISO 8601 datum: '.$e->getMessage()]]
+            );
+        }
+    }//end validateClosePrerequisites()
+
+    /**
      * Close a zaak when eindstatus is set.
      *
-     * Throws CustomValidationException when a required field (resultaat, zaaktype, etc.)
-     * is missing or malformed so that the caller can surface the error rather than silently
-     * leaving the zaak without required archive metadata (Archiefwet) — fixes #273.
+     * Preconditions are enforced by validateClosePrerequisites() in handleObjectCreating
+     * before the status record is persisted. This method runs in handleObjectCreated (after
+     * persist) and only performs the zaak mutations — it does NOT re-validate prerequisites
+     * to avoid double-loading the zaak and its informatieobjecten.
      *
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
      */
@@ -51,23 +108,13 @@ class ZGWZaakCloseService
 
         $zaak      = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']);
         $zaakArray = $zaak->jsonSerialize();
-        $this->assertGebruiksrechten($zaakArray);
-
-        // Guard: zaak must have a resultaat before it can be closed with archive metadata.
-        if (empty($zaakArray['resultaat']) === true) {
-            throw new CustomValidationException(
-                'Zaak heeft geen resultaat',
-                [['name' => 'resultaat', 'code' => 'required', 'reason' => 'Een zaak moet een resultaat hebben voordat hij gesloten kan worden']]
-            );
-        }
 
         try {
             $zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format("Y-m-d");
         } catch (\Exception $e) {
-            throw new CustomValidationException(
-                'Ongeldige datumStatusGezet',
-                [['name' => 'datumStatusGezet', 'code' => 'invalid', 'reason' => 'datumStatusGezet bevat geen geldige ISO 8601 datum: '.$e->getMessage()]]
-            );
+            // datumStatusGezet was already validated in validateClosePrerequisites; log and skip.
+            $this->logger->error('ZaakAfhandelApp: closeZaak unexpected date error', ['exception' => $e->getMessage()]);
+            return;
         }
 
         try {
