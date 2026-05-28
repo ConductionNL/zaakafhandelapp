@@ -2,147 +2,201 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
+/**
+ * Controller for zaak eigenschappen (case properties) resources.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class ZaakEigenschappenController extends Controller
 {
-    const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "name" => "Zaakt type 1",
-            "summary" => "summary for one"
-        ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "name" => "Zaakt type 12",
-            "summary" => "summary for two"
-        ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "name" => "Zaakt type 3",
-            "summary" => "summary for two"
-        ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "name" => "Zaakt type 4",
-            "summary" => "summary for two"
-        ]
-    ];
-
     public function __construct(
-		$appName,
-		IRequest $request,
-		private readonly IAppConfig $config
-	)
-    {
+        $appName,
+        IRequest $request,
+        private readonly IAppConfig $config,
+        private readonly IUserSession $userSession,
+    ) {
         parent::__construct($appName, $request);
-    }
+    }//end __construct()
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{
+    /**
+     * This returns the template of the main app's page
+     * It adds some data to the template (app version)
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return TemplateResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function page(): TemplateResponse
+    {
         return new TemplateResponse(
-            //Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
         );
-	}
+    }//end page()
 
+    /** UUID v4 pattern used to validate path segments before interpolation into URLs. */
+    private const UUID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
 
+    /**
+     * Validate that $value is a strict UUID to prevent path-traversal / SSRF (#270).
+     *
+     * @param string $value The value to validate.
+     * @param string $field The field name for the error message.
+     *
+     * @return JSONResponse|null Returns a 400 response when invalid, null when valid.
+     */
+    private function assertUuid(string $value, string $field): ?JSONResponse
+    {
+        if (preg_match(self::UUID_PATTERN, $value) !== 1) {
+            return new JSONResponse(
+                ['error' => "$field must be a valid UUID"],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
 
-	/**
-	 * Return (and serach) all objects
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function index(CallService $callService, string $zaakId): JSONResponse
-	{
-		// Latere zorg
-		$query= $this->request->getParams();
+        return null;
+    }//end assertUuid()
 
-		$results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
-		return new JSONResponse($results);
-	}
+    /**
+     * Return (and serach) all objects
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function index(CallService $callService, string $zaakId): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * Read a single object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function show(string $id, CallService $callService, string $zaakId): JSONResponse
-	{
-		// Latere zorg
-		$query= $this->request->getParams();
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
 
-		$results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
-		return new JSONResponse($results);
-	}
+        $results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
+        return new JSONResponse($results);
+    }//end index()
 
+    /**
+     * Read a single object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function show(string $id, CallService $callService, string $zaakId): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * Creatue an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function create(CallService $callService, string $zaakId): JSONResponse
-	{
-		// get post from requests
-		$body = $this->request->getParams();
-		$results = $callService->create(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body);
-		return new JSONResponse($results);
-	}
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
 
-	/**
-	 * Update an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function update(string $id, CallService $callService, string $zaakId): JSONResponse
-	{
-		$body = $this->request->getParams();
-		$results = $callService->update(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body, id: $id);
-		return new JSONResponse($results);
-	}
+        $results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
+        return new JSONResponse($results);
+    }//end show()
 
-	/**
-	 * Delate an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function destroy(string $id, CallService $callService, string $zaakId): JSONResponse
-	{
-		$callService->destroy(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
+    /**
+     * Creatue an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function create(CallService $callService, string $zaakId): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-		return new JsonResponse([]);
-	}
-}
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
+
+        // get post from requests
+        $body    = $this->request->getParams();
+        $results = $callService->create(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body);
+        return new JSONResponse($results);
+    }//end create()
+
+    /**
+     * Update an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function update(string $id, CallService $callService, string $zaakId): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
+
+        $body    = $this->request->getParams();
+        $results = $callService->update(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body, id: $id);
+        return new JSONResponse($results);
+    }//end update()
+
+    /**
+     * Delate an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function destroy(string $id, CallService $callService, string $zaakId): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $uuidError = $this->assertUuid($zaakId, 'zaakId');
+        if ($uuidError !== null) {
+            return $uuidError;
+        }
+
+        $callService->destroy(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
+
+        return new JSONResponse([]);
+    }//end destroy()
+}//end class
