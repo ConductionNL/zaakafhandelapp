@@ -85,11 +85,17 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		filteredRollenList() {
 			return rolStore.rollenList.filter((rol) => rol.zaak === this.zaakUrl)
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		zaakUrl(newVal) {
 			this.fetchData()
 		},
@@ -98,10 +104,16 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		editRol(rol) {
 			rolStore.setRolItem(rol)
 			navigationStore.setModal('editRol')
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.loading = true
 
@@ -110,6 +122,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
 		toggleRol(rol) {
 			if (rolStore.rolItem?.id === rol.id) {
 				rolStore.setRolItem(null)
@@ -117,6 +132,9 @@ export default {
 				rolStore.setRolItem(rol)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

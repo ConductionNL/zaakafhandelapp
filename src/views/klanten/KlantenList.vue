@@ -109,16 +109,25 @@ export default {
 			klantenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		klantStore.refreshKlantenList().then(() => {
 			this.loading = false
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openKlant(klant) {
 			klantStore.setKlantItem(klant)
 			this.$router.push({ params: { id: klant.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		fullName(klant) {
 			let name = klant.achternaam
 			if (klant.tussenvoegsel) {
@@ -129,6 +138,9 @@ export default {
 			}
 			return name
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getName(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.voornaam ?? 'onbekend'
@@ -138,6 +150,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
@@ -147,6 +162,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		deleteKlant() {
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}`,
@@ -165,6 +183,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -184,6 +205,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

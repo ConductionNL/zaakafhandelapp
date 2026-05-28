@@ -164,6 +164,9 @@ export default {
 			IS_EDIT: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		this.IS_EDIT = !!rolStore.rolItem?.id
 
@@ -180,11 +183,17 @@ export default {
 		this.fetchZaak(rolStore.rolItem?.zaak || this.zaakId)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(null)
 			rolStore.setZaakId(null)
 			delete rolStore.extraData?.redirect
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchData(id) {
 			this.rolLoading = true
 
@@ -201,6 +210,9 @@ export default {
 					this.rolLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchZaak(zaakId) {
 			this.zaakOptionsLoading = true
 
@@ -224,6 +236,9 @@ export default {
 					this.zaakOptionsLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		editRol() {
 			this.loading = true
 

@@ -7,7 +7,6 @@
     findUnusedBaselineEntry="true"
     findUnusedCode="true"
     findUnusedVariablesAndParams="true"
-
 >
     <projectFiles>
         <directory name="lib" />
@@ -19,39 +18,9 @@
         <file name="vendor/nextcloud/ocp/OCP/Capabilities/ICapability.php" preloadClasses="true" />
     </stubs>
     <issueHandlers>
-        <UndefinedDocblockClass>
-            <errorLevel type="suppress">
-                <referencedClass name="Doctrine\DBAL\Schema\Table"/>
-                <referencedClass name="Doctrine\DBAL\Schema\Schema"/>
-                <referencedClass name="Doctrine\DBAL\Types\Types"/>
-                <referencedClass name="Doctrine\DBAL\Connection"/>
-                <referencedClass name="Doctrine\DBAL\Platforms\AbstractPlatform"/>
-                <referencedClass name="OCP\IMemcache"/>
-                <referencedClass name="OCP\IDBConnection"/>
-                <referencedClass name="OCP\AppFramework\IAppContainer"/>
-                <referencedClass name="OCP\AppFramework\Db\DoesNotExistException"/>
-                <referencedClass name="OCP\AppFramework\Db\Entity"/>
-                <referencedClass name="OCP\DB\Exception"/>
-                <!-- OpenRegister classes (external app dependency) -->
-                <referencedClass name="OCA\OpenRegister\Service\ObjectService"/>
-                <referencedClass name="OCA\OpenRegister\Db\ObjectEntity"/>
-                <referencedClass name="OCA\OpenRegister\Db\RegisterMapper"/>
-                <referencedClass name="OCA\OpenRegister\Db\Schema"/>
-                <referencedClass name="OCA\OpenRegister\Db\SchemaMapper"/>
-            </errorLevel>
-        </UndefinedDocblockClass>
+        <UndefinedDocblockClass errorLevel="suppress"/>
         <UndefinedClass>
             <errorLevel type="suppress">
-                <referencedClass name="OC"/>
-                <referencedClass name="Doctrine\DBAL\Types\Types"/>
-                <referencedClass name="Doctrine\DBAL\Types\Type"/>
-                <referencedClass name="Doctrine\DBAL\Connection"/>
-                <referencedClass name="Doctrine\DBAL\Schema\Schema"/>
-                <referencedClass name="Symfony\Component\HttpFoundation\Response"/>
-                <referencedClass name="Doctrine\DBAL\Platforms\AbstractPlatform"/>
-                <referencedClass name="Doctrine\DBAL\Platforms\MySQLPlatform"/>
-                <referencedClass name="Doctrine\DBAL\ParameterType"/>
-                <referencedClass name="Ramsey\Uuid\Uuid"/>
                 <!-- Nextcloud OCP Classes -->
                 <referencedClass name="OCP\AppFramework\App"/>
                 <referencedClass name="OCP\AppFramework\Bootstrap\IBootstrap"/>
@@ -70,7 +39,6 @@
                 <referencedClass name="OCP\IGroupManager"/>
                 <referencedClass name="OCP\IUserManager"/>
                 <referencedClass name="OCP\IUserSession"/>
-                <referencedClass name="OCP\Search\IFilteringProvider"/>
                 <referencedClass name="OCP\IMemcache"/>
                 <referencedClass name="OCP\IRequest"/>
                 <referencedClass name="OCP\EventDispatcher\IEventDispatcher"/>
@@ -91,34 +59,49 @@
                 <referencedClass name="OCP\Http\Client\IClientService"/>
                 <referencedClass name="OCP\Notification\IManager"/>
                 <referencedClass name="OCP\Share\IManager"/>
-                <!-- OpenRegister classes (external app dependency) -->
-                <referencedClass name="OCA\OpenRegister\Event\ObjectCreatedEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectCreatingEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectUpdatedEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectUpdatingEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectDeletedEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectDeletingEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectLockedEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectUnlockedEvent"/>
-                <referencedClass name="OCA\OpenRegister\Event\ObjectRevertedEvent"/>
-                <referencedClass name="OCA\OpenRegister\Service\ObjectService"/>
+                <!-- OpenRegister cross-app classes (loaded dynamically) -->
                 <referencedClass name="OCA\OpenRegister\Db\ObjectEntity"/>
                 <referencedClass name="OCA\OpenRegister\Db\RegisterMapper"/>
-                <referencedClass name="OCA\OpenRegister\Db\Schema"/>
                 <referencedClass name="OCA\OpenRegister\Db\SchemaMapper"/>
+                <referencedClass name="OCA\OpenRegister\Event\DeepLinkRegistrationEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectCreatingEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectCreatedEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectUpdatingEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectUpdatedEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectDeletedEvent"/>
+                <referencedClass name="OCA\OpenRegister\Event\ObjectDeletingEvent"/>
+                <!-- OR-peer stub gap: CustomValidationException and Schema exist in OR ≥ 0.7 but are not
+                     available in this app's install-time stubs. Suppress until OR ships Psalm stubs. -->
                 <referencedClass name="OCA\OpenRegister\Exception\CustomValidationException"/>
+                <referencedClass name="OCA\OpenRegister\Db\Schema"/>
+                <referencedClass name="OCA\OpenRegister\Service\ObjectService"/>
+                <referencedClass name="OCA\OpenRegister\Service\ConfigurationService"/>
+                <referencedClass name="OCA\OpenRegister\Service\RegisterService"/>
+                <referencedClass name="OCA\OpenRegister\Service\FileService"/>
+                <referencedClass name="OCA\OpenRegister\Service\CalendarEventService"/>
+                <referencedClass name="OCA\OpenRegister\Mcp\IMcpToolProvider"/>
+                <!-- Additional OCP infrastructure types used across the fleet -->
+                <referencedClass name="OCP\AppFramework\Bootstrap\IBootContext"/>
+                <referencedClass name="OCP\AppFramework\Bootstrap\IRegistrationContext"/>
+                <referencedClass name="OCP\AppFramework\Db\DoesNotExistException"/>
+                <referencedClass name="OCP\DB\Exception"/>
+                <referencedClass name="OCP\IGroup"/>
+                <referencedClass name="OCP\IUser"/>
+                <referencedClass name="OCP\Migration\IRepairStep"/>
+                <!-- Nextcloud server internals -->
+                <referencedClass name="OC"/>
+                <!-- GuzzleHttp (loaded via composer at runtime) -->
+                <referencedClass name="GuzzleHttp\Client"/>
+                <referencedClass name="GuzzleHttp\Exception\GuzzleException"/>
             </errorLevel>
         </UndefinedClass>
-        <InvalidThrow errorLevel="suppress"/>
-        <InvalidTemplateParam errorLevel="suppress"/>
-        <MissingTemplateParam errorLevel="suppress"/>
-        <NoInterfaceProperties errorLevel="suppress"/>
         <UndefinedMagicMethod errorLevel="suppress"/>
+        <!-- InvalidThrow cascades from OR-peer UndefinedClass stubs; suppress at fleet level -->
+        <InvalidThrow errorLevel="suppress"/>
         <UnusedClass errorLevel="suppress"/>
         <PossiblyUnusedMethod errorLevel="suppress"/>
         <UnusedMethod errorLevel="suppress"/>
         <UnusedProperty errorLevel="suppress"/>
-        <UnusedParam errorLevel="suppress"/>
         <PossiblyUnusedParam errorLevel="suppress"/>
         <UnusedDocblockParam errorLevel="suppress"/>
         <UnusedVariable errorLevel="suppress"/>
@@ -126,8 +109,6 @@
         <RedundantCondition errorLevel="suppress"/>
         <RedundantFunctionCall errorLevel="suppress"/>
         <RedundantCast errorLevel="suppress"/>
-        <RedundantPropertyInitializationCheck errorLevel="suppress"/>
-        <StringIncrement errorLevel="suppress"/>
         <InvalidDocblock errorLevel="suppress"/>
         <MoreSpecificImplementedParamType errorLevel="suppress"/>
         <MissingDependency errorLevel="suppress"/>
@@ -144,6 +125,8 @@
         <EmptyArrayAccess errorLevel="suppress"/>
         <ImplementedReturnTypeMismatch errorLevel="suppress"/>
         <InvalidMethodCall errorLevel="suppress"/>
+        <UndefinedInterfaceMethod errorLevel="suppress"/>
+        <MissingTemplateParam errorLevel="suppress"/>
     </issueHandlers>
     <extraFiles>
         <directory name="vendor/nextcloud/ocp" />

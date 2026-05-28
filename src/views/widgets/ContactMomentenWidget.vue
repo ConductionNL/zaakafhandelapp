@@ -80,6 +80,9 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		itemMenu() {
 			return {
 				show: {
@@ -101,6 +104,9 @@ export default {
 		this.fetchUser()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		async fetchUser() {
 			this.loading = true
 
@@ -128,6 +134,9 @@ export default {
 			this.userEmail = medewerker.email
 			this.fetchContactMomentItems()
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchContactMomentItems() {
 			this.loading = true
 
@@ -167,6 +176,9 @@ export default {
 				})
 		},
 		// === ICONS ===
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -178,6 +190,9 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemPhoneIcon() {
 			const theme = getTheme()
 
@@ -189,6 +204,9 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/phone-dark.svg` : `${appLocation}/zaakafhandelapp/img/phone.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemEmailIcon() {
 			const theme = getTheme()
 
@@ -200,6 +218,9 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/email-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/email-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemMailboxIcon() {
 			const theme = getTheme()
 
@@ -211,6 +232,9 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/mailbox-open-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/mailbox-open-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemAgentIcon() {
 			const theme = getTheme()
 
@@ -225,6 +249,8 @@ export default {
 		// === MODAL CONTROL ===
 		/**
 		 * Opens the contactmoment form modal in create/add mode
+		  *
+		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		openModal() {
 			this.isContactMomentFormOpen = true
@@ -233,6 +259,8 @@ export default {
 		},
 		/**
 		 * runs when the contact form modal closes
+		  *
+		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		closeModal() {
 			this.isContactMomentFormOpen = false
@@ -244,6 +272,8 @@ export default {
 		/**
 		 * runs when the user clicks on the show button, and opens the contactmoment form modal in view mode
 		 * @param {{id: number}} event - the contactmoment item received from the widget
+		  *
+		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onShow(event) {
 			this.contactMomentId = event.id
@@ -253,6 +283,8 @@ export default {
 		/**
 		 * runs when the user clicks on the edit button, and opens the contactmoment form modal in edit mode
 		 * @param {{id: number}} event - the contactmoment item received from the widget
+		  *
+		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onEdit(event) {
 			this.contactMomentId = event.id
@@ -262,6 +294,8 @@ export default {
 		/**
 		 * runs when the user clicks on the "sluiten" button, and changes the status of the contactmoment to 'gesloten'
 		 * @param {{id: number}} event - the contactmoment item received from the widget
+		  *
+		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		async onSluiten(event) {
 			const { data } = await contactMomentStore.getContactMoment(event.id)

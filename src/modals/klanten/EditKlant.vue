@@ -272,10 +272,16 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		items() {
 			return this.contactMomentItems
 		},
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+	 */
 	updated() {
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
 			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem?.type)
@@ -319,6 +325,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 			this.success = false
@@ -354,6 +363,9 @@ export default {
 				subjectType: '',
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async editKlant() {
 			this.loading = true
 
@@ -374,6 +386,9 @@ export default {
 				this.error = error.message || 'An error occurred while saving the klant'
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},

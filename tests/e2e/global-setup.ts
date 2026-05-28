@@ -96,15 +96,24 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 	// Hit the login form so the CSRF token + session passphrase land in
 	// the browser jar.
 	await page.goto('/index.php/login')
-	await page.locator('input[name="user"]').fill(username)
-	await page.locator('input[name="password"]').fill(password)
-	await page.locator('button[type="submit"]').first().click()
-	// Nextcloud bounces to /apps/dashboard/ (or another default app) on
-	// success. Wait for the global header that only renders on
-	// authenticated pages — the URL-based wait races with the in-flight
-	// click navigation and is unreliable on slower test rigs.
-	await page.waitForSelector('#header, header.header', { timeout: 20_000 })
-	// Catch wrong-credentials early so the failure message is clear.
+
+	// If already authenticated Nextcloud redirects straight to the dashboard —
+	// the login form inputs won't be present. Check before filling.
+	const userInput = page.locator('input[name="user"]')
+	if (await userInput.isVisible({ timeout: 3_000 }).catch(() => false)) {
+		await userInput.fill(username)
+		await page.locator('input[name="password"]').fill(password)
+		// Wait for navigation that follows the submit click; navigationPromise
+		// must be set up BEFORE the click to avoid a race condition.
+		const navPromise = page.waitForURL(url => !url.pathname.includes('/login'), {
+			timeout: 25_000,
+			waitUntil: 'commit',
+		})
+		await page.locator('button[type="submit"]').first().click()
+		await navPromise
+	}
+
+	// Confirm we landed on an authenticated page (not back on login).
 	const currentUrl = page.url()
 	if (/\/login(\?|$|\/)/.test(currentUrl)) {
 		throw new Error(
@@ -112,6 +121,10 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 			+ `Check NC_ADMIN_USER / NC_ADMIN_PASS (defaults admin/admin).`,
 		)
 	}
+	// No additional wait needed: waitForURL above confirmed we left the
+	// login page (URL no longer contains /login), which is sufficient proof
+	// that the session cookie was accepted. The storage state captured
+	// immediately after includes the session cookies.
 
 	// Persist the storage state so individual specs reuse the session.
 	await context.storageState({ path: STORAGE_STATE })

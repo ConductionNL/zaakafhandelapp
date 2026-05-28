@@ -14,16 +14,25 @@ export const useTaakStore = defineStore('taken', {
 		widgetTaakId: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setTaakItem(taakItem) {
 			this.taakItem = taakItem && new Taak(taakItem)
 			console.log('Active taak item set to ' + taakItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setTakenList(takenList) {
 			this.takenList = takenList.map(
 				(taakItem) => new Taak(taakItem),
 			)
 			console.log('Taken list set to ' + takenList.length + ' items')
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setTaakZaakId(taakZaakId) {
 			this.taakZaakId = taakZaakId
 			console.log('Active taak Zaak Id set to ' + taakZaakId)
@@ -31,11 +40,17 @@ export const useTaakStore = defineStore('taken', {
 		setAuditTrailItem(auditTrailItem) {
 			this.auditTrailItem = auditTrailItem
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setWidgetTaakId(widgetTaakId) {
 			this.widgetTaakId = widgetTaakId
 			console.log('Active widget taak Id set to ' + widgetTaakId)
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 		async refreshTakenList(search = null, notClosed = false, user = null) {
 			let endpoint = apiEndpoint
 
@@ -71,6 +86,9 @@ export const useTaakStore = defineStore('taken', {
 			return { response, data, entities }
 		},
 		// Function to get a single taak
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-003
+		 */
 		async getTaak(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
@@ -91,6 +109,9 @@ export const useTaakStore = defineStore('taken', {
 			return { response, data, entity }
 		},
 		// Delete a taak
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async deleteTaak(taakItem) {
 			if (!taakItem.id) {
 				throw new Error('No taak item to delete')
@@ -114,6 +135,9 @@ export const useTaakStore = defineStore('taken', {
 			return { response }
 		},
 		// Create or save a taak from store
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async saveTaak(taakItem, options = { redirect: true }) {
 			if (!taakItem) {
 				throw new Error('No taak item to save')

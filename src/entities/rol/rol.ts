@@ -36,6 +36,9 @@ export class Rol implements TRol {
         voorletters?: string
         voorvoegselAchternaam?: string
     }
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TRol) {
 		this.id = source.id || null

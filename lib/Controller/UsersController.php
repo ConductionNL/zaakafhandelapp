@@ -4,24 +4,29 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCP\IAppConfig;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\IUserSession;
 
 /**
- * Class SettingsController
+ * Class UsersController
  *
- * Controller for handling settings-related operations in the OpenCatalogi app.
+ * Controller for handling user-related operations in the ZaakAfhandelApp.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class UsersController extends Controller
 {
     /**
-     * SettingsController constructor.
+     * UsersController constructor.
      *
-     * @param string     $appName The name of the app
-     * @param IAppConfig $config  The app configuration
-     * @param IRequest   $request The request object
+     * @param string       $appName     The name of the app
+     * @param IAppConfig   $config      The app configuration
+     * @param IRequest     $request     The request object
+     * @param IUserSession $userSession The user session
      */
     public function __construct(
         $appName,
@@ -39,11 +44,19 @@ class UsersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse Info about the current user.
+     *
+     * @spec openspec/specs/app-configuration/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.ShortMethodName) — "me" is the canonical REST resource name
+     *   for the current-user endpoint; renaming would break the registered NC route.
      */
     public function me(): JSONResponse
     {
         // Get the current user
         $currentUser = $this->userSession->getUser();
+        if ($currentUser === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
         try {
             $data = [

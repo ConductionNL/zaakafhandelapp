@@ -4,13 +4,18 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
 /**
  * Controller for handling contact moments (contactmomenten) operations
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ContactMomentenController extends Controller
 {
@@ -18,6 +23,7 @@ class ContactMomentenController extends Controller
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -29,9 +35,15 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
          // Retrieve all request parameters
          $requestParams = $this->request->getParams();
 
@@ -50,6 +62,11 @@ class ContactMomentenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $getParameter is an NC route param
+     *   reserved for future SPA deep-linking; the PHP layer renders a shell template only.
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -85,9 +102,15 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the contact moment by its ID
         $object = $this->objectService->getObject('contactmomenten', $id);
 
@@ -102,9 +125,15 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -125,11 +154,20 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
+
+        // Ensure the URL id is authoritative to prevent IDOR (client cannot override which record is updated).
+        $data['id'] = $id;
 
         // Save the updated contact moment
         $object = $this->objectService->saveObject('contactmomenten', $data);
@@ -145,9 +183,15 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the contact moment
         $result = $this->objectService->deleteObject('contactmomenten', $id);
 
@@ -162,9 +206,15 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('contactmomenten', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()

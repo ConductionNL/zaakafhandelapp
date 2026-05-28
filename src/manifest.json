@@ -89,8 +89,16 @@
 			"label": "Documentation",
 			"icon": "icon-info",
 			"href": "https://conduction.nl",
-			"section": "settings",
+			"section": "footer",
 			"order": 90
+		},
+		{
+			"id": "FeaturesRoadmapMenu",
+			"label": "Features & roadmap",
+			"icon": "icon-toggle",
+			"route": "FeaturesRoadmap",
+			"section": "footer",
+			"order": 91
 		},
 		{
 			"id": "SettingsMenu",
@@ -102,6 +110,15 @@
 		}
 	],
 	"pages": [
+		{
+			"id": "FeaturesRoadmap",
+			"route": "/features-roadmap",
+			"type": "roadmap",
+			"title": "Features & roadmap",
+			"config": {
+				"documentationUrl": "https://zaakafhandelapp.conduction.nl"
+			}
+		},
 		{
 			"id": "Dashboard",
 			"route": "/",
@@ -1035,18 +1052,26 @@
 		{
 			"id": "Search",
 			"route": "/zoeken",
-			"type": "custom",
+			"type": "index",
 			"title": "Search",
-			"component": "SearchView",
-			"_note": "Hybrid ZGW-API data path; searches across ZGW registers (zaken, taken, klanten, medewerkers, contactmomenten) via multiple ZGW-API controllers, not OR; no current typed-page analogue"
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak",
+				"columns": ["identificatie", "omschrijving", "zaaktype", "status", "uiterlijkeEinddatumAfdoening"],
+				"sidebar": { "enabled": true, "showMetadata": true }
+			},
+			"_note": "Cross-register search surface — defaults to the zaak index; richer ZGW-API multi-register search lands when the lib gains a non-OR data-source abstraction"
 		},
 		{
 			"id": "AuditTrail",
 			"route": "/auditTrail",
-			"type": "custom",
+			"type": "logs",
 			"title": "Audit trail",
-			"component": "AuditTrailView",
-			"_note": "Hybrid ZGW-API data path; fetches audit events from ZGW-API audittrail endpoint, not OR; no current typed-page analogue"
+			"config": {
+				"register": "zaakafhandelapp",
+				"schema": "zaak"
+			},
+			"_note": "ZGW-API audittrail endpoint integration deferred; uses the OR audit-trail surface for now"
 		},
 		{
 			"id": "Settings",

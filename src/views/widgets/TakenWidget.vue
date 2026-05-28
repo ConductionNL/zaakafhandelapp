@@ -82,9 +82,15 @@ export default {
 	},
 
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		items() {
 			return this.taakItems
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		itemMenu() {
 			return {
 				show: {
@@ -108,6 +114,9 @@ export default {
 	},
 
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		async fetchUser() {
 			this.loading = true
 
@@ -136,6 +145,9 @@ export default {
 			this.userEmail = medewerker.email
 			this.fetchTaakItems()
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchTaakItems() {
 
 			this.loading = true
@@ -152,6 +164,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -163,21 +178,33 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/calendar-month-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/calendar-month-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		openModal() {
 			this.isModalOpen = true
 			this.taakId = null
 			taakStore.setTaakItem(null)
 			navigationStore.setModal('editTaak')
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		closeModal() {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 */
 
 		onShow(event) {
 			this.taakId = event.id
 			this.isModalOpen = true
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 */
 
 		async onCloseStatus(event) {
 			// change status to 'gesloten'
@@ -200,6 +227,9 @@ export default {
 					}
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 */
 		async onHandledStatus(event) {
 			// change status to 'afgerond'
 			const { data } = await taakStore.getTaak(event.id)

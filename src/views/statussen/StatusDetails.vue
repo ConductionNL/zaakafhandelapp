@@ -44,6 +44,9 @@ export default {
 	},
 	watch: {
 		statusId: {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(statusId) {
 				this.fetchData(statusId)
 			},
@@ -54,6 +57,9 @@ export default {
 		this.fetchData(this.statusItem)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(statusId) {
 			this.loading = true
 			fetch(

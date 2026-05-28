@@ -69,14 +69,23 @@ export default {
 			hasUpdated: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		this.zaakItem = zaakStore.zaakItem
 		this.fetchBerichtenData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchBerichtenData() {
 			this.berichtenLoading = true
 
@@ -98,6 +107,9 @@ export default {
 					this.berichtenLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		addBerichtToZaak() {
 			this.loading = true
 			this.error = false
@@ -118,6 +130,9 @@ export default {
 
 					// Wait for the user to read the feedback then close the model
 					const self = this
+					/**
+					 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+					 */
 					setTimeout(function() {
 						self.success = null
 						self.closeModal()

@@ -394,6 +394,9 @@ export default {
 			tabCounter: 1,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		const contactMomentId = this.contactMomentId ?? contactMomentStore.contactMomentItem?.id ?? null
 		this.isEdit = !!contactMomentId
@@ -406,6 +409,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		closeTab(x) {
 			for (let i = 0; i < this.tabs.length; i++) {
@@ -414,6 +420,9 @@ export default {
 				}
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		newTab() {
 			const index = this.tabCounter + 1
 			this.contactMomenten = {
@@ -432,6 +441,9 @@ export default {
 			this.tabs.push(index)
 			this.tabCounter = this.tabCounter + 1
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		async fetchData(id) {
 			this.fetchLoading = true
@@ -457,11 +469,17 @@ export default {
 		},
 
 		// Modal functions
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModalFromButton() {
 			setTimeout(() => {
 				this.closeModal()
 			}, 300)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 
@@ -469,6 +487,9 @@ export default {
 		},
 
 		// Contactmoment functions
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		addContactMoment(i) {
 
 			this.selectedContactMoment = i
@@ -552,26 +573,41 @@ export default {
 		},
 
 		// Search functions
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openSearchKlantModal(type) {
 			this.searchKlantModalOpen = true
 			this.startingType = type
 		},
 
 		// Klant functions
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		closeSearchKlantModal() {
 			this.searchKlantModalOpen = false
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		openTaakForm(clientType = 'both') {
 			this.taakFormOpen = true
 			this.taakClientType = clientType
 			taakStore.setTaakItem(null)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		closeTaakForm() {
 			this.taakFormOpen = false
 			this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		removeKlant(i) {
 			this.contactMomenten[i].klant = null
@@ -583,15 +619,24 @@ export default {
 		},
 
 		// zaak functions
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openZaakForm() {
 			zaakStore.setZaakItem(null)
 			this.zaakFormOpen = true
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		zaakFormSaveSuccess() {
 			this.zaakFormOpen = false
 			this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		async closeContactMoment(id) {
 			const { data } = await contactMomentStore.getContactMoment(id)
@@ -613,6 +658,9 @@ export default {
 					}
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		async fetchKlantData(klant) {
 			const klantId = klant.id ?? klant
@@ -724,6 +772,9 @@ export default {
 				// even if some data failed to load
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 
 		getName(klant) {
 			if (!klant) return
@@ -736,6 +787,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		getSex(klant) {
 			if (klant.type === 'persoon') {
 				return `(${klant?.geslacht})`
@@ -744,17 +798,26 @@ export default {
 		},
 
 		// Tabs
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+		 */
 		setSelectedZaak(id, zaak) {
 			if (this.contactMomenten[id].selectedZaak === zaak) {
 				this.contactMomenten[id].selectedZaak = null
 			} else { this.contactMomenten[id].selectedZaak = zaak }
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+		 */
 
 		setSelectedTaak(id, taak) {
 			if (this.contactMomenten[id].selectedTaak === taak) {
 				this.contactMomenten[id].selectedTaak = null
 			} else { this.contactMomenten[id].selectedTaak = taak }
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+		 */
 
 		setSelectedProduct(id, product) {
 			if (this.contactMomenten[id].selectedProduct === product) {

@@ -444,6 +444,9 @@ export default {
 	},
 	methods: {
 		// We use the catalogi in the menu so lets fetch those
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-002
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -463,6 +466,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-002
+		 */
 		saveConfig() {
 			// Simple POST request with a JSON body using fetch
 			const requestOptions = {

@@ -6,6 +6,9 @@ namespace OCA\ZaakAfhandelApp\Service;
  * Interface for object service operations.
  *
  * Provides a contract for CRUD and query operations on typed objects.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 interface IObjectService
 {
@@ -60,6 +63,8 @@ interface IObjectService
      * @param boolean $updateVersion Whether to bump version
      *
      * @return mixed The saved object
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed;
 
@@ -70,6 +75,8 @@ interface IObjectService
      * @param string|integer $id         The id
      *
      * @return boolean Success
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function deleteObject(string $objectType, string|int $id): bool;
 }//end interface

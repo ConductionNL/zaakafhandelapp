@@ -148,6 +148,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchData(newId)
 		},
@@ -156,6 +159,9 @@ export default {
 		this.fetchData(this.id)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		async fetchData(id) {
 			this.loading = true
 
@@ -171,6 +177,9 @@ export default {
 				...(taakData.medewerker ? [this.fetchMedewerker(taakData.medewerker)] : []),
 			])
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/taken/${id}/audit_trail`)
 				.then(response => response.json())
@@ -186,14 +195,23 @@ export default {
 		getMedewerkerName(medewerker) {
 			return `${medewerker?.voornaam} ${medewerker?.tussenvoegsel} ${medewerker?.achternaam}`
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		goToKlant() {
 			klantStore.setKlantItem(this.klant)
 			this.$router.push({ name: 'KlantDetail', params: { id: this.klant.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		goToMedewerker() {
 			medewerkerStore.setMedewerkerItem(this.medewerker)
 			this.$router.push({ name: 'MedewerkerDetail', params: { id: this.medewerker.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchKlant(klant) {
 			this.klantLoading = true
 
@@ -212,6 +230,9 @@ export default {
 				})
 
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchMedewerker(medewerker) {
 			this.medewerkerLoading = true
 

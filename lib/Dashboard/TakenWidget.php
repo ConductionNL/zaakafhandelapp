@@ -10,6 +10,12 @@ use OCP\Util;
 
 use OCA\ZaakAfhandelApp\AppInfo\Application;
 
+/**
+ * Dashboard widget showing taken (tasks).
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class TakenWidget implements IWidget
 {
     public function __construct(
@@ -60,6 +66,9 @@ class TakenWidget implements IWidget
 
     /**
      * @inheritDoc
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess) — OCP\Util::addScript/addStyle is the
+     *   Nextcloud-prescribed static API for enqueuing assets in Dashboard widgets.
      */
     public function load(): void
     {
