@@ -74,6 +74,11 @@ class ZaakRegisterEventListener implements IEventListener
             // Re-open or close the zaak now that the status record is confirmed persisted.
             // closeZaak MUST run in ObjectCreated (not ObjectCreating) so the zaak is only
             // mutated when the triggering status write is known-successful — fixes #274.
+            //
+            // No double-dispatch risk (M4): closeZaak and reopenZaak are mutually exclusive
+            // via their isEindStatus() guard. closeZaak is a no-op when the status is not an
+            // eindstatus; reopenZaak is a no-op when the status IS an eindstatus. Both methods
+            // check isEindStatus independently, so only one path executes per status event.
             $this->lifecycleService->closeZaak($obj);
             $this->lifecycleService->reopenZaak($obj);
         }
