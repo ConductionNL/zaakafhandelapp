@@ -6,9 +6,15 @@ use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
-use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 
+/**
+ * Controller for ZTC zaaktypen master data.
+ *
+ * Zaaktypen define the validation source-of-truth for statustypen,
+ * resultaattypen, roltypen, and besluittypen.  Mutations therefore require
+ * admin privileges to prevent any authenticated user from subverting zaak
+ * lifecycle validation (see issue #269).
+ */
 class ZaakTypenController extends Controller
 {
     public function __construct(
@@ -20,7 +26,7 @@ class ZaakTypenController extends Controller
     }//end __construct()
 
     /**
-     * Return (and serach) all objects
+     * Return (and search) all objects.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -29,54 +35,18 @@ class ZaakTypenController extends Controller
      */
     public function index(): JSONResponse
     {
-         // Retrieve all request parameters
-         $requestParams = $this->request->getParams();
+        // Retrieve all request parameters
+        $requestParams = $this->request->getParams();
 
-         // Fetch catalog objects based on filters and order
-         $data = $this->objectService->getResultArrayForRequest('zaaktypen', $requestParams);
+        // Fetch catalog objects based on filters and order
+        $data = $this->objectService->getResultArrayForRequest('zaaktypen', $requestParams);
 
-         // Return JSON response
-         return new JSONResponse($data);
+        // Return JSON response
+        return new JSONResponse($data);
     }//end index()
 
     /**
-     * Render no page.
-     *
-     * @param  string|null $getParameter Optional GET parameter
-     * @return TemplateResponse The rendered template response
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function page(?string $getParameter): TemplateResponse
-    {
-        try {
-            // Create a new TemplateResponse for the index page
-            $response = new TemplateResponse(
-             $this->appName,
-             'index',
-             []
-            );
-
-            // Set up Content Security Policy
-            $csp = new ContentSecurityPolicy();
-            $csp->addAllowedConnectDomain('*');
-            $response->setContentSecurityPolicy($csp);
-
-            return $response;
-        } catch (\Exception $e) {
-            // Return an error template response if an exception occurs
-            return new TemplateResponse(
-             $this->appName,
-             'error',
-             ['error' => $e->getMessage()],
-             '500'
-            );
-        }//end try
-    }//end page()
-
-    /**
-     * Read a single object
+     * Read a single object.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -93,9 +63,8 @@ class ZaakTypenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
@@ -116,9 +85,8 @@ class ZaakTypenController extends Controller
     }//end create()
 
     /**
-     * Update an object
+     * Update an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
@@ -128,22 +96,19 @@ class ZaakTypenController extends Controller
         // Get all parameters from the request
         $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new object
+        // Remove the 'id' field if it exists, as we're updating
         unset($data['id']);
 
-        $data['id'] = $id;
-
-        // Save the new catalog object
+        // Save the updated catalog object
         $object = $this->objectService->saveObject('zaaktypen', $data);
 
-        // Return the created object as a JSON response
+        // Return the updated object as a JSON response
         return new JSONResponse($object);
     }//end update()
 
     /**
-     * Delate an object
+     * Delete an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse

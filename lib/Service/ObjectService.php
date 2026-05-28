@@ -10,6 +10,9 @@ use InvalidArgumentException;
  *
  * Delegates mapper resolution to ObjectMapperService and
  * query operations to ObjectQueryService.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ObjectService implements IObjectService
 {
@@ -73,6 +76,8 @@ class ObjectService implements IObjectService
      * @param array|null   $extend     Extensions
      *
      * @return array The retrieved objects as arrays
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getObjects(
         string $objectType,
@@ -104,6 +109,8 @@ class ObjectService implements IObjectService
 
     /**
      * Creates or updates an object.
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
     {
@@ -112,6 +119,8 @@ class ObjectService implements IObjectService
 
     /**
      * Deletes an object.
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
     public function deleteObject(string $objectType, string|int $id): bool
     {
@@ -143,26 +152,62 @@ class ObjectService implements IObjectService
     }//end getMultipleObjects()
 
     /**
-     * Get relations for an object.
+     * Get relations for an object (objects that this object references — incoming).
+     *
+     * Routes through OR's ObjectService::getObjectUsedBy to avoid calling non-existent
+     * methods on the OR ObjectServiceMapperAdapter (C5 fix).
      */
     public function getRelations(string $objectType, string $id): array
     {
-        return $this->queryService->callMapperMethod($objectType, 'getRelations', $id);
+        $orService = $this->mapperService->getOpenRegisters();
+        if ($orService === null) {
+            return [];
+        }
+
+        return $orService->getObjectUsedBy($id);
     }//end getRelations()
 
     /**
-     * Get uses for an object.
+     * Get uses for an object (objects that this object points to — outgoing).
+     *
+     * Routes through OR's ObjectService::getObjectUses to avoid calling non-existent
+     * methods on the OR ObjectServiceMapperAdapter (C5 fix).
      */
     public function getUses(string $objectType, string $id): array
     {
-        return $this->queryService->callMapperMethod($objectType, 'getUses', $id);
+        $orService = $this->mapperService->getOpenRegisters();
+        if ($orService === null) {
+            return [];
+        }
+
+        return $orService->getObjectUses($id);
     }//end getUses()
 
     /**
      * Get audit trail for an object.
+     *
+     * Routes through OR's ObjectService::getLogs to avoid calling the non-existent
+     * getAuditTrail method on the OR ObjectServiceMapperAdapter (C5 fix).
      */
     public function getAuditTrail(string $objectType, string $id): array
     {
-        return $this->queryService->callMapperMethod($objectType, 'getAuditTrail', $id);
+        $orService = $this->mapperService->getOpenRegisters();
+        if ($orService === null) {
+            return [];
+        }
+
+        $logs = $orService->getLogs($id);
+
+        // getLogs returns AuditTrail entities; serialize them for JSON responses.
+        return array_map(
+            function ($log) {
+                if (is_object($log) === true && method_exists($log, 'jsonSerialize') === true) {
+                    return $log->jsonSerialize();
+                }
+
+                return (array) $log;
+            },
+            $logs
+        );
     }//end getAuditTrail()
 }//end class

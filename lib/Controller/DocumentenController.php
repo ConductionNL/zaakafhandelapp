@@ -2,32 +2,34 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\IAppConfig;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 
 /**
- * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ * Stub controller for the ZGW documenten resource.
+ *
+ * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/
+ *
+ * Real documenten data has not yet been implemented. All data endpoints
+ * return 501 Not Implemented so that clients never receive fabricated test
+ * data in place of real DRC document records.
+ *
+ * Routes for these endpoints have been removed from appinfo/routes.php until
+ * a real implementation backed by ObjectService is in place.
  */
 class DocumentenController extends Controller
 {
-    const TEST_ARRAY = [];
-
     public function __construct(
         string $appName,
-        IRequest $request,
-        private readonly IAppConfig $config
+        IRequest $request
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
 
     /**
-     * This returns the template of the main app's page
-     * It adds some data to the template (app version)
-     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -36,7 +38,6 @@ class DocumentenController extends Controller
     public function page(): TemplateResponse
     {
         return new TemplateResponse(
-            // Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
@@ -44,8 +45,6 @@ class DocumentenController extends Controller
     }//end page()
 
     /**
-     * Return (and serach) all objects
-     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -53,13 +52,13 @@ class DocumentenController extends Controller
      */
     public function index(): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end index()
 
     /**
-     * Read a single object
-     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -67,13 +66,13 @@ class DocumentenController extends Controller
      */
     public function show(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end show()
 
     /**
-     * Creatue an object
-     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -81,13 +80,13 @@ class DocumentenController extends Controller
      */
     public function create(): JSONResponse
     {
-        // get post from requests
-        return new JSONResponse([]);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end create()
 
     /**
-     * Update an object
-     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -95,13 +94,13 @@ class DocumentenController extends Controller
      */
     public function update(string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end update()
 
     /**
-     * Delate an object
-     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
@@ -109,6 +108,9 @@ class DocumentenController extends Controller
      */
     public function destroy(string $id): JSONResponse
     {
-        return new JSONResponse([]);
+        return new JSONResponse(
+            ['error' => 'Documenten is not yet implemented.'],
+            Http::STATUS_NOT_IMPLEMENTED
+        );
     }//end destroy()
 }//end class
