@@ -21,7 +21,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 			console.info('Active zaaktype item set to ' + zaakTypeItem)
 		},
 		setZaakTypeList(zaakTypeList: ZaakType[] | TZaakType[]) {
-			this.zaakTypeList = zaakTypeList.map(
+			this.zaakTypenList = zaakTypeList.map(
 			    (zaakTypeItem) => new ZaakType(zaakTypeItem),
 			)
 			console.info('Zaaktypen list set to ' + zaakTypeList.length + ' items')

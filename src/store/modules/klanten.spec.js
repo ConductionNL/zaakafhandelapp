@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useZaakStore } from './zaken.js'
+import { useZaakStore } from './zaken'
 import { Zaak, mockZaak } from '../../entities/index.js'
 
 describe('Zaak Store', () => {
