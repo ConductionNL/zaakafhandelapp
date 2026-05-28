@@ -119,12 +119,16 @@ class ZaakAuditTrailController extends Controller
     /**
      * Update an object.
      *
+     * $id is part of the NC route signature; this stub returns 501 Not Implemented.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function update(string $id): JSONResponse
     {

@@ -89,6 +89,37 @@ class ZaakInformatieObjectenController extends Controller
     }//end show()
 
     /**
+     * Validate that the `zaak` and `informatieobject` URL fields are present and syntactically valid.
+     *
+     * Shared by both create and update so that the same hardening applied in #289 is enforced
+     * on partial updates as well.
+     *
+     * @param array $body The request payload.
+     *
+     * @return JSONResponse|null A 400 response on the first invalid field, null when all fields are valid.
+     */
+    private function validateZioUrls(array $body): ?JSONResponse
+    {
+        foreach (['zaak', 'informatieobject'] as $field) {
+            if (empty($body[$field]) === true) {
+                return new JSONResponse(
+                    [$field => ["Het veld $field is verplicht."]],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+
+            if (filter_var($body[$field], FILTER_VALIDATE_URL) === false) {
+                return new JSONResponse(
+                    [$field => ["Het veld $field moet een geldige URL zijn."]],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+        }
+
+        return null;
+    }//end validateZioUrls()
+
+    /**
      * Create a ZIO (zaak-informatieobject link).
      *
      * Guards (#280):
@@ -117,20 +148,9 @@ class ZaakInformatieObjectenController extends Controller
         $body = $this->request->getParams();
 
         // Validate that required URL fields are present and syntactically valid (#280).
-        foreach (['zaak', 'informatieobject'] as $field) {
-            if (empty($body[$field]) === true) {
-                return new JSONResponse(
-                    [$field => ["Het veld $field is verplicht."]],
-                    Http::STATUS_BAD_REQUEST
-                );
-            }
-
-            if (filter_var($body[$field], FILTER_VALIDATE_URL) === false) {
-                return new JSONResponse(
-                    [$field => ["Het veld $field moet een geldige URL zijn."]],
-                    Http::STATUS_BAD_REQUEST
-                );
-            }
+        $urlError = $this->validateZioUrls($body);
+        if ($urlError !== null) {
+            return $urlError;
         }
 
         $results = $callService->create(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body);
@@ -139,6 +159,10 @@ class ZaakInformatieObjectenController extends Controller
 
     /**
      * Update an object
+     *
+     * Applies the same URL-field validation as create (#289 hardening) so that
+     * update payloads with invalid zaak/informatieobject URLs are rejected before
+     * they reach the ZRC backend.
      *
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -153,7 +177,14 @@ class ZaakInformatieObjectenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        $body    = $this->request->getParams();
+        $body = $this->request->getParams();
+
+        // Validate URL fields on update as well as create (#289).
+        $urlError = $this->validateZioUrls($body);
+        if ($urlError !== null) {
+            return $urlError;
+        }
+
         $results = $callService->update(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body, id: $id);
         return new JSONResponse($results);
     }//end update()

@@ -218,6 +218,12 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
+        // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+        $object = $this->objectService->getObject('berichten', $id);
+        if ($object === null) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('berichten', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()

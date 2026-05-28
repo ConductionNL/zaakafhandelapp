@@ -24,7 +24,12 @@ class ZGWZaakCloseService
         private ZGWRegistryService $registry,
         private LoggerInterface $logger,
     ) {
-        $this->objectService = $mapperService->getOpenRegisters();
+        $objectService = $mapperService->getOpenRegisters();
+        if ($objectService === null) {
+            throw new \RuntimeException('ZGWZaakCloseService requires the OpenRegister app to be installed and enabled.');
+        }
+
+        $this->objectService = $objectService;
     }//end __construct()
 
     /**
@@ -97,9 +102,18 @@ class ZGWZaakCloseService
      */
     public function isEindStatus(array $statusArray): bool
     {
-        $statustype = $this->find($statusArray['statustype'], ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' => 'zaaktype.statustypen']);
-        $statusData = $statustype->jsonSerialize();
-        $max        = max(array_map(fn(array $statusItem) => $statusItem['volgnummer'], $statusData['_extend']['zaaktype']['_extend']['statustypen']));
+        $statustype  = $this->find($statusArray['statustype'], ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' => 'zaaktype.statustypen']);
+        $statusData  = $statustype->jsonSerialize();
+        $statustypen = $statusData['_extend']['zaaktype']['_extend']['statustypen'] ?? [];
+
+        if (empty($statustypen) === true) {
+            throw new CustomValidationException(
+                'Zaaktype heeft geen statustypen',
+                [['name' => 'statustype', 'code' => 'no-statustypen', 'reason' => 'Het zaaktype heeft geen statustypen; kan niet bepalen of dit een eindstatus is.']]
+            );
+        }
+
+        $max = max(array_map(fn(array $statusItem) => $statusItem['volgnummer'], $statustypen));
         return $statusData['volgnummer'] === $max;
     }//end isEindStatus()
 

@@ -36,7 +36,12 @@ class ZGWArchiveDateService
         private RegisterMapper $registerMapper,
         private SchemaMapper $schemaMapper,
     ) {
-        $this->objectService = $mapperService->getOpenRegisters();
+        $objectService = $mapperService->getOpenRegisters();
+        if ($objectService === null) {
+            throw new \RuntimeException('ZGWArchiveDateService requires the OpenRegister app to be installed and enabled.');
+        }
+
+        $this->objectService = $objectService;
     }//end __construct()
 
     /**

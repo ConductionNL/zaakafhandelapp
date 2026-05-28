@@ -156,9 +156,6 @@ class ContactMomentenController extends Controller
      * @return JSONResponse
      *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
-     *   the full payload is consumed via $this->request->getParams() instead.
      */
     public function update(string $id): JSONResponse
     {
@@ -168,6 +165,9 @@ class ContactMomentenController extends Controller
 
         // Get all parameters from the request
         $data = $this->request->getParams();
+
+        // Ensure the URL id is authoritative to prevent IDOR (client cannot override which record is updated).
+        $data['id'] = $id;
 
         // Save the updated contact moment
         $object = $this->objectService->saveObject('contactmomenten', $data);
