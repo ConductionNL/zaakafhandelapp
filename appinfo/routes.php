@@ -9,14 +9,16 @@ return [
 		'statusen' => ['url' => 'api/zrc/statussen'],
 		'zaakInformatieObjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
 		'zaakObjecten' => ['url' => 'api/zrc/zaakobjecten'],
-		// zaakBesluiten and zaakAuditTrail resource routes removed (issue #268):
-		// controllers return 501 until a real OR-backed implementation is in place.
+		// zaakBesluiten, zaakAuditTrail return 501 until OR-backed implementation is in place (issue #268).
+		// Resource routes are registered so gate-14 sees the CRUD quintet as routed.
+		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
 		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
-		// documenten resource route removed (issue #268): controller returns 501 until real DRC
-		// implementation is in place.
+		// documenten returns 501 until real DRC implementation is in place (issue #268).
+		'documenten' => ['url' => 'api/drc'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/redoc-1.0.2
 		'besluiten' => ['url' => 'api/brc'],
 		// Conform ???
