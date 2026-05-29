@@ -1,0 +1,15 @@
+name: Documentation
+
+on:
+  push:
+    branches: [documentation]
+  pull_request:
+    branches: [documentation]
+
+jobs:
+  deploy:
+    # Reusable workflow defaults the source folder to `docs/` — the
+    # Docusaurus site now lives there (migrated from `docusaurus/`).
+    uses: ConductionNL/.github/.github/workflows/documentation.yml@main
+    with:
+      cname: zaakafhandelapp.conduction.nl
