@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ConductionNL/zaakafhandelapp/releases"><img src="https://img.shields.io/github/v/release/ConductionNL/zaakafhandelapp" alt="Latest release"></a>
-  <a href="https://github.com/ConductionNL/zaakafhandelapp/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-EUPL--1.2-blue" alt="License"></a>
-  <a href="https://github.com/ConductionNL/zaakafhandelapp/actions"><img src="https://img.shields.io/github/actions/workflow/status/ConductionNL/zaakafhandelapp/code-quality.yml?label=quality" alt="Code quality"></a>
+  <a href="https://codeberg.org/Conduction/zaakafhandelapp/releases"><img src="https://img.shields.io/gitea/v/release/Conduction/zaakafhandelapp?gitea_url=https%3A%2F%2Fcodeberg.org" alt="Latest release"></a>
+  <a href="https://codeberg.org/Conduction/zaakafhandelapp/src/branch/main/LICENSE"><img src="https://img.shields.io/badge/license-EUPL--1.2-blue" alt="License"></a>
+  <a href="https://ci.codeberg.org/repos/Conduction/zaakafhandelapp"><img src="https://ci.codeberg.org/api/badges/Conduction/zaakafhandelapp/status.svg" alt="Code quality"></a>
 </p>
 
 ---
@@ -139,7 +139,7 @@ zaakafhandelapp/
 
 ```bash
 cd /var/www/html/custom_apps
-git clone https://github.com/ConductionNL/zaakafhandelapp.git
+git clone https://codeberg.org/Conduction/zaakafhandelapp.git
 cd zaakafhandelapp
 npm install
 npm run build
@@ -199,9 +199,9 @@ npm run stylelint       # CSS linting
 
 ## Related Apps
 
-- **[Procest](https://github.com/ConductionNL/procest)** — More advanced case management with CMMN 1.1, ZGW mapping, and Pipelinq integration
-- **[Pipelinq](https://github.com/ConductionNL/pipelinq)** — CRM intake; hands off requests as new cases
-- **[OpenRegister](https://github.com/ConductionNL/openregister)** — Object storage layer
+- **[Procest](https://codeberg.org/Conduction/procest)** — More advanced case management with CMMN 1.1, ZGW mapping, and Pipelinq integration
+- **[Pipelinq](https://codeberg.org/Conduction/pipelinq)** — CRM intake; hands off requests as new cases
+- **[OpenRegister](https://codeberg.org/Conduction/openregister)** — Object storage layer
 
 ## API Reference
 
