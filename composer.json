@@ -47,7 +47,7 @@
 		"openapi": "generate-spec",
 		"phpstan:strict": "./vendor/bin/phpstan analyse --memory-limit=1G",
 		"check": "E=0; for CMD in lint cs:check psalm phpstan:strict; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E",
-		"check:strict": "E=0; for CMD in lint cs:check psalm phpstan:strict; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E"
+		"check:strict": "@lint && @cs:check && @phpmd && @psalm && @phpstan"
 	},
 	"require": {
 		"php": "^8.3",
@@ -60,7 +60,7 @@
 
 	},
 	"require-dev": {
-		"nextcloud/ocp": "dev-stable29",
+		"nextcloud/ocp": "dev-master",
 		"phpmd/phpmd": "^2.15",
 		"phpmetrics/phpmetrics": "^2.8",
 		"phpstan/phpstan": "^2.1",
