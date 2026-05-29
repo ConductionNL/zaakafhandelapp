@@ -20,7 +20,7 @@ manifest to modify; this is a NEW capability.
 
 `zaakafhandelapp/src/manifest.json` MUST exist, declare
 `$schema` pointing at the published canonical
-`https://raw.githubusercontent.com/ConductionNL/nextcloud-vue/main/src/schemas/app-manifest.schema.json`,
+`https://codeberg.org/Conduction/nextcloud-vue/raw/branch/main/src/schemas/app-manifest.schema.json`,
 declare `version: "1.0.0"`, and validate without errors against the
 schema bundled with `@conduction/nextcloud-vue@^1.0.0-beta.12`.
 
