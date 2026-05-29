@@ -63,7 +63,7 @@ const config = createConfig({
              holds exported data dumps, not docs — exclude it too. */
           exclude: ['**/node_modules/**', 'src/**', 'json/**'],
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/ConductionNL/zaakafhandelapp/tree/development/docs/',
+          editUrl: 'https://codeberg.org/Conduction/zaakafhandelapp/src/branch/development/docs/',
         },
         blog: false,
         theme: {
@@ -88,8 +88,8 @@ const config = createConfig({
         label: 'Documentation',
       },
       {
-        href: 'https://github.com/ConductionNL/zaakafhandelapp',
-        label: 'GitHub',
+        href: 'https://codeberg.org/Conduction/zaakafhandelapp',
+        label: 'Codeberg',
         position: 'right',
       },
       { type: 'localeDropdown', position: 'right' },
