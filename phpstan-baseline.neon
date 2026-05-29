@@ -3,7 +3,7 @@
 # Generated post canonical root-config sync. Each entry below represents a
 # pre-existing finding that surfaced when the per-app PHPStan extensions were
 # replaced by the canonical config from nextcloud-app-template. They are
-# tracked for cleanup in https://github.com/ConductionNL/zaakafhandelapp/issues/201
+# tracked for cleanup in https://codeberg.org/Conduction/zaakafhandelapp/issues/201
 # (umbrella ticket for legacy lint debt).
 #
 # To regenerate after fixing entries:
