@@ -49,7 +49,7 @@ Domain notes that shape the migration:
   abstraction. The migration therefore accepts a slightly higher
   share of `type: "custom"` entries than decidesk; resolving the
   internal-proxy tension is a follow-up tracked in
-  `feedback_mydash-no-or-dependency.md`-style guidance.
+  `feedback_launchpad-no-or-dependency.md`-style guidance.
 
 ## What Changes
 
