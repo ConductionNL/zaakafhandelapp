@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useTaakStore } from './taak.js'
+import { useTaakStore } from './taak'
 import { Taak, mockTaak } from '../../entities/index.js'
 
 describe('Taak Store', () => {
