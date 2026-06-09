@@ -19,18 +19,16 @@
  * blank the shell, which is exactly what these tests assert.)
  *
  * Routing note (mirrors ui-record-views): `appinfo/routes.php` registers
- * server-side `<plural>/{id}` page routes for zaken, taken, klanten,
- * medewerkers, berichten, contactmomenten, rollen, zaaktypen — those are
- * reachable via a hard `page.goto`. besluiten / documenten / resultaten
- * have NO server-side detail route (BUG-1), so they are reached the way a
- * real user reaches them: through the in-app Vue router via `spaNavigate`.
+ * server-side `<plural>/{id}` page routes for every detail page. BUG-1
+ * (now fixed) added the missing besluiten / documenten / resultaten detail
+ * routes, so all detail pages are reachable via a hard `page.goto`.
  *
  * @see openspec/specs/ui-case-views/spec.md (detail-view contract)
  * @see openspec/specs/domain-entities/spec.md
  */
 
 import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal, spaNavigate } from './helpers'
+import { dismissSupportModal } from './helpers'
 
 const APP = '/apps/zaakafhandelapp'
 
@@ -107,22 +105,21 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#besluit
-	test('besluiten detail — decision detail page renders header chrome (via in-app nav)', async ({ page }) => {
-		// No server-side detail route (BUG-1): reach it through the Vue router.
-		await spaNavigate(page, `/besluiten/${NO_SUCH}`)
-		await assertDetailChrome(page, 'Decision')
+	// BUG-1 (FIXED): besluiten/{id} now has a server-side route — hard goto.
+	test('besluiten detail — decision detail page renders header chrome', async ({ page }) => {
+		await gotoDetail(page, 'besluiten', 'Decision')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#document
-	test('documenten detail — document detail page renders header chrome (via in-app nav)', async ({ page }) => {
-		await spaNavigate(page, `/documenten/${NO_SUCH}`)
-		await assertDetailChrome(page, 'Document')
+	// BUG-1 (FIXED): documenten/{id} now has a server-side route — hard goto.
+	test('documenten detail — document detail page renders header chrome', async ({ page }) => {
+		await gotoDetail(page, 'documenten', 'Document')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#resultaat
-	test('resultaten detail — result detail page renders header chrome (via in-app nav)', async ({ page }) => {
-		await spaNavigate(page, `/resultaten/${NO_SUCH}`)
-		await assertDetailChrome(page, 'Result')
+	// BUG-1 (FIXED): resultaten/{id} now has a server-side route — hard goto.
+	test('resultaten detail — result detail page renders header chrome', async ({ page }) => {
+		await gotoDetail(page, 'resultaten', 'Result')
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#detail-from-list
@@ -152,15 +149,10 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 		test.setTimeout(120_000)
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
-		// Server-routed detail pages via hard goto.
-		for (const plural of ['zaken', 'taken', 'klanten', 'medewerkers', 'berichten', 'contactmomenten', 'rollen', 'zaaktypen']) {
+		// Server-routed detail pages via hard goto (all have routes now).
+		for (const plural of ['zaken', 'taken', 'klanten', 'medewerkers', 'berichten', 'contactmomenten', 'rollen', 'zaaktypen', 'besluiten', 'documenten', 'resultaten']) {
 			await page.goto(`${APP}/${plural}/${NO_SUCH}`)
 			await dismissSupportModal(page)
-			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 15_000 })
-		}
-		// Client-routed detail pages via the Vue router.
-		for (const plural of ['besluiten', 'documenten', 'resultaten']) {
-			await spaNavigate(page, `/${plural}/${NO_SUCH}`)
 			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 15_000 })
 		}
 		expect(errors, `Uncaught JS exceptions: ${errors.join(' | ')}`).toHaveLength(0)

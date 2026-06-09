@@ -111,4 +111,80 @@ class ObjectMapperService
 
         return null;
     }//end getOpenRegisters()
+
+    /**
+     * Retrieve all OpenRegister registers with their schemas expanded.
+     *
+     * The OpenRegister ObjectService does not expose a register listing API;
+     * registers are owned by the RegisterMapper. This method resolves that
+     * mapper (and the SchemaMapper) from the container and returns each
+     * register as an array with its `schemas` field expanded from a list of
+     * schema IDs to a list of `{id, title, ...}` objects, mirroring the
+     * OpenRegister RegistersController `_extend=['schemas']` behaviour that the
+     * settings UI consumes.
+     *
+     * @return array<int, array<string, mixed>> Registers with expanded schemas, or an empty array when OpenRegister is unavailable.
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
+     */
+    public function getRegisters(): array
+    {
+        if (in_array(needle: 'openregister', haystack: $this->appManager->getInstalledApps()) === false) {
+            return [];
+        }
+
+        try {
+            $registerMapper = $this->container->get('OCA\OpenRegister\Db\RegisterMapper');
+            $schemaMapper   = $this->container->get('OCA\OpenRegister\Db\SchemaMapper');
+        } catch (Exception $e) {
+            return [];
+        }
+
+        $registers    = $registerMapper->findAll(_multitenancy: false);
+        $registersArr = array_map(
+            static fn ($register) => $register->jsonSerialize(),
+            $registers
+        );
+
+        // Expand each register's schema IDs into full schema objects so the
+        // settings UI can render schema options ({ id, title }) per register.
+        return array_map(
+            fn (array $register): array => $this->expandRegisterSchemas(register: $register, schemaMapper: $schemaMapper),
+            $registersArr
+        );
+    }//end getRegisters()
+
+    /**
+     * Expand a register's `schemas` field from a list of IDs to full schema objects.
+     *
+     * @param array<string, mixed> $register     The serialized register (its `schemas` is a list of IDs).
+     * @param object               $schemaMapper The OpenRegister SchemaMapper used to resolve IDs.
+     *
+     * @return array<string, mixed> The register with `schemas` replaced by serialized schema objects.
+     */
+    private function expandRegisterSchemas(array $register, object $schemaMapper): array
+    {
+        if (isset($register['schemas']) === false || is_array($register['schemas']) === false) {
+            $register['schemas'] = [];
+            return $register;
+        }
+
+        $expandedSchemas = [];
+        foreach ($register['schemas'] as $schemaId) {
+            if (is_int($schemaId) === false && is_string($schemaId) === false) {
+                continue;
+            }
+
+            try {
+                $expandedSchemas[] = $schemaMapper->find(id: $schemaId, _multitenancy: false)->jsonSerialize();
+            } catch (Exception $e) {
+                // Schema not found or not accessible; skip it.
+                continue;
+            }
+        }
+
+        $register['schemas'] = $expandedSchemas;
+
+        return $register;
+    }//end expandRegisterSchemas()
 }//end class

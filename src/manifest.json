@@ -133,16 +133,21 @@
 					"gridY": 0,
 					"gridWidth": 4,
 					"gridHeight": 2,
+					"dataSource": {
+						"register": "zaakafhandelapp",
+						"schema": "zaak",
+						"aggregate": "count"
+					},
 					"props": {
 						"title": "Open cases",
 						"iconClass": "icon-category-organization",
-						"props": {
+						"countLabel": "cases",
+						"variant": "primary",
+						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "zaak",
-							"countLabel": "cases",
-							"variant": "primary"
-						},
-						"showTitle": true
+							"aggregate": "count"
+						}
 					}
 				},
 				{
@@ -152,16 +157,21 @@
 					"gridY": 0,
 					"gridWidth": 4,
 					"gridHeight": 2,
+					"dataSource": {
+						"register": "zaakafhandelapp",
+						"schema": "taak",
+						"aggregate": "count"
+					},
 					"props": {
 						"title": "Open tasks",
 						"iconClass": "icon-checkmark",
-						"props": {
+						"countLabel": "tasks",
+						"variant": "warning",
+						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "taak",
-							"countLabel": "tasks",
-							"variant": "warning"
-						},
-						"showTitle": true
+							"aggregate": "count"
+						}
 					}
 				},
 				{
@@ -171,16 +181,21 @@
 					"gridY": 0,
 					"gridWidth": 4,
 					"gridHeight": 2,
+					"dataSource": {
+						"register": "zaakafhandelapp",
+						"schema": "zaak",
+						"aggregate": "count"
+					},
 					"props": {
 						"title": "Active cases",
 						"iconClass": "icon-category-organization",
-						"props": {
+						"countLabel": "cases",
+						"variant": "success",
+						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "zaak",
-							"countLabel": "cases",
-							"variant": "success"
-						},
-						"showTitle": true
+							"aggregate": "count"
+						}
 					}
 				},
 				{
@@ -190,16 +205,21 @@
 					"gridY": 2,
 					"gridWidth": 4,
 					"gridHeight": 2,
+					"dataSource": {
+						"register": "zaakafhandelapp",
+						"schema": "contactmoment",
+						"aggregate": "count"
+					},
 					"props": {
 						"title": "Contact moments",
 						"iconClass": "icon-comment",
-						"props": {
+						"countLabel": "contacts",
+						"variant": "primary",
+						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "contactmoment",
-							"countLabel": "contacts",
-							"variant": "primary"
-						},
-						"showTitle": true
+							"aggregate": "count"
+						}
 					}
 				},
 				{
@@ -209,19 +229,27 @@
 					"gridY": 2,
 					"gridWidth": 4,
 					"gridHeight": 2,
+					"dataSource": {
+						"register": "zaakafhandelapp",
+						"schema": "klant",
+						"aggregate": "count",
+						"filter": {
+							"subjectType": "natuurlijk_persoon"
+						}
+					},
 					"props": {
 						"title": "Persons",
 						"iconClass": "icon-user",
-						"props": {
+						"countLabel": "persons",
+						"variant": "primary",
+						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "klant",
+							"aggregate": "count",
 							"filter": {
 								"subjectType": "natuurlijk_persoon"
-							},
-							"countLabel": "persons",
-							"variant": "primary"
-						},
-						"showTitle": true
+							}
+						}
 					}
 				},
 				{
@@ -231,19 +259,27 @@
 					"gridY": 2,
 					"gridWidth": 4,
 					"gridHeight": 2,
+					"dataSource": {
+						"register": "zaakafhandelapp",
+						"schema": "klant",
+						"aggregate": "count",
+						"filter": {
+							"subjectType": "niet_natuurlijk_persoon"
+						}
+					},
 					"props": {
 						"title": "Organisations",
 						"iconClass": "icon-group",
-						"props": {
+						"countLabel": "organisations",
+						"variant": "primary",
+						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "klant",
+							"aggregate": "count",
 							"filter": {
 								"subjectType": "niet_natuurlijk_persoon"
-							},
-							"countLabel": "organisations",
-							"variant": "primary"
-						},
-						"showTitle": true
+							}
+						}
 					}
 				}
 			]

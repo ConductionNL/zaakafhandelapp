@@ -14,16 +14,19 @@
  * renders its characteristic chrome, not the presence of any record.
  *
  * Routing notes (see the audit report for full BUG list):
- *   - BUG-1: features-roadmap / auditTrail / settings have no server-side
- *     page route, so a hard `page.goto` 404s (/settings 500s). They are
- *     reached client-side via `spaNavigate`, exactly as a user would.
- *   - BUG-2: the in-app Dashboard page body renders empty — none of the
- *     six manifest stats-block widgets mount. The dashboard-content
- *     assertion is therefore `test.fixme`'d until the widgets render; the
- *     remaining tests assert the surfaces that DO work.
- *   - BUG-3: hard-navigating to /settings throws a 500 (SettingsController
- *     calls the non-existent ObjectService::getRegisters()). Covered by an
- *     explicit guard test below.
+ *   - BUG-1 (FIXED): besluiten / documenten / resultaten index + detail
+ *     routes now have server-side page routes in appinfo/routes.php, so a
+ *     hard `page.goto` resolves (200) instead of 404. features-roadmap /
+ *     auditTrail are still reached client-side via `spaNavigate`.
+ *   - BUG-2 (FIXED): the in-app Dashboard's six manifest stats-block widgets
+ *     now mount — the app registers `stats-block` (CnStatsBlockWidget) in
+ *     src/registry.js and each widget carries an in-`props` `dataSource`
+ *     block (CnWidgetGrid does not forward the top-level `dataSource`, a
+ *     known nc-vue lib gap). The dashboard-content assertions are live again.
+ *   - BUG-3 (FIXED): SettingsController::index no longer calls the
+ *     non-existent ObjectService::getRegisters(); it uses
+ *     ObjectMapperService::getRegisters() (RegisterMapper::findAll + schema
+ *     expansion), so a hard GET /settings now returns 200.
  *
  * @see openspec/specs/ui-dashboard-widgets/spec.md
  * @see openspec/specs/app-configuration/spec.md
@@ -42,20 +45,18 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 		await dismissSupportModal(page)
 		// Shell mounts and the Dashboard page host is rendered into the DOM.
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		// BUG-2: the Dashboard page host is present but its body is empty
-		// (zero-height / hidden) because no stats-block widget mounts, so we
-		// assert it is attached + carries the Dashboard page id rather than
-		// visible. Flip to toBeVisible once the widgets render.
+		// BUG-2 (FIXED): the Dashboard page host mounts and is visible now
+		// that the stats-block widgets render into its body.
 		const dashHost = page.locator('[data-testid="cn-page"]')
-		await expect(dashHost.first()).toBeAttached({ timeout: 10_000 })
+		await expect(dashHost.first()).toBeVisible({ timeout: 10_000 })
 		// The Dashboard nav item is present and active.
 		await expect(page.getByRole('link', { name: 'Dashboard', exact: true }).first()).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#dashboard-stats-count
-	// BUG-2: the six manifest stats-block widgets do not render on the
-	// in-app dashboard — the page body is empty. Un-fixme once they mount.
-	test.fixme('dashboard stats — the six manifest stats-block widgets render their titles', async ({ page }) => {
+	// BUG-2 (FIXED): the six manifest stats-block widgets mount and render
+	// their titles on the in-app dashboard.
+	test('dashboard stats — the six manifest stats-block widgets render their titles', async ({ page }) => {
 		await page.goto(APP)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
@@ -101,7 +102,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 
 	// @e2e openspec/specs/app-configuration/spec.md#settings-page
 	test('settings page — the settings form mounts (via in-app nav)', async ({ page }) => {
-		// BUG-3: a hard goto to /settings 500s; reach it client-side.
+		// BUG-3 (FIXED): /settings now returns 200; client-route to it as a user would.
 		await spaNavigate(page, '/settings')
 		await expect(page.locator('[data-testid="cn-settings-page"]')).toBeVisible({ timeout: 10_000 })
 		// The settings form renders its section headings.
@@ -109,40 +110,46 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 	})
 
 	// @e2e openspec/specs/app-configuration/spec.md#settings-nav
-	// BUG-3: clicking the in-app Settings nav button triggers a hard
-	// navigation to /settings, which 500s (ObjectService::getRegisters()
-	// undefined) instead of client-routing to the settings page. The button
-	// is present and clickable but the destination is broken; assert the
-	// button renders, and fixme the destination until the controller is
-	// fixed. (The working client-routed path is covered by the test above.)
+	// The in-app Settings nav button is present in the left nav. Its
+	// destination (BUG-3, now fixed) is covered by the test below.
 	test('settings nav — the Settings button is present in the left nav', async ({ page }) => {
 		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 		const appNav = page.locator('nav').filter({ has: page.getByRole('link', { name: 'Cases' }) })
-		const settingsBtn = appNav.getByRole('button', { name: 'Settings' })
+		// `exact` so we match the app's own "Settings" footer entry and not
+		// the NC "Personal settings" entry that also lives in the footer.
+		const settingsBtn = appNav.getByRole('button', { name: 'Settings', exact: true })
 		await expect(settingsBtn).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/app-configuration/spec.md#settings-nav-destination
-	test.fixme('settings nav — clicking Settings opens the settings page (blocked by BUG-3)', async ({ page }) => {
+	// BUG-3 (the /settings 500) is fixed and the settings page is reachable —
+	// proven by the "settings page — the settings form mounts" test (client
+	// route) and the "settings hard-nav … returns 200" test. This separate
+	// case asserts that clicking the app's footer "Settings" entry *routes*
+	// to cn-settings-page in-app; in the current CnAppNav shell the footer
+	// (section:"settings") entry does not push that route, so the page does
+	// not mount on click. This is an in-app-nav-wiring concern independent of
+	// BUG-3 (a backend defect), so it stays fixme'd until the shell routes
+	// footer settings entries. NOT a regression from the BUG-1/2/3 fixes.
+	test.fixme('settings nav — clicking Settings opens the settings page', async ({ page }) => {
 		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 		const appNav = page.locator('nav').filter({ has: page.getByRole('link', { name: 'Cases' }) })
-		await appNav.getByRole('button', { name: 'Settings' }).click()
-		await expect(page.locator('[data-testid="cn-settings-page"]')).toBeVisible({ timeout: 10_000 })
+		await appNav.getByRole('button', { name: 'Settings', exact: true }).click()
+		await expect(page.locator('[data-testid="cn-settings-page"]')).toBeVisible({ timeout: 15_000 })
 	})
 
 	// @e2e openspec/specs/app-configuration/spec.md#settings-hardnav-500
-	// BUG-3: a hard browser navigation / refresh to /settings throws a 500
-	// because SettingsController::index calls the undefined OR method
-	// ObjectService::getRegisters(). This guard test documents the broken
-	// behaviour; flip the expectation to 200 once the controller is fixed.
-	test('settings hard-nav — direct GET /settings currently returns 500 (BUG-3)', async ({ request }) => {
+	// BUG-3 (FIXED): a hard browser navigation / refresh to /settings now
+	// returns 200. SettingsController::index uses
+	// ObjectMapperService::getRegisters() (RegisterMapper::findAll + schema
+	// expansion) instead of the non-existent ObjectService::getRegisters().
+	test('settings hard-nav — direct GET /settings returns 200 (BUG-3 fixed)', async ({ request }) => {
 		const res = await request.get(`${APP}/settings`, { failOnStatusCode: false })
-		// Documenting the live defect: a successful page would be 200.
-		expect(res.status(), 'BUG-3: hard GET /settings should be 200 once SettingsController stops calling ObjectService::getRegisters()').toBe(500)
+		expect(res.status(), 'BUG-3: hard GET /settings should be 200').toBe(200)
 	})
 
 	// @e2e openspec/specs/ui-search-navigation/spec.md#no-console-errors-utility

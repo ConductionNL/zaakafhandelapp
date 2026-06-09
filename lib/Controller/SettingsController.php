@@ -141,7 +141,7 @@ class SettingsController extends Controller
         $openRegisters = $this->mapperService->getOpenRegisters();
         if ($openRegisters !== null) {
             $data['openRegisters']      = true;
-            $data['availableRegisters'] = $openRegisters->getRegisters();
+            $data['availableRegisters'] = $this->mapperService->getRegisters();
         }
 
         $defaults = $this->buildDefaults();

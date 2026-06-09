@@ -15,19 +15,17 @@
  * sidebar with Search + Columns tabs) renders deterministically without
  * any seed data, so all assertions are data-independent.
  *
- * Routing note: `appinfo/routes.php` only registers server-side page
- * routes for a subset of manifest pages. medewerkers, statussen and
- * zaaktypen have server routes and are reachable via a hard `page.goto`.
- * besluiten/documenten/resultaten have NO server route (a hard goto 404s
- * — see BUG-1 in the audit report), so they are reached the way a real
- * user reaches them: through the in-app Vue router via `spaNavigate`.
+ * Routing note: `appinfo/routes.php` registers server-side page routes
+ * for every manifest index page. BUG-1 (now fixed) added the missing
+ * besluiten / documenten / resultaten (and statussen detail) routes, so
+ * all of these index pages are now reachable via a hard `page.goto`.
  *
  * @see openspec/specs/ui-case-views/spec.md (shared index-view contract)
  * @see openspec/specs/domain-entities/spec.md
  */
 
 import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal, spaNavigate } from './helpers'
+import { dismissSupportModal } from './helpers'
 
 const APP = '/apps/zaakafhandelapp'
 
@@ -41,8 +39,11 @@ async function assertIndexChrome(page: Page, title: string): Promise<void> {
 	await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 10_000 })
 	// The page heading is the most direct proof the right page rendered.
 	await expect(page.getByRole('heading', { name: title, exact: true }).first()).toBeVisible({ timeout: 10_000 })
-	// The primary create button is the canonical list-view action.
-	await expect(page.getByRole('button', { name: 'Add Item' }).first()).toBeVisible({ timeout: 10_000 })
+	// The primary create button is the canonical list-view action. Its label
+	// is entity-specific ("Add Item", "Add Document", "Add Decision", …) —
+	// match the "Add <entity>" prefix rather than a single hardcoded label so
+	// every index page is covered regardless of its schema's singular name.
+	await expect(page.getByRole('button', { name: /^Add /i }).first()).toBeVisible({ timeout: 10_000 })
 	// The view-mode chrome (Cards radio) confirms the master list mounted.
 	await expect(page.getByRole('radio', { name: 'Cards' }).first()).toBeVisible({ timeout: 10_000 })
 	// The detail sidebar renders even in empty state.
@@ -84,22 +85,21 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#besluit
-	test('besluiten — Decisions index renders list chrome (via in-app nav)', async ({ page }) => {
-		// No server-side page route (BUG-1): reach it through the Vue router.
-		await spaNavigate(page, '/besluiten')
-		await assertIndexChrome(page, 'Decisions')
+	// BUG-1 (FIXED): besluiten now has a server-side page route — hard goto.
+	test('besluiten — Decisions index renders list chrome', async ({ page }) => {
+		await gotoIndex(page, '/besluiten', 'Decisions')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#document
-	test('documenten — Documents index renders list chrome (via in-app nav)', async ({ page }) => {
-		await spaNavigate(page, '/documenten')
-		await assertIndexChrome(page, 'Documents')
+	// BUG-1 (FIXED): documenten now has a server-side page route — hard goto.
+	test('documenten — Documents index renders list chrome', async ({ page }) => {
+		await gotoIndex(page, '/documenten', 'Documents')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#resultaat
-	test('resultaten — Results index renders list chrome (via in-app nav)', async ({ page }) => {
-		await spaNavigate(page, '/resultaten')
-		await assertIndexChrome(page, 'Results')
+	// BUG-1 (FIXED): resultaten now has a server-side page route — hard goto.
+	test('resultaten — Results index renders list chrome', async ({ page }) => {
+		await gotoIndex(page, '/resultaten', 'Results')
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#table-view-mode
@@ -142,15 +142,10 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 		test.setTimeout(90_000)
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
-		// Server-routed pages via hard goto.
-		for (const route of ['/medewerkers', '/berichten', '/rollen', '/zaaktypen', '/statussen']) {
+		// Server-routed pages via hard goto (all index pages have routes now).
+		for (const route of ['/medewerkers', '/berichten', '/rollen', '/zaaktypen', '/statussen', '/besluiten', '/documenten', '/resultaten']) {
 			await page.goto(`${APP}${route}`)
 			await dismissSupportModal(page)
-			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 15_000 })
-		}
-		// Client-routed pages via the Vue router.
-		for (const route of ['/besluiten', '/documenten', '/resultaten']) {
-			await spaNavigate(page, route)
 			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 15_000 })
 		}
 		expect(errors, `Uncaught JS exceptions: ${errors.join(' | ')}`).toHaveLength(0)
