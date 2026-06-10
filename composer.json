@@ -24,6 +24,12 @@
 			"OCA\\ZaakAfhandelApp\\": "lib/"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"OCA\\ZaakAfhandelApp\\Tests\\": "tests/",
+			"OCA\\OpenRegister\\": "tests/Stubs/"
+		}
+	},
 	"scripts": {
 		"post-install-cmd": [
 			"@composer bin all install --ansi"
@@ -43,7 +49,7 @@
 		"phpmetrics:json": "./vendor/bin/phpmetrics --report-json=phpmetrics/report.json lib/",
 		"phpmetrics:csv": "./vendor/bin/phpmetrics --report-csv=phpmetrics/report.csv lib/",
 		"phpmetrics:violations": "./vendor/bin/phpmetrics --report-violations=phpmetrics/violations.xml lib/",
-		"test:unit": "./vendor/bin/phpunit -c phpunit.xml --colors=always || echo 'Tests require Nextcloud environment, skipping...'",
+		"test:unit": "./vendor/bin/phpunit -c phpunit.xml --no-coverage --colors=always",
 		"openapi": "generate-spec",
 		"phpstan:strict": "./vendor/bin/phpstan analyse --memory-limit=1G",
 		"check": "E=0; for CMD in lint cs:check psalm phpstan:strict; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E",
@@ -64,8 +70,12 @@
 		"phpmd/phpmd": "^2.15",
 		"phpmetrics/phpmetrics": "^2.8",
 		"phpstan/phpstan": "^2.1",
+		"phpunit/phpunit": "^10.5",
 		"roave/security-advisories": "dev-latest",
 		"squizlabs/php_codesniffer": "^3.13",
+		"symfony/dependency-injection": "<8.0",
+		"symfony/string": "<8.0",
+		"symfony/var-exporter": "<8.0",
 		"vimeo/psalm": "^5.26"
 	},
 	"config": {
