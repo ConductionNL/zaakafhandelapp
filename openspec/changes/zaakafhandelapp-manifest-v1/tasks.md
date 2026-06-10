@@ -77,4 +77,4 @@
 - [x] 9.3 Tier choice is explicit (Tier 4 — full `CnAppRoot` + `CnAppNav` + `CnPageRenderer`).
 - [x] 9.4 `manifest.version` is `"1.0.0"`.
 - [x] 9.5 Custom-fallback inventory is documented and categorised.
-- [~] 9.6 Browser regression suite confirms all 28 routes resolve and render — **deferred** to follow-up; runs against a live Nextcloud instance once the worktree's npm-install + webpack build finishes cleanly. — deferred to downstream cycle (handoff)
+- [ ] 9.6 Browser regression suite confirms all 28 routes resolve and render — **deferred** to follow-up; runs against a live Nextcloud instance once the worktree's npm-install + webpack build finishes cleanly.
