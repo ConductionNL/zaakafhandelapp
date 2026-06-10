@@ -122,7 +122,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 		await page.goto(`${APP}/rollen`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const addBtn = page.getByRole('button', { name: 'Add Item' }).first()
+		const addBtn = page.getByRole('button', { name: /^Add /i }).first()
 		await expect(addBtn).toBeVisible({ timeout: 10_000 })
 		await addBtn.click()
 		// A create dialog appears.

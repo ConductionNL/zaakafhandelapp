@@ -23,7 +23,7 @@ test.describe('ui-case-views — case list and detail views', () => {
 		// Wait for the app nav to confirm the SPA mounted
 		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
 		// The Add Item button is the most reliable list-view indicator
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#selecting-a-zaak
@@ -59,15 +59,15 @@ test.describe('ui-case-views — case list and detail views', () => {
 	test('editing a resource — Add Item button opens the Create Item modal', async ({ page }) => {
 		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 15_000 })
-		await page.getByRole('button', { name: 'Add Item' }).click()
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 15_000 })
+		await page.getByRole('button', { name: /^Add /i }).click()
 		// Modal appears with a heading
-		await expect(page.getByRole('heading', { name: 'Create Item' })).toBeVisible({ timeout: 8_000 })
-		const dialog = page.getByRole('dialog').filter({ hasText: 'Create Item' })
+		await expect(page.getByRole('heading', { name: /^Create /i })).toBeVisible({ timeout: 8_000 })
+		const dialog = page.getByRole('dialog').filter({ hasText: /^Create /i })
 		await expect(dialog.getByRole('button', { name: 'Create' }).or(dialog.getByRole('button', { name: 'Save' })).first()).toBeVisible()
 		// Close modal — scope Cancel to the modal dialog
 		await dialog.getByRole('button', { name: 'Cancel' }).click()
-		await expect(page.getByRole('heading', { name: 'Create Item' })).not.toBeVisible({ timeout: 5_000 })
+		await expect(page.getByRole('heading', { name: /^Create /i })).not.toBeVisible({ timeout: 5_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#rendering-a-resource-icon

@@ -60,7 +60,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 		// Navigate to zaken and check "Add Item" — confirming write-permission flag is set for admin
 		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-search-navigation/spec.md#normalising-a-date

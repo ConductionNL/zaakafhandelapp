@@ -67,7 +67,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		await dismissSupportModal(page)
 		// Wait for app to mount first
 		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 		// The detail sidebar shows even in empty state — confirming item-detail linking is wired
 		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
 		// The right sidebar Search + Columns tabs confirm the sidebar component is fully mounted
@@ -81,7 +81,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 })

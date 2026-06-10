@@ -20,7 +20,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		// The Customers nav item is visible
 		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
 		// List view chrome is present — Add Item button confirms list rendered
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-client-views/spec.md#selecting-a-klant
@@ -29,7 +29,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		await dismissSupportModal(page)
 		// Wait for app to mount first
 		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 		// Detail panel heading is visible (even empty-state shows Details header)
 		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
 		// The right sidebar exposes Search and Columns tabs — confirming the sidebar component is mounted
@@ -61,7 +61,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		// Nav item visible
 		await expect(page.getByRole('link', { name: 'Tasks' })).toBeVisible({ timeout: 15_000 })
 		// Add Item confirms taken view mounted (takes priority over empty state which may conflict)
-		await expect(page.getByRole('button', { name: 'Add Item' })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-client-views/spec.md#rendering-a-contact-icon
