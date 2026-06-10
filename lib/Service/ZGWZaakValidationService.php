@@ -35,15 +35,27 @@ class ZGWZaakValidationService
     {
         $arr = $zaak->jsonSerialize();
 
-        if (is_array($arr['productenOfDiensten']) === false) {
+        if (is_array($arr['productenOfDiensten'] ?? null) === false) {
+            // No producten/diensten configured on the zaak; nothing to validate.
             return;
         }
 
-        $ztId = explode('/', $arr['zaaktype']);
+        $zaaktypeUrl = $arr['zaaktype'] ?? null;
+        if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+            // Without a zaaktype there is no reference set to validate against.
+            return;
+        }
+
+        $ztId = explode('/', $zaaktypeUrl);
         $this->objectService->clearCurrents();
         $zaaktype = $this->objectService->find(end($ztId));
 
-        if (array_diff($arr['productenOfDiensten'], $zaaktype->jsonSerialize()['productenOfDiensten']) !== []) {
+        $allowed = $zaaktype->jsonSerialize()['productenOfDiensten'] ?? [];
+        if (is_array($allowed) === false) {
+            $allowed = [];
+        }
+
+        if (array_diff($arr['productenOfDiensten'], $allowed) !== []) {
             $this->throwValidationError('productenOfDiensten', 'invalid-products-services', 'Producten niet aanwezig op zaaktype');
         }
     }//end checkProductenOfDiensten()
@@ -62,17 +74,22 @@ class ZGWZaakValidationService
     {
         $arr = $this->objectService->renderEntity($zaak);
 
-        if ($arr['archiefstatus'] === 'nog_te_archiveren') {
+        // A zaak that is not (yet) flagged for archiving has no archive prerequisites.
+        // When the archive lifecycle has not started, archiefstatus is either absent
+        // (e.g. on a fresh create where the form does not expose the field) or the
+        // explicit 'nog_te_archiveren' value — in both cases there is nothing to enforce.
+        $archiefstatus = $arr['archiefstatus'] ?? null;
+        if ($archiefstatus === null || $archiefstatus === '' || $archiefstatus === 'nog_te_archiveren') {
             return;
         }
 
         $this->validateEioStatuses($arr);
 
-        if ($arr['archiefnominatie'] === null) {
+        if (($arr['archiefnominatie'] ?? null) === null) {
             $this->throwValidationError('archiefnominatie', 'archiefnominatie-not-set', 'De archiefnominatie moet geset zijn');
         }
 
-        if ($arr['archiefactiedatum'] === null) {
+        if (($arr['archiefactiedatum'] ?? null) === null) {
             $this->throwValidationError('archiefactiedatum', 'archiefactiedatum-not-set', 'De archiefactiedatum moet geset zijn');
         }
     }//end checkArchivePrerequisites()
@@ -86,11 +103,11 @@ class ZGWZaakValidationService
     {
         $arr = $zaak->jsonSerialize();
 
-        if ($arr['verlenging'] !== null) {
+        if (($arr['verlenging'] ?? null) !== null) {
             $this->validateRequiredFields($arr['verlenging'], 'verlenging', ['reden', 'duur'], "Verlenging is incorrect");
         }
 
-        if ($arr['opschorting'] !== null) {
+        if (($arr['opschorting'] ?? null) !== null) {
             $this->validateRequiredFields($arr['opschorting'], 'opschorting', ['indicatie', 'reden'], "Opschorting is incorrect");
         }
     }//end checkGegevensgroepen()

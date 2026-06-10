@@ -175,6 +175,6 @@ class ZGWZaakCloseService
     private function find(string $url, array $extend=[]): ObjectEntity
     {
         $this->objectService->clearCurrents();
-        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), extend: $extend);
+        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), _extend: $extend);
     }//end find()
 }//end class

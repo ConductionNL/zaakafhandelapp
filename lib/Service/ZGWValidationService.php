@@ -96,6 +96,6 @@ class ZGWValidationService
     {
         $parts = explode('/', $url);
         $this->objectService->clearCurrents();
-        return $this->objectService->find(id: end($parts), extend: $extend);
+        return $this->objectService->find(id: end($parts), _extend: $extend);
     }//end findByUrl()
 }//end class

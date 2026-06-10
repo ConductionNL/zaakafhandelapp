@@ -95,7 +95,7 @@ class ZGWLogicService
         }
 
         $this->objectService->clearCurrents();
-        $zaak = $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($arr['zaak']), extend: ['zaaktype']);
+        $zaak = $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($arr['zaak']), _extend: ['zaaktype']);
         $this->objectService->clearCurrents();
         $besluittype = $this->objectService->find($this->registry->getObjectIdByEndpointUrl($arr['besluittype']));
 
@@ -156,7 +156,7 @@ class ZGWLogicService
     private function getObjectByEndpointUrl(string $url, array $extend=[]): ObjectEntity
     {
         $this->objectService->clearCurrents();
-        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), extend: $extend);
+        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), _extend: $extend);
     }//end getObjectByEndpointUrl()
 
     private function rewriteInternalReference(string $internalReference): string

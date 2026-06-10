@@ -98,6 +98,14 @@ class ZGWZaakLifecycleService
         $this->objectService->deleteObjects($ids);
 
         foreach ($arr['zaakinformatieobjecten'] ?? [] as $zioUrl) {
+            // Skip null / empty / non-string references: getObjectIdByEndpointUrl()
+            // and deleteObject() both type their argument as a non-nullable string, so
+            // a null/array entry would throw a TypeError (a \Error, which escapes the
+            // listener's \Exception catch) and abort the whole cascade, leaking the row.
+            if (is_string($zioUrl) === false || $zioUrl === '') {
+                continue;
+            }
+
             $this->objectService->deleteObject($this->registry->getObjectIdByEndpointUrl($zioUrl));
         }
     }//end deleteZaak()
@@ -130,7 +138,14 @@ class ZGWZaakLifecycleService
     public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
     {
         $zaakArray = $zaak->jsonSerialize();
-        $zaaktype  = $this->find($zaakArray['zaaktype']);
+
+        $zaaktypeUrl = $zaakArray['zaaktype'] ?? null;
+        if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+            // No zaaktype linked; there is no minimum classification to enforce.
+            return;
+        }
+
+        $zaaktype  = $this->find($zaaktypeUrl);
         $ztMinimum = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
 
         if ($ztMinimum === null) {
@@ -166,6 +181,6 @@ class ZGWZaakLifecycleService
     private function find(string $url, array $extend=[]): ObjectEntity
     {
         $this->objectService->clearCurrents();
-        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), extend: $extend);
+        return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), _extend: $extend);
     }//end find()
 }//end class

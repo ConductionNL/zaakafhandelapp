@@ -7,7 +7,38 @@ event-listener / ZGW-validation pipeline, which fires on every create / update /
 delete of a `zaak` (and on `status` close transitions) the manifest UI performs
 directly against OpenRegister.
 
-These are flagged in the specs as `test.fixme` — **no source was modified**.
+## RESOLUTION (2026-06-10) — ALL FIXED
+
+BUG-1..BUG-5 below are **fixed in source**. The previously `test.fixme`-pinned
+legs are now real, green CRUD / workflow coverage (create / edit / delete a
+zaak through the UI; status transition; full UI workflow). Verified live against
+localhost:8080: zaak create POST now returns 201 (was 400), edit PUT and delete
+DELETE succeed, the ObjectDeleted cascade runs (1280 queries) instead of 500ing.
+
+- **BUG-1** — `extend:` → `_extend:` at all 5 `ObjectService::find()` call sites
+  (`ZGWZaakLifecycleService:169`, `ZGWZaakCloseService:178`,
+  `ZGWValidationService:99`, `ZGWLogicService:98 & :159`). The real OR control
+  param is `$_extend`; a non-`\Exception` `\Error` escaped the listener's
+  `\Exception` catch and surfaced as HTTP 500.
+- **BUG-2** — `setVertrouwelijkheidaanduiding()` now guards a null/empty
+  `zaaktype` before calling `find(string $url)`.
+- **BUG-3** — `checkArchivePrerequisites()` treats an absent/empty
+  `archiefstatus` as "archive lifecycle not started" (same as
+  `nog_te_archiveren`) → a fresh UI-created case with no archive fields is no
+  longer rejected with 400.
+- **BUG-4** — `checkGegevensgroepen()` (`verlenging`/`opschorting`) and
+  `checkProductenOfDiensten()` (`productenOfDiensten`/`zaaktype`) now null-coalesce
+  their array dereferences (no more "Undefined array key" warnings).
+- **BUG-5** — `deleteZaak()` skips non-string / empty `zaakinformatieobjecten`
+  references before passing them into `getObjectIdByEndpointUrl(string)` /
+  `deleteObject(string)`, so the cascade completes and the row is removed
+  instead of throwing a `TypeError` (a `\Error`) → 500 and leaking the row.
+
+The only remaining `test.fixme` is `zaaktype status set` — that is **new
+fixture-provisioning work** (seed a zaaktype with a declared allowed-status set),
+not the OR-API drift repaired here.
+
+Original diagnosis (kept for reference) follows.
 
 ---
 
