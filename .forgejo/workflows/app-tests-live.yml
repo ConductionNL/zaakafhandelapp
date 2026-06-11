@@ -10,7 +10,10 @@
 #
 # Gate status for zaakafhandelapp (see TESTING-CI-ROLLOUT.md for the evidence table):
 #   deep-e2e: true  — e2e creates via OR object API by slug 'zaakafhandelapp', run-id-prefixed
-#   newman:   false  — TODO: Newman collection pins zaakRegister=239 (dev numeric); arm after slug-resolution preflight
+#   newman:   true   — ARMED: the collection "0. Setup / Preflight" request resolves the register
+#                     numeric id from the stable slug 'zaakafhandelapp' (and addresses the zaak/
+#                     taak/klant schemas by slug), so the suite survives a fresh CI boot where the
+#                     re-imported register gets a different numeric id.
 
 name: app-tests-live
 
@@ -36,5 +39,5 @@ jobs:
       app-id: zaakafhandelapp
       is-openregister: false
       run-e2e: true
-      run-newman: false
+      run-newman: true
       newman-entrypoint: tests/integration/run-newman.sh

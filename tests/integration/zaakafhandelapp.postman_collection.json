@@ -33,6 +33,38 @@
       "name": "0. Setup",
       "item": [
         {
+          "name": "Preflight: resolve register by slug (CI-durable)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "OCS-APIRequest", "value": "true" }
+            ],
+            "url": { "raw": "{{baseUrl}}/{{orApp}}/api/registers?_limit=300", "host": ["{{baseUrl}}"], "path": ["{{orApp}}", "api", "registers"], "query": [{ "key": "_limit", "value": "300" }] }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "// SLUG-RESOLUTION PREFLIGHT (GAP-2): the numeric OpenRegister register id that",
+              "// holds zaakafhandelapp objects varies between environments (dev box = 239, a",
+              "// fresh CI boot re-imports the register by slug and gets a different id). The",
+              "// app's repair step re-imports its register under the stable slug 'zaakafhandelapp',",
+              "// so resolve the numeric id from the slug here and set {{zaakRegister}}. The case/",
+              "// task/customer schemas are addressed by their stable slugs (the OR object router",
+              "// resolves a slug against the register), so they survive a re-import too.",
+              "pm.test('registers list reachable (200)', function () { pm.response.to.have.status(200); });",
+              "var body = pm.response.json();",
+              "var registers = Array.isArray(body) ? body : (body.results || []);",
+              "pm.expect(registers.length, 'at least one register').to.be.above(0);",
+              "var reg = registers.find(function (r) { return r.slug === 'zaakafhandelapp'; });",
+              "pm.test('zaakafhandelapp register resolved by slug', function () { pm.expect(reg, \"register with slug 'zaakafhandelapp' exists\").to.be.an('object'); });",
+              "if (reg) { pm.collectionVariables.set('zaakRegister', String(reg.id)); console.log('Resolved register slug=zaakafhandelapp -> id=' + reg.id); }",
+              "pm.collectionVariables.set('zaakSchema', 'zaak');",
+              "pm.collectionVariables.set('takenSchema', 'taak');",
+              "pm.collectionVariables.set('klantenSchema', 'klant');"
+            ] } }
+          ]
+        },
+        {
           "name": "seed zaak via OR (prereq for read/update/delete)",
           "request": {
             "method": "POST",
