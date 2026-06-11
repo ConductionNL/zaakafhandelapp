@@ -7,6 +7,8 @@
         "npm": "^10.0.0"
     },
     "scripts": {
+        "test:l10n": "node tests/l10n/check-l10n.js",
+        "test:l10n:write": "node tests/l10n/check-l10n.js --write",
         "postinstall": "find node_modules -path '*/vue-demi/scripts/postinstall.js' -execdir node {} \\; 2>/dev/null || true",
         "build": "NODE_ENV=production webpack --config webpack.config.js --progress",
         "dev": "NODE_ENV=development webpack --config webpack.config.js --progress",
