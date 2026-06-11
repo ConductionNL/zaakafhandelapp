@@ -213,36 +213,31 @@
           ] } } ]
         },
         {
-          "name": "GET /api/zrc/zaken/{missing} -> ERROR (QUARANTINE: 500 should be 404)",
+          "name": "GET /api/zrc/zaken/{missing} -> 404",
           "request": {
             "method": "GET",
             "header": [ { "key": "Accept", "value": "application/json" }, { "key": "OCS-APIRequest", "value": "true" } ],
             "url": { "raw": "{{baseUrl}}/{{app}}/api/zrc/zaken/newman-nonexistent-uuid-zzz", "host": ["{{baseUrl}}"], "path": ["{{app}}", "api", "zrc", "zaken", "newman-nonexistent-uuid-zzz"] }
           },
           "event": [ { "listen": "test", "script": { "exec": [
-            "// KNOWN BUG (quarantined): show() calls ObjectQueryService::getObject -> mapper->find($id),",
-            "// which throws DoesNotExistException on a missing id. That bubbles up as HTTP 500 instead",
-            "// of a clean 404. This asserts the CURRENT 500 so the suite stays green honestly. When the",
-            "// app catches the missing-object case and returns 404, flip this to expect 404.",
-            "pm.test('QUARANTINE: missing zaak read currently 500 (should be 404)', function () { pm.response.to.have.status(500); });"
+            "// FIXED: ObjectQueryService::getObject now catches DoesNotExistException (and a null find)",
+            "// and returns null, which show() maps to a clean 404 instead of an uncaught 500.",
+            "pm.test('missing zaak read -> 404', function () { pm.response.to.have.status(404); });"
           ] } } ]
         },
         {
-          "name": "DELETE /api/zrc/zaken/{id} -> ERROR (QUARANTINE: 500 from find()+delete() shape)",
+          "name": "DELETE /api/zrc/zaken/{id} -> 200",
           "request": {
             "method": "DELETE",
             "header": [ { "key": "Accept", "value": "application/json" }, { "key": "OCS-APIRequest", "value": "true" } ],
             "url": { "raw": "{{baseUrl}}/{{app}}/api/zrc/zaken/{{createdZaakId}}", "host": ["{{baseUrl}}"], "path": ["{{app}}", "api", "zrc", "zaken", "{{createdZaakId}}"] }
           },
           "event": [ { "listen": "test", "script": { "exec": [
-            "// KNOWN BUG (quarantined): ObjectQueryService::deleteObject does",
-            "//   $mapper->delete($mapper->find($id))",
-            "// but the OR-backed mapper is ObjectServiceMapperAdapter whose delete() signature is",
-            "//   delete(array $criteria) -- passing an ObjectEntity throws a \\TypeError, which the",
-            "// surrounding `catch (Exception $e)` does NOT catch (TypeError is not an Exception), so the",
-            "// request 500s. The fix is to call the adapter's object-delete path (e.g. deleteObject(id))",
-            "// or catch \\Throwable. Asserting the CURRENT 500 keeps the suite honest; flip to 200 when fixed.",
-            "pm.test('QUARANTINE: zaak delete currently 500 (find()+delete() shape vs OR adapter)', function () { pm.response.to.have.status(500); });"
+            "// FIXED: ObjectQueryService::deleteObject now calls the OR adapter with the criteria array",
+            "//   $mapper->delete(['id' => $id])  (was $mapper->delete($mapper->find($id)) -> \\TypeError)",
+            "// and catches \\Throwable, so a delete succeeds and returns 200.",
+            "pm.test('zaak delete -> 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('zaak delete success true', function () { pm.expect(pm.response.json().success).to.equal(true); });"
           ] } } ]
         }
       ]
@@ -291,15 +286,15 @@
           ] } } ]
         },
         {
-          "name": "DELETE /api/taken/{id} -> ERROR (QUARANTINE: same find()+delete() 500)",
+          "name": "DELETE /api/taken/{id} -> 200",
           "request": {
             "method": "DELETE",
             "header": [ { "key": "Accept", "value": "application/json" }, { "key": "OCS-APIRequest", "value": "true" } ],
             "url": { "raw": "{{baseUrl}}/{{app}}/api/taken/{{createdTaakId}}", "host": ["{{baseUrl}}"], "path": ["{{app}}", "api", "taken", "{{createdTaakId}}"] }
           },
           "event": [ { "listen": "test", "script": { "exec": [
-            "// Same delete-shape bug as zaken: OR adapter delete(array) gets an ObjectEntity -> TypeError -> 500.",
-            "pm.test('QUARANTINE: taak delete currently 500 (shared deleteObject bug)', function () { pm.response.to.have.status(500); });"
+            "// FIXED: shared ObjectQueryService::deleteObject now uses the OR adapter criteria-array path.",
+            "pm.test('taak delete -> 200', function () { pm.response.to.have.status(200); });"
           ] } } ]
         }
       ]
@@ -348,14 +343,15 @@
           ] } } ]
         },
         {
-          "name": "DELETE /api/klanten/{id} -> ERROR (QUARANTINE: same delete 500)",
+          "name": "DELETE /api/klanten/{id} -> 200",
           "request": {
             "method": "DELETE",
             "header": [ { "key": "Accept", "value": "application/json" }, { "key": "OCS-APIRequest", "value": "true" } ],
             "url": { "raw": "{{baseUrl}}/{{app}}/api/klanten/{{createdKlantId}}", "host": ["{{baseUrl}}"], "path": ["{{app}}", "api", "klanten", "{{createdKlantId}}"] }
           },
           "event": [ { "listen": "test", "script": { "exec": [
-            "pm.test('QUARANTINE: klant delete currently 500 (shared deleteObject bug)', function () { pm.response.to.have.status(500); });"
+            "// FIXED: shared ObjectQueryService::deleteObject now uses the OR adapter criteria-array path.",
+            "pm.test('klant delete -> 200', function () { pm.response.to.have.status(200); });"
           ] } } ]
         }
       ]

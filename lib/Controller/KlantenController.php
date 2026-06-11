@@ -114,6 +114,10 @@ class KlantenController extends Controller
         // Fetch the catalog object by its ID
         $object = $this->objectService->getObject('klanten', $id);
 
+        if ($object === null) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        }
+
         // Return the catalog as a JSON response
         return new JSONResponse($object);
     }//end show()

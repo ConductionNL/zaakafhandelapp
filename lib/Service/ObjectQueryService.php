@@ -4,6 +4,7 @@ namespace OCA\ZaakAfhandelApp\Service;
 
 use Exception;
 use InvalidArgumentException;
+use OCP\AppFramework\Db\DoesNotExistException;
 
 /**
  * Service for querying objects, building result sets, and CRUD operations.
@@ -37,7 +38,20 @@ class ObjectQueryService
         $mapper = $this->mapperService->getMapper($objectType);
         self::assertExtendAllowed($mapper, $extend);
 
-        return self::serializeObject($mapper->find($id));
+        try {
+            $object = $mapper->find($id);
+        } catch (DoesNotExistException $e) {
+            // Object not found: signal a 404 to the controller (which treats
+            // a null result as Http::STATUS_NOT_FOUND) instead of bubbling an
+            // uncaught exception up to a 500.
+            return null;
+        }
+
+        if ($object === null) {
+            return null;
+        }
+
+        return self::serializeObject($object);
     }//end getObject()
 
     /**
@@ -101,10 +115,13 @@ class ObjectQueryService
     public function deleteObject(string $objectType, string|int $id): bool
     {
         try {
+            $id     = self::extractIdFromUrl($id);
             $mapper = $this->mapperService->getMapper($objectType);
-            $mapper->delete($mapper->find($id));
-            return true;
-        } catch (Exception $e) {
+            // The OR ObjectServiceMapperAdapter::delete() expects a criteria
+            // array keyed by 'id' — NOT the ObjectEntity returned by find().
+            // Passing the entity raises an uncaught \TypeError → 500.
+            return $mapper->delete(['id' => $id]);
+        } catch (\Throwable $e) {
             return false;
         }
     }//end deleteObject()
