@@ -516,6 +516,18 @@
         "User preferences will appear here.": "Gebruikersvoorkeuren verschijnen hier.",
         "Version date": "Versiedatum",
         "Version date:": "Versiedatum:",
-        "Zaakafhandelapp settings": "Zaakafhandelapp-instellingen"
+        "Zaakafhandelapp settings": "Zaakafhandelapp-instellingen",
+        "Are you sure you want to permanently delete {name}? This action cannot be undone.": "Weet u zeker dat u {name} permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+        "Decision list for this case will appear here once the manifest renderer is wired to the existing besluitStore.": "De besluitenlijst voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande besluitStore.",
+        "Do you want to delete {name}? This action cannot be undone.": "Wilt u {name} verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+        "Document list for this case will appear here once the manifest renderer is wired to the existing documentStore.": "De documentenlijst voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande documentStore.",
+        "IP Address:": "IP-adres:",
+        "Message list for this case will appear here once the manifest renderer is wired to the existing berichtStore.": "De berichtenlijst voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande berichtStore.",
+        "Result list for this case will appear here once the manifest renderer is wired to the existing resultaatStore.": "De resultatenlijst voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande resultaatStore.",
+        "Role list for this case will appear here once the manifest renderer is wired to the existing rolStore.": "De rollenlijst voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande rolStore.",
+        "Status timeline for this case will appear here once the manifest renderer is wired to the existing zaakStore.statussen collection.": "De statustijdlijn voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande zaakStore.statussen-collectie.",
+        "Statuses": "Statussen",
+        "Task list for this case will appear here once the manifest renderer is wired to the existing taakStore.": "De takenlijst voor deze zaak verschijnt hier zodra de manifest-renderer is gekoppeld aan de bestaande taakStore.",
+        "The cross-app audit trail view will land in a follow-up change.": "De app-overstijgende audit trail-weergave volgt in een latere wijziging."
     }
 }
