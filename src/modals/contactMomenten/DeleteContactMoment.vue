@@ -1,0 +1,106 @@
+<script setup>
+import { translate as t } from '@nextcloud/l10n'
+import { contactMomentStore, navigationStore } from '../../store/store.js'
+</script>
+
+<template>
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Delete contact moment')"
+		size="normal"
+		:can-close="false">
+		<p v-if="!success">
+			{{ t('zaakafhandelapp', 'Do you want to delete {name}? This action cannot be undone.', { name: contactMomentStore.contactMomentItem.titel }) }}
+		</p>
+
+		<NcNoteCard v-if="success" type="success">
+			<p>{{ t('zaakafhandelapp', 'Contact moment successfully deleted') }}</p>
+		</NcNoteCard>
+		<NcNoteCard v-if="error" type="error">
+			<p>{{ error }}</p>
+		</NcNoteCard>
+
+		<template #actions>
+			<NcButton
+				@click="closeModal">
+				<template #icon>
+					<Cancel :size="20" />
+				</template>
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+			</NcButton>
+			<NcButton
+				v-if="!success"
+				:disabled="loading"
+				type="error"
+				@click="deleteContactMoment()">
+				<template #icon>
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<TrashCanOutline v-if="!loading" :size="20" />
+				</template>
+				{{ t('zaakafhandelapp', 'Delete') }}
+			</NcButton>
+		</template>
+	</NcDialog>
+</template>
+
+<script>
+import {
+	NcButton,
+	NcDialog,
+	NcLoadingIcon,
+	NcNoteCard,
+} from '@nextcloud/vue'
+
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+
+export default {
+	name: 'DeleteContactMoment',
+	components: {
+		NcDialog,
+		NcButton,
+		NcLoadingIcon,
+		NcNoteCard,
+		// Icons
+		TrashCanOutline,
+		Cancel,
+	},
+	data() {
+		return {
+			success: false,
+			loading: false,
+			error: false,
+			closeTimeoutFunc: null,
+		}
+	},
+	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
+		closeModal() {
+			navigationStore.setModal(false)
+			clearTimeout(this.closeTimeoutFunc)
+			this.success = null
+		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
+		async deleteContactMoment() {
+			this.loading = true
+			try {
+				await contactMomentStore.deleteContactMoment(contactMomentStore.contactMomentItem)
+				// Close modal or show success message
+				this.success = true
+				this.loading = false
+				this.error = false
+
+				contactMomentStore.setContactMomentItem(null)
+				this.closeTimeoutFunc = setTimeout(this.closeModal, 2000)
+			} catch (error) {
+				this.loading = false
+				this.success = false
+				this.error = error.message || 'An error occurred while deleting the contact moment'
+			}
+		},
+	},
+}
+</script>
