@@ -13,76 +13,39 @@
 			"order": 10
 		},
 		{
-			"id": "Zaken",
+			"id": "CasesGroup",
 			"label": "Cases",
 			"icon": "icon-category-organization",
-			"route": "Zaken",
-			"order": 20
+			"order": 20,
+			"children": [
+				{ "id": "Zaken", "label": "Cases", "icon": "icon-category-organization", "route": "Zaken", "order": 20 },
+				{ "id": "Taken", "label": "Tasks", "icon": "icon-checkmark", "route": "Taken", "order": 30 },
+				{ "id": "Search", "label": "Search", "icon": "icon-search", "route": "Search", "order": 90 }
+			]
 		},
 		{
-			"id": "Taken",
-			"label": "Tasks",
-			"icon": "icon-checkmark",
-			"route": "Taken",
-			"order": 30
-		},
-		{
-			"id": "Klanten",
-			"label": "Customers",
+			"id": "RelationsGroup",
+			"label": "Relations",
 			"icon": "icon-group",
-			"route": "Klanten",
-			"order": 40
+			"order": 40,
+			"children": [
+				{ "id": "Klanten", "label": "Customers", "icon": "icon-group", "route": "Klanten", "order": 40 },
+				{ "id": "Medewerkers", "label": "Employees", "icon": "icon-user", "route": "Medewerkers", "order": 50 },
+				{ "id": "Contactmomenten", "label": "Contact moments", "icon": "icon-comment", "route": "Contactmomenten", "order": 60 },
+				{ "id": "Berichten", "label": "Messages", "icon": "icon-mail", "route": "Berichten", "order": 70 }
+			]
 		},
 		{
-			"id": "Medewerkers",
-			"label": "Employees",
-			"icon": "icon-user",
-			"route": "Medewerkers",
-			"order": 50
-		},
-		{
-			"id": "Contactmomenten",
-			"label": "Contact moments",
-			"icon": "icon-comment",
-			"route": "Contactmomenten",
-			"order": 60
-		},
-		{
-			"id": "Berichten",
-			"label": "Messages",
-			"icon": "icon-mail",
-			"route": "Berichten",
-			"order": 70
-		},
-		{
-			"id": "Rollen",
-			"label": "Roles",
-			"icon": "icon-user-admin",
-			"route": "Rollen",
-			"order": 80
-		},
-		{
-			"id": "Search",
-			"label": "Search",
-			"icon": "icon-search",
-			"route": "Search",
-			"order": 90
-		},
-		{
-			"id": "Zaaktypen",
-			"label": "Case types",
-			"icon": "icon-files",
-			"route": "Zaaktypen",
-			"section": "settings",
-			"order": 10
-		},
-		{
-			"id": "AuditTrail",
-			"label": "Audit trail",
-			"icon": "icon-history",
-			"route": "AuditTrail",
-			"section": "settings",
-			"order": 20
+			"id": "ConfigGroup",
+			"label": "Configuration",
+			"icon": "icon-settings",
+			"order": 80,
+			"children": [
+				{ "id": "Rollen", "label": "Roles", "icon": "icon-user-admin", "route": "Rollen", "order": 80 },
+				{ "id": "Zaaktypen", "label": "Case types", "icon": "icon-files", "route": "Zaaktypen", "order": 10 },
+				{ "id": "AuditTrail", "label": "Audit trail", "icon": "icon-history", "route": "AuditTrail", "order": 20 },
+				{ "id": "SettingsMenu", "label": "Settings", "icon": "icon-settings", "route": "Settings", "order": 99 }
+			]
 		},
 		{
 			"id": "Documentation",
@@ -99,14 +62,6 @@
 			"route": "FeaturesRoadmap",
 			"section": "footer",
 			"order": 91
-		},
-		{
-			"id": "SettingsMenu",
-			"label": "Settings",
-			"icon": "icon-settings",
-			"route": "Settings",
-			"section": "settings",
-			"order": 99
 		}
 	],
 	"pages": [
