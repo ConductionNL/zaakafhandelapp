@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useZaakTypeStore } from './zaakTypen.js'
+import { useZaakTypeStore } from './zaakTypen'
 import { ZaakType, mockZaakType } from '../../entities/index.js'
 
 describe('ZaakTypen Store', () => {
@@ -25,9 +25,9 @@ describe('ZaakTypen Store', () => {
 
 		store.setZaakTypeList(mockZaakType())
 
-		expect(store.zaakTypenList).toHaveLength(mockZaakType().length)
+		expect(store.zaakTypeList).toHaveLength(mockZaakType().length)
 
-		store.zaakTypenList.forEach((item, index) => {
+		store.zaakTypeList.forEach((item, index) => {
 			expect(item).toBeInstanceOf(ZaakType)
 			expect(item).toEqual(mockZaakType()[index])
 			expect(item.validate().success).toBe(true)
