@@ -44,7 +44,7 @@ export function routesFromManifest(manifest) {
 }
 
 const router = new VueRouter({
-	mode: 'history',
+	mode: 'hash',
 	base: generateUrl('/apps/zaakafhandelapp'),
 	linkActiveClass: 'active',
 	routes: routesFromManifest(bundledManifest),
