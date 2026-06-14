@@ -1,7 +1,3 @@
-<script setup>
-import { navigationStore } from '../../store/store.js'
-</script>
-
 <template>
 	<NcAppContentList>
 		<ul>
@@ -67,15 +63,15 @@ import { navigationStore } from '../../store/store.js'
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading cases')" />
 	</NcAppContentList>
 </template>
 <script>
 import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import Magnify from 'vue-material-design-icons/Magnify'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ResultatenList',
@@ -99,6 +95,9 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -118,6 +117,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
