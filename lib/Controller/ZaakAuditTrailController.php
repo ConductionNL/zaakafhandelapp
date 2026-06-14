@@ -145,6 +145,8 @@ class ZaakAuditTrailController extends Controller
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
      *
+     * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid is part of the NC route signature.
      */
     public function create(string $zaakUuid): JSONResponse
@@ -165,6 +167,8 @@ class ZaakAuditTrailController extends Controller
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
      *
+     * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid/$id are part of the NC route signature.
      */
     public function update(string $zaakUuid, string $id): JSONResponse
@@ -184,6 +188,8 @@ class ZaakAuditTrailController extends Controller
      * @return JSONResponse
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
+     *
+     * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid/$id are part of the NC route signature.
      */

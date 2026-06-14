@@ -43,6 +43,8 @@ class CaseDocumentService
      * @return array{fileId: int, bestandsomvang: int} The stored file id and size.
      *
      * @throws CaseDocumentException When decoding fails or the file cannot be written.
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
      */
     public function writeDocument(string $zaak, string $bestandsnaam, string $base64Inhoud): array
     {
@@ -81,6 +83,8 @@ class CaseDocumentService
      * @return int The new file size.
      *
      * @throws CaseDocumentException When the file is missing or cannot be written.
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
      */
     public function replaceContent(int $fileId, string $base64Inhoud): int
     {
@@ -99,6 +103,8 @@ class CaseDocumentService
      * @return array{stream: resource, mime: string, name: string} The stream and metadata.
      *
      * @throws CaseDocumentException When the file is missing.
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
      */
     public function readStream(int $fileId): array
     {
@@ -122,6 +128,8 @@ class CaseDocumentService
      * @param int $fileId The Nextcloud file id.
      *
      * @return bool True when a file was deleted, false when it was already gone.
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
      */
     public function deleteDocument(int $fileId): bool
     {
