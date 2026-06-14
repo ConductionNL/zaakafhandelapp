@@ -3,6 +3,7 @@ import { TZaak, zaakTypeID } from './zaak.types'
 
 export class Zaak implements TZaak {
 
+	public id: string
 	public uuid: string
 	public omschrijving: string
 	public identificatie: string
@@ -24,8 +25,14 @@ export class Zaak implements TZaak {
 	public laatsteBetaaldatum: string
 	public selectielijstklasse: string
 	public hoofdzaak: string
+	public klant: string
+	public berichten: string[]
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TZaak) {
+		this.id = source.id || ''
 		this.uuid = source.uuid || ''
 		this.omschrijving = source.omschrijving || ''
 		this.identificatie = source.identificatie || ''
@@ -47,10 +54,13 @@ export class Zaak implements TZaak {
 		this.laatsteBetaaldatum = source.laatsteBetaaldatum || ''
 		this.selectielijstklasse = source.selectielijstklasse || ''
 		this.hoofdzaak = source.hoofdzaak || ''
+		this.klant = source.klant || ''
+		this.berichten = source.berichten || []
 	}
 
 	public validate(): SafeParseReturnType<TZaak, unknown> {
 		const schema = z.object({
+			id: z.string().optional(),
 			uuid: z.string().optional(),
 			omschrijving: z.string().min(1),
 			identificatie: z.string().min(1),
@@ -72,6 +82,8 @@ export class Zaak implements TZaak {
 			laatsteBetaaldatum: z.string(),
 			selectielijstklasse: z.string(),
 			hoofdzaak: z.string(),
+			klant: z.string(),
+			berichten: z.array(z.string()),
 		})
 
 		return schema.safeParse(this)

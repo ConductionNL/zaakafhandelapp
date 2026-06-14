@@ -2,134 +2,277 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
+use Exception;
+use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IURLGenerator;
+use OCP\IUserSession;
 
+/**
+ * ZGW ZRC zaak audit-trail controller.
+ *
+ * Serves the ZGW audit trail of a zaak on /api/zrc/zaken/{zaak_uuid}/audit_trail,
+ * derived from the OpenRegister object audit trail of that zaak and mapped onto
+ * the ZGW Audittrail shape. The audit trail is read-only per the ZRC standard:
+ * write verbs return 405 Method Not Allowed with an Allow: GET header. Replaces
+ * the former not-implemented stub.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class ZaakAuditTrailController extends Controller
 {
-    const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "name" => "Zaakt type 1",
-            "summary" => "summary for one"
-        ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "name" => "Zaakt type 12",
-            "summary" => "summary for two"
-        ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "name" => "Zaakt type 3",
-            "summary" => "summary for two"
-        ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "name" => "Zaakt type 4",
-            "summary" => "summary for two"
-        ]
+    /**
+     * Maps OpenRegister audit actions onto the ZGW `actie` vocabulary.
+     *
+     * @var array<string, string>
+     */
+    private const ACTIE_MAP = [
+        'create'  => 'create',
+        'created' => 'create',
+        'update'  => 'update',
+        'updated' => 'update',
+        'delete'  => 'destroy',
+        'deleted' => 'destroy',
+        'destroy' => 'destroy',
     ];
 
     public function __construct(
-		$appName,
-		IRequest $request,
-		private readonly IAppConfig $config
-	)
-    {
+        $appName,
+        IRequest $request,
+        private readonly ObjectService $objectService,
+        private readonly IURLGenerator $urlGenerator,
+        private readonly IUserSession $userSession,
+    ) {
         parent::__construct($appName, $request);
-    }
+    }//end __construct()
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{			
+    /**
+     * This returns the template of the main app's page.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return TemplateResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function page(): TemplateResponse
+    {
         return new TemplateResponse(
-            //Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
         );
-	}
-	
+    }//end page()
 
     /**
-     * Return (and serach) all objects
-     * 
+     * List the ZGW audit trail of the routed zaak.
+     *
+     * @param string $zaakUuid The zaak whose audit trail is requested (route).
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
      */
-    public function index(): JSONResponse
+    public function index(string $zaakUuid): JSONResponse
     {
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
-    }
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        try {
+            $entries = $this->objectService->getAuditTrail('zaken', $zaakUuid);
+            $mapped  = array_map(fn (array $entry): array => $this->mapAuditTrail($entry, $zaakUuid), $entries);
+
+            return new JSONResponse(['results' => array_values($mapped)]);
+        } catch (Exception $e) {
+            return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }
+    }//end index()
 
     /**
-     * Read a single object
-     * 
+     * Read a single ZGW audit-trail entry of the routed zaak.
+     *
+     * @param string $zaakUuid The zaak whose audit trail is requested (route).
+     * @param string $id       The audit-trail entry uuid.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
      */
-    public function show(string $id): JSONResponse
+    public function show(string $zaakUuid, string $id): JSONResponse
     {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
+        try {
+            $entries = $this->objectService->getAuditTrail('zaken', $zaakUuid);
 
-    /**
-     * Creatue an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-     */
-    public function create(): JSONResponse
-    {
-        // get post from requests
-        return new JSONResponse([]);
-    }
+            foreach ($entries as $entry) {
+                $mapped = $this->mapAuditTrail((array) $entry, $zaakUuid);
+                if (($mapped['uuid'] ?? null) === $id) {
+                    return new JSONResponse($mapped);
+                }
+            }
 
-    /**
-     * Update an object
-     * 
-     * @NoAdminRequired
-     * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-     */
-    public function update(string $id): JSONResponse
-    {
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }
+            return new JSONResponse(['error' => 'Audit trail entry not found.'], Http::STATUS_NOT_FOUND);
+        } catch (Exception $e) {
+            return new JSONResponse(['error' => 'Audit trail entry not found.'], Http::STATUS_NOT_FOUND);
+        }
+    }//end show()
 
     /**
-     * Delate an object
-     * 
+     * The ZGW audit trail is read-only — creating is not allowed.
+     *
+     * @param string $zaakUuid The routed zaak.
+     *
      * @NoAdminRequired
      * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
+     *
+     * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid is part of the NC route signature.
      */
-    public function destroy(string $id): JSONResponse
+    public function create(string $zaakUuid): JSONResponse
     {
-        return new JSONResponse([]);
-    }
-}
+        return $this->methodNotAllowed();
+    }//end create()
+
+    /**
+     * The ZGW audit trail is read-only — updating is not allowed.
+     *
+     * @param string $zaakUuid The routed zaak.
+     * @param string $id       The audit-trail entry uuid.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
+     *
+     * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid/$id are part of the NC route signature.
+     */
+    public function update(string $zaakUuid, string $id): JSONResponse
+    {
+        return $this->methodNotAllowed();
+    }//end update()
+
+    /**
+     * The ZGW audit trail is read-only — deleting is not allowed.
+     *
+     * @param string $zaakUuid The routed zaak.
+     * @param string $id       The audit-trail entry uuid.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
+     *
+     * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid/$id are part of the NC route signature.
+     */
+    public function destroy(string $zaakUuid, string $id): JSONResponse
+    {
+        return $this->methodNotAllowed();
+    }//end destroy()
+
+    /**
+     * Builds the 405 Method Not Allowed response with an Allow: GET header.
+     *
+     * @return JSONResponse
+     */
+    private function methodNotAllowed(): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $response = new JSONResponse(
+            ['error' => 'The audit trail is read-only.'],
+            Http::STATUS_METHOD_NOT_ALLOWED
+        );
+        $response->addHeader('Allow', 'GET');
+
+        return $response;
+    }//end methodNotAllowed()
+
+    /**
+     * Maps an OpenRegister audit entry onto the ZGW Audittrail shape.
+     *
+     * Defensive against missing keys: untracked values degrade to null.
+     *
+     * @param array  $entry    The OpenRegister audit entry.
+     * @param string $zaakUuid The zaak the trail belongs to.
+     *
+     * @return array The ZGW Audittrail resource.
+     */
+    private function mapAuditTrail(array $entry, string $zaakUuid): array
+    {
+        $action = strtolower((string) ($entry['action'] ?? $entry['actie'] ?? ''));
+        $actie  = (self::ACTIE_MAP[$action] ?? ($action !== '' ? $action : null));
+
+        $changes = ($entry['changed'] ?? $entry['changes'] ?? $entry['wijzigingen'] ?? null);
+
+        $zaakUrl = $this->urlGenerator->getAbsoluteURL(
+            '/index.php/apps/zaakafhandelapp/api/zrc/zaken/' . $zaakUuid
+        );
+
+        return [
+            'uuid'               => ($entry['uuid'] ?? $entry['id'] ?? null),
+            'bron'               => 'ZRC',
+            'applicatieWeergave' => 'Zaak Afhandel App',
+            'gebruikersId'       => ($entry['user'] ?? $entry['userId'] ?? $entry['gebruikersId'] ?? null),
+            'gebruikersWeergave' => ($entry['userName'] ?? $entry['gebruikersWeergave'] ?? null),
+            'actie'              => $actie,
+            'actieWeergave'      => ($entry['actionLabel'] ?? $entry['actieWeergave'] ?? $actie),
+            'resultaat'          => ($entry['result'] ?? $entry['resultaat'] ?? null),
+            'hoofdObject'        => $zaakUrl,
+            'resource'           => 'zaak',
+            'resourceUrl'        => $zaakUrl,
+            'resourceWeergave'   => ($entry['resourceLabel'] ?? $entry['resourceWeergave'] ?? null),
+            'aanmaakdatum'       => ($entry['created'] ?? $entry['aanmaakdatum'] ?? ($entry['timestamp'] ?? null)),
+            'wijzigingen'        => $this->mapChanges($changes),
+        ];
+    }//end mapAuditTrail()
+
+    /**
+     * Normalises an audit change record into the ZGW wijzigingen shape.
+     *
+     * @param mixed $changes The raw change record.
+     *
+     * @return array{oud: mixed, nieuw: mixed}
+     */
+    private function mapChanges(mixed $changes): array
+    {
+        if (is_array($changes) === false) {
+            return ['oud' => null, 'nieuw' => null];
+        }
+
+        return [
+            'oud'   => ($changes['old'] ?? $changes['oud'] ?? ($changes['before'] ?? null)),
+            'nieuw' => ($changes['new'] ?? $changes['nieuw'] ?? ($changes['after'] ?? null)),
+        ];
+    }//end mapChanges()
+}//end class

@@ -1,0 +1,8 @@
+{
+  "spec_slug": "adopt-apphost",
+  "title": "Adopt OpenRegister AppHost (observability + boilerplate)",
+  "app": "zaakafhandelapp",
+  "repo": "https://codeberg.org/Conduction/zaakafhandelapp",
+  "depends_on": ["apphost-observability-engine", "apphost-boilerplate-controllers"],
+  "issue": null
+}
