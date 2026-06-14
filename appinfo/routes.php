@@ -9,16 +9,14 @@ return [
 		'statusen' => ['url' => 'api/zrc/statussen'],
 		'zaakInformatieObjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
 		'zaakObjecten' => ['url' => 'api/zrc/zaakobjecten'],
-		// zaakBesluiten, zaakAuditTrail return 501 until OR-backed implementation is in place (issue #268).
-		// Resource routes are registered so gate-14 sees the CRUD quintet as routed.
 		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
 		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+		// zaakAuditTrail is read-only per ZRC; the resource quintet stays registered for gate-14, write verbs return 405.
 		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
-		// documenten returns 501 until real DRC implementation is in place (issue #268).
-		'documenten' => ['url' => 'api/drc'],
+		'documenten' => ['url' => 'api/drc/enkelvoudiginformatieobjecten'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/redoc-1.0.2
 		'besluiten' => ['url' => 'api/brc'],
 		// Conform ???
@@ -58,6 +56,8 @@ return [
 		['name' => 'besluiten#page', 'postfix' => 'details', 'url' => '/besluiten/{id}', 'verb' => 'GET'],
 		['name' => 'documenten#page', 'url' => '/documenten', 'verb' => 'GET'],
 		['name' => 'documenten#page', 'postfix' => 'details', 'url' => '/documenten/{id}', 'verb' => 'GET'],
+		// DRC enkelvoudiginformatieobject content download (streams the backing Nextcloud file).
+		['name' => 'documenten#download', 'url' => '/api/drc/enkelvoudiginformatieobjecten/{id}/download', 'verb' => 'GET'],
 		['name' => 'resultaten#pages', 'url' => '/resultaten', 'verb' => 'GET'],
 		['name' => 'resultaten#pages', 'postfix' => 'details', 'url' => '/resultaten/{id}', 'verb' => 'GET'],
 		['name' => 'zaakInformatieObjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
