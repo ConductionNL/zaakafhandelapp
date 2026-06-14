@@ -1,60 +1,79 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { navigationStore, rolStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcAppContentList>
-		<ul v-if="!loading">
-			<NcListItem v-for="(rollen, i) in rollenList.results"
-				:key="`${rollen}${i}`"
-				:name="rollen?.omschrijving"
-				:active="store.rolId === rollen.id"
-				:details="'1h'"
-				:counter-number="44"
+	<div>
+		<div v-if="filteredRollenList?.length">
+			<NcListItem v-for="(rol, i) in filteredRollenList"
+				:key="`${rol}${i}`"
+				:name="rol?.url"
+				:active="rolStore.rolItem?.id === rol.id"
+				:details="rol?.betrokkeneType"
+				:counter-number="rol?.omschrijvingGeneriek"
 				:force-display-actions="true"
-				@click="setZaakRolItem(rollen.id)">
+				@click="toggleRol(rol)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.rolId === rollen.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="rolStore.rolItem?.id === rol.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ rollen?.omschrijving }}
+					{{ rol?.roltype }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editRol(rollen)">
-						Bewerken
+					<NcActionButton @click="$router.push({ name: 'RolDetail', params: { id: rol.id } })">
+						<template #icon>
+							<Eye :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
-					<NcActionButton>
-						Verwijderen
+					<NcActionButton @click="rolStore.setRolItem(rol); rolStore.extraData.redirect = false; navigationStore.setModal('rolForm')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Edit') }}
+					</NcActionButton>
+					<NcActionButton @click="rolStore.setRolItem(rol); navigationStore.setModal('deleteRol')">
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Delete') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<div v-if="!filteredRollenList?.length && !loading">
+			{{ t('zaakafhandelapp', 'No roles found.') }}
+		</div>
+
+		<NcLoadingIcon v-if="!filteredRollenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Rollen aan het laden" />
-	</NcAppContentList>
+			:name="t('zaakafhandelapp', 'Loading roles')" />
+	</div>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
+
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakRollen',
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
 		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
 	props: {
-		zaakId: {
+		zaakUrl: {
 			type: String,
 			required: true,
 		},
@@ -63,45 +82,59 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			rollenList: [],
 		}
 	},
+	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
+		filteredRollenList() {
+			return rolStore.rollenList.filter((rol) => rol.zaak === this.zaakUrl)
+		},
+	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		zaakUrl(newVal) {
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		editRol(rol) {
-			store.setRolItem(rol)
-			store.setRolId(rol.id)
+			rolStore.setRolItem(rol)
 			navigationStore.setModal('editRol')
 		},
-		fetchData(zaakId) {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchData() {
 			this.loading = true
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/zrc/rollen?zaak.id=${zaakId}`,
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.rollenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
+
+			rolStore.refreshRollenList()
+				.finally(() => {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
+		toggleRol(rol) {
+			if (rolStore.rolItem?.id === rol.id) {
+				rolStore.setRolItem(null)
+			} else {
+				rolStore.setRolItem(rol)
+			}
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
