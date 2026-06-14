@@ -4,7 +4,7 @@
 
 ## MODIFIED Requirements
 
-### REQ-005: Manage case-bound sub-resources
+### Requirement: REQ-005: Manage case-bound sub-resources
 
 The system SHALL expose REST CRUD collections for the sub-resources that the ZGW
 standard binds to a zaak — audit trail records, zaakbesluiten, zaakeigenschappen,
@@ -32,7 +32,7 @@ the audit trail) SHALL return 405 Method Not Allowed with an `Allow` header.
 
 ## ADDED Requirements
 
-### REQ-006: Zaakbesluiten lifecycle
+### Requirement: REQ-006: Zaakbesluiten lifecycle
 
 The system SHALL manage ZGW `ZaakBesluit` relation resources on
 `/api/zrc/zaken/{zaak_uuid}/besluiten`, backed by OpenRegister `zaakbesluit`
@@ -69,7 +69,7 @@ relation only — never the referenced besluit.
   bound to
 - **THEN** the system responds 404
 
-### REQ-007: ZRC zaak audit trail
+### Requirement: REQ-007: ZRC zaak audit trail
 
 The system SHALL serve the ZGW audit trail of a zaak on
 `/api/zrc/zaken/{zaak_uuid}/audit_trail`, derived from the OpenRegister object

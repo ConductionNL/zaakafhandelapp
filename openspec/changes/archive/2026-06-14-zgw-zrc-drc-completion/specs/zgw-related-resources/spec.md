@@ -4,7 +4,7 @@
 
 ## MODIFIED Requirements
 
-### REQ-001: List and read ZGW resources
+### Requirement: REQ-001: List and read ZGW resources
 
 The system SHALL list a ZGW resource collection (besluiten, documenten,
 resultaten, rollen, statussen, zaaktypen) and read a single resource by id,
@@ -32,7 +32,7 @@ endpoint may return 501 Not Implemented.
 
 ## ADDED Requirements
 
-### REQ-004: Enkelvoudiginformatieobject content in Nextcloud Files
+### Requirement: REQ-004: Enkelvoudiginformatieobject content in Nextcloud Files
 
 The system SHALL store DRC enkelvoudiginformatieobjecten as ZGW-shaped
 metadata objects in the DRC register whose binary content is a real file in
