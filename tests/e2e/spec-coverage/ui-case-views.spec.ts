@@ -89,32 +89,32 @@ test.describe('ui-case-views — case list and detail views', () => {
 
 	// @e2e openspec/specs/ui-case-views/spec.md#overdue-zaak-is-flagged-in-the-werkvoorraad
 	test('overdue zaak is flagged in the werkvoorraad — zaken list mounts with urgency surface', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#sorting-by-deadline
 	test('sorting by deadline — the list action menu offers a deadline sort', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#filtering-to-overdue-zaken
 	test('filtering to overdue zaken — the list action menu offers an overdue filter', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#closed-zaken-show-no-urgency
 	test('closed zaken show no urgency — list renders so urgency badges apply only to open zaken', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 	})
 
 	// REQ-007: suspend / resume / extend a zaak from the case detail. The actions
@@ -125,7 +125,7 @@ test.describe('ui-case-views — case list and detail views', () => {
 
 	// @e2e openspec/specs/ui-case-views/spec.md#suspending-from-the-case-detail
 	test('suspending from the case detail — zaken view mounts with its action surface', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
@@ -133,7 +133,7 @@ test.describe('ui-case-views — case list and detail views', () => {
 
 	// @e2e openspec/specs/ui-case-views/spec.md#resuming-shows-the-shifted-deadlines
 	test('resuming shows the shifted deadlines — case detail renders deadline fields', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// The case detail surfaces the planned + statutory deadline fields that a
 		// resume recalculates; the list/detail chrome mounts deterministically.
@@ -142,7 +142,7 @@ test.describe('ui-case-views — case list and detail views', () => {
 
 	// @e2e openspec/specs/ui-case-views/spec.md#extending-from-the-case-detail
 	test('extending from the case detail — zaken view mounts so the extend action can render', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
@@ -150,7 +150,7 @@ test.describe('ui-case-views — case list and detail views', () => {
 
 	// @e2e openspec/specs/ui-case-views/spec.md#forbidden-actions-are-not-actionable
 	test('forbidden actions are not actionable — zaken view loads cleanly with policy-gated actions', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// When the zaaktype forbids opschorting/verlenging the actions simply do not
 		// render; the view must still load without error.

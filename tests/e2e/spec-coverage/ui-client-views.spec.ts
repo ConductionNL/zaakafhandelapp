@@ -82,9 +82,9 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 
 	// @e2e openspec/specs/ui-client-views/spec.md#importing-a-contact-as-a-klant
 	test('importing a contact as a klant — klanten view exposes an actions menu for import', async ({ page }) => {
-		await page.goto(`${APP}/klanten`)
+		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
 		// The list header carries an actions menu; import-from-contacts is one of its entries
 		// when Contacts is available (hidden otherwise — see "hidden without Contacts").
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
@@ -92,26 +92,26 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 
 	// @e2e openspec/specs/ui-client-views/spec.md#already-linked-contact-is-indicated
 	test('already-linked contact is indicated — klanten list renders so linked badges can show', async ({ page }) => {
-		await page.goto(`${APP}/klanten`)
+		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-client-views/spec.md#linked-badge-and-export-action
 	test('linked badge and export action — klant detail panel mounts on the klanten page', async ({ page }) => {
-		await page.goto(`${APP}/klanten`)
+		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
 		// Detail panel chrome present — the linked badge + save-to-contacts action render here.
 		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-client-views/spec.md#hidden-without-contacts
 	test('hidden without Contacts — klanten view renders cleanly with no import entry point error', async ({ page }) => {
-		await page.goto(`${APP}/klanten`)
+		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
 		// With Contacts unavailable the import/export buttons simply do not render; the
 		// view must still load its add button without error.
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
