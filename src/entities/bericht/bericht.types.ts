@@ -2,6 +2,7 @@ export type BerichtID = string; // create an alias for string called BerichtID t
 
 export type TBericht = {
     id: string;
+    title: string;
     batchID: string;
     aanmaakDatum: string;
     berichtLeverancierID: string;

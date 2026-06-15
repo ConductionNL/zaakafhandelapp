@@ -1,5 +1,6 @@
 <script setup>
-import { navigationStore, zaakStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,7 +10,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -20,61 +21,61 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 						<template #icon>
 							<Refresh :size="20" />
 						</template>
-						Ververs
+						{{ t('zaakafhandelapp', 'Refresh') }}
 					</NcActionButton>
 					<NcActionButton @click="zaakStore.setZaakItem(null); navigationStore.setModal('zaakForm')">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
-						Zaak starten
+						{{ t('zaakafhandelapp', 'Start case') }}
 					</NcActionButton>
 				</NcActions>
 			</div>
 
-			<div v-if="!!zaakStore.zakenList?.length">
+			<div v-if="zaakStore.zakenList?.length">
 				<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
 					:key="`${zaak}${i}`"
 					:name="zaak?.identificatie"
 					:force-display-actions="true"
-					:active="zaakStore.zaakItem?.uuid === zaak?.uuid"
+					:active="$route.params?.id === zaak?.id"
 					:details="'1h'"
-					:counter-number="44"
-					@click="zaakStore.setZaakItem(zaak)">
+					:counter-number="zaak.uiterlijkeEinddatumAfdoening ? `${Math.ceil((new Date(zaak.uiterlijkeEinddatumAfdoening) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
+					@click="openZaak(zaak)">
 					<template #icon>
-						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.uuid === zaak?.uuid && 'selectedZaakIcon'"
+						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak?.id && 'selectedZaakIcon'"
 							disable-menu
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ zaak?.zaaktype }}
+						{{ zaakTypeStore.zaakTypeList.find(zaakType => zaakType.id === zaak.zaaktype)?.identificatie ?? zaak.zaaktype }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="zaakStore.setZaakItem(zaak); navigationStore.setModal('zaakForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton disabled>
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<div v-if="!zaakStore.zakenList.length">
-			No zaken have been defined yet.
+		<div v-if="!zaakStore.zakenList.length && !loading">
+			{{ t('zaakafhandelapp', 'No cases defined.') }}
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!zaakStore.zakenList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading cases')" />
 	</NcAppContentList>
 </template>
 <script>
@@ -113,17 +114,32 @@ export default {
 			zakenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.loading = true
 
-		zaakStore.refreshZakenList()
-			.then(() => {
-				this.loading = false
-			})
+		Promise.all([
+			zaakStore.refreshZakenList(),
+			zaakTypeStore.refreshZaakTypenList(),
+		]).then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
+		 */
+		openZaak(zaak) {
+			zaakStore.setZaakItem(zaak)
+			this.$router.push({ params: { id: zaak.id } })
 		},
 	},
 }
