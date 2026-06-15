@@ -528,6 +528,14 @@
         "Status timeline for this case will appear here once the manifest renderer is wired to the existing zaakStore.statussen collection.": "Die Status-Zeitleiste für diesen Fall erscheint hier, sobald der Manifest-Renderer mit der vorhandenen Sammlung zaakStore.statussen verbunden ist.",
         "Statuses": "Status",
         "Task list for this case will appear here once the manifest renderer is wired to the existing taakStore.": "Die Aufgabenliste für diesen Fall erscheint hier, sobald der Manifest-Renderer mit dem vorhandenen taakStore verbunden ist.",
-        "The cross-app audit trail view will land in a follow-up change.": "Die app-übergreifende Audit-Trail-Ansicht folgt in einer späteren Änderung."
+        "The cross-app audit trail view will land in a follow-up change.": "Die app-übergreifende Audit-Trail-Ansicht folgt in einer späteren Änderung.",
+        "Overdue": "Überfällig",
+        "Deadline approaching": "Frist nähert sich",
+        "On time": "Termingerecht",
+        "Sort by deadline": "Nach Frist sortieren",
+        "Only overdue": "Nur überfällige",
+        "Planned end date:": "Geplantes Enddatum:",
+        "%n case overdue": "%n Vorgang überfällig",
+        "%n cases overdue": "%n Vorgänge überfällig"
     }
 }

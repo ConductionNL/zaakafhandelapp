@@ -528,6 +528,13 @@
         "Status timeline for this case will appear here once the manifest renderer is wired to the existing zaakStore.statussen collection.": "Status timeline for this case will appear here once the manifest renderer is wired to the existing zaakStore.statussen collection.",
         "Statuses": "Statuses",
         "Task list for this case will appear here once the manifest renderer is wired to the existing taakStore.": "Task list for this case will appear here once the manifest renderer is wired to the existing taakStore.",
-        "The cross-app audit trail view will land in a follow-up change.": "The cross-app audit trail view will land in a follow-up change."
+        "The cross-app audit trail view will land in a follow-up change.": "The cross-app audit trail view will land in a follow-up change.",
+        "%n case overdue": "%n case overdue",
+        "%n cases overdue": "%n cases overdue",
+        "Only overdue": "Only overdue",
+        "Sort by deadline": "Sort by deadline",
+        "Overdue": "Overdue",
+        "Deadline approaching": "Deadline approaching",
+        "On time": "On time"
     }
 }

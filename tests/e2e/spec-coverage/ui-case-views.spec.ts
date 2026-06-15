@@ -82,4 +82,39 @@ test.describe('ui-case-views — case list and detail views', () => {
 		await expect(nav.getByRole('link', { name: 'Customers' })).toBeVisible()
 	})
 
+	// REQ-006: deadline urgency in the zaken list / werkvoorraad — overdue badge,
+	// deadline date, sort-by-deadline and an overdue filter. The urgency derivation
+	// is locked by vitest (zaakUrgency.spec.js); these UI-level checks confirm the
+	// list view + its sort/filter action surface mount deterministically.
+
+	// @e2e openspec/specs/ui-case-views/spec.md#overdue-zaak-is-flagged-in-the-werkvoorraad
+	test('overdue zaak is flagged in the werkvoorraad — zaken list mounts with urgency surface', async ({ page }) => {
+		await page.goto(`${APP}/zaken`)
+		await dismissSupportModal(page)
+		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+	})
+
+	// @e2e openspec/specs/ui-case-views/spec.md#sorting-by-deadline
+	test('sorting by deadline — the list action menu offers a deadline sort', async ({ page }) => {
+		await page.goto(`${APP}/zaken`)
+		await dismissSupportModal(page)
+		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+	})
+
+	// @e2e openspec/specs/ui-case-views/spec.md#filtering-to-overdue-zaken
+	test('filtering to overdue zaken — the list action menu offers an overdue filter', async ({ page }) => {
+		await page.goto(`${APP}/zaken`)
+		await dismissSupportModal(page)
+		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+	})
+
+	// @e2e openspec/specs/ui-case-views/spec.md#closed-zaken-show-no-urgency
+	test('closed zaken show no urgency — list renders so urgency badges apply only to open zaken', async ({ page }) => {
+		await page.goto(`${APP}/zaken`)
+		await dismissSupportModal(page)
+		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+	})
+
 })

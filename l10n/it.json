@@ -528,6 +528,14 @@
         "Status timeline for this case will appear here once the manifest renderer is wired to the existing zaakStore.statussen collection.": "La cronologia degli stati per questo caso apparirà qui una volta collegato il renderer del manifest alla collezione zaakStore.statussen esistente.",
         "Statuses": "Stati",
         "Task list for this case will appear here once the manifest renderer is wired to the existing taakStore.": "L'elenco delle attività per questo caso apparirà qui una volta collegato il renderer del manifest al taakStore esistente.",
-        "The cross-app audit trail view will land in a follow-up change.": "La vista del registro di controllo tra app sarà introdotta in una modifica successiva."
+        "The cross-app audit trail view will land in a follow-up change.": "La vista del registro di controllo tra app sarà introdotta in una modifica successiva.",
+        "Overdue": "Scaduto",
+        "Deadline approaching": "Scadenza imminente",
+        "On time": "In tempo",
+        "Sort by deadline": "Ordina per scadenza",
+        "Only overdue": "Solo scaduti",
+        "Planned end date:": "Data di fine prevista:",
+        "%n case overdue": "%n caso scaduto",
+        "%n cases overdue": "%n casi scaduti"
     }
 }

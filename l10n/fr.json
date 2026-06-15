@@ -528,6 +528,14 @@
         "Status timeline for this case will appear here once the manifest renderer is wired to the existing zaakStore.statussen collection.": "La chronologie des statuts de cette affaire apparaîtra ici une fois que le moteur de rendu du manifeste sera connecté à la collection zaakStore.statussen existante.",
         "Statuses": "Statuts",
         "Task list for this case will appear here once the manifest renderer is wired to the existing taakStore.": "La liste des tâches de cette affaire apparaîtra ici une fois que le moteur de rendu du manifeste sera connecté au taakStore existant.",
-        "The cross-app audit trail view will land in a follow-up change.": "La vue du journal d'audit inter-applications sera intégrée dans une modification ultérieure."
+        "The cross-app audit trail view will land in a follow-up change.": "La vue du journal d'audit inter-applications sera intégrée dans une modification ultérieure.",
+        "Overdue": "En retard",
+        "Deadline approaching": "Échéance proche",
+        "On time": "Dans les délais",
+        "Sort by deadline": "Trier par échéance",
+        "Only overdue": "Uniquement en retard",
+        "Planned end date:": "Date de fin prévue :",
+        "%n case overdue": "%n affaire en retard",
+        "%n cases overdue": "%n affaires en retard"
     }
 }

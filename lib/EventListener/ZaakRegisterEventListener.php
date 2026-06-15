@@ -22,6 +22,7 @@ use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
 use OCA\ZaakAfhandelApp\Service\ZGWValidationService;
 use OCA\ZaakAfhandelApp\Service\ZGWZaakLifecycleService;
 use OCA\ZaakAfhandelApp\Service\ZGWZaakValidationService;
+use OCA\ZaakAfhandelApp\Service\ZaakTermijnService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCA\OpenRegister\Event\ObjectCreatedEvent;
@@ -39,6 +40,7 @@ class ZaakRegisterEventListener implements IEventListener
         private readonly ZGWZaakLifecycleService $lifecycleService,
         private readonly ZGWValidationService $validationService,
         private readonly ZGWZaakValidationService $zaakValidationService,
+        private readonly ZaakTermijnService $termijnService,
         private readonly ZGWRegistryService $registry,
         private readonly SchemaMapper $schemaMapper,
     ) {
@@ -152,6 +154,10 @@ class ZaakRegisterEventListener implements IEventListener
             $this->validationService->checkRelevanteAndereZaken($obj);
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
+            // Derive the behandeltermijn fields from the zaaktype before the zaak is
+            // persisted (uiterlijkeEinddatumAfdoening from doorlooptijd, einddatumGepland
+            // from servicenorm). Client-supplied dates are never overridden.
+            $this->termijnService->deriveTermijnen($obj);
         }
 
         if ($slug === $this->registry->getBesluitSchema()) {
