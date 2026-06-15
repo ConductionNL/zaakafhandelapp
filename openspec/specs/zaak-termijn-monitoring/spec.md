@@ -1,9 +1,17 @@
 # zaak-termijn-monitoring Specification
 
 ## Purpose
-TBD - created by archiving change zaak-termijn-monitoring. Update Purpose after archive.
+Derive a zaak's behandeltermijn fields from its zaaktype, drive declarative
+deadline-notification rules on the zaak schema, and compute a single
+deadline-urgency state (`verlopen` / `bijna-verlopen` / `op-tijd`) that the
+case lists and werkvoorraad surface (see ui-case-views REQ-006). The
+derivation and urgency logic are backend/computational and are locked by
+unit tests (vitest `zaakUrgency.spec.js`, PHPUnit `ZaakTermijnService`); the
+user-visible list/werkvoorraad surfacing carries its own e2e coverage under
+ui-case-views REQ-006.
+
 ## Requirements
-### Requirement: Derive termijn fields from the zaaktype on creation (REQ-001)
+### Requirement: Derive termijn fields from the zaaktype on creation (REQ-001) @e2e exclude backend termijn derivation, covered by ZaakTermijnService PHPUnit + zaakUrgency vitest
 
 The system SHALL, when a zaak is created without an explicit
 `uiterlijkeEinddatumAfdoening` and its zaaktype defines a `doorlooptijd`,
@@ -35,7 +43,7 @@ resolvable zaaktype, and a zaak without a `startdatum` SHALL use its
 - **THEN** the termijn fields stay as supplied (possibly empty) and creation
   succeeds without error
 
-### Requirement: Declarative deadline notification rules on the zaak schema (REQ-002)
+### Requirement: Declarative deadline notification rules on the zaak schema (REQ-002) @e2e exclude declarative schema notification rules (no UI flow), covered by ZaakTermijnService PHPUnit
 
 The system SHALL declare approaching-deadline and overdue notification rules
 on the zaak schema using the OpenRegister declarative notification dialect
@@ -83,7 +91,7 @@ monitoring.
 > declarative rule block is added once the OR engine supports the condition
 > shape. See tasks.md section 2.
 
-### Requirement: Derive a single deadline-urgency state (REQ-003)
+### Requirement: Derive a single deadline-urgency state (REQ-003) @e2e exclude backend urgency derivation, covered by zaakUrgency vitest; UI surfacing has e2e under ui-case-views REQ-006
 
 The system SHALL derive a deadline-urgency state for a zaak — `op-tijd`,
 `bijna-verlopen` (within the configurable lead window, default 7 days, of

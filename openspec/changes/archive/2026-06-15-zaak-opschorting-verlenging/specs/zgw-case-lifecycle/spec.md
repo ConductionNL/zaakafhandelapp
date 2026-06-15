@@ -4,7 +4,7 @@
 
 ## ADDED Requirements
 
-### REQ-006: Suspend and resume a zaak (opschorting)
+### Requirement: Suspend and resume a zaak — opschorting (REQ-006)
 
 The system SHALL support suspending an open zaak by setting the ZGW
 `opschorting` group (`indicatie = true` plus a mandatory non-empty `reden`),
@@ -49,7 +49,7 @@ during suspension), and SHALL retain the last `reden` for the record.
   already suspended
 - **THEN** the system raises a validation error and the zaak is unchanged
 
-### REQ-007: Extend a zaak's behandeltermijn (verlenging)
+### Requirement: Extend a zaak's behandeltermijn — verlenging (REQ-007)
 
 The system SHALL support extending an open, non-suspended zaak once by
 setting the ZGW `verlenging` group (mandatory non-empty `reden` and a `duur`

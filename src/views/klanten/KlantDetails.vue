@@ -12,6 +12,9 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 				<div class="head">
 					<h1 class="h1">
 						{{ getName(klantStore.klantItem) }}
+						<NcCounterBubble v-if="klantStore.klantItem.contactsUid" class="linkedBadge">
+							{{ t('zaakafhandelapp', 'Linked to contacts') }}
+						</NcCounterBubble>
 					</h1>
 
 					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
@@ -41,6 +44,14 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 								<BriefcaseAccountOutline :size="20" />
 							</template>
 							{{ t('zaakafhandelapp', 'Start case') }}
+						</NcActionButton>
+						<NcActionButton v-if="contactsAvailable && !klantStore.klantItem.contactsUid"
+							:disabled="exporting"
+							@click="saveToContacts">
+							<template #icon>
+								<AccountPlusOutline :size="20" />
+							</template>
+							{{ t('zaakafhandelapp', 'Save to contacts') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setModal('deleteKlant')">
 							<template #icon>
@@ -290,7 +301,7 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcEmptyContent, NcListItem, NcLoadingIcon } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcEmptyContent, NcListItem, NcLoadingIcon, NcCounterBubble } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
 // Icons
@@ -303,6 +314,7 @@ import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
+import AccountPlusOutline from 'vue-material-design-icons/AccountPlusOutline.vue'
 
 export default {
 	name: 'KlantDetails',
@@ -310,6 +322,7 @@ export default {
 		NcActions,
 		NcActionButton,
 		NcEmptyContent,
+		NcCounterBubble,
 		BTabs,
 		BTab,
 		NcListItem,
@@ -323,6 +336,8 @@ export default {
 		TrashCanOutline,
 		Eye,
 		TimelineQuestionOutline,
+		CardAccountPhoneOutline,
+		AccountPlusOutline,
 	},
 	props: {
 		id: {
@@ -338,6 +353,8 @@ export default {
 			berichten: [],
 			auditTrails: [],
 			loading: true,
+			contactsAvailable: false,
+			exporting: false,
 		}
 	},
 	computed: {
@@ -356,10 +373,57 @@ export default {
 			this.fetchKlantData(newId)
 		},
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+	 */
 	mounted() {
 		this.fetchData(this.id)
+		this.checkContactsAvailability()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+		 */
+		checkContactsAvailability() {
+			fetch('/index.php/apps/zaakafhandelapp/api/klanten/contacts/status', { method: 'GET' })
+				.then(response => response.json())
+				.then((data) => {
+					this.contactsAvailable = data?.available === true
+				})
+				.catch(() => {
+					this.contactsAvailable = false
+				})
+		},
+		/**
+		 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
+		 */
+		saveToContacts() {
+			if (!klantStore.klantItem?.id) {
+				return
+			}
+			this.exporting = true
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}/contacts/export`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({}),
+			})
+				.then(async (response) => {
+					const data = await response.json()
+					if (!response.ok) {
+						throw new Error(data?.error || t('zaakafhandelapp', 'Export failed'))
+					}
+					return data
+				})
+				.then(() => {
+					klantStore.getKlant(this.id)
+				})
+				.catch((err) => {
+					console.error(err)
+				})
+				.finally(() => {
+					this.exporting = false
+				})
+		},
 		/**
 		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
 		 */

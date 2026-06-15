@@ -2,7 +2,7 @@
 
 ## ADDED Requirements
 
-### REQ-006: Search and import addressbook contacts in the klanten view
+### Requirement: Search and import addressbook contacts in the klanten view (REQ-006)
 
 The system SHALL offer an "import from contacts" entry point in the klanten
 view that opens a dedicated modal (own file under `src/modals/`): the user

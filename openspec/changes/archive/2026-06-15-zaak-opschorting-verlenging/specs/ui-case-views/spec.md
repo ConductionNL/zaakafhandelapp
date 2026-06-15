@@ -6,7 +6,7 @@
 
 ## ADDED Requirements
 
-### REQ-007: Suspend, resume and extend a zaak from the case detail
+### Requirement: Suspend, resume and extend a zaak from the case detail (REQ-007)
 
 The system SHALL offer suspend, resume and extend actions on the case detail
 view for open zaken, each opening its own modal (modal isolation:
