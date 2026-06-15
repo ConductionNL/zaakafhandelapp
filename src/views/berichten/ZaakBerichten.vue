@@ -1,20 +1,21 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { navigationStore, berichtStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcAppContentList>
-		<ul v-if="!loading">
-			<NcListItem v-for="(bericht, i) in berichtenList.results"
+	<div>
+		<div v-if="!loading && !!filteredBerichten?.length">
+			<NcListItem v-for="(bericht, i) in filteredBerichten"
 				:key="`${bericht}${i}`"
 				:name="bericht?.onderwerp"
-				:active="store.berichtId === bericht.id"
+				:active="berichtStore.berichtItem?.id === bericht.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setBerichtItem(bericht)">
+				@click="toggleBericht(bericht)">
 				<template #icon>
-					<ChatOutline :class="store.berichtId === bericht.id && 'selectedZaakIcon'"
+					<ChatOutline :class="berichtStore.berichtItem?.id === bericht.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -22,36 +23,53 @@ import { navigationStore } from '../../store/store.js'
 					{{ bericht?.berichttekst }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="editBericht(bericht)">
-						Bewerken
+					<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setSelected('berichten')">
+						<template #icon>
+							<Eye :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
+					<!-- <NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('editBericht')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Edit') }}
+					</NcActionButton> -->
 					<NcActionButton>
-						Verwijderen
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
+
+		<div v-if="!filteredBerichten?.length && !loading">
+			{{ t('zaakafhandelapp', 'No messages found.') }}
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Berichten aan het laden" />
-	</NcAppContentList>
+			:name="t('zaakafhandelapp', 'Loading messages')" />
+	</div>
 </template>
 <script>
 // Components
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakBerichten',
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
 		ChatOutline,
 		NcLoadingIcon,
 	},
@@ -65,45 +83,52 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			berichtenList: [],
 		}
 	},
+	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
+		filteredBerichten() {
+			return berichtStore.berichtenList.filter(bericht => zaakStore.zaakItem.berichten.includes(bericht.id))
+		},
+	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
+		zaakId(newVal) {
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData()
 	},
 	methods: {
-		editBericht(bericht) {
-			store.setBerichtItem(bericht)
-			store.setBerichtId(bericht.id)
-			navigationStore.setModal('editBericht')
-		},
-		fetchData(zaakId) {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/berichten',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.berichtenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
+
+			berichtStore.refreshBerichtenList()
+				.finally(() => {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
+		toggleBericht(bericht) {
+			if (berichtStore.berichtItem?.id === bericht.id) {
+				berichtStore.setBerichtItem(null)
+			} else {
+				berichtStore.setBerichtItem(bericht)
+			}
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

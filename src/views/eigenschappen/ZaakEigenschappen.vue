@@ -1,25 +1,26 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<ul v-if="!loading">
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
+		<div v-if="!loading">
+			<NcListItem v-for="(zaak, i) in zakenList"
+				:key="`${zaak}${i}`"
+				:name="zaak?.zaakStore"
+				:active="zaakStore.zakenItem?.id === zaak?.id"
 				:details="'1h'"
 				:counter-number="44"
 				:force-display-actions="true"
-				@click="store.setMetadataItem(zaken.id)">
+				@click="toggleZaakEigenschap(zaak)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
+					<BriefcaseAccountOutline :class="zaakStore.zakenItem === zaak.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ zaak?.summary }}
 				</template>
 				<template #actions>
 					<NcActionButton>
@@ -33,13 +34,17 @@ import { navigationStore } from '../../store/store.js'
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
+
+		<div v-if="!zakenList?.length && !loading">
+			{{ t('zaakafhandelapp', 'No properties found.') }}
+		</div>
 
 		<NcLoadingIcon v-if="loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading cases')" />
 	</div>
 </template>
 <script>
@@ -63,22 +68,25 @@ export default {
 	data() {
 		return {
 			search: '',
-			loading: true,
+			loading: false,
 			zakenList: [],
 		}
 	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
+		zaakId(newVal) {
+			this.fetchData(newVal)
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData(this.zaakId)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(zaakId) {
 			this.loading = true
 			fetch(
@@ -89,7 +97,7 @@ export default {
 			)
 				.then((response) => {
 					response.json().then((data) => {
-						this.zakenList = data
+						this.zakenList = data.results || []
 					})
 					this.loading = false
 				})
@@ -98,6 +106,15 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
+		toggleZaakEigenschap(zaakEigenschap) {
+			// TODO: toggle zaakEigenschap
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

@@ -1,0 +1,143 @@
+# PHPStan baseline for zaakafhandelapp.
+#
+# Generated post canonical root-config sync. Each entry below represents a
+# pre-existing finding that surfaced when the per-app PHPStan extensions were
+# replaced by the canonical config from nextcloud-app-template. They are
+# tracked for cleanup in https://github.com/ConductionNL/zaakafhandelapp/issues/201
+# (umbrella ticket for legacy lint debt).
+#
+# To regenerate after fixing entries:
+#   ./vendor/bin/phpstan analyse --memory-limit=1G --generate-baseline=phpstan-baseline.neon
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\BesluitenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/BesluitenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\DashboardController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/DashboardController.php
+
+		-
+			message: '#^Offset string does not exist on array\{\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: lib/Controller/DocumentenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\DocumentenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/DocumentenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\ResultatenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/ResultatenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\RollenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/RollenController.php
+
+		-
+			message: '#^Parameter \#1 \$data of class OCP\\AppFramework\\Http\\JSONResponse constructor contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: lib/Controller/SettingsController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\StatusenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/StatusenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\UsersController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/UsersController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\ZaakAuditTrailController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/ZaakAuditTrailController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\ZaakBesluitenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/ZaakBesluitenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\ZaakEigenschappenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/ZaakEigenschappenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\ZaakInformatieObjectenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/ZaakInformatieObjectenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Controller\\ZaakObjectenController\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Controller/ZaakObjectenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Dashboard\\ContactmomentenWidget\:\:\$url is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Dashboard/ContactmomentenWidget.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Dashboard\\OpenZakenWidget\:\:\$url is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Dashboard/OpenZakenWidget.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Dashboard\\OrganisatiesWidget\:\:\$url is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Dashboard/OrganisatiesWidget.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Dashboard\\PersonenWidget\:\:\$url is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Dashboard/PersonenWidget.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Dashboard\\TakenWidget\:\:\$url is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Dashboard/TakenWidget.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Dashboard\\ZakenWidget\:\:\$url is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Dashboard/ZakenWidget.php
+
+		-
+			message: '#^PHPDoc tag @SuppressWarnings has invalid value#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: lib/Controller/ZakenController.php
+
+		-
+			message: '#^Property OCA\\ZaakAfhandelApp\\Settings\\ZaakAfhandelAppAdmin\:\:\$l is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Settings/ZaakAfhandelAppAdmin.php
