@@ -1,10 +1,9 @@
-# Capability: klanten-addressbook-sync — NC addressbook integration for klanten
+# klanten-addressbook-sync Specification
 
-@e2e exclude pure-backend contact-sync service + REST endpoints — covered by PHPUnit/Newman; the UI surface lives in the ui-client-views delta
-
-## ADDED Requirements
-
-### REQ-001: Search Nextcloud addressbooks for contacts
+## Purpose
+TBD - created by archiving change klanten-addressbook-sync. Update Purpose after archive.
+## Requirements
+### Requirement: Search Nextcloud addressbooks for contacts (REQ-001)
 
 The system SHALL search the user's accessible Nextcloud addressbooks via
 `OCP\Contacts\IManager` over the FN, EMAIL, TEL and ORG vCard properties and
@@ -27,7 +26,7 @@ enabled.
 - **WHEN** that contact appears in search results
 - **THEN** its `alreadyLinked` flag is true
 
-### REQ-002: Import a contact as a klant
+### Requirement: Import a contact as a klant (REQ-002)
 
 The system SHALL import a Nextcloud contact into a klant OR object: vCard
 properties map onto the klant fields (N/FN → naam parts, EMAIL → emailadres,
@@ -59,7 +58,7 @@ cannot be found in any addressbook SHALL fail with a clear error.
   addressbook
 - **THEN** the system responds with a clear error and persists nothing
 
-### REQ-003: Push a klant to the addressbook
+### Requirement: Push a klant to the addressbook (REQ-003)
 
 The system SHALL, when a klant that carries a `contactsUid` is saved, update
 the linked addressbook contact's vCard from the klant's current field values
@@ -87,7 +86,7 @@ SHALL never be written to the addressbook.
 - **WHEN** a klant with a bsn is exported or synced
 - **THEN** the written vCard contains no bsn value
 
-### REQ-004: Degrade gracefully without the Contacts app
+### Requirement: Degrade gracefully without the Contacts app (REQ-004)
 
 The system SHALL behave safely when `OCP\Contacts\IManager::isEnabled()` is
 false: contact search returns an empty list, import and export operations
@@ -107,3 +106,4 @@ fatal).
 - **WHEN** the klant is saved
 - **THEN** the klant update persists and the skipped vCard push is logged,
   not raised
+

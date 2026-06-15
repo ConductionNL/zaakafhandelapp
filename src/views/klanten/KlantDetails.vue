@@ -373,6 +373,9 @@ export default {
 			this.fetchKlantData(newId)
 		},
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+	 */
 	mounted() {
 		this.fetchData(this.id)
 		this.checkContactsAvailability()
