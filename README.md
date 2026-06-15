@@ -45,7 +45,7 @@ Zaak Afhandel App (ZAA) brings structured case handling (*zaakafhandeling*) into
 - **Task Assignment** — Create tasks and assign them to staff members (*medewerkers*) or customers (*klanten*)
 - **Task Lifecycle** — Track tasks through open → in progress → completed
 - **Messaging** — Send and receive messages within a case context
-- **Message Audit Trail** — Full history of message edits with revert capability
+- **Message Audit Trail** — Full history of message edits
 
 ### Customer & Staff Management
 - **Customer Profiles** — Manage citizen and organization data (*klanten*) with contact details and case history
@@ -74,10 +74,8 @@ graph TD
     A[Vue 2 Frontend] -->|REST API| B[PHP Controllers]
     B --> C[Services]
     C --> D[(Nextcloud DB)]
-    C --> E[Elasticsearch]
+    C --> E[(OpenRegister<br/>storage + search)]
     A --> F[Nextcloud Dashboard]
-    A --> G[Nextcloud Activity]
-    H[Cron] -->|background jobs| C
 ```
 
 ### Data Model
@@ -125,7 +123,7 @@ zaakafhandelapp/
 | Nextcloud | 28 – 33 |
 | PHP | 8.1+ |
 | Database | PostgreSQL 10+, MySQL 8.0+, SQLite |
-| Elasticsearch | optional — for full-text case search |
+| OpenRegister | required — object storage, search, RBAC and audit |
 
 ## Installation
 
@@ -186,7 +184,7 @@ npm run stylelint       # CSS linting
 | Validation | Zod (runtime schema validation) |
 | Build | Webpack 5, @nextcloud/webpack-vue-config |
 | Backend | PHP 8.1+, Nextcloud App Framework |
-| Search | SQL ILIKE (default) + Elasticsearch (optional) |
+| Search | Provided by OpenRegister |
 | Quality | PHPCS, PHPMD, phpmetrics, ESLint, Stylelint |
 
 ## Standards & Compliance
