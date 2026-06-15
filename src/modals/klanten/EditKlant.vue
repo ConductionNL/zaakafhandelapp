@@ -1,92 +1,155 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'editKlant'"
-		name="Klant"
+		:name="t('zaakafhandelapp', 'Customer')"
 		size="normal"
 		:can-close="false">
 		<NcNoteCard v-if="success" type="success">
-			<p>Klant succesvol aangepast</p>
+			<p>{{ t('zaakafhandelapp', 'Customer successfully updated') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
 		</NcNoteCard>
 
 		<div v-if="!success" class="form-group">
+			<NcSelect
+				v-bind="typeOptions"
+				v-model="klantItem.type"
+				:disabled="loading"
+				:input-label="t('zaakafhandelapp', 'Customer type')"
+				required />
+
 			<NcTextField :disabled="loading"
-				label="Voornaam"
+				:label="t('zaakafhandelapp', 'First name')"
 				maxlength="255"
 				:value.sync="klantItem.voornaam" />
 
 			<NcTextField :disabled="loading"
-				label="Tussenvoegsel"
+				:label="t('zaakafhandelapp', 'Second first name')"
+				maxlength="255"
+				:value.sync="klantItem.tweedeVoornaam" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'Middle name')"
 				maxlength="255"
 				:value.sync="klantItem.tussenvoegsel" />
 
 			<NcTextField :disabled="loading"
-				label="Achternaam"
+				:label="t('zaakafhandelapp', 'Last name')"
 				maxlength="255"
 				:value.sync="klantItem.achternaam" />
 
 			<NcTextField :disabled="loading"
-				label="Telefoonnummer"
+				:label="t('zaakafhandelapp', 'BSN')"
+				maxlength="255"
+				:value.sync="klantItem.bsn" />
+			<div>
+				<p>{{ t('zaakafhandelapp', 'Date of birth') }}</p>
+				<NcDateTimePicker v-model="klantItem.geboortedatum"
+					:disabled="loading"
+					:input-label="t('zaakafhandelapp', 'Date of birth')" />
+			</div>
+
+			<NcSelect v-bind="sexOptions"
+				v-model="klantItem.geslacht"
+				:clearable="false"
+				class="wide-select"
+				:disabled="loading"
+				:input-label="t('zaakafhandelapp', 'Gender')" />
+
+			<NcSelect
+				v-bind="countryOptions"
+				v-model="klantItem.land"
+				class="wide-select"
+				:disabled="loading"
+				:input-label="t('zaakafhandelapp', 'Country')" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'Phone number')"
 				maxlength="255"
 				:value.sync="klantItem.telefoonnummer" />
 
 			<NcTextField :disabled="loading"
-				label="Email adres"
+				:label="t('zaakafhandelapp', 'Email address')"
 				maxlength="255"
 				:value.sync="klantItem.emailadres" />
 
 			<NcTextField :disabled="loading"
-				label="Functie"
+				:label="t('zaakafhandelapp', 'Street name')"
+				maxlength="255"
+				:value.sync="klantItem.straatnaam" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'City')"
+				maxlength="255"
+				:value.sync="klantItem.plaats" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'Postal code')"
+				maxlength="255"
+				:value.sync="klantItem.postcode" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'House number')"
+				maxlength="255"
+				:value.sync="klantItem.huisnummer" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'Function')"
 				maxlength="255"
 				:value.sync="klantItem.functie" />
 
 			<NcTextField :disabled="loading"
-				label="Aanmaak kanaal"
+				:label="t('zaakafhandelapp', 'Creation channel')"
 				maxlength="255"
 				:value.sync="klantItem.aanmaakkanaal" />
 
 			<NcTextField :disabled="loading"
-				label="Bron organisatie"
+				:label="t('zaakafhandelapp', 'Source organisation')"
 				maxlength="255"
 				:value.sync="klantItem.bronorganisatie" />
 
 			<NcTextField :disabled="loading"
-				label="Bedrijfsnaam"
+				:label="t('zaakafhandelapp', 'Company name')"
 				maxlength="255"
 				:value.sync="klantItem.bedrijfsnaam" />
 
 			<NcTextField :disabled="loading"
-				label="Website Url"
+				:label="t('zaakafhandelapp', 'Chamber of commerce number')"
+				maxlength="255"
+				:value.sync="klantItem.kvkNummer" />
+
+			<NcTextField :disabled="loading"
+				:label="t('zaakafhandelapp', 'Website URL')"
 				maxlength="255"
 				:value.sync="klantItem.websiteUrl" />
 
 			<NcTextField :disabled="loading"
-				label="Url"
+				:label="t('zaakafhandelapp', 'URL')"
 				maxlength="255"
 				:value.sync="klantItem.url" />
 
 			<NcTextField :disabled="loading"
-				label="Geverifieerd"
+				:label="t('zaakafhandelapp', 'Verified')"
 				maxlength="255"
 				:value.sync="klantItem.geverifieerd" />
 
 			<NcTextField :disabled="loading"
-				label="Subject"
+				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255"
 				:value.sync="klantItem.subject" />
 
 			<NcTextField :disabled="loading"
-				label="Subject Identificatie"
+				:label="t('zaakafhandelapp', 'Subject identification')"
 				maxlength="255"
 				:value.sync="klantItem.subjectIdentificatie" />
 
 			<NcTextField :disabled="loading"
-				label="Subject Type"
+				:label="t('zaakafhandelapp', 'Subject type')"
 				maxlength="255"
 				:value.sync="klantItem.subjectType" />
 		</div>
@@ -96,7 +159,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
@@ -105,7 +168,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				Help
 			</NcButton>
 			<NcButton v-if="!success"
-				:disabled="loading"
+				:disabled="loading || !klantItem.type"
 				type="primary"
 				@click="editKlant()">
 				<template #icon>
@@ -113,7 +176,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && klantStore.klantItem?.id" :size="20" />
 					<Plus v-if="!loading && !klantStore.klantItem?.id" :size="20" />
 				</template>
-				{{ klantStore.klantItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ klantStore.klantItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -126,7 +189,12 @@ import {
 	NcTextField,
 	NcLoadingIcon,
 	NcNoteCard,
+	NcSelect,
+	NcDateTimePicker,
 } from '@nextcloud/vue'
+import { countries } from '../../data/countries.js'
+
+// Icons
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
@@ -140,6 +208,8 @@ export default {
 		NcButton,
 		NcLoadingIcon,
 		NcNoteCard,
+		NcSelect,
+		NcDateTimePicker,
 		// Icons
 		ContentSaveOutline,
 		Cancel,
@@ -152,16 +222,33 @@ export default {
 			loading: false,
 			error: false,
 			hasUpdated: false,
+			countryOptions: {
+				options: countries.map((country) => ({
+					id: country.code,
+					label: country.name,
+				})),
+			},
 			klantItem: {
 				voornaam: '',
+				tweedeVoornaam: '',
+				type: 'persoon',
 				tussenvoegsel: '',
 				achternaam: '',
+				bsn: '',
+				geboortedatum: '',
+				geslacht: '',
+				land: '',
 				telefoonnummer: '',
 				emailadres: '',
+				straatnaam: '',
+				plaats: '',
+				postcode: '',
+				huisnummer: '',
 				functie: '',
 				aanmaakkanaal: '',
 				bronorganisatie: '',
 				bedrijfsnaam: '',
+				kvkNummer: '',
 				websiteUrl: '',
 				url: '',
 				geverifieerd: '',
@@ -169,22 +256,63 @@ export default {
 				subjectIdentificatie: '',
 				subjectType: '',
 			},
+			typeOptions: {
+				options: [
+					{ value: 'persoon', label: t('zaakafhandelapp', 'Person') },
+					{ value: 'organisatie', label: t('zaakafhandelapp', 'Organisation') },
+				],
+			},
+			sexOptions: {
+				options: [
+					{ value: 'man', label: t('zaakafhandelapp', 'Male') },
+					{ value: 'vrouw', label: t('zaakafhandelapp', 'Female') },
+					{ value: 'overige', label: t('zaakafhandelapp', 'Other') },
+				],
+			},
 		}
 	},
+	computed: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
+		items() {
+			return this.contactMomentItems
+		},
+	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+	 */
 	updated() {
 		if (navigationStore.modal === 'editKlant' && !this.hasUpdated) {
+			const klantType = this.typeOptions.options.find((option) => option.value === klantStore.klantItem?.type)
+
+			const country = this.countryOptions.options.find((option) => option.id === klantStore.klantItem?.land)
+
+			const sex = this.sexOptions.options.find((option) => option.value === klantStore.klantItem?.geslacht)
+
 			if (klantStore.klantItem?.id) {
 				this.klantItem = {
 					...klantStore.klantItem,
 					voornaam: klantStore.klantItem.voornaam || '',
+					tweedeVoornaam: klantStore.klantItem.tweedeVoornaam || '',
+					type: klantType || { value: 'persoon', label: t('zaakafhandelapp', 'Person') },
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
+					bsn: klantStore.klantItem.bsn || '',
+					geboortedatum: klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum) : '',
+					geslacht: sex || { value: 'man', label: t('zaakafhandelapp', 'Male') },
+					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
+					straatnaam: klantStore.klantItem.straatnaam || '',
+					plaats: klantStore.klantItem.plaats || '',
+					postcode: klantStore.klantItem.postcode || '',
+					huisnummer: klantStore.klantItem.huisnummer || '',
 					functie: klantStore.klantItem.functie || '',
 					aanmaakkanaal: klantStore.klantItem.aanmaakkanaal || '',
 					bronorganisatie: klantStore.klantItem.bronorganisatie || '',
 					bedrijfsnaam: klantStore.klantItem.bedrijfsnaam || '',
+					kvkNummer: klantStore.klantItem.kvkNummer || '',
 					websiteUrl: klantStore.klantItem.websiteUrl || '',
 					url: klantStore.klantItem.url || '',
 					geverifieerd: klantStore.klantItem.geverifieerd || '',
@@ -197,6 +325,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 			this.success = false
@@ -205,14 +336,25 @@ export default {
 			this.hasUpdated = false
 			this.klantItem = {
 				voornaam: '',
+				tweedeVoornaam: '',
+				type: { value: 'persoon', label: t('zaakafhandelapp', 'Person') },
 				tussenvoegsel: '',
 				achternaam: '',
+				bsn: '',
+				geboortedatum: '',
+				geslacht: { value: 'man', label: t('zaakafhandelapp', 'Male') },
+				land: '',
 				telefoonnummer: '',
 				emailadres: '',
+				straatnaam: '',
+				plaats: '',
+				postcode: '',
+				huisnummer: '',
 				functie: '',
 				aanmaakkanaal: '',
 				bronorganisatie: '',
 				bedrijfsnaam: '',
+				kvkNummer: '',
 				websiteUrl: '',
 				url: '',
 				geverifieerd: '',
@@ -221,11 +363,19 @@ export default {
 				subjectType: '',
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async editKlant() {
 			this.loading = true
+
 			try {
 				await klantStore.saveKlant({
 					...this.klantItem,
+					type: this.klantItem.type.value,
+					geboortedatum: this.klantItem.geboortedatum !== '' && new Date(this.klantItem.geboortedatum).toISOString(),
+					land: this.klantItem.land.id,
+					geslacht: this.klantItem.geslacht.value,
 				})
 				this.success = true
 				this.loading = false
@@ -236,6 +386,9 @@ export default {
 				this.error = error.message || 'An error occurred while saving the klant'
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},
@@ -243,30 +396,8 @@ export default {
 }
 </script>
 
-<style>
-.modal__content {
-    margin: var(--zaa-margin-50);
-    text-align: center;
+<style scoped>
+.wide-select {
+	width: 100%;
 }
-
-/* .modal__content > button {
-    margin-block: 6px;
-} */
-
-.zaakDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
-}
-
-.success {
-    color: green;
-}
-
-/* .input-field__label {
-    margin-block: -6px;
-}
-.input-field__input:focus + .input-field__label {
-    margin-block: 0px;
-} */
 </style>

@@ -2,256 +2,203 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 /**
- * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ * Controller for rollen (roles) resources.
+ *
+ * @see https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class RollenController extends Controller
 {
-    const TEST_ARRAY = [
-        "095be615-a8ad-4c33-8e9c-c7612fbf6c9f" => [
-            "url" => "http://example.com",
-            "uuid" => "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
-            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
-            "betrokkene" => "http://example.com",
-            "betrokkeneType" => "medewerker",
-            "afwijkendeNaamBetrokkene" => "string",
-            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
-            "omschrijving" => "Rol omschrijving 1",
-            "omschrijvingGeneriek" => "string",
-            "roltoelichting" => "string",
-            "registratiedatum" => "2019-08-24T14:15:22Z",
-            "indicatieMachtiging" => "gemachtigde",
-            "contactpersoonRol" => [
-                "emailadres" => "user@example.com",
-                "functie" => "string",
-                "telefoonnummer" => "string",
-                "naam" => "string"
-            ],
-            "statussen" => [
-                "http://example.com/api/zrc/v1/statussen/id"
-            ],
-            "_expand" => [
-                "zaak" => [],
-                "roltype" => [],
-                "statussen" => []
-            ],
-            "betrokkeneIdentificatie" => [
-                "identificatie" => "string",
-                "achternaam" => "string",
-                "voorletters" => "string",
-                "voorvoegselAchternaam" => "string"
-            ]
-        ],
-        "d3f5a5c1-e78d-4c33-9e9c-c7612fbf6c9a" => [
-            "url" => "http://example.com",
-            "uuid" => "d3f5a5c1-e78d-4c33-9e9c-c7612fbf6c9a",
-            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
-            "betrokkene" => "http://example.com",
-            "betrokkeneType" => "medewerker",
-            "afwijkendeNaamBetrokkene" => "string",
-            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
-            "omschrijving" => "Rol omschrijving 2",
-            "omschrijvingGeneriek" => "string",
-            "roltoelichting" => "string",
-            "registratiedatum" => "2019-08-24T14:15:22Z",
-            "indicatieMachtiging" => "gemachtigde",
-            "contactpersoonRol" => [
-                "emailadres" => "user@example.com",
-                "functie" => "string",
-                "telefoonnummer" => "string",
-                "naam" => "string"
-            ],
-            "statussen" => [
-                "http://example.com/api/zrc/v1/statussen/id"
-            ],
-            "_expand" => [
-                "zaak" => [],
-                "roltype" => [],
-                "statussen" => []
-            ],
-            "betrokkeneIdentificatie" => [
-                "identificatie" => "string",
-                "achternaam" => "string",
-                "voorletters" => "string",
-                "voorvoegselAchternaam" => "string"
-            ]
-        ],
-        "a5c6b7d8-f9e0-4c33-8e9c-c7612fbf6c9b" => [
-            "url" => "http://example.com",
-            "uuid" => "a5c6b7d8-f9e0-4c33-8e9c-c7612fbf6c9b",
-            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
-            "betrokkene" => "http://example.com",
-            "betrokkeneType" => "medewerker",
-            "afwijkendeNaamBetrokkene" => "string",
-            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
-            "omschrijving" => "Rol omschrijving 3",
-            "omschrijvingGeneriek" => "string",
-            "roltoelichting" => "string",
-            "registratiedatum" => "2019-08-24T14:15:22Z",
-            "indicatieMachtiging" => "gemachtigde",
-            "contactpersoonRol" => [
-                "emailadres" => "user@example.com",
-                "functie" => "string",
-                "telefoonnummer" => "string",
-                "naam" => "string"
-            ],
-            "statussen" => [
-                "http://example.com/api/zrc/v1/statussen/id"
-            ],
-            "betrokkeneIdentificatie" => [
-                "identificatie" => "string",
-                "achternaam" => "string",
-                "voorletters" => "string",
-                "voorvoegselAchternaam" => "string"
-            ]
-        ],
-        "b8c7d6e5-f0e1-4c33-8e9c-c7612fbf6c9c" => [
-            "url" => "http://example.com",
-            "uuid" => "b8c7d6e5-f0e1-4c33-8e9c-c7612fbf6c9c",
-            "zaak" => "http://example.com/api/zrc/v1/zaken/id",
-            "betrokkene" => "http://example.com",
-            "betrokkeneType" => "medewerker",
-            "afwijkendeNaamBetrokkene" => "string",
-            "roltype" => "http://example.com/api/ztc/v1/roltypen/id",
-            "omschrijving" => "Rol omschrijving 4",
-            "omschrijvingGeneriek" => "string",
-            "roltoelichting" => "string",
-            "registratiedatum" => "2019-08-24T14:15:22Z",
-            "indicatieMachtiging" => "gemachtigde",
-            "contactpersoonRol" => [
-                "emailadres" => "user@example.com",
-                "functie" => "string",
-                "telefoonnummer" => "string",
-                "naam" => "string"
-            ],
-            "statussen" => [
-                "http://example.com/api/zrc/v1/statussen/id"
-            ],
-            "betrokkeneIdentificatie" => [
-                "identificatie" => "string",
-                "achternaam" => "string",
-                "voorletters" => "string",
-                "voorvoegselAchternaam" => "string"
-            ]
-        ]
+    /**
+     * RollenController constructor.
+     *
+     * @param string       $appName     The application name
+     * @param IRequest     $request     The request object
+     * @param IAppConfig   $config      The app configuration
+     * @param IUserSession $userSession The user session
+     */
+    public function __construct(
+        $appName,
+        IRequest $request,
+        private readonly IAppConfig $config,
+        private readonly IUserSession $userSession,
+    ) {
+        parent::__construct($appName, $request);
+    }//end __construct()
+
+    /**
+     * Renders the main application page.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return TemplateResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
+     */
+    public function page(): TemplateResponse
+    {
+        return new TemplateResponse('zaakafhandelapp', 'index', []);
+    }//end page()
+
+    /**
+     * Return (and search) all rollen.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @param CallService $callService The call service
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
+     */
+    public function index(CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $results = $callService->index(source: 'zrc', endpoint: 'rollen');
+        return new JSONResponse($results);
+    }//end index()
+
+    /**
+     * Read a single rol.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @param string      $id          The rol ID
+     * @param CallService $callService The call service
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
+     */
+    public function show(string $id, CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $results = $callService->show(source: 'zrc', endpoint: 'rollen', id: $id);
+        return new JSONResponse($results);
+    }//end show()
+
+    /**
+     * Valid ZGW betrokkeneType values per VNG API standard.
+     */
+    private const BETROKKENE_TYPES = [
+        'natuurlijk_persoon',
+        'niet_natuurlijk_persoon',
+        'vestiging',
+        'organisatorische_eenheid',
+        'medewerker',
     ];
 
-    public function __construct(
-		$appName,
-		IRequest $request,
-		private readonly IAppConfig $config
-	)
+    /**
+     * Create a rol.
+     *
+     * Validates ZGW mandatory invariants before forwarding to the ZRC:
+     * - betrokkeneType must be a known enum value.
+     * - roltoelichting is mandatory as the AVG legal basis for processing personal data
+     *   (BSN stored in betrokkeneIdentificatie.inpBsn) — fixes #279.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @param CallService $callService The call service
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
+     */
+    public function create(CallService $callService): JSONResponse
     {
-        parent::__construct($appName, $request);
-    }
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{
-        return new TemplateResponse(
-            //Application::APP_ID,
-            'zaakafhandelapp',
-            'index',
-            []
-        );
-	}
+        $body = $this->request->getParams();
 
+        // Validate betrokkeneType enum.
+        if (isset($body['betrokkeneType']) && in_array($body['betrokkeneType'], self::BETROKKENE_TYPES, true) === false) {
+            return new JSONResponse(
+                ['betrokkeneType' => ['Waarde \''.$body['betrokkeneType'].'\' is geen geldige betrokkeneType.']],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
 
+        // Enforce roltoelichting: required for AVG Article 5(1)(b) purpose-limitation
+        // when personal data (e.g. BSN) is associated with the rol.
+        if (empty($body['roltoelichting']) === true) {
+            return new JSONResponse(
+                ['roltoelichting' => ['Dit veld is verplicht. Geef de juridische grondslag op voor het verwerken van persoonsgegevens in deze rol.']],
+                Http::STATUS_BAD_REQUEST
+            );
+        }
 
-	/**
-	 * Return (and serach) all objects
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function index(CallService $callService): JSONResponse
-	{
-		// Latere zorg
-		$query= $this->request->getParams();
+        $results = $callService->create(source: 'zrc', endpoint: 'rollen', data: $body);
+        return new JSONResponse($results);
+    }//end create()
 
-		$results = $callService->index(source: 'zrc', endpoint: 'rollen');
-		return new JSONResponse($results);
-	}
+    /**
+     * Update a rol.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @param string      $id          The rol ID
+     * @param CallService $callService The call service
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
+     */
+    public function update(string $id, CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * Read a single object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function show(string $id, CallService $callService): JSONResponse
-	{
-		// Latere zorg
-		$query= $this->request->getParams();
+        $body    = $this->request->getParams();
+        $results = $callService->update(source: 'zrc', endpoint: 'rollen', data: $body, id: $id);
+        return new JSONResponse($results);
+    }//end update()
 
-		$results = $callService->show(source: 'zrc', endpoint: 'rollen', id: $id);
-		return new JSONResponse($results);
-	}
+    /**
+     * Delete a rol.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @param string      $id          The rol ID
+     * @param CallService $callService The call service
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
+     */
+    public function destroy(string $id, CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-
-	/**
-	 * Creatue an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function create(CallService $callService): JSONResponse
-	{
-		// get post from requests
-		$body = $this->request->getParams();
-		$results = $callService->create(source: 'zrc', endpoint: 'rollen', data: $body);
-		return new JSONResponse($results);
-	}
-
-	/**
-	 * Update an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function update(string $id, CallService $callService): JSONResponse
-	{
-		$body = $this->request->getParams();
-		$results = $callService->update(source: 'zrc', endpoint: 'rollen', data: $body, id: $id);
-		return new JSONResponse($results);
-	}
-
-	/**
-	 * Delate an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function destroy(string $id, CallService $callService): JSONResponse
-	{
-		$callService->destroy(source: 'zrc', endpoint: 'rollen', id: $id);
-
-		return new JsonResponse([]);
-	}
-}
+        $callService->destroy(source: 'zrc', endpoint: 'rollen', id: $id);
+        return new JSONResponse([]);
+    }//end destroy()
+}//end class
