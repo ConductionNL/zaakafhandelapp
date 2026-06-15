@@ -12,6 +12,8 @@ import { navigationStore, rolStore } from '../store/store.js'
 		<AddBerichtToZaak v-if="navigationStore.modal === 'addBerichtToZaak'" />
 		<AddTaakToZaak v-if="navigationStore.modal === 'addTaakToZaak'" />
 		<AddRolToZaak v-if="navigationStore.modal === 'addRolToZaak'" />
+		<SuspendZaak v-if="navigationStore.modal === 'suspendZaak'" />
+		<ExtendZaak v-if="navigationStore.modal === 'extendZaak'" />
 		<!-- contactmomenten -->
 		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
 		<ViewContactMoment v-if="navigationStore.viewModal === 'viewContactMoment'" />
@@ -65,6 +67,8 @@ import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import EditMedewerker from './medewerkers/EditMedewerker.vue'
 import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
 import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
+import SuspendZaak from './zaken/SuspendZaak.vue'
+import ExtendZaak from './zaken/ExtendZaak.vue'
 import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
 import AddRolToZaak from './zaken/AddRolToZaak.vue'
 import ResultaatForm from './resultaten/ResultaatForm.vue'
@@ -97,6 +101,8 @@ export default {
 		EditMedewerker,
 		AddBerichtToZaak,
 		AddTaakToZaak,
+		SuspendZaak,
+		ExtendZaak,
 		ContactMomentenForm,
 		AddRolToZaak,
 		ResultaatForm,
