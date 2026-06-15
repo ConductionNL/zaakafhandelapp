@@ -1,21 +1,22 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div>
-		<ul v-if="!loading">
-			<NcListItem v-for="(taak, i) in takenList.results"
+		<div v-if="filteredTakenList?.length">
+			<NcListItem v-for="(taak, i) in filteredTakenList"
 				:key="`${taak}${i}`"
 				:name="taak?.title"
 				:bold="true"
-				:active="store.taakId === taak?.id"
-				:details="'1h'"
-				:counter-number="44"
+				:active="taakStore.taakItem?.id === taak?.id"
+				:details="taak.status"
+				:counter-number="taak.deadline ? new Date(taak.deadline).toLocaleDateString() : 'no deadline'"
 				:force-display-actions="true"
-				@click="store.setTaakId(taak.id)">
+				@click="toggleTaak(taak)">
 				<template #icon>
-					<CalendarMonthOutline :class="store.taakId === taak.id && 'selectedZaakIcon'"
+					<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
 						disable-menu
 						:size="44" />
 				</template>
@@ -23,21 +24,37 @@ import { navigationStore } from '../../store/store.js'
 					{{ taak?.onderwerp }}
 				</template>
 				<template #actions>
-					<NcActionButton @click="showEditTaakModal(taak)">
+					<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setSelected('taken')">
+						<template #icon>
+							<Eye :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'View') }}
+					</NcActionButton>
+					<!-- <NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('editBericht')">
 						<template #icon>
 							<Pencil :size="20" />
 						</template>
-						Bewerken
+						{{ t('zaakafhandelapp', 'Edit') }}
+					</NcActionButton> -->
+					<NcActionButton>
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<div v-if="!filteredTakenList?.length && !loading">
+			{{ t('zaakafhandelapp', 'No tasks found.') }}
+		</div>
+
+		<NcLoadingIcon v-if="!filteredTakenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Taken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading tasks')" />
 	</div>
 </template>
 <script>
@@ -46,7 +63,8 @@ import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
 
 // Icons
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
-import Pencil from 'vue-material-design-icons/Pencil.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
 
 export default {
 	name: 'ZaakTaken',
@@ -66,44 +84,52 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			takenList: [],
 		}
 	},
+	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
+		filteredTakenList() {
+			return taakStore.takenList.filter((taak) => taak.zaak === this.zaakId)
+		},
+	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
+		zaakId(newVal) {
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData()
 	},
 	methods: {
-		showEditTaakModal(taak) {
-			store.setTaakItem(taak)
-			navigationStore.setModal('editTaak')
-		},
-		fetchData(zaakId) {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchData() {
 			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.takenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
+
+			taakStore.refreshTakenList()
+				.finally(() => {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
+		toggleTaak(taak) {
+			if (taakStore.taakItem?.id === taak.id) {
+				taakStore.setTaakItem(null)
+			} else {
+				taakStore.setTaakItem(taak)
+			}
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

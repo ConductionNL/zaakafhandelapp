@@ -2,7 +2,7 @@
 	<NcAppContent>
 		<template #default>
 			<div class="dashboardContainer">
-				<h1>Zoekn</h1>
+				<h1>{{ t('zaakafhandelapp', 'Search') }}</h1>
 				Nog geen resultaten
 			</div>
 		</template>
