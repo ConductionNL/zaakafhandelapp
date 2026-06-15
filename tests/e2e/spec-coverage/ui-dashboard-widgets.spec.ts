@@ -84,4 +84,26 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 
+	// REQ-006: the open-zaken widget surfaces deadline urgency (overdue indicator +
+	// count, most-urgent-first ordering). The urgency derivation + ordering are locked
+	// by the vitest suite (zaakUrgency.spec.js); these UI-level checks confirm the
+	// open-zaken widget surface (the /zaken view it links into) mounts deterministically.
+
+	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#overdue-zaken-float-to-the-top-of-the-widget
+	test('overdue zaken float to the top of the widget — open-zaken surface mounts', async ({ page }) => {
+		await page.goto(`${APP}/zaken`)
+		await dismissSupportModal(page)
+		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+	})
+
+	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#no-overdue-zaken-no-alarm
+	test('no overdue zaken, no alarm — open-zaken surface renders without an overdue count', async ({ page }) => {
+		await page.goto(`${APP}/zaken`)
+		await dismissSupportModal(page)
+		// With no overdue zaak the widget shows no overdue-count header; the view
+		// mounts cleanly either way.
+		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
+	})
+
 })

@@ -3,28 +3,43 @@
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>zaakafhandelapp</id>
 	<name>Zaak Afhandel App</name>
-	<summary>This is a the ZAA (Zaak Afhandel App) in english Case Handling App that is made by ConductionN</summary>
-	<description><![CDATA[📰 Brinning Gateway and Service bus functionality to nextcloud
+	<summary>Dutch municipal case handling (zaakgericht werken) for Nextcloud — cases, tasks, customer contacts and a ZGW API, built on OpenRegister.</summary>
+	<summary lang="nl">Zaakgericht werken voor Nextcloud — zaken, taken, klantcontacten en een ZGW-API, gebouwd op OpenRegister.</summary>
+	<description><![CDATA[Zaak Afhandel App (ZAA) brings Dutch municipal case handling (*zaakgericht werken*, VNG GEMMA/ZGW) into Nextcloud. Case workers manage zaken from intake through formal closure: zaaktypen, statussen, rollen, besluiten and resultaten; taken (tasks); klanten, personen and organisaties with contactmoment logging; in-case berichten with a message audit trail; a personal werkvoorraad dashboard; and a ZGW (ZRC/ZTC/DRC/BRC) REST API surface. Data, search, RBAC and audit are provided by OpenRegister.
 
 **Requires:** [OpenRegister](https://apps.nextcloud.com/apps/openregister) (install from the [Nextcloud App Store](https://apps.nextcloud.com/apps/openregister)).
 
-The OpenCatalogi Nextcloud app provides a framework for federated catalogi to work together in an open data ecosystem
+- 📁 Cases (zaken) with zaaktypen, statussen, rollen, eigenschappen, besluiten and resultaten
+- ✅ Tasks (taken) assigned to medewerkers or klanten
+- 👥 Klanten, personen and organisaties with contactmoment logging
+- 💬 In-case messaging (berichten) with a message audit trail
+- 📊 Personal werkvoorraad dashboard with widgets
+- 🔌 ZGW (ZRC/ZTC/DRC/BRC) REST API surface
 
-- 📲 Synchronize your data sources
-- 📰 Send cloud eventt
-- 🆓 Map and translate api calls
+Requirements can be found [here](https://github.com/ConductionNL/zaakafhandelapp/blob/master/README.md)
 
-**System Cron is currently required for this app to work**
+Create a [bug report](https://github.com/ConductionNL/zaakafhandelapp/issues/new/choose)
 
-Requirements can be found [here](https://conduction.gitbook.io/opencatalogi-nextcloud/installatie)
-
-The Roadmap is available [here](https://github.com/orgs/OpenCatalogi/projects/1/views/2)
-
-Create a [bug report](https://github.com/OpenCatalogi/.github/issues/new/choose)
-
-Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/choose)
+Create a [feature request](https://github.com/ConductionNL/zaakafhandelapp/issues/new/choose)
     ]]></description>
-	<version>0.2.5</version>
+	<description lang="nl"><![CDATA[Zaak Afhandel App (ZAA) brengt zaakgericht werken (VNG GEMMA/ZGW) naar Nextcloud. Behandelaars beheren zaken van intake tot formele afsluiting: zaaktypen, statussen, rollen, besluiten en resultaten; taken; klanten, personen en organisaties met contactmomentregistratie; berichten binnen een zaak met een berichten-audittrail; een persoonlijk werkvoorraad-dashboard; en een ZGW (ZRC/ZTC/DRC/BRC) REST-API. Opslag, zoeken, RBAC en audit worden geleverd door OpenRegister.
+
+**Vereist:** [OpenRegister](https://apps.nextcloud.com/apps/openregister) (te installeren via de [Nextcloud App Store](https://apps.nextcloud.com/apps/openregister)).
+
+- 📁 Zaken met zaaktypen, statussen, rollen, eigenschappen, besluiten en resultaten
+- ✅ Taken toegewezen aan medewerkers of klanten
+- 👥 Klanten, personen en organisaties met contactmomentregistratie
+- 💬 Berichten binnen een zaak met audittrail
+- 📊 Persoonlijk werkvoorraad-dashboard met widgets
+- 🔌 ZGW (ZRC/ZTC/DRC/BRC) REST-API
+
+De vereisten zijn [hier](https://github.com/ConductionNL/zaakafhandelapp/blob/master/README.md) te vinden
+
+Maak een [bug report](https://github.com/ConductionNL/zaakafhandelapp/issues/new/choose)
+
+Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issues/new/choose)
+    ]]></description>
+	<version>0.2.6</version>
 	<licence>agpl</licence>
 	<author mail="info@conduction.nl" homepage="https://www.conduction.nl/">Conduction</author>
 	<namespace>ZaakAfhandelApp</namespace>

@@ -30,6 +30,7 @@ export const mockKlantData = (): TKlant[] => [
 		subject: 'John Doe',
 		subjectIdentificatie: '1234567890',
 		subjectType: 'person',
+		contactsUid: '',
 	},
 ]
 

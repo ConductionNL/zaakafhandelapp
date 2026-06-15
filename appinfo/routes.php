@@ -46,6 +46,12 @@ return [
 		['name' => 'klanten#getBerichten', 'url' => '/api/klanten/{id}/berichten', 'verb' => 'GET'],
 		['name' => 'klanten#getZaken', 'url' => '/api/klanten/{id}/zaken', 'verb' => 'GET'],
 
+		// Addressbook integration routes (klanten-addressbook-sync)
+		['name' => 'klanten#contactsStatus', 'url' => '/api/klanten/contacts/status', 'verb' => 'GET'],
+		['name' => 'klanten#searchContacts', 'url' => '/api/klanten/contacts/search', 'verb' => 'GET'],
+		['name' => 'klanten#importContact', 'url' => '/api/klanten/contacts/import', 'verb' => 'POST'],
+		['name' => 'klanten#exportContact', 'url' => '/api/klanten/{id}/contacts/export', 'verb' => 'POST'],
+
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],

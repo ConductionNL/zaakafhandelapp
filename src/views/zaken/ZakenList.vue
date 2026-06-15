@@ -29,17 +29,28 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						</template>
 						{{ t('zaakafhandelapp', 'Start case') }}
 					</NcActionButton>
+					<NcActionButton :model-value="sortByDeadline" @click="sortByDeadline = !sortByDeadline">
+						<template #icon>
+							<SortClockAscendingOutline :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Sort by deadline') }}
+					</NcActionButton>
+					<NcActionButton :model-value="overdueOnly" @click="overdueOnly = !overdueOnly">
+						<template #icon>
+							<AlertOutline :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Only overdue') }}
+					</NcActionButton>
 				</NcActions>
 			</div>
 
-			<div v-if="zaakStore.zakenList?.length">
-				<NcListItem v-for="(zaak, i) in zaakStore.zakenList"
+			<div v-if="displayedZaken?.length">
+				<NcListItem v-for="(zaak, i) in displayedZaken"
 					:key="`${zaak}${i}`"
 					:name="zaak?.identificatie"
 					:force-display-actions="true"
 					:active="$route.params?.id === zaak?.id"
-					:details="'1h'"
-					:counter-number="zaak.uiterlijkeEinddatumAfdoening ? `${Math.ceil((new Date(zaak.uiterlijkeEinddatumAfdoening) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
+					:details="zaak.uiterlijkeEinddatumAfdoening || ''"
 					@click="openZaak(zaak)">
 					<template #icon>
 						<BriefcaseAccountOutline :class="zaakStore.zaakItem?.id === zaak?.id && 'selectedZaakIcon'"
@@ -47,7 +58,10 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 							:size="44" />
 					</template>
 					<template #subname>
-						{{ zaakTypeStore.zaakTypeList.find(zaakType => zaakType.id === zaak.zaaktype)?.identificatie ?? zaak.zaaktype }}
+						<span>{{ zaakTypeStore.zaakTypeList.find(zaakType => zaakType.id === zaak.zaaktype)?.identificatie ?? zaak.zaaktype }}</span>
+						<span v-if="urgencyOf(zaak)" :class="['urgencyBadge', `urgency-${urgencyOf(zaak)}`]">
+							{{ t('zaakafhandelapp', urgencyLabelOf(zaak)) }}
+						</span>
 					</template>
 					<template #actions>
 						<NcActionButton @click="zaakStore.setZaakItem(zaak); navigationStore.setModal('zaakForm')">
@@ -81,6 +95,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 <script>
 // Components
 import { NcListItem, NcActions, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon } from '@nextcloud/vue'
+import { deriveZaakUrgency, urgencyLabel } from '../../services/zaakUrgency.js'
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
@@ -89,6 +104,8 @@ import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import SortClockAscendingOutline from 'vue-material-design-icons/SortClockAscendingOutline.vue'
+import AlertOutline from 'vue-material-design-icons/AlertOutline.vue'
 export default {
 	name: 'ZakenList',
 	components: {
@@ -106,13 +123,42 @@ export default {
 		Plus,
 		Pencil,
 		TrashCanOutline,
+		SortClockAscendingOutline,
+		AlertOutline,
 	},
 	data() {
 		return {
 			search: '',
 			loading: false,
 			zakenList: [],
+			sortByDeadline: false,
+			overdueOnly: false,
 		}
+	},
+	computed: {
+		/**
+		 * The zaken list with the overdue filter and deadline sort applied
+		 * (ui-case-views REQ-006).
+		 *
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-006
+		 */
+		displayedZaken() {
+			let list = [...(zaakStore.zakenList || [])]
+
+			if (this.overdueOnly) {
+				list = list.filter(zaak => this.urgencyOf(zaak) === 'verlopen')
+			}
+
+			if (this.sortByDeadline) {
+				list.sort((a, b) => {
+					const da = a.uiterlijkeEinddatumAfdoening ? new Date(a.uiterlijkeEinddatumAfdoening).getTime() : Infinity
+					const db = b.uiterlijkeEinddatumAfdoening ? new Date(b.uiterlijkeEinddatumAfdoening).getTime() : Infinity
+					return da - db
+				})
+			}
+
+			return list
+		},
 	},
 	/**
 	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
@@ -141,6 +187,18 @@ export default {
 			zaakStore.setZaakItem(zaak)
 			this.$router.push({ params: { id: zaak.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-006
+		 */
+		urgencyOf(zaak) {
+			return deriveZaakUrgency(zaak)
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-006
+		 */
+		urgencyLabelOf(zaak) {
+			return urgencyLabel(this.urgencyOf(zaak))
+		},
 	},
 }
 </script>
@@ -158,5 +216,29 @@ export default {
 
 .loadingIcon {
     margin-block-start: var(--zaa-margin-20);
+}
+
+.urgencyBadge {
+    display: inline-block;
+    margin-inline-start: 8px;
+    padding: 1px 6px;
+    border-radius: var(--border-radius);
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.urgency-verlopen {
+    background-color: var(--color-error);
+    color: var(--color-primary-text);
+}
+
+.urgency-bijna-verlopen {
+    background-color: var(--color-warning);
+    color: var(--color-main-text);
+}
+
+.urgency-op-tijd {
+    background-color: var(--color-success);
+    color: var(--color-primary-text);
 }
 </style>

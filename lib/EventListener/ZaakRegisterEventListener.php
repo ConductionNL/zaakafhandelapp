@@ -21,7 +21,9 @@ use OCA\ZaakAfhandelApp\Service\ZGWLogicService;
 use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
 use OCA\ZaakAfhandelApp\Service\ZGWValidationService;
 use OCA\ZaakAfhandelApp\Service\ZGWZaakLifecycleService;
+use OCA\ZaakAfhandelApp\Service\ZGWZaakOpschortingVerlengingService;
 use OCA\ZaakAfhandelApp\Service\ZGWZaakValidationService;
+use OCA\ZaakAfhandelApp\Service\ZaakTermijnService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCA\OpenRegister\Event\ObjectCreatedEvent;
@@ -39,6 +41,8 @@ class ZaakRegisterEventListener implements IEventListener
         private readonly ZGWZaakLifecycleService $lifecycleService,
         private readonly ZGWValidationService $validationService,
         private readonly ZGWZaakValidationService $zaakValidationService,
+        private readonly ZaakTermijnService $termijnService,
+        private readonly ZGWZaakOpschortingVerlengingService $opschortingVerlengingService,
         private readonly ZGWRegistryService $registry,
         private readonly SchemaMapper $schemaMapper,
     ) {
@@ -152,6 +156,10 @@ class ZaakRegisterEventListener implements IEventListener
             $this->validationService->checkRelevanteAndereZaken($obj);
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
+            // Derive the behandeltermijn fields from the zaaktype before the zaak is
+            // persisted (uiterlijkeEinddatumAfdoening from doorlooptijd, einddatumGepland
+            // from servicenorm). Client-supplied dates are never overridden.
+            $this->termijnService->deriveTermijnen($obj);
         }
 
         if ($slug === $this->registry->getBesluitSchema()) {
@@ -173,6 +181,10 @@ class ZaakRegisterEventListener implements IEventListener
             $this->validationService->checkRelevanteAndereZaken($obj);
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
+            // Apply opschorting/verlenging transitions: gate on the zaaktype policy,
+            // shift the termijn fields, and abort (via CustomValidationException) when
+            // the transition is not allowed (ZRC opschorting/verlenging — Awb 4:14/4:15).
+            $this->opschortingVerlengingService->applyTransitions($obj);
         }
     }//end handleObjectUpdating()
 
