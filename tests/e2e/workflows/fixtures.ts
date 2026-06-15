@@ -157,27 +157,20 @@ export class WorkflowFixtures {
 	}
 
 	/**
-	 * Seed a `zaak` directly at the data layer, bypassing the broken ZGW event
-	 * hooks (BUG-1/3) by briefly detaching the schema slug so the listener does
-	 * not fire. Returns the created zaak id. Tracked for cleanup. This lets the
-	 * workflow spec assert taak<->zaak LINKAGE even while UI-driven case creation
-	 * is broken — the linkage data model is the thing under test.
+	 * Seed a `zaak` directly at the data layer. Returns the created zaak id;
+	 * tracked for cleanup. This lets the workflow spec assert taak<->zaak
+	 * LINKAGE without depending on the UI create flow.
+	 *
+	 * Historically this briefly detached the zaak schema slug to dodge a ZGW
+	 * ObjectCreated listener that 500'd (BUG-1/3). Those hooks have since been
+	 * fixed — a plain create now succeeds — and the slug-swap dance was itself
+	 * fragile (the renamed slug did not always resolve in time, yielding
+	 * "Schema not found: zaak-e2e-seed-*" 404s). It now delegates to the normal
+	 * create path.
 	 */
 	async seedZaakBypassingHooks(data: Record<string, unknown>): Promise<string> {
-		const sid = await this.schemaId('zaak')
-		if (!sid) throw new Error('zaak schema slug not found — register/schema not configured')
-		const tmp = `zaak-e2e-seed-${Date.now().toString(36)}`
-		await this.ctx.put(`${OR}/schemas/${sid}`, { data: { slug: tmp } })
-		let id = ''
-		try {
-			const res = await this.ctx.post(`${OR}/objects/${REGISTER}/${tmp}`, { data })
-			if (!res.ok()) throw new Error(`seed zaak failed: ${res.status()} ${await res.text()}`)
-			id = WorkflowFixtures.idOf(await res.json())
-		} finally {
-			await this.ctx.put(`${OR}/schemas/${sid}`, { data: { slug: 'zaak' } })
-		}
-		if (id) this.created.push({ schema: 'zaak', id })
-		return id
+		const obj = await this.create('zaak', data)
+		return WorkflowFixtures.idOf(obj)
 	}
 
 	/** Find the runId-tagged records of a schema (for leak-free cleanup). */

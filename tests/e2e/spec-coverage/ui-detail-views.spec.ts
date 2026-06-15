@@ -57,7 +57,7 @@ async function assertDetailChrome(page: Page, entityLabel: string): Promise<void
 
 /** Server-routed detail page: reachable via a hard goto to /<plural>/:id. */
 async function gotoDetail(page: Page, plural: string, entityLabel: string): Promise<void> {
-	await page.goto(`${APP}/${plural}/${NO_SUCH}`)
+	await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
 	await dismissSupportModal(page)
 	await assertDetailChrome(page, entityLabel)
 }
@@ -128,7 +128,7 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 	// a seed check so the suite stays green on a seedless instance — the
 	// data-independent detail chrome is already covered by the tests above.
 	test('zaken detail from list — clicking a list row opens the detail surface', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 15_000 })
 		// First clickable list row in the index master list, if any seed exists.
@@ -151,7 +151,7 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Server-routed detail pages via hard goto (all have routes now).
 		for (const plural of ['zaken', 'taken', 'klanten', 'medewerkers', 'berichten', 'contactmomenten', 'rollen', 'zaaktypen', 'besluiten', 'documenten', 'resultaten']) {
-			await page.goto(`${APP}/${plural}/${NO_SUCH}`)
+			await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
 			await dismissSupportModal(page)
 			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 15_000 })
 		}

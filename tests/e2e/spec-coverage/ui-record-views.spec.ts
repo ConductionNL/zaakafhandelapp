@@ -52,7 +52,7 @@ async function assertIndexChrome(page: Page, title: string): Promise<void> {
 
 /** Server-routed index page: reachable via a hard goto. */
 async function gotoIndex(page: Page, route: string, title: string): Promise<void> {
-	await page.goto(`${APP}${route}`)
+	await page.goto(`${APP}/#${route}`)
 	await dismissSupportModal(page)
 	await assertIndexChrome(page, title)
 }
@@ -104,7 +104,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 
 	// @e2e openspec/specs/ui-case-views/spec.md#table-view-mode
 	test('view-mode toggle — Table radio switches the medewerkers list to table mode', async ({ page }) => {
-		await page.goto(`${APP}/medewerkers`)
+		await page.goto(`${APP}/#/medewerkers`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 		const tableRadio = page.getByRole('radio', { name: 'Table' }).first()
@@ -119,7 +119,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 
 	// @e2e openspec/specs/ui-modals/spec.md#opening-a-create-modal
 	test('rollen create modal — Add button opens the create dialog and cancels cleanly', async ({ page }) => {
-		await page.goto(`${APP}/rollen`)
+		await page.goto(`${APP}/#/rollen`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 		const addBtn = page.getByRole('button', { name: /^Add /i }).first()
@@ -144,7 +144,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Server-routed pages via hard goto (all index pages have routes now).
 		for (const route of ['/medewerkers', '/berichten', '/rollen', '/zaaktypen', '/statussen', '/besluiten', '/documenten', '/resultaten']) {
-			await page.goto(`${APP}${route}`)
+			await page.goto(`${APP}/#${route}`)
 			await dismissSupportModal(page)
 			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 15_000 })
 		}

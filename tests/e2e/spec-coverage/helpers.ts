@@ -5,35 +5,70 @@
  * Shared test helpers for spec-coverage e2e tests.
  */
 
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 const APP = '/apps/zaakafhandelapp'
 
 /**
- * Land in the SPA on a server-routed page, then navigate to `appRoute`
- * through the in-app Vue router.
+ * Map a human nav label to its stable manifest menu id (the testid suffix
+ * `cn-nav-entry-<id>`). The CnAppNav clusters entries into collapsible groups
+ * (CasesGroup, RelationsGroup, ConfigGroup), and a group caption can share an
+ * accessible name with one of its child entries — e.g. the "Cases" group and
+ * the "Cases" (Zaken) entry both expose role=link name="Cases", which makes a
+ * bare getByRole('link', { name: 'Cases' }) a strict-mode violation. Targeting
+ * the entry by its testid is unambiguous and group-collapse independent.
+ */
+const NAV_ID: Record<string, string> = {
+	Cases: 'Zaken',
+	Tasks: 'Taken',
+	Customers: 'Klanten',
+	Employees: 'Medewerkers',
+	Roles: 'Rollen',
+	'Case types': 'Zaaktypen',
+	Messages: 'Berichten',
+	'Contact moments': 'Contactmomenten',
+	Search: 'Search',
+	Dashboard: 'Dashboard',
+	'Features & roadmap': 'FeaturesRoadmapMenu',
+	Settings: 'SettingsMenu',
+	'Audit trail': 'AuditTrail',
+}
+
+/** The CnAppNav entry for a given menu id (testid `cn-nav-entry-<id>`). */
+export function navEntry(page: Page, id: string): Locator {
+	return page.getByTestId(`cn-nav-entry-${id}`)
+}
+
+/** The CnAppNav entry for a human label, resolved via NAV_ID. */
+export function navEntryByLabel(page: Page, label: string): Locator {
+	const id = NAV_ID[label]
+	if (!id) throw new Error(`No nav id mapping for label "${label}"`)
+	return navEntry(page, id)
+}
+
+/**
+ * Navigate to `appRoute` through the in-app Vue router.
  *
- * Several manifest pages (besluiten, documenten, resultaten, auditTrail,
- * features-roadmap, settings) have NO matching server-side page route in
- * `appinfo/routes.php`, so a hard `page.goto()` to them returns Nextcloud's
- * 404 page (or a 500 for /settings) and the SPA never boots. They are only
- * reachable client-side, exactly as a real user reaches them: load a routed
- * page first, then let the Vue router push the target route. This helper
- * mirrors that user journey without depending on a specific nav link being
- * present (besluiten/documenten/resultaten have no nav entry at all).
+ * The router runs in hash mode (src/router/index.js → mode: 'hash'), so the
+ * in-app route is carried in the URL fragment. Several manifest pages
+ * (besluiten, documenten, resultaten, auditTrail, features-roadmap, settings)
+ * have NO matching server-side page route in `appinfo/routes.php`, but in hash
+ * mode that does not matter: the SPA shell is served by the app root and the
+ * fragment selects the client route. A path-form goto without a hash boots the
+ * router at "/" (Dashboard) and the target page never mounts — so we deep-link
+ * via the hash, exactly as a bookmark / a real user reaches these pages.
  *
- * `entryRoute` defaults to `/zaken`, which is always server-routed.
+ * `entryRoute` is accepted for backwards compatibility but is no longer used as
+ * a separate server-side landing step; the hash deep-link reaches the target
+ * directly.
  */
 export async function spaNavigate(page: Page, appRoute: string, entryRoute = '/zaken'): Promise<void> {
-	await page.goto(`${APP}${entryRoute}`)
+	void entryRoute
+	await page.goto(`${APP}/#${appRoute}`)
 	await dismissSupportModal(page)
-	// Confirm the shell mounted before we drive the client router.
+	// Confirm the shell mounted (the fragment route renders inside it).
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-	await page.evaluate(({ app, route }) => {
-		window.history.pushState({}, '', `${app}${route}`)
-		window.dispatchEvent(new PopStateEvent('popstate'))
-	}, { app: APP, route: appRoute })
 }
 
 /**

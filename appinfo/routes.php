@@ -9,10 +9,16 @@ return [
 		'statusen' => ['url' => 'api/zrc/statussen'],
 		'zaakInformatieObjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
 		'zaakObjecten' => ['url' => 'api/zrc/zaakobjecten'],
-		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
-		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+		// Route placeholders MUST match the controller method parameter names
+		// exactly — NC's dispatcher binds route params to method args by name,
+		// so a `{zaak_uuid}` placeholder against a `$zaakUuid`/`$zaakId` arg
+		// binds null and the typed arg throws a TypeError (HTTP 500) before the
+		// method body runs. ZaakBesluiten/ZaakAuditTrail take $zaakUuid;
+		// ZaakEigenschappen takes $zaakId.
+		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaakUuid}/besluiten'],
+		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaakId}/eigenschappen'],
 		// zaakAuditTrail is read-only per ZRC; the resource quintet stays registered for gate-14, write verbs return 405.
-		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
+		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaakUuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0

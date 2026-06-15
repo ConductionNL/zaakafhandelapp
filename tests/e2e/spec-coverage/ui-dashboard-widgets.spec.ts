@@ -14,7 +14,7 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal } from './helpers'
+import { dismissSupportModal, navEntryByLabel } from './helpers'
 
 const DASHBOARD = '/apps/dashboard'
 const APP = '/apps/zaakafhandelapp'
@@ -34,10 +34,10 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#searching-within-a-widget
 	test('searching within a widget — zaakafhandelapp list views expose search input', async ({ page }) => {
 		// Widgets share the search store with list views. Exercise via the zaken list.
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app nav
-		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible({ timeout: 10_000 })
 		await page.getByRole('tab', { name: 'Search' }).first().click()
 		const searchBox = page.getByRole('textbox', { name: 'Search' })
@@ -51,10 +51,10 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#rendering-a-contactmoment-item
 	test('rendering a contactmoment item — contactmomenten page renders list chrome', async ({ page }) => {
-		await page.goto(`${APP}/contactmomenten`)
+		await page.goto(`${APP}/#/contactmomenten`)
 		await dismissSupportModal(page)
 		// Wait for app to mount
-		await expect(page.getByRole('link', { name: 'Contact moments' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Contact moments')).toBeVisible({ timeout: 15_000 })
 		// List chrome confirms the component is mounted — contactmomenten uses "Add Contactmoment"
 		await expect(page.getByRole('button', { name: 'Add Contactmoment' })).toBeVisible({ timeout: 10_000 })
 		// Cards radio confirms list container present (use .first() to avoid strict mode)
@@ -63,10 +63,10 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#showing-a-widget-item
 	test('showing a widget item — detail sidebar is accessible from the list', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app to mount first
-		await expect(page.getByRole('link', { name: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 		// The detail sidebar shows even in empty state — confirming item-detail linking is wired
 		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
@@ -78,9 +78,9 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#opening-klant-search-from-the-personen-widget
 	test('opening klant search from the personen widget — klanten page renders', async ({ page }) => {
 		// The personen widget links into /klanten; verify that page mounts
-		await page.goto(`${APP}/klanten`)
+		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('link', { name: 'Customers' })).toBeVisible({ timeout: 15_000 })
+		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
 	})
 

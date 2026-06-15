@@ -33,7 +33,7 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal, spaNavigate } from './helpers'
+import { dismissSupportModal, spaNavigate, navEntryByLabel } from './helpers'
 
 const APP = '/apps/zaakafhandelapp'
 
@@ -41,7 +41,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#in-app-dashboard
 	test('in-app dashboard — root route mounts the dashboard shell', async ({ page }) => {
-		await page.goto(APP)
+		await page.goto(`${APP}/#/`)
 		await dismissSupportModal(page)
 		// Shell mounts and the Dashboard page host is rendered into the DOM.
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
@@ -50,14 +50,14 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 		const dashHost = page.locator('[data-testid="cn-page"]')
 		await expect(dashHost.first()).toBeVisible({ timeout: 10_000 })
 		// The Dashboard nav item is present and active.
-		await expect(page.getByRole('link', { name: 'Dashboard', exact: true }).first()).toBeVisible({ timeout: 10_000 })
+		await expect(navEntryByLabel(page, 'Dashboard')).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#dashboard-stats-count
 	// BUG-2 (FIXED): the six manifest stats-block widgets mount and render
 	// their titles on the in-app dashboard.
 	test('dashboard stats — the six manifest stats-block widgets render their titles', async ({ page }) => {
-		await page.goto(APP)
+		await page.goto(`${APP}/#/`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByText('Open cases', { exact: false }).first()).toBeVisible({ timeout: 10_000 })
@@ -76,11 +76,11 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 
 	// @e2e openspec/specs/app-configuration/spec.md#features-roadmap-nav
 	test('features & roadmap nav — the footer link is reachable from the left nav', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const appNav = page.locator('nav').filter({ has: page.getByRole('link', { name: 'Cases' }) })
-		const roadmapLink = appNav.getByRole('link', { name: 'Features & roadmap' })
+		const appNav = page.locator('nav').filter({ has: navEntryByLabel(page, 'Cases') })
+		const roadmapLink = navEntryByLabel(page, 'Features & roadmap')
 		await expect(roadmapLink).toBeVisible({ timeout: 10_000 })
 		await roadmapLink.click()
 		// Navigating lands on the roadmap surface.
@@ -113,10 +113,10 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 	// The in-app Settings nav button is present in the left nav. Its
 	// destination (BUG-3, now fixed) is covered by the test below.
 	test('settings nav — the Settings button is present in the left nav', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const appNav = page.locator('nav').filter({ has: page.getByRole('link', { name: 'Cases' }) })
+		const appNav = page.locator('nav').filter({ has: navEntryByLabel(page, 'Cases') })
 		// `exact` so we match the app's own "Settings" footer entry and not
 		// the NC "Personal settings" entry that also lives in the footer.
 		const settingsBtn = appNav.getByRole('button', { name: 'Settings', exact: true })
@@ -134,10 +134,10 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 	// BUG-3 (a backend defect), so it stays fixme'd until the shell routes
 	// footer settings entries. NOT a regression from the BUG-1/2/3 fixes.
 	test.fixme('settings nav — clicking Settings opens the settings page', async ({ page }) => {
-		await page.goto(`${APP}/zaken`)
+		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const appNav = page.locator('nav').filter({ has: page.getByRole('link', { name: 'Cases' }) })
+		const appNav = page.locator('nav').filter({ has: navEntryByLabel(page, 'Cases') })
 		await appNav.getByRole('button', { name: 'Settings', exact: true }).click()
 		await expect(page.locator('[data-testid="cn-settings-page"]')).toBeVisible({ timeout: 15_000 })
 	})
@@ -163,7 +163,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Dashboard root (server-routed).
-		await page.goto(APP)
+		await page.goto(`${APP}/#/`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 		// Client-routed surfaces that render successfully (settings excluded —

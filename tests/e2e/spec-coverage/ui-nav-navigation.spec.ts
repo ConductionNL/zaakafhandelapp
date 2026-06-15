@@ -52,7 +52,7 @@ const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail', 'SettingsMenu'] as const
 
 /** Open the app on a stable entry page and confirm the nav rendered. */
 async function bootNav(page: Page): Promise<void> {
-	await page.goto(`${APP}/zaken`)
+	await page.goto(`${APP}/#/zaken`)
 	await dismissSupportModal(page)
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 	await expect(page.locator('[data-testid="cn-nav"]')).toBeVisible({ timeout: 10_000 })
@@ -91,7 +91,7 @@ test.describe('ui-nav-navigation — clicking left-nav entries lands on the righ
 		await dash.click()
 		// The dashboard route is the app root; the page host mounts there.
 		await expect(page.locator('[data-testid="cn-page"]').first()).toBeAttached({ timeout: 10_000 })
-		await expect(page).toHaveURL(new RegExp(`${APP}/?$`), { timeout: 10_000 })
+		await expect(page).toHaveURL(new RegExp(`${APP}/(#/?)?$`), { timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-search-navigation/spec.md#nav-all-entries-present

@@ -30,10 +30,25 @@ export async function widen(page: Page): Promise<void> {
 	await page.setViewportSize({ width: 1600, height: 1000 })
 }
 
-/** Open an index page and wait for the manifest index host to mount. */
+/** Open an index page and wait for the manifest index host to mount.
+ *
+ * The Vue router runs in hash mode (src/router/index.js → mode: 'hash'), so
+ * the in-app route MUST be carried in the URL fragment. A path-form goto
+ * (`/apps/zaakafhandelapp/zaken`) boots the SPA with an empty hash and the
+ * router falls back to the Dashboard, so the target index never mounts.
+ * Deep-link via the hash instead.
+ *
+ * A hash-only `page.goto` is a same-document navigation: it swaps the route
+ * (and therefore the index columns) but the list store does NOT always re-fetch
+ * the new schema's objects when navigating index→index — it can keep rendering
+ * the previous page's rows under the new columns (e.g. zaken rows under taak
+ * columns, so the `title` column shows "—" and the count is the wrong schema's).
+ * Force a document reload so the target index loads its own data cleanly.
+ */
 export async function openIndex(page: Page, plural: string): Promise<Locator> {
 	await widen(page)
-	await page.goto(`${APP}/${plural}`)
+	await page.goto(`${APP}/#/${plural}`)
+	await page.reload()
 	await dismissSupportModal(page)
 	const index = page.locator('[data-testid="cn-index-page"]')
 	await expect(index).toBeVisible({ timeout: 15_000 })
