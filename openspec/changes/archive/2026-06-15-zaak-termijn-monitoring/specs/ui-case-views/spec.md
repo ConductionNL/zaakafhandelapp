@@ -2,7 +2,7 @@
 
 ## ADDED Requirements
 
-### REQ-006: Surface deadline urgency in case lists and the werkvoorraad
+### Requirement: Surface deadline urgency in case lists and the werkvoorraad (REQ-006)
 
 The system SHALL surface each open zaak's deadline-urgency state
 (`zaak-termijn-monitoring` REQ-003) in the zaken list views and the personal

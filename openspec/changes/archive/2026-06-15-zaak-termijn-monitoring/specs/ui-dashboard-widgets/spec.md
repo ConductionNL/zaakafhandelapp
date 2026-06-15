@@ -2,7 +2,7 @@
 
 ## ADDED Requirements
 
-### REQ-006: Surface deadline urgency in the open-zaken widget
+### Requirement: Surface deadline urgency in the open-zaken widget (REQ-006)
 
 The system SHALL surface deadline urgency in the open-zaken dashboard widget:
 each item shows its urgency indicator (per `zaak-termijn-monitoring` REQ-003)

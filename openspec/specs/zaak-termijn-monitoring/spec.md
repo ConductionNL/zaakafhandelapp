@@ -1,10 +1,9 @@
-# Capability: zaak-termijn-monitoring — behandeltermijn derivation & monitoring
+# zaak-termijn-monitoring Specification
 
-@e2e exclude pure-backend derivation + declarative OR notification rules — covered by PHPUnit/vitest/Newman; the UI surfaces live in the ui-case-views and ui-dashboard-widgets deltas
-
-## ADDED Requirements
-
-### REQ-001: Derive termijn fields from the zaaktype on creation
+## Purpose
+TBD - created by archiving change zaak-termijn-monitoring. Update Purpose after archive.
+## Requirements
+### Requirement: Derive termijn fields from the zaaktype on creation (REQ-001)
 
 The system SHALL, when a zaak is created without an explicit
 `uiterlijkeEinddatumAfdoening` and its zaaktype defines a `doorlooptijd`,
@@ -36,7 +35,7 @@ resolvable zaaktype, and a zaak without a `startdatum` SHALL use its
 - **THEN** the termijn fields stay as supplied (possibly empty) and creation
   succeeds without error
 
-### REQ-002: Declarative deadline notification rules on the zaak schema
+### Requirement: Declarative deadline notification rules on the zaak schema (REQ-002)
 
 The system SHALL declare approaching-deadline and overdue notification rules
 on the zaak schema using the OpenRegister declarative notification dialect
@@ -78,7 +77,13 @@ monitoring.
   rules in the zaak schema configuration — no BackgroundJob, cron hook or
   imperative notification call (gate-18 clean)
 
-### REQ-003: Derive a single deadline-urgency state
+> Status: REQ-002 is NOT YET BUILT — it is blocked on the OpenRegister change
+> `notification-engine-scheduled-conditions` (scheduled date-relative
+> conditions). REQ-001 (derivation) and REQ-003 (urgency) ship without it; the
+> declarative rule block is added once the OR engine supports the condition
+> shape. See tasks.md section 2.
+
+### Requirement: Derive a single deadline-urgency state (REQ-003)
 
 The system SHALL derive a deadline-urgency state for a zaak — `op-tijd`,
 `bijna-verlopen` (within the configurable lead window, default 7 days, of
@@ -105,3 +110,4 @@ SHALL consume this one derivation so they never disagree.
 - **WHEN** the urgency state is derived for a closed zaak, or for a zaak with
   empty termijn fields
 - **THEN** no urgency state is returned
+
