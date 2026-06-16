@@ -31,6 +31,9 @@ export class ZaakType implements TZaakType {
 	public beginObject: string
 	public eindeObject: string
 	public versiedatum: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TZaakType) {
 		this.id = source.id || ''

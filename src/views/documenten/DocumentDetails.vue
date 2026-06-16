@@ -48,6 +48,9 @@ export default {
 	},
 	watch: {
 		documentId: {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(documentId) {
 				this.fetchData(documentId)
 			},
@@ -59,6 +62,9 @@ export default {
 		this.fetchData(documentStore.documentItem)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(documentId) {
 			this.loading = true
 			fetch(

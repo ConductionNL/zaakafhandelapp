@@ -7,6 +7,9 @@ namespace OCA\ZaakAfhandelApp\Service;
  *
  * Provides a centralized place for register and schema identifiers
  * used across ZGW services.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWRegistryService
 {
@@ -33,6 +36,7 @@ class ZGWRegistryService
         'status'                        => 'status',
         'gebruiksrechten'               => 'gebruiksrechten',
         'zaakbesluit'                   => 'zaakbesluit',
+        'enkelvoudiginformatieobject'   => 'enkelvoudiginformatieobject',
         'informatieobjecttype'          => 'informatieobjecttype',
         'zaaktype-informatieobjecttype' => 'zaaktypeinformatieobjecttype',
         'zaaktype'                      => 'zaaktype',
@@ -98,6 +102,11 @@ class ZGWRegistryService
         return self::SCHEMAS['zaakbesluit'];
     }//end getZaakBesluitSchema()
 
+    public function getEnkelvoudigInformatieObjectSchema(): string
+    {
+        return self::SCHEMAS['enkelvoudiginformatieobject'];
+    }//end getEnkelvoudigInformatieObjectSchema()
+
     public function getIOTSchema(): string
     {
         return self::SCHEMAS['informatieobjecttype'];
@@ -119,6 +128,8 @@ class ZGWRegistryService
      * @param string $url The endpoint URL
      *
      * @return string The extracted object ID
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
      */
     public function getObjectIdByEndpointUrl(string $url): string
     {

@@ -26,6 +26,17 @@
 import SearchView from './views/search/SearchIndex.vue'
 import AuditTrailView from './views/audit/AuditTrailView.vue'
 
+// ── kind: "widget" (dashboard stats-block) ──────────────────────────────────
+// The dashboard manifest places `widgetKey: "stats-block"` cards in the "body"
+// slot, but `stats-block` is NOT one of CnWidgetGrid's built-in widget keys
+// (object-table, form-renderer, map-viewer, card-grid, data, metadata,
+// integration). Without registering it here CnWidgetGrid logs "Unknown
+// widgetKey" and skips every card, leaving the dashboard body empty.
+// CnStatsBlockWidget reads the manifest `dataSource` block
+// ({ register, schema, aggregate: "count" }) and renders CnStatsBlock.
+
+import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
+
 // ── kind: "widget" ─────────────────────────────────────────────────────────
 // Settings section body component (type:"settings" sections[].component)
 
@@ -55,6 +66,21 @@ export default {
 		kind: 'page',
 		component: AuditTrailView,
 		_note: 'Hybrid ZGW-API data path; fetches audit events from ZGW-API audittrail endpoint, not OR; no current typed-page analogue',
+	},
+
+	// ── kind: "widget" (dashboard stats-block) ─────────────────────────────
+	// Resolved by CnWidgetGrid via the manifest `widgetKey: "stats-block"`.
+	// Reads the manifest `dataSource` block ({ register, schema, aggregate })
+	// and renders a count KPI card. Without this entry the dashboard body is
+	// empty (every stats-block card is skipped as an unknown widgetKey).
+	'stats-block': {
+		kind: 'widget',
+		component: CnStatsBlockWidget,
+		defaultSize: { w: 4, h: 2 },
+		minSize: { w: 1, h: 1 },
+		maxSize: { w: 12, h: 8 },
+		allowedSlots: ['body'],
+		propsSchema: {},
 	},
 
 	// ── kind: "widget" (settings section) ──────────────────────────────────

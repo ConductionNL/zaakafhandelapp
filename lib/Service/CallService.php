@@ -6,6 +6,12 @@ use GuzzleHttp\Client;
 use Symfony\Component\Uid\Uuid;
 use OCP\IAppConfig;
 
+/**
+ * Service for performing outbound HTTP calls to external ZGW sources.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class CallService
 {
     public function __construct(
@@ -37,13 +43,19 @@ class CallService
      * Gets the guzzle config as an array
      *
      * @return array
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function getConfig(?string $source=null, array $query=[]): array
     {
         $result = [
-            'base_uri' => $this->config->getValueString('zaakafhandelapp', "{$source}Location"),
-            'query'    => $query,
-            'headers'  => [],
+            'base_uri'    => $this->config->getValueString('zaakafhandelapp', "{$source}Location"),
+            'query'       => $query,
+            'headers'     => [],
+            // Disable Guzzle's default behaviour of throwing on non-2xx responses so that
+            // ZGW backend error bodies (validation details, 404 etc.) are returned to the
+            // caller rather than bubbling as an unhandled GuzzleException → HTTP 500 (#282 bug-4).
+            'http_errors' => false,
         ];
 
         return array_merge_recursive($result, $this->getAuthorization($source));
@@ -66,6 +78,28 @@ class CallService
     }//end getClient()
 
     /**
+     * Decode a Guzzle response body as JSON, returning null on empty or malformed content (#282 bug-4).
+     *
+     * @param string $body The raw response body.
+     *
+     * @return array|null Decoded associative array or null.
+     */
+    private function decodeJson(string $body): ?array
+    {
+        if ($body === '') {
+            return null;
+        }
+
+        $decoded = json_decode($body, associative: true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return null;
+        }
+
+        return $decoded;
+    }//end decodeJson()
+
+    /**
      * Finds objects based upon a set of filters.
      *
      * @param array $query The filters to compare the object to.
@@ -73,6 +107,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function index(string $source, string $endpoint, array $query=[]): array | null
     {
@@ -83,11 +119,7 @@ class CallService
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source, config: $config)->get("$endpoint");
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end index()
 
     /**
@@ -99,6 +131,8 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function show(string $source, string $endpoint, string $id, array $query=[]): array | null
     {
@@ -107,14 +141,12 @@ class CallService
             'query'   => $query,
         ];
 
-        // Setuo the client & make the call
-        $returnData = $this->getClient(source: $source, config: $config)->get($this->config->getValueString('zaakafhandelapp', "{$source}Location")."/$endpoint/$id");
+        // Use a relative path so Guzzle appends it to the base_uri configured in getConfig().
+        // Previously the full absolute URL was constructed here, duplicating the base_uri that
+        // getClient() already sets — causing double-prefixing on the request (M2).
+        $returnData = $this->getClient(source: $source, config: $config)->get("$endpoint/$id");
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end show()
 
     /**
@@ -125,17 +157,15 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function create(string $source, string $endpoint, array $data): array | null
     {
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source)->post(uri: "$endpoint", options: ['json' => $data]);
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end create()
 
     /**
@@ -147,17 +177,15 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function update(string $source, string $endpoint, array $data, string $id): array | null
     {
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source)->put("$endpoint/$id", options: ['json' => $data]);
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end update()
 
     /**
@@ -168,16 +196,14 @@ class CallService
      * @return array The objects found for given filters.
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
      */
     public function destroy(string $source, string $endpoint, string $id): array | null
     {
         // Setuo the client & make the call
         $returnData = $this->getClient(source: $source)->delete("$endpoint/$id");
 
-        // Turn everything into arrays
-        return json_decode(
-            json: $returnData->getBody()->getContents(),
-            associative: true
-        );
+        return $this->decodeJson($returnData->getBody()->getContents());
     }//end destroy()
 }//end class

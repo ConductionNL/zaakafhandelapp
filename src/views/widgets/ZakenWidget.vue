@@ -59,6 +59,9 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		items() {
 			return this.zaakItems
 		},
@@ -67,6 +70,9 @@ export default {
 		this.fetchZaakItems()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchZaakItems() {
 			this.loading = true
 			zaakStore.refreshZakenList()
@@ -81,15 +87,24 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		openModal() {
 			this.isModalOpen = true
 			zaakStore.setZaakItem(null)
 			navigationStore.setModal('zaakForm')
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		closeModal() {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -101,9 +116,15 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/briefcase-account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/briefcase-account-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
+		 */
 		search() {
 			console.info('click')
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 */
 		onShow() {
 			window.open('/apps/opencatalogi/catalogi', '_self')
 		},

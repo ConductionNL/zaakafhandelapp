@@ -7,6 +7,9 @@ use OCA\OpenRegister\Exception\CustomValidationException;
 
 /**
  * Validation service for zaak-specific field validation.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class ZGWZaakValidationService
 {
@@ -15,25 +18,44 @@ class ZGWZaakValidationService
 
     public function __construct(ObjectMapperService $mapperService)
     {
-        $this->objectService = $mapperService->getOpenRegisters();
+        $objectService = $mapperService->getOpenRegisters();
+        if ($objectService === null) {
+            throw new \RuntimeException('ZGWZaakValidationService requires the OpenRegister app to be installed and enabled.');
+        }
+
+        $this->objectService = $objectService;
     }//end __construct()
 
     /**
      * ZRC-015: Check productenOfDiensten against zaaktype.
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkProductenOfDiensten(ObjectEntity $zaak): void
     {
         $arr = $zaak->jsonSerialize();
 
-        if (is_array($arr['productenOfDiensten']) === false) {
+        if (is_array($arr['productenOfDiensten'] ?? null) === false) {
+            // No producten/diensten configured on the zaak; nothing to validate.
             return;
         }
 
-        $ztId = explode('/', $arr['zaaktype']);
-        $this->objectService->clearCurrents();
-        $zt = $this->objectService->find(end($ztId));
+        $zaaktypeUrl = $arr['zaaktype'] ?? null;
+        if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+            // Without a zaaktype there is no reference set to validate against.
+            return;
+        }
 
-        if (array_diff($arr['productenOfDiensten'], $zt->jsonSerialize()['productenOfDiensten']) !== []) {
+        $ztId = explode('/', $zaaktypeUrl);
+        $this->objectService->clearCurrents();
+        $zaaktype = $this->objectService->find(end($ztId));
+
+        $allowed = $zaaktype->jsonSerialize()['productenOfDiensten'] ?? [];
+        if (is_array($allowed) === false) {
+            $allowed = [];
+        }
+
+        if (array_diff($arr['productenOfDiensten'], $allowed) !== []) {
             $this->throwValidationError('productenOfDiensten', 'invalid-products-services', 'Producten niet aanwezig op zaaktype');
         }
     }//end checkProductenOfDiensten()
@@ -45,44 +67,58 @@ class ZGWZaakValidationService
 
     /**
      * ZRC-022: Check archive prerequisites.
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkArchivePrerequisites(ObjectEntity $zaak): void
     {
         $arr = $this->objectService->renderEntity($zaak);
 
-        if ($arr['archiefstatus'] === 'nog_te_archiveren') {
+        // A zaak that is not (yet) flagged for archiving has no archive prerequisites.
+        // When the archive lifecycle has not started, archiefstatus is either absent
+        // (e.g. on a fresh create where the form does not expose the field) or the
+        // explicit 'nog_te_archiveren' value — in both cases there is nothing to enforce.
+        $archiefstatus = $arr['archiefstatus'] ?? null;
+        if ($archiefstatus === null || $archiefstatus === '' || $archiefstatus === 'nog_te_archiveren') {
             return;
         }
 
         $this->validateEioStatuses($arr);
 
-        if ($arr['archiefnominatie'] === null) {
+        if (($arr['archiefnominatie'] ?? null) === null) {
             $this->throwValidationError('archiefnominatie', 'archiefnominatie-not-set', 'De archiefnominatie moet geset zijn');
         }
 
-        if ($arr['archiefactiedatum'] === null) {
+        if (($arr['archiefactiedatum'] ?? null) === null) {
             $this->throwValidationError('archiefactiedatum', 'archiefactiedatum-not-set', 'De archiefactiedatum moet geset zijn');
         }
     }//end checkArchivePrerequisites()
 
     /**
      * ZRC-012: Check verlenging and opschorting parameters.
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
      */
     public function checkGegevensgroepen(ObjectEntity $zaak): void
     {
         $arr = $zaak->jsonSerialize();
 
-        if ($arr['verlenging'] !== null) {
+        if (($arr['verlenging'] ?? null) !== null) {
             $this->validateRequiredFields($arr['verlenging'], 'verlenging', ['reden', 'duur'], "Verlenging is incorrect");
         }
 
-        if ($arr['opschorting'] !== null) {
+        if (($arr['opschorting'] ?? null) !== null) {
             $this->validateRequiredFields($arr['opschorting'], 'opschorting', ['indicatie', 'reden'], "Opschorting is incorrect");
         }
     }//end checkGegevensgroepen()
 
     private function validateEioStatuses(array $arr): void
     {
+        // Guard: a brand-new zaak may have no informatieobjecten yet; skip the check in that case.
+        if (empty($arr['zaakinformatieobjecten']) === true) {
+            return;
+        }
+
         $zioIds = array_map(
                 function ($zio) {
                     $e = explode('/', $zio);
@@ -93,7 +129,7 @@ class ZGWZaakValidationService
 
         $this->objectService->clearCurrents();
         $zios     = $this->objectService->findAll(['ids' => $zioIds, 'extend' => ['informatieobject']]);
-        $statuses = array_unique(array_map(fn(ObjectEntity $z) => $z->jsonSerialize()['informatieobject']['status'] ?? null, $zios));
+        $statuses = array_unique(array_map(fn(ObjectEntity $zio) => $zio->jsonSerialize()['informatieobject']['status'] ?? null, $zios));
 
         if (count($statuses) !== 1 || $statuses[0] !== 'gearchiveerd') {
             $this->throwValidationError('zaakinformatieobjecten', 'informatieobject-status-not-set', 'Alle informatieobjecten moeten status gearchiveerd hebben.');

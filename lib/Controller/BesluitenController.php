@@ -2,17 +2,21 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 
 /**
  * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class BesluitenController extends Controller
 {
@@ -42,7 +46,8 @@ class BesluitenController extends Controller
     public function __construct(
         $appName,
         IRequest $request,
-        private readonly IAppConfig $config
+        private readonly IAppConfig $config,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -55,11 +60,12 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return TemplateResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
      */
     public function page(): TemplateResponse
     {
         return new TemplateResponse(
-            // Application::APP_ID,
             'zaakafhandelapp',
             'index',
             []
@@ -73,9 +79,15 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(CallService $callService): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $results = $callService->index(source: 'brc', endpoint: 'besluiten');
         return new JSONResponse($results);
     }//end index()
@@ -87,9 +99,15 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id, CallService $callService): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $results = $callService->show(source: 'brc', endpoint: 'besluiten', id: $id);
         return new JSONResponse($results);
     }//end show()
@@ -101,9 +119,15 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(CallService $callService): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // get post from requests
         $body    = $this->request->getParams();
         $results = $callService->create(source: 'brc', endpoint: 'besluiten', data: $body);
@@ -117,9 +141,15 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function update(string $id, CallService $callService): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $body    = $this->request->getParams();
         $results = $callService->update(source: 'brc', endpoint: 'besluiten', data: $body, id: $id);
         return new JSONResponse($results);
@@ -132,9 +162,15 @@ class BesluitenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id, CallService $callService): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $callService->destroy(source: 'brc', endpoint: 'besluiten', id: $id);
 
         return new JSONResponse([]);

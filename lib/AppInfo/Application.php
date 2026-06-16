@@ -17,6 +17,9 @@ use OCA\ZaakAfhandelApp\Dashboard\OrganisatiesWidget;
  * Class Application
  *
  * @package OCA\ZaakAfhandelApp\AppInfo
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class Application extends App implements IBootstrap
 {
@@ -67,6 +70,14 @@ class Application extends App implements IBootstrap
         );
     }//end register()
 
+    /**
+     * Boot the application.
+     *
+     * @param IBootContext $context The boot context.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $context is required by IBootstrap::boot();
+     *   this app has no boot-time logic but must implement the interface method.
+     */
     public function boot(IBootContext $context): void
     {
     }//end boot()

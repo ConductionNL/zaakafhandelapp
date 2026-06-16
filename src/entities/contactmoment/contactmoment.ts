@@ -15,6 +15,9 @@ export class ContactMoment implements TContactMoment {
 	public contactmoment: string
 	public medewerker: string
 	public kanaal: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TContactMoment) {
 		this.id = source.id || ''

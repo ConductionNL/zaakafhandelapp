@@ -120,6 +120,9 @@ export default {
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		if (medewerkerStore.medewerkerItem?.id) {
 			this.medewerkerItem = {
@@ -133,9 +136,15 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async editMedewerker() {
 			this.loading = true
 
@@ -152,6 +161,9 @@ export default {
 				this.error = error.message || 'An error occurred while saving the medewerker'
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},

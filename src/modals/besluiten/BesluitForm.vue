@@ -104,6 +104,9 @@ export default {
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		// If zaakItem in the store is set. apply it to zaak in this modal.
 		if (besluitStore.besluitItem?.id) {
@@ -117,11 +120,17 @@ export default {
 		this.fetchZaak()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(null)
 			besluitStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchZaak() {
 			this.zaakLoading = true
 
@@ -147,6 +156,9 @@ export default {
 					this.zaakLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		saveBesluit() {
 			this.loading = true
 

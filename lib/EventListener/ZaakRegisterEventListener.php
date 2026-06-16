@@ -21,7 +21,9 @@ use OCA\ZaakAfhandelApp\Service\ZGWLogicService;
 use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
 use OCA\ZaakAfhandelApp\Service\ZGWValidationService;
 use OCA\ZaakAfhandelApp\Service\ZGWZaakLifecycleService;
+use OCA\ZaakAfhandelApp\Service\ZGWZaakOpschortingVerlengingService;
 use OCA\ZaakAfhandelApp\Service\ZGWZaakValidationService;
+use OCA\ZaakAfhandelApp\Service\ZaakTermijnService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCA\OpenRegister\Event\ObjectCreatedEvent;
@@ -34,20 +36,13 @@ use Psr\Log\LoggerInterface;
  */
 class ZaakRegisterEventListener implements IEventListener
 {
-
-    private const EVENT_HANDLERS = [
-        ObjectCreatedEvent::class  => 'handleObjectCreated',
-        ObjectUpdatedEvent::class  => 'handleObjectUpdated',
-        ObjectDeletedEvent::class  => 'handleObjectDeleted',
-        ObjectCreatingEvent::class => 'handleObjectCreating',
-        ObjectUpdatingEvent::class => 'handleObjectUpdating',
-    ];
-
     public function __construct(
         private readonly ZGWLogicService $logicService,
         private readonly ZGWZaakLifecycleService $lifecycleService,
         private readonly ZGWValidationService $validationService,
         private readonly ZGWZaakValidationService $zaakValidationService,
+        private readonly ZaakTermijnService $termijnService,
+        private readonly ZGWZaakOpschortingVerlengingService $opschortingVerlengingService,
         private readonly ZGWRegistryService $registry,
         private readonly SchemaMapper $schemaMapper,
     ) {
@@ -56,9 +51,16 @@ class ZaakRegisterEventListener implements IEventListener
     public function handle(Event $event): void
     {
         try {
-            $handler = self::EVENT_HANDLERS[get_class($event)] ?? null;
-            if ($handler !== null) {
-                $this->$handler($event);
+            if ($event instanceof ObjectCreatedEvent) {
+                $this->handleObjectCreated($event);
+            } else if ($event instanceof ObjectUpdatedEvent) {
+                $this->handleObjectUpdated($event);
+            } else if ($event instanceof ObjectDeletedEvent) {
+                $this->handleObjectDeleted($event);
+            } else if ($event instanceof ObjectCreatingEvent) {
+                $this->handleObjectCreating($event);
+            } else if ($event instanceof ObjectUpdatingEvent) {
+                $this->handleObjectUpdating($event);
             }
         } catch (CustomValidationException $e) {
             throw $e;
@@ -73,6 +75,15 @@ class ZaakRegisterEventListener implements IEventListener
         $obj  = $event->getObject();
 
         if ($slug === $this->registry->getStatusSchema()) {
+            // Re-open or close the zaak now that the status record is confirmed persisted.
+            // closeZaak MUST run in ObjectCreated (not ObjectCreating) so the zaak is only
+            // mutated when the triggering status write is known-successful — fixes #274.
+            //
+            // No double-dispatch risk (M4): closeZaak and reopenZaak are mutually exclusive
+            // via their isEindStatus() guard. closeZaak is a no-op when the status is not an
+            // eindstatus; reopenZaak is a no-op when the status IS an eindstatus. Both methods
+            // check isEindStatus independently, so only one path executes per status event.
+            $this->lifecycleService->closeZaak($obj);
             $this->lifecycleService->reopenZaak($obj);
         }
 
@@ -131,8 +142,13 @@ class ZaakRegisterEventListener implements IEventListener
         $slug = $this->schemaMapper->find($event->getObject()->getSchema())->getSlug();
         $obj  = $event->getObject();
 
+        // Validate close prerequisites (resultaat, gebruiksrechten, date) before the status is
+        // persisted. If any check fails, a CustomValidationException is thrown here and the status
+        // write is aborted entirely — preventing an eindstatus from existing without the zaak's
+        // archive metadata being set (H3 fix). The actual zaak mutations still happen in
+        // handleObjectCreated after successful persist.
         if ($slug === $this->registry->getStatusSchema()) {
-            $this->lifecycleService->closeZaak($obj);
+            $this->lifecycleService->validateClosePrerequisites($obj);
         }
 
         if ($slug === $this->registry->getZaakSchema()) {
@@ -140,6 +156,10 @@ class ZaakRegisterEventListener implements IEventListener
             $this->validationService->checkRelevanteAndereZaken($obj);
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
+            // Derive the behandeltermijn fields from the zaaktype before the zaak is
+            // persisted (uiterlijkeEinddatumAfdoening from doorlooptijd, einddatumGepland
+            // from servicenorm). Client-supplied dates are never overridden.
+            $this->termijnService->deriveTermijnen($obj);
         }
 
         if ($slug === $this->registry->getBesluitSchema()) {
@@ -161,9 +181,19 @@ class ZaakRegisterEventListener implements IEventListener
             $this->validationService->checkRelevanteAndereZaken($obj);
             $this->zaakValidationService->checkArchivePrerequisites($obj);
             $this->zaakValidationService->checkGegevensgroepen($obj);
+            // Apply opschorting/verlenging transitions: gate on the zaaktype policy,
+            // shift the termijn fields, and abort (via CustomValidationException) when
+            // the transition is not allowed (ZRC opschorting/verlenging — Awb 4:14/4:15).
+            $this->opschortingVerlengingService->applyTransitions($obj);
         }
     }//end handleObjectUpdating()
 
+    /**
+     * Log an error that occurred during event handling.
+     *
+     * @psalm-suppress UnusedParam — $event and $e are consumed via get_class()/$e->getMessage();
+     *                 Psalm cannot trace usage through \OC::$server->get() (OC is an env stub).
+     */
     private function logError(Event $event, \Exception $e): void
     {
         try {

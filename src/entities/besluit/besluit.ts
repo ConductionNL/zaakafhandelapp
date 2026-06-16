@@ -7,6 +7,9 @@ export class Besluit implements TBesluit {
 	public url: string
 	public besluit: string
 	public zaak: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TBesluit) {
 		this.id = source.id || ''

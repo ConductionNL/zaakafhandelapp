@@ -36,10 +36,16 @@ export const useRolStore = defineStore('rollen', {
 		extraData: {} as Record<string, any>,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setRolItem(rolItem: Rol | TRol) {
 			this.rolItem = rolItem && new Rol(rolItem)
 			console.info('Active rol item set to ' + rolItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setRollenList(rollenList: Rol[] | TRol[]) {
 			this.rollenList = rollenList.map(
 			    (rolItem) => new Rol(rolItem),

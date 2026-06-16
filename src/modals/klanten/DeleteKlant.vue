@@ -73,11 +73,17 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 			clearTimeout(this.closeTimeoutFunc)
 			this.success = null
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async deleteKlant() {
 			this.loading = true
 			try {

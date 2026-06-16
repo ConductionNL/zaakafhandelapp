@@ -7,6 +7,7 @@
 
 /.php-cs-fixer.cache
 /tests/.phpunit.cache
+/.phpunit.cache/
 
 /node_modules/
 
@@ -31,3 +32,5 @@ coverage/
 /tests/e2e/.auth/
 /tests/e2e/playwright-report/
 /tests/e2e/test-results/
+/coverage-vitest/
+/coverage/

@@ -48,6 +48,9 @@ export default {
 	},
 	watch: {
 		besluitId: {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(besluitId) {
 				this.fetchData(besluitId)
 			},
@@ -59,6 +62,9 @@ export default {
 		this.fetchData(besluitStore.besluitItem)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(besluitId) {
 			this.loading = true
 			fetch(

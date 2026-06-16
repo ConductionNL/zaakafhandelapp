@@ -29,6 +29,12 @@ import { navigationStore, klantStore } from '../../store/store.js'
 						</template>
 						Klant toevoegen
 					</NcActionButton>
+					<NcActionButton v-if="contactsAvailable" @click="navigationStore.setModal('importContact')">
+						<template #icon>
+							<ImportIcon :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Import from contacts') }}
+					</NcActionButton>
 				</NcActions>
 			</div>
 			<div v-if="klantStore.klantenList?.length">
@@ -86,6 +92,7 @@ import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import ImportIcon from 'vue-material-design-icons/Import.vue'
 
 export default {
 	name: 'KlantenList',
@@ -93,6 +100,7 @@ export default {
 		// Components
 		NcListItem,
 		NcActionButton,
+		NcActions,
 		NcAppContentList,
 		NcTextField,
 		NcLoadingIcon,
@@ -101,24 +109,51 @@ export default {
 		Magnify,
 		Pencil,
 		TrashCanOutline,
+		Plus,
+		Refresh,
+		ImportIcon,
 	},
 	data() {
 		return {
 			search: '',
 			loading: true,
 			klantenList: [],
+			contactsAvailable: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		klantStore.refreshKlantenList().then(() => {
 			this.loading = false
 		})
+		this.checkContactsAvailability()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+		 */
+		checkContactsAvailability() {
+			fetch('/index.php/apps/zaakafhandelapp/api/klanten/contacts/status', { method: 'GET' })
+				.then(response => response.json())
+				.then((data) => {
+					this.contactsAvailable = data?.available === true
+				})
+				.catch(() => {
+					this.contactsAvailable = false
+				})
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openKlant(klant) {
 			klantStore.setKlantItem(klant)
 			this.$router.push({ params: { id: klant.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		fullName(klant) {
 			let name = klant.achternaam
 			if (klant.tussenvoegsel) {
@@ -129,6 +164,9 @@ export default {
 			}
 			return name
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getName(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.voornaam ?? 'onbekend'
@@ -138,6 +176,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
 				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
@@ -147,6 +188,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		deleteKlant() {
 			fetch(
 				`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}`,
@@ -165,6 +209,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -184,6 +231,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

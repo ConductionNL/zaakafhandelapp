@@ -131,28 +131,10 @@ parameters:
 			path: lib/Dashboard/ZakenWidget.php
 
 		-
-			message: '#^Offset class\-string\<OCP\\EventDispatcher\\Event\> on array\{OCA\\OpenRegister\\Event\\ObjectCreatedEvent\: ''handleObjectCreated'', OCA\\OpenRegister\\Event\\ObjectUpdatedEvent\: ''handleObjectUpdated'', OCA\\OpenRegister\\Event\\ObjectDeletedEvent\: ''handleObjectDeleted'', OCA\\OpenRegister\\Event\\ObjectCreatingEvent\: ''handleObjectCreating'', OCA\\OpenRegister\\Event\\ObjectUpdatingEvent\: ''handleObjectUpdating''\} on left side of \?\? does not exist\.$#'
-			identifier: nullCoalesce.offset
+			message: '#^PHPDoc tag @SuppressWarnings has invalid value#'
+			identifier: phpDoc.parseError
 			count: 1
-			path: lib/EventListener/ZaakRegisterEventListener.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between null and null will always evaluate to false\.$#'
-			identifier: notIdentical.alwaysFalse
-			count: 1
-			path: lib/EventListener/ZaakRegisterEventListener.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$objectService$#'
-			identifier: parameter.notFound
-			count: 1
-			path: lib/Service/ZGWArchiveDateService.php
-
-		-
-			message: '#^Method OCA\\ZaakAfhandelApp\\Service\\ZGWLogicService\:\:rewriteInternalReference\(\) should return string but returns OCA\\OpenRegister\\Db\\ObjectEntity\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/Service/ZGWLogicService.php
+			path: lib/Controller/ZakenController.php
 
 		-
 			message: '#^Property OCA\\ZaakAfhandelApp\\Settings\\ZaakAfhandelAppAdmin\:\:\$l is never read, only written\.$#'

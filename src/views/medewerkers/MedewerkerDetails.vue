@@ -110,6 +110,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchData(newId)
 		},
@@ -118,6 +121,9 @@ export default {
 		this.fetchData(this.id)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(id) {
 			this.loading = true
 

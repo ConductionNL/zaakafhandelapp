@@ -16,6 +16,9 @@ export const useBesluitStore = defineStore('besluiten', {
 		zaakId: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setBesluitItem(besluitItem: Besluit | TBesluit) {
 			this.besluitItem = besluitItem && new Besluit(besluitItem)
 			console.info('Active besluit item set to ' + besluitItem)

@@ -111,6 +111,9 @@ export default {
 			loading: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.loading = true
 
@@ -124,10 +127,16 @@ export default {
 			})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
+		 */
 		openZaakType(zaaktype) {
 			zaakTypeStore.setZaakTypeItem(zaaktype)
 			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaaktype.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

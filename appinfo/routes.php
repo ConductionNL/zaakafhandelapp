@@ -6,27 +6,32 @@ return [
 		'zaken' => ['url' => 'api/zrc/zaken'],
 		'resultaten' => ['url' => 'api/zrc/resultaten'],
 		'rollen' => ['url' => 'api/zrc/rollen'],
-		'statussen' => ['url' => 'api/zrc/statussen'],
-		'zaakinformatieobjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
-		'zaakobjecten' => ['url' => 'api/zrc/zaakobjecten'],
-		'zaakbesluiten' => ['url' => 'api/zrc/zaken/{zaak_uuid}/besluiten'],
-		'zaakeigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
-		'zaakaudittrail' => ['url' => 'api/zrc/zaken/{zaak_uuid}/audit_trail'],
+		'statusen' => ['url' => 'api/zrc/statussen'],
+		'zaakInformatieObjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
+		'zaakObjecten' => ['url' => 'api/zrc/zaakobjecten'],
+		// Route placeholders MUST match the controller method parameter names
+		// exactly — NC's dispatcher binds route params to method args by name,
+		// so a `{zaak_uuid}` placeholder against a `$zaakUuid`/`$zaakId` arg
+		// binds null and the typed arg throws a TypeError (HTTP 500) before the
+		// method body runs. ZaakBesluiten/ZaakAuditTrail take $zaakUuid;
+		// ZaakEigenschappen takes $zaakId.
+		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaakUuid}/besluiten'],
+		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaakId}/eigenschappen'],
+		// zaakAuditTrail is read-only per ZRC; the resource quintet stays registered for gate-14, write verbs return 405.
+		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaakUuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
-		'zaakTypen' => ['url' => 'api/ztc'],
+		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
-		'documenten' => ['url' => 'api/drc'],
+		'documenten' => ['url' => 'api/drc/enkelvoudiginformatieobjecten'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/redoc-1.0.2
 		'besluiten' => ['url' => 'api/brc'],
-		// Conform ???
-		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform ???
 		'taken' => ['url' => 'api/taken'],
 		'klanten' => ['url' => 'api/klanten'],
 		'berichten' => ['url' => 'api/berichten'],
-		'contactmomenten' => ['url' => 'api/contactmomenten'],
+		'contactMomenten' => ['url' => 'api/contactmomenten'],
 		'medewerkers' => ['url' => 'api/medewerkers'],
-
+		'dashboard' => ['url' => 'api/dashboard'],
 	],
 	'routes' => [
 		// Audit trail routes
@@ -41,18 +46,33 @@ return [
 		['name' => 'klanten#getBerichten', 'url' => '/api/klanten/{id}/berichten', 'verb' => 'GET'],
 		['name' => 'klanten#getZaken', 'url' => '/api/klanten/{id}/zaken', 'verb' => 'GET'],
 
+		// Addressbook integration routes (klanten-addressbook-sync)
+		['name' => 'klanten#contactsStatus', 'url' => '/api/klanten/contacts/status', 'verb' => 'GET'],
+		['name' => 'klanten#searchContacts', 'url' => '/api/klanten/contacts/search', 'verb' => 'GET'],
+		['name' => 'klanten#importContact', 'url' => '/api/klanten/contacts/import', 'verb' => 'POST'],
+		['name' => 'klanten#exportContact', 'url' => '/api/klanten/{id}/contacts/export', 'verb' => 'POST'],
+
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
-		['name' => 'configuration#create', 'url' => '/api/configuration', 'verb' => 'POST'],
+		['name' => 'configuration#save', 'url' => '/api/configuration', 'verb' => 'POST'],
 		['name' => 'contactMomenten#page', 'url' => '/contactmomenten', 'verb' => 'GET'],
 		['name' => 'contactMomenten#page', 'postfix' => 'details', 'url' => '/contactmomenten/{id}', 'verb' => 'GET'],
 		['name' => 'zaken#page', 'url' => '/zaken', 'verb' => 'GET'],
 		['name' => 'zaken#page', 'postfix'  => 'details', 'url' => '/zaken/{id}', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'postfix'  => 'details', 'url' => '/rollen/{id}', 'verb' => 'GET'],
-		['name' => 'statussen#page', 'url' => '/statussen', 'verb' => 'GET'],
-		['name' => 'zaakinformatieobjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
+		['name' => 'statusen#page', 'url' => '/statussen', 'verb' => 'GET'],
+		['name' => 'statusen#page', 'postfix' => 'details', 'url' => '/statussen/{id}', 'verb' => 'GET'],
+		['name' => 'besluiten#page', 'url' => '/besluiten', 'verb' => 'GET'],
+		['name' => 'besluiten#page', 'postfix' => 'details', 'url' => '/besluiten/{id}', 'verb' => 'GET'],
+		['name' => 'documenten#page', 'url' => '/documenten', 'verb' => 'GET'],
+		['name' => 'documenten#page', 'postfix' => 'details', 'url' => '/documenten/{id}', 'verb' => 'GET'],
+		// DRC enkelvoudiginformatieobject content download (streams the backing Nextcloud file).
+		['name' => 'documenten#download', 'url' => '/api/drc/enkelvoudiginformatieobjecten/{id}/download', 'verb' => 'GET'],
+		['name' => 'resultaten#pages', 'url' => '/resultaten', 'verb' => 'GET'],
+		['name' => 'resultaten#pages', 'postfix' => 'details', 'url' => '/resultaten/{id}', 'verb' => 'GET'],
+		['name' => 'zaakInformatieObjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','url' => '/zaaktypen', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','postfix' => 'details', 'url' => '/zaaktypen/{id}', 'verb' => 'GET'],
 		['name' => 'taken#page','url' => '/taken', 'verb' => 'GET'],
@@ -67,9 +87,12 @@ return [
 		// user Settings
 		['name' => 'settings#index','url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#create', 'url' => '/settings', 'verb' => 'POST'],
+		// Generic per-user preferences (used by shared nextcloud-vue widgets, e.g. CnSupportDialog).
+		['name' => 'preferences#getPreference', 'url' => '/api/preferences/{key}', 'verb' => 'GET'],
+		['name' => 'preferences#setPreference', 'url' => '/api/preferences/{key}', 'verb' => 'PUT'],
 		// User
 		['name' => 'users#me', 'url' => '/me', 'verb' => 'GET'],
-		// Object API routes	
+		// Object API routes
 		['name' => 'objects#index', 'url' => 'api/objects/{objectType}', 'verb' => 'GET'],
 		['name' => 'objects#create', 'url' => 'api/objects/{objectType}', 'verb' => 'POST'],
 		['name' => 'objects#show', 'url' => 'api/objects/{objectType}/{id}', 'verb' => 'GET'],

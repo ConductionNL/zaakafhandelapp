@@ -191,12 +191,18 @@ export default {
 			closeModalTimeout: null,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		if (zaakTypeStore.zaakTypeItem?.id) {
 			this.initZaaktype()
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		initZaaktype() {
 			this.zaaktype = {
 				...this.zaaktype,
@@ -206,10 +212,16 @@ export default {
 			const selectedArchiefStatus = this.archiefstatus.options.find((options) => options.id === this.zaaktype.archiefstatus)
 			this.archiefstatus.value = selectedArchiefStatus || null
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(null)
 			clearTimeout(this.closeModalTimeout)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		saveZaakType() {
 			this.loading = true
 

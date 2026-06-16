@@ -6,6 +6,14 @@ module.exports = {
 		'.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
 	},
 	moduleFileExtensions: ['js', 'json', 'vue', 'ts'],
+	// Jest owns the jsdom component/store/entity unit tests that live next
+	// to the source under src/. The Playwright e2e specs (tests/e2e/**) and
+	// the Vitest specs (tests/vitest/**) use their own runners — collecting
+	// them here makes jest try to execute Playwright/Vitest entrypoints and
+	// crash (`@playwright/test` "Class extends value undefined", duplicate
+	// vitest globals). Scope jest to src/ so each runner owns its own files.
+	testMatch: ['<rootDir>/src/**/*.spec.{js,ts}'],
+	testPathIgnorePatterns: ['/node_modules/', '<rootDir>/tests/e2e/', '<rootDir>/tests/vitest/'],
 	testEnvironment: 'jest-environment-jsdom',
 	// Several @nextcloud/* and @conduction/* packages ship pure ESM (or
 	// CJS chunks that `require('....css')`), which Jest cannot parse out

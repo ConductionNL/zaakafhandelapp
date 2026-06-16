@@ -18,10 +18,16 @@ export const useZaakStore = defineStore('zaken', {
 		auditTrailItem: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZaakItem(zaakItem: Zaak | TZaak) {
 			this.zaakItem = zaakItem && new Zaak(zaakItem)
 			console.info('Active zaak item set to ' + zaakItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZakenList(zakenList: Zaak[] | TZaak[]) {
 			this.zakenList = zakenList.map(
 			    (zaakItem) => new Zaak(zaakItem),

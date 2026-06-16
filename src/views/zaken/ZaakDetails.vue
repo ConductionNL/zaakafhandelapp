@@ -71,8 +71,32 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 							</template>
 							{{ t('zaakafhandelapp', 'Add decision') }}
 						</NcActionButton>
+						<NcActionButton v-if="!isClosed && (isSuspended || zaaktypeAllowsOpschorting)"
+							@click="navigationStore.setModal('suspendZaak')">
+							<template #icon>
+								<PauseCircleOutline :size="20" />
+							</template>
+							{{ isSuspended ? t('zaakafhandelapp', 'Resume case') : t('zaakafhandelapp', 'Suspend case') }}
+						</NcActionButton>
+						<NcActionButton v-if="!isClosed && !isSuspended && zaaktypeAllowsVerlenging && !alreadyExtended"
+							@click="navigationStore.setModal('extendZaak')">
+							<template #icon>
+								<CalendarPlus :size="20" />
+							</template>
+							{{ t('zaakafhandelapp', 'Extend case') }}
+						</NcActionButton>
 					</NcActions>
 				</div>
+
+				<NcNoteCard v-if="isSuspended" type="warning" class="suspensionBanner">
+					{{ t('zaakafhandelapp', 'This case is suspended.') }}
+					<span v-if="zaakStore.zaakItem?.opschorting?.reden">
+						{{ t('zaakafhandelapp', 'Reason:') }} {{ zaakStore.zaakItem.opschorting.reden }}
+					</span>
+					<span v-if="suspensionStart">
+						— {{ t('zaakafhandelapp', 'since') }} {{ suspensionStart }}
+					</span>
+				</NcNoteCard>
 
 				<div class="detailGrid">
 					<div>
@@ -120,6 +144,14 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 						<p>
 							{{ zaakStore.zaakItem?.startdatum }}
 						</p>
+					</div>
+					<div>
+						<h4>{{ t('zaakafhandelapp', 'Planned end date:') }}</h4>
+						<p>{{ zaakStore.zaakItem?.einddatumGepland || '-' }}</p>
+					</div>
+					<div>
+						<h4>{{ t('zaakafhandelapp', 'Statutory deadline:') }}</h4>
+						<p>{{ zaakStore.zaakItem?.uiterlijkeEinddatumAfdoening || '-' }}</p>
 					</div>
 					<div>
 						<h4>Toelichting:</h4>
@@ -200,7 +232,7 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcButton, NcListItem, NcEmptyContent, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -215,6 +247,7 @@ import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionO
 import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
 import FileChartCheckOutline from 'vue-material-design-icons/FileChartCheckOutline.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import PauseCircleOutline from 'vue-material-design-icons/PauseCircleOutline.vue'
 
 // Views
 import ZaakEigenschappen from '../eigenschappen/ZaakEigenschappen.vue'
@@ -233,6 +266,9 @@ export default {
 		NcActions,
 		NcActionButton,
 		NcButton,
+		NcListItem,
+		NcEmptyContent,
+		NcNoteCard,
 		BTabs,
 		BTab,
 		NcLoadingIcon,
@@ -252,6 +288,13 @@ export default {
 		CalendarPlus,
 		FileDocumentPlusOutline,
 		VectorPolylineEdit,
+		Eye,
+		TimelineQuestionOutline,
+		OpenInApp,
+		FileChartCheckOutline,
+		BriefcaseAccountOutline,
+		MessagePlus,
+		PauseCircleOutline,
 	},
 	props: {
 		id: {
@@ -269,20 +312,71 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		zaakType() {
 			return zaakTypeStore.zaakTypeList.find((zaakType) => zaakType.id === zaakStore.zaakItem.zaaktype || Symbol('no zaaktype id'))
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
+		 */
+		isSuspended() {
+			return zaakStore.zaakItem?.opschorting?.indicatie === true
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
+		 */
+		isClosed() {
+			return !!zaakStore.zaakItem?.einddatum
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
+		 */
+		alreadyExtended() {
+			return !!zaakStore.zaakItem?.verlenging?.duur
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
+		 */
+		zaaktypeAllowsOpschorting() {
+			const v = this.zaakType?.opschortingEnAanhoudingMogelijk
+			return v === true || v === 'true' || v === '1'
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
+		 */
+		zaaktypeAllowsVerlenging() {
+			const v = this.zaakType?.verlengingMogelijk
+			return v === true || v === 'true' || v === '1'
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
+		 */
+		suspensionStart() {
+			const raw = zaakStore.zaakItem?.opschorting?._opschortingGestart
+			return raw ? new Date(raw).toLocaleDateString() : ''
+		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchData(newId)
 		},
 	},
+	/**
+	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.fetchData(this.id)
 		zaakTypeStore.refreshZaakTypenList()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(id) {
 			this.loading = true
 
@@ -293,6 +387,9 @@ export default {
 				this.loading = false
 			})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchAuditTrails(id) {
 
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
@@ -305,6 +402,9 @@ export default {
 				.finally(() => {
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		goToZaakType(zaakType) {
 			zaakTypeStore.setZaakTypeItem(zaakType)
 			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaakType.id } })

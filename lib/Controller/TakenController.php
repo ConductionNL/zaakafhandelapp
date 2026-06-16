@@ -5,11 +5,19 @@ namespace OCA\ZaakAfhandelApp\Controller;
 use OCA\ZaakAfhandelApp\Service\MailService;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
+/**
+ * Controller for handling tasks (taken) operations.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class TakenController extends Controller
 {
     public function __construct(
@@ -17,6 +25,7 @@ class TakenController extends Controller
         IRequest $request,
         private readonly MailService $mailService,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -28,9 +37,15 @@ class TakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Retrieve all request parameters.
         $requestParams = $this->request->getParams();
 
@@ -50,6 +65,11 @@ class TakenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $getParameter is an NC route param
+     *   reserved for future SPA deep-linking; the PHP layer renders a shell template only.
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -87,11 +107,21 @@ class TakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the catalog object by its ID.
         $object = $this->objectService->getObject('taken', $id);
+
+        if ($object === null) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        }
 
         // Return the catalog as a JSON response.
         return new JSONResponse($object);
@@ -104,9 +134,15 @@ class TakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request.
         $data = $this->request->getParams();
 
@@ -131,9 +167,18 @@ class TakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
+     *   the full payload is consumed via $this->request->getParams() instead.
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request.
         $data = $this->request->getParams();
 
@@ -162,9 +207,15 @@ class TakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the catalog object.
         $result = $this->objectService->deleteObject('taken', $id);
 
@@ -181,9 +232,21 @@ class TakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+        $object = $this->objectService->getObject('taken', $id);
+        if ($object === null) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('taken', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()
