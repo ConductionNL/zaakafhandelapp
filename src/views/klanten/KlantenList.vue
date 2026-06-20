@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, klantStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -28,53 +29,61 @@ import { navigationStore, klantStore } from '../../store/store.js'
 						</template>
 						Klant toevoegen
 					</NcActionButton>
+					<NcActionButton v-if="contactsAvailable" @click="navigationStore.setModal('importContact')">
+						<template #icon>
+							<ImportIcon :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Import from contacts') }}
+					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="klantStore.klantenList">
+			<div v-if="klantStore.klantenList?.length">
 				<NcListItem v-for="(klant, i) in klantStore.klantenList"
 					:key="`${klant}${i}`"
-					:name="klant.voornaam || 'onbekend'"
-					:active="klantStore.klantItem.id === klant?.id"
+					:name="getName(klant)"
+					:active="$route.params?.id === klant?.id"
 					:force-display-actions="true"
-					:details="'Persoon'"
-					:counter-number="Math.floor(Math.random() * 101)"
-					@click="klantStore.setKlantItem(klant)">
+					:details="_.upperFirst(klant.type)"
+					@click="openKlant(klant)">
 					<template #icon>
-						<AccountOutline :class="klantStore.klantItem === klant.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AccountOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
-						{{ klant?.voorvoegsel ? `${klant.voorvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend' }}
+						{{ getSubname(klant) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('editKlant')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
-						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setDialog('deleteKlant')">
+						<NcActionButton @click="klantStore.setKlantItem(klant); navigationStore.setModal('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!klantStore.klantenList"
+		<div v-if="!klantStore.klantenList?.length && !loading">
+			Geen klanten gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="!klantStore.klantenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Klanten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading customers')" />
 	</NcAppContentList>
 </template>
 <script>
 // Components
 import { NcListItem, NcActionButton, NcAppContentList, NcTextField, NcLoadingIcon, NcActions } from '@nextcloud/vue'
+import _ from 'lodash'
 
 // Icons
 import Magnify from 'vue-material-design-icons/Magnify.vue'
@@ -83,6 +92,7 @@ import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import ImportIcon from 'vue-material-design-icons/Import.vue'
 
 export default {
 	name: 'KlantenList',
@@ -90,6 +100,7 @@ export default {
 		// Components
 		NcListItem,
 		NcActionButton,
+		NcActions,
 		NcAppContentList,
 		NcTextField,
 		NcLoadingIcon,
@@ -98,28 +109,109 @@ export default {
 		Magnify,
 		Pencil,
 		TrashCanOutline,
+		Plus,
+		Refresh,
+		ImportIcon,
 	},
 	data() {
 		return {
 			search: '',
 			loading: true,
 			klantenList: [],
+			contactsAvailable: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
-		klantStore.refreshKlantenList()
+		klantStore.refreshKlantenList().then(() => {
+			this.loading = false
+		})
+		this.checkContactsAvailability()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+		 */
+		checkContactsAvailability() {
+			fetch('/index.php/apps/zaakafhandelapp/api/klanten/contacts/status', { method: 'GET' })
+				.then(response => response.json())
+				.then((data) => {
+					this.contactsAvailable = data?.available === true
+				})
+				.catch(() => {
+					this.contactsAvailable = false
+				})
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
+		openKlant(klant) {
+			klantStore.setKlantItem(klant)
+			this.$router.push({ params: { id: klant.id } })
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		fullName(klant) {
-			let name = klant.achternaam;
+			let name = klant.achternaam
 			if (klant.tussenvoegsel) {
-				name = `${klant.tussenvoegsel} ${name}`;
+				name = `${klant.tussenvoegsel} ${name}`
 			}
 			if (klant.voornaam) {
-				name = `${name}, ${klant.voornaam}`;
+				name = `${name}, ${klant.voornaam}`
 			}
-			return name;
+			return name
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return klant?.voornaam ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		getSubname(klant) {
+			if (klant.type === 'persoon') {
+				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.websiteUrl ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
+		deleteKlant() {
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}`,
+				{
+					method: 'DELETE',
+				},
+			)
+				.then((response) => {
+					response.json().then((data) => {
+						this.klantenList = data
+					})
+					this.loading = false
+				})
+				.catch((err) => {
+					console.error(err)
+					this.loading = false
+				})
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -139,6 +231,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
