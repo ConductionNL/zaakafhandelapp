@@ -1,7 +1,3 @@
-<script setup>
-import { navigationStore } from '../../store/store.js'
-</script>
-
 <template>
 	<div class="detailContainer">
 		<div v-if="!loading" id="app-content">
@@ -12,7 +8,7 @@ import { navigationStore } from '../../store/store.js'
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Summary:') }}</h4>
 						<span>{{ zaak.summary }}</span>
 					</div>
 				</div>
@@ -21,7 +17,7 @@ import { navigationStore } from '../../store/store.js'
 		<NcLoadingIcon v-if="loading"
 			:size="100"
 			appearance="dark"
-			name="Zaak details aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading case details')" />
 	</div>
 </template>
 
@@ -43,10 +39,14 @@ export default {
 		return {
 			zaak: [],
 			loading: false,
+			statusItem: [],
 		}
 	},
 	watch: {
 		statusId: {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(statusId) {
 				this.fetchData(statusId)
 			},
@@ -54,9 +54,12 @@ export default {
 		},
 	},
 	mounted() {
-		this.fetchData(store.statusItem)
+		this.fetchData(this.statusItem)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(statusId) {
 			this.loading = true
 			fetch(

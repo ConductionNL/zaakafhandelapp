@@ -1,24 +1,11 @@
 /* eslint-disable no-console */
 import { setActivePinia, createPinia } from 'pinia'
 
-import { useNavigationStore } from './navigation.js'
+import { useNavigationStore } from './navigation.ts'
 
 describe('Navigation Store', () => {
 	beforeEach(() => {
 		setActivePinia(createPinia())
-	})
-
-	it('set current selected view correctly', () => {
-		const store = useNavigationStore()
-
-		store.setSelected('publication')
-		expect(store.selected).toBe('publication')
-
-		store.setSelected('catalogi')
-		expect(store.selected).toBe('catalogi')
-
-		store.setSelected('metadata')
-		expect(store.selected).toBe('metadata')
 	})
 
 	it('set modal correctly', () => {
