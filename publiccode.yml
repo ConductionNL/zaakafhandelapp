@@ -1,0 +1,66 @@
+publiccodeYmlVersion: "0.4"
+
+name: Zaak Afhandel App
+url: "https://github.com/ConductionNL/zaakafhandelapp"
+softwareVersion: "0.2.2"
+releaseDate: "2026-05-26"
+developmentStatus: beta
+softwareType: "standalone/other"
+
+platforms:
+  - nextcloud
+
+categories:
+  - case-management
+  - it-service-management
+
+description:
+  en:
+    shortDescription: >
+      Case handling and workflow management for Dutch government organisations on Nextcloud.
+    longDescription: >
+      Zaak Afhandel App (ZAA) is a case handling and workflow management application
+      for Dutch government organisations, built on Nextcloud and Open Register. It
+      implements the Dutch Zaakgericht Werken (ZGW) standard for case-oriented working
+      and integrates with Open Zaak and other Dutch government API standards. ZAA
+      enables municipalities and other public bodies to manage cases, tasks, and
+      citizen interactions within a Nextcloud environment.
+    features:
+      - Zaakgericht Werken (ZGW) case management
+      - Integration with Open Zaak and Dutch government APIs
+      - Task and workflow management
+      - Citizen interaction tracking
+
+  nl:
+    shortDescription: >
+      Zaakafhandeling en workflowbeheer voor Nederlandse overheidsorganisaties op Nextcloud.
+    longDescription: >
+      Zaak Afhandel App (ZAA) is een zaakafhandelings- en workflowbeheertoepassing
+      voor Nederlandse overheidsorganisaties, gebouwd op Nextcloud en Open Register.
+      Het implementeert de Nederlandse Zaakgericht Werken (ZGW)-standaard en integreert
+      met Open Zaak en andere Nederlandse overheids-API-standaarden. ZAA stelt
+      gemeenten en andere overheidsinstanties in staat zaken, taken en burgerinteracties
+      te beheren binnen een Nextcloud-omgeving.
+    features:
+      - Zaakgericht Werken (ZGW)-zaakbeheer
+      - Integratie met Open Zaak en Nederlandse overheids-API's
+      - Taken- en workflowbeheer
+      - Bijhouden van burgerinteracties
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: "Conduction B.V."
+  repoOwner: "Conduction B.V."
+
+maintenance:
+  type: community
+  contacts:
+    - name: Conduction B.V.
+      email: info@conduction.nl
+      affiliation: Conduction B.V.
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - nl
+    - en
