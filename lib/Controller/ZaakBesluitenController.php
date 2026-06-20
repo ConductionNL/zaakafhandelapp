@@ -263,7 +263,7 @@ class ZaakBesluitenController extends Controller
         return [
             'url'     => $this->urlGenerator->getAbsoluteURL(
                 '/index.php/apps/zaakafhandelapp/api/zrc/zaken/'
-                . ($this->resolveReference($object['zaak'] ?? '')) . '/besluiten/' . (string) $uuid
+                .($this->resolveReference($object['zaak'] ?? '')).'/besluiten/'.(string) $uuid
             ),
             'uuid'    => $uuid,
             'zaak'    => ($object['zaak'] ?? null),

@@ -87,7 +87,7 @@ class DocumentenController extends Controller
         }
 
         try {
-            $params  = $this->request->getParams();
+            $params = $this->request->getParams();
             unset($params['_route']);
             $objects = $this->objectService->getObjects(objectType: self::OBJECT_TYPE, filters: $params);
             $results = array_map(fn (array $o): array => $this->mapDocument($o), $objects);
@@ -315,7 +315,7 @@ class DocumentenController extends Controller
 
         $response = new StreamResponse($read['stream']);
         $response->addHeader('Content-Type', $read['mime']);
-        $response->addHeader('Content-Disposition', 'attachment; filename="' . rawurlencode($read['name']) . '"');
+        $response->addHeader('Content-Disposition', 'attachment; filename="'.rawurlencode($read['name']).'"');
 
         return $response;
     }//end download()
@@ -336,31 +336,31 @@ class DocumentenController extends Controller
         $inhoudUrl = null;
         if ($uuid !== null) {
             $inhoudUrl = $this->urlGenerator->getAbsoluteURL(
-                '/index.php/apps/zaakafhandelapp/api/drc/enkelvoudiginformatieobjecten/' . (string) $uuid . '/download'
+                '/index.php/apps/zaakafhandelapp/api/drc/enkelvoudiginformatieobjecten/'.(string) $uuid.'/download'
             );
         }
 
         return [
-            'url'                        => $inhoudUrl === null ? null : str_replace('/download', '', $inhoudUrl),
-            'uuid'                       => $uuid,
-            'identificatie'              => ($object['identificatie'] ?? null),
-            'bronorganisatie'            => ($object['bronorganisatie'] ?? null),
-            'creatiedatum'               => ($object['creatiedatum'] ?? null),
-            'titel'                      => ($object['titel'] ?? null),
-            'auteur'                     => ($object['auteur'] ?? null),
-            'status'                     => ($object['status'] ?? null),
-            'taal'                       => ($object['taal'] ?? null),
-            'formaat'                    => ($object['formaat'] ?? null),
-            'bestandsnaam'               => ($object['bestandsnaam'] ?? null),
-            'bestandsomvang'             => ($object['bestandsomvang'] ?? null),
-            'versie'                     => ($object['versie'] ?? null),
-            'beginRegistratie'           => ($object['beginRegistratie'] ?? null),
-            'informatieobjecttype'       => ($object['informatieobjecttype'] ?? null),
+            'url'                         => $inhoudUrl === null ? null : str_replace('/download', '', $inhoudUrl),
+            'uuid'                        => $uuid,
+            'identificatie'               => ($object['identificatie'] ?? null),
+            'bronorganisatie'             => ($object['bronorganisatie'] ?? null),
+            'creatiedatum'                => ($object['creatiedatum'] ?? null),
+            'titel'                       => ($object['titel'] ?? null),
+            'auteur'                      => ($object['auteur'] ?? null),
+            'status'                      => ($object['status'] ?? null),
+            'taal'                        => ($object['taal'] ?? null),
+            'formaat'                     => ($object['formaat'] ?? null),
+            'bestandsnaam'                => ($object['bestandsnaam'] ?? null),
+            'bestandsomvang'              => ($object['bestandsomvang'] ?? null),
+            'versie'                      => ($object['versie'] ?? null),
+            'beginRegistratie'            => ($object['beginRegistratie'] ?? null),
+            'informatieobjecttype'        => ($object['informatieobjecttype'] ?? null),
             'vertrouwelijkheidaanduiding' => ($object['vertrouwelijkheidaanduiding'] ?? null),
-            'lock'                       => null,
-            'ondertekening'              => null,
-            'integriteit'                => null,
-            'inhoud'                     => $inhoudUrl,
+            'lock'                        => null,
+            'ondertekening'               => null,
+            'integriteit'                 => null,
+            'inhoud'                      => $inhoudUrl,
         ];
     }//end mapDocument()
 }//end class

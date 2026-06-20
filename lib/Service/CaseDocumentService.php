@@ -65,7 +65,7 @@ class CaseDocumentService
                 $file = $folder->newFile($name, $content);
             }
         } catch (NotFoundException $e) {
-            throw new CaseDocumentException('Could not write the document file: ' . $e->getMessage());
+            throw new CaseDocumentException('Could not write the document file: '.$e->getMessage());
         }
 
         return [
@@ -159,7 +159,7 @@ class CaseDocumentService
         }
 
         $userFolder = $this->rootFolder->getUserFolder($user->getUID());
-        $path       = self::ROOT_FOLDER . '/' . $this->sanitiseName($zaak);
+        $path       = self::ROOT_FOLDER.'/'.$this->sanitiseName($zaak);
 
         if ($userFolder->nodeExists($path) === true) {
             $node = $userFolder->get($path);

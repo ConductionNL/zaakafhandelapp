@@ -236,7 +236,7 @@ class ZaakAuditTrailController extends Controller
         $changes = ($entry['changed'] ?? $entry['changes'] ?? $entry['wijzigingen'] ?? null);
 
         $zaakUrl = $this->urlGenerator->getAbsoluteURL(
-            '/index.php/apps/zaakafhandelapp/api/zrc/zaken/' . $zaakUuid
+            '/index.php/apps/zaakafhandelapp/api/zrc/zaken/'.$zaakUuid
         );
 
         return [
