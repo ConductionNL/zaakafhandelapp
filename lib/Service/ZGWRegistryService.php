@@ -36,6 +36,7 @@ class ZGWRegistryService
         'status'                        => 'status',
         'gebruiksrechten'               => 'gebruiksrechten',
         'zaakbesluit'                   => 'zaakbesluit',
+        'enkelvoudiginformatieobject'   => 'enkelvoudiginformatieobject',
         'informatieobjecttype'          => 'informatieobjecttype',
         'zaaktype-informatieobjecttype' => 'zaaktypeinformatieobjecttype',
         'zaaktype'                      => 'zaaktype',
@@ -100,6 +101,11 @@ class ZGWRegistryService
     {
         return self::SCHEMAS['zaakbesluit'];
     }//end getZaakBesluitSchema()
+
+    public function getEnkelvoudigInformatieObjectSchema(): string
+    {
+        return self::SCHEMAS['enkelvoudiginformatieobject'];
+    }//end getEnkelvoudigInformatieObjectSchema()
 
     public function getIOTSchema(): string
     {
