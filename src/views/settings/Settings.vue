@@ -1,7 +1,3 @@
-<script setup>
-import { translate as t } from '@nextcloud/l10n'
-</script>
-
 <template>
 	<CnAdminSettingsShell
 		app-id="zaakafhandelapp"
@@ -107,6 +103,7 @@ import { NcSettingsSection, NcNoteCard, NcSelect, NcButton, NcLoadingIcon } from
 import { CnAdminSettingsShell } from '@conduction/nextcloud-vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Restart from 'vue-material-design-icons/Restart.vue'
+import { translate as t, translatePlural as n } from '@nextcloud/l10n'
 
 export default {
 	name: 'Settings',
@@ -646,6 +643,8 @@ export default {
 		this.fetchAll()
 	},
 	methods: {
+		t,
+		n,
 		getDataProperty(name) {
 			return this[name]
 
