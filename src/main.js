@@ -6,20 +6,24 @@
 // openspec/changes/zaakafhandelapp-manifest-v1/design.md.
 
 import Vue from 'vue'
+import VueRouter from 'vue-router'
 import { PiniaVuePlugin } from 'pinia'
 import { translate as t, translatePlural as n, loadTranslations } from '@nextcloud/l10n'
+import { generateUrl } from '@nextcloud/router'
 import {
 	defaultPageTypes,
 	registerIcons,
 	registerTranslations,
+	buildManifest,
 } from '@conduction/nextcloud-vue'
 import pinia from './pinia.js'
 import App from './App.vue'
-import router from './router/index.js'
 import bundledManifest from './manifest.json'
+import menuLayout from './menu-layout.json'
 import customComponents from './customComponents.js'
 import registry from './registry.js'
 import { initializeStores } from './store/store.js'
+import { routesFromManifest } from './router/index.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
 
 // Library CSS — must be explicit import (webpack tree-shakes side-effect imports from aliased packages)
@@ -27,6 +31,7 @@ import '@conduction/nextcloud-vue/css/index.css'
 
 Vue.mixin({ methods: { t, n } })
 Vue.use(PiniaVuePlugin)
+Vue.use(VueRouter)
 
 Vue.directive('tooltip', Tooltip)
 
@@ -81,6 +86,20 @@ try {
 	console.warn('[zaakafhandelapp] initializeStores threw synchronously', e)
 }
 
+// Collect the app's manifest.d/*.json fragments — require.context is resolved
+// by this app's own webpack build, so it stays app-local — then hand the base
+// manifest, fragments, and menu-layout to the shared pipeline (ADR-044).
+const fragmentCtx = require.context('./manifest.d/', false, /\.json$/)
+const fragments = fragmentCtx.keys().sort().map((key) => fragmentCtx(key))
+const mergedManifest = buildManifest(bundledManifest, fragments, menuLayout)
+
+const router = new VueRouter({
+	mode: 'hash',
+	base: generateUrl('/apps/zaakafhandelapp'),
+	linkActiveClass: 'active',
+	routes: routesFromManifest(mergedManifest),
+})
+
 // Pass shallow copies of the registry maps to CnAppRoot. The lib exports
 // `defaultPageTypes` (and consumers' `customComponents`) as frozen module
 // objects in some bundle shapes — Vue 2's `Vue.extend()` mutates component
@@ -97,7 +116,7 @@ new Vue({
 	router,
 	render: (h) => h(App, {
 		props: {
-			manifest: bundledManifest,
+			manifest: mergedManifest,
 			customComponents: customComponentsProp,
 			pageTypes: pageTypesProp,
 			registry: registryProp,
