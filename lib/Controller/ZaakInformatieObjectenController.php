@@ -2,145 +2,211 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
-use GuzzleHttp\Client;
 use OCA\ZaakAfhandelApp\Service\CallService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
+use OCP\IUserSession;
 
+/**
+ * Controller for zaakinformatieobjecten (case document links) resources.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class ZaakInformatieObjectenController extends Controller
 {
-	const TEST_ARRAY = [
-		"5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-			"id" => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-			"name" => "Zaakt type 1",
-			"summary" => "summary for one"
-		],
-		"4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-			"id" => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-			"name" => "Zaakt type 12",
-			"summary" => "summary for two"
-		],
-		"15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-			"id" => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-			"name" => "Zaakt type 3",
-			"summary" => "summary for two"
-		],
-		"0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-			"id" => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-			"name" => "Zaakt type 4",
-			"summary" => "summary for two"
-		]
-	];
+    public function __construct(
+        $appName,
+        IRequest $request,
+        private readonly IAppConfig $config,
+        private readonly IUserSession $userSession,
+    ) {
+        parent::__construct($appName, $request);
+    }//end __construct()
 
-	public function __construct(
-		$appName,
-		IRequest $request,
-		private readonly IAppConfig $config
-	)
-	{
-		parent::__construct($appName, $request);
-	}
+    /**
+     * This returns the template of the main app's page
+     * It adds some data to the template (app version)
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return TemplateResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function page(): TemplateResponse
+    {
+        return new TemplateResponse(
+            'zaakafhandelapp',
+            'index',
+            []
+        );
+    }//end page()
 
-	/**
-	 * This returns the template of the main app's page
-	 * It adds some data to the template (app version)
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function page(): TemplateResponse
-	{
-		return new TemplateResponse(
-		//Application::APP_ID,
-			'zaakafhandelapp',
-			'index',
-			[]
-		);
-	}
+    /**
+     * Return (and serach) all objects
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function index(CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * Return (and serach) all objects
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function index(CallService $callService): JSONResponse
-	{
-		// Latere zorg
-		$query = $this->request->getParams();
+        $results = $callService->index(source: 'zrc', endpoint: 'zaakinformatieobjecten');
+        return new JSONResponse($results);
+    }//end index()
 
-		$results = $callService->index(source: 'zrc', endpoint: 'zaakinformatieobjecten');
-		return new JSONResponse($results);
-	}
+    /**
+     * Read a single object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function show(string $id, CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * Read a single object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function show(string $id, CallService $callService): JSONResponse
-	{
-		// Latere zorg
-		$query = $this->request->getParams();
+        $results = $callService->show(source: 'zrc', endpoint: 'zaakinformatieobjecten', id: $id);
+        return new JSONResponse($results);
+    }//end show()
 
-		$results = $callService->show(source: 'zrc', endpoint: 'zaakinformatieobjecten', id: $id);
-		return new JSONResponse($results);
-	}
+    /**
+     * Validate that the `zaak` and `informatieobject` URL fields are present and syntactically valid.
+     *
+     * Shared by both create and update so that the same hardening applied in #289 is enforced
+     * on partial updates as well.
+     *
+     * @param array $body The request payload.
+     *
+     * @return JSONResponse|null A 400 response on the first invalid field, null when all fields are valid.
+     */
+    private function validateZioUrls(array $body): ?JSONResponse
+    {
+        foreach (['zaak', 'informatieobject'] as $field) {
+            if (empty($body[$field]) === true) {
+                return new JSONResponse(
+                    [$field => ["Het veld $field is verplicht."]],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
 
+            if (filter_var($body[$field], FILTER_VALIDATE_URL) === false) {
+                return new JSONResponse(
+                    [$field => ["Het veld $field moet een geldige URL zijn."]],
+                    Http::STATUS_BAD_REQUEST
+                );
+            }
+        }
 
-	/**
-	 * Creatue an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function create(CallService $callService): JSONResponse
-	{
-		// get post from requests
-		$body = $this->request->getParams();
-		$results = $callService->create(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body);
-		return new JSONResponse($results);
-	}
+        return null;
+    }//end validateZioUrls()
 
-	/**
-	 * Update an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function update(string $id, CallService $callService): JSONResponse
-	{
-		$body = $this->request->getParams();
-		$results = $callService->update(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body, id: $id);
-		return new JSONResponse($results);
-	}
+    /**
+     * Create a ZIO (zaak-informatieobject link).
+     *
+     * Guards (#280):
+     * - Both `zaak` and `informatieobject` URL fields must be present and non-empty.
+     * - Both values must be syntactically valid HTTP(S) URLs.
+     *
+     * Note: full object-level authorization (verify the current user has write access on the
+     * zaak and read access on the informatieobject) requires a ZRC/DRC look-up that is beyond
+     * the scope of this controller. That check is tracked in GitHub issue #280 and should be
+     * implemented once per-object ACLs are available via the configured ZRC/DRC sources.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function create(CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
 
-	/**
-	 * Delate an object
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return JSONResponse
-	 */
-	public function destroy(string $id, CallService $callService): JSONResponse
-	{
-		$callService->destroy(source: 'zrc', endpoint: 'zaakinformatieobjecten', id: $id);
+        // get post from requests
+        $body = $this->request->getParams();
 
-		return new JsonResponse([]);
-	}
-}
+        // Validate that required URL fields are present and syntactically valid (#280).
+        $urlError = $this->validateZioUrls($body);
+        if ($urlError !== null) {
+            return $urlError;
+        }
+
+        $results = $callService->create(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body);
+        return new JSONResponse($results);
+    }//end create()
+
+    /**
+     * Update an object
+     *
+     * Applies the same URL-field validation as create (#289 hardening) so that
+     * update payloads with invalid zaak/informatieobject URLs are rejected before
+     * they reach the ZRC backend.
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function update(string $id, CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $body = $this->request->getParams();
+
+        // Validate URL fields on update as well as create (#289).
+        $urlError = $this->validateZioUrls($body);
+        if ($urlError !== null) {
+            return $urlError;
+        }
+
+        $results = $callService->update(source: 'zrc', endpoint: 'zaakinformatieobjecten', data: $body, id: $id);
+        return new JSONResponse($results);
+    }//end update()
+
+    /**
+     * Delate an object
+     *
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+     */
+    public function destroy(string $id, CallService $callService): JSONResponse
+    {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        $callService->destroy(source: 'zrc', endpoint: 'zaakinformatieobjecten', id: $id);
+
+        return new JSONResponse([]);
+    }//end destroy()
+}//end class
