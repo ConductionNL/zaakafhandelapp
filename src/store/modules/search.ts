@@ -10,15 +10,24 @@ export const useSearchStore = defineStore('search', {
 		searchError: '',
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		setSearch(search: string) {
 			this.search = search
 			console.log('Active search set to ' + search)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		setSearchResults(searchResults: string[]) {
 			this.searchResults = searchResults
 			console.log('Active search set to ' + searchResults)
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		getSearchResults() {
 			const enabledPublicationTypeIds = Object.entries(this.publicationType)
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,6 +70,9 @@ export const useSearchStore = defineStore('search', {
 					},
 				)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-005
+		 */
 		clearSearch() {
 			this.search = ''
 			this.searchError = ''
