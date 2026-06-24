@@ -1,5 +1,4 @@
 const path = require('path')
-const fs = require('fs')
 const webpackConfig = require('@nextcloud/webpack-vue-config')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
@@ -48,16 +47,24 @@ webpackConfig.entry = {
 	},
 }
 
-// Use local source when available (monorepo dev), otherwise fall back to npm
-const localLib = path.resolve(__dirname, '../nextcloud-vue/src')
-const useLocalLib = fs.existsSync(localLib)
+// Resolve @conduction/nextcloud-vue to the INSTALLED library SOURCE, not its
+// published dist. The bootstrap (src/main.js) imports buildManifest /
+// applyMenuLayout (ADR-044), which are re-exported from the package's
+// src/index.js but are MISSING from the published dist bundle
+// (dist/nextcloud-vue.esm.js) on beta.135 — the dist lags the source.
+// Resolving the dist therefore yields `buildManifest is not a function` at
+// runtime. The node_modules src/ is the authoritative, up-to-date source and is
+// shipped in the published package, so aliasing to it is correct for both CI and
+// local builds. (The stale ../nextcloud-vue sibling worktree is intentionally NOT
+// used — it can lag even further behind the published package.)
+const installedLibSrc = path.resolve(__dirname, 'node_modules/@conduction/nextcloud-vue/src')
 
 webpackConfig.resolve = webpackConfig.resolve || {}
 webpackConfig.resolve.modules = [path.resolve(__dirname, 'node_modules'), 'node_modules']
 webpackConfig.resolve.alias = {
 	...(webpackConfig.resolve.alias || {}),
 	'@': path.resolve(__dirname, 'src/'),
-	...(useLocalLib ? { '@conduction/nextcloud-vue': localLib } : {}),
+	'@conduction/nextcloud-vue': installedLibSrc,
 	// Deduplicate shared packages so the aliased library source uses the same
 	// instances as the app (prevents dual-Pinia / dual-Vue bugs).
 	vue$: path.resolve(__dirname, 'node_modules/vue'),
@@ -131,8 +138,21 @@ webpackConfig.optimization = {
 				filename: appId + '-shared-nc-vue.js',
 			},
 			vendor: {
+				// Catch-all for EVERY remaining node_modules dependency (lower
+				// priority than ncVue, so @nextcloud/vue + @conduction/nextcloud-vue
+				// still land in shared-nc-vue). Previously this group enumerated a
+				// hand-maintained allowlist (vue|pinia|core-js|…); any transitive
+				// library @conduction/nextcloud-vue requires that was NOT on the list
+				// (ajv, ajv-formats, @vue/devtools-api, apexcharts, …) stayed in the
+				// main entry chunk while the nc-vue shared chunk __webpack_require__'d
+				// its factory — the nc-vue chunk loads BEFORE main, so the factory
+				// was undefined → "Cannot read properties of undefined (reading
+				// 'call')" at first mount. Sweeping all of node_modules into this
+				// eagerly-loaded shared-vendor chunk (loaded before shared-nc-vue)
+				// guarantees every shared factory is registered before nc-vue needs
+				// it, regardless of which library it is.
 				name: appId + '-shared-vendor',
-				test: /[\\/]node_modules[\\/](vue|pinia|vue-material-design-icons|@vueuse|core-js)[\\/]/,
+				test: /[\\/]node_modules[\\/]/,
 				priority: 20,
 				reuseExistingChunk: true,
 				enforce: true,

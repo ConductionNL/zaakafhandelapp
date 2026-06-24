@@ -4,6 +4,99 @@
 	"dependencies": [
 		"openregister"
 	],
+	"walkthrough": {
+		"enabled": true,
+		"version": 1,
+		"completionConfigKey": "walkthrough_completed_version",
+		"tours": [
+			{
+				"id": "zaakafhandelapp:getting-started",
+				"title": "Getting started",
+				"trigger": "first-visit",
+				"minAppVersion": "0.2.7",
+				"steps": [
+					{
+						"id": "welcome",
+						"sinceVersion": "0.2.7",
+						"placement": "center",
+						"title": "Welcome to ZaakAfhandelApp",
+						"body": "Let's take a quick spin through your case handling — we'll create a case together so you can see how the pieces fit. You'll add the record yourself.",
+						"target": {
+							"kind": "page",
+							"ref": "Dashboard"
+						},
+						"advanceOn": {
+							"type": "manual"
+						}
+					},
+					{
+						"id": "go-zaken",
+						"sinceVersion": "0.2.7",
+						"placement": "right",
+						"body": "Cases are the heart of the app — every task, document and decision hangs off a case. Open Cases from the menu to get started.",
+						"task": "Click Cases in the menu",
+						"target": {
+							"kind": "nav-item",
+							"ref": "Zaken"
+						},
+						"advanceOn": {
+							"type": "route-match",
+							"route": "Zaken"
+						}
+					},
+					{
+						"id": "create-zaak",
+						"sinceVersion": "0.2.7",
+						"placement": "bottom",
+						"allowManualNext": true,
+						"body": "Add your first case — give it a case type and save. You can attach tasks, documents and decisions to it afterwards.",
+						"task": "Click New and save a case",
+						"target": {
+							"kind": "element",
+							"ref": "index-add"
+						},
+						"advanceOn": {
+							"type": "object-created",
+							"register": "zaakafhandelapp",
+							"schema": "zaak",
+							"capture": {
+								"zaakId": ":id"
+							}
+						}
+					},
+					{
+						"id": "go-taken",
+						"sinceVersion": "0.2.7",
+						"placement": "right",
+						"body": "Tasks are the work items that move a case forward. Open Tasks from the menu.",
+						"task": "Click Tasks in the menu",
+						"target": {
+							"kind": "nav-item",
+							"ref": "Taken"
+						},
+						"advanceOn": {
+							"type": "route-match",
+							"route": "Taken"
+						}
+					},
+					{
+						"id": "done",
+						"sinceVersion": "0.2.7",
+						"placement": "center",
+						"title": "You're all set",
+						"body": "Nicely done — your case handling has its first case. Head back to the Dashboard to watch it grow, and reopen this tour anytime from the … menu.",
+						"target": {
+							"kind": "page",
+							"ref": "Dashboard"
+						},
+						"advanceOn": {
+							"type": "manual"
+						}
+					}
+				]
+			}
+		]
+	},
 	"menu": [
 		{
 			"id": "Dashboard",
