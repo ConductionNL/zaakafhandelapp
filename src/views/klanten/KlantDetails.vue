@@ -1,18 +1,23 @@
 <script setup>
-import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contactMomentStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!klantStore.klantItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="klantStore.klantItem">
 				<div class="head">
 					<h1 class="h1">
-						{{ klantStore.klantItem.voornaam }} {{ klantStore.klantItem.voorvoegsel }} {{ klantStore.klantItem.achternaam }}
+						{{ getName(klantStore.klantItem) }}
+						<NcCounterBubble v-if="klantStore.klantItem.contactsUid" class="linkedBadge">
+							{{ t('zaakafhandelapp', 'Linked to contacts') }}
+						</NcCounterBubble>
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -20,31 +25,39 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="taakStore.setTaakItem(); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<CalendarMonthOutline :size="20" />
 							</template>
-							Taak geven
+							{{ t('zaakafhandelapp', 'Assign task') }}
 						</NcActionButton>
 						<NcActionButton @click="berichtStore.setBerichtItem(); navigationStore.setModal('editBericht')">
 							<template #icon>
 								<ChatOutline :size="20" />
 							</template>
-							Bericht versturen
+							{{ t('zaakafhandelapp', 'Send message') }}
 						</NcActionButton>
 						<NcActionButton @click="zaakStore.setZaakItem(); navigationStore.setModal('editZaak')">
 							<template #icon>
 								<BriefcaseAccountOutline :size="20" />
 							</template>
-							Zaak starten
+							{{ t('zaakafhandelapp', 'Start case') }}
 						</NcActionButton>
-						<NcActionButton @click="navigationStore.setDialog('deleteKlant')">
+						<NcActionButton v-if="contactsAvailable && !klantStore.klantItem.contactsUid"
+							:disabled="exporting"
+							@click="saveToContacts">
+							<template #icon>
+								<AccountPlusOutline :size="20" />
+							</template>
+							{{ t('zaakafhandelapp', 'Save to contacts') }}
+						</NcActionButton>
+						<NcActionButton @click="navigationStore.setModal('deleteKlant')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
@@ -52,66 +65,95 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 
 				<div class="detailGrid">
 					<div class="gridContent gridFullWidth">
-						<b>Klantnummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Customer number:') }}</b>
 						<p>{{ klantStore.klantItem.klantnummer }}</p>
+					</div>
+					<div class="gridContent gridFullWidth">
+						<b>{{ t('zaakafhandelapp', 'BSN:') }}</b>
+						<p>{{ klantStore.klantItem.bsn }}</p>
 					</div>
 
 					<div class="gridContent">
-						<b>Telefoonnummer:</b>
+						<b>{{ t('zaakafhandelapp', 'Date of birth:') }}</b>
+						<p>{{ klantStore.klantItem.geboortedatum ? new Date(klantStore.klantItem.geboortedatum).toLocaleDateString() : '-' }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>{{ t('zaakafhandelapp', 'Country:') }}</b>
+						<p>{{ getLandName(klantStore.klantItem.land) }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>{{ t('zaakafhandelapp', 'Phone number:') }}</b>
 						<p>{{ klantStore.klantItem.telefoonnummer }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Email adres:</b>
+						<b>{{ t('zaakafhandelapp', 'Email address:') }}</b>
 						<p>{{ klantStore.klantItem.emailadres }}</p>
 					</div>
+
 					<div class="gridContent">
-						<b>Adres:</b>
-						<p>{{ klantStore.klantItem.adres }}</p>
+						<b>{{ t('zaakafhandelapp', 'City:') }}</b>
+						<p>{{ klantStore.klantItem.plaats }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Functie:</b>
+						<b>{{ t('zaakafhandelapp', 'Street name:') }}</b>
+						<p>{{ klantStore.klantItem.straatnaam }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>{{ t('zaakafhandelapp', 'Postal code + house number:') }}</b>
+						<p>{{ klantStore.klantItem.postcode }} {{ klantStore.klantItem.huisnummer }}</p>
+					</div>
+
+					<div class="gridContent">
+						<b>{{ t('zaakafhandelapp', 'Function:') }}</b>
 						<p>{{ klantStore.klantItem.functie }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Bedrijfsnaam:</b>
+						<b>{{ t('zaakafhandelapp', 'Company name:') }}</b>
 						<p>{{ klantStore.klantItem.bedrijfsnaam }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Website url:</b>
+						<b>{{ t('zaakafhandelapp', 'Chamber of commerce number:') }}</b>
+						<p>{{ klantStore.klantItem.kvkNummer }}</p>
+					</div>
+					<div class="gridContent">
+						<b>{{ t('zaakafhandelapp', 'Website URL:') }}</b>
 						<p>{{ klantStore.klantItem.websiteUrl }}</p>
 					</div>
 					<div class="gridContent">
-						<b>url:</b>
+						<b>{{ t('zaakafhandelapp', 'URL:') }}</b>
 						<p>{{ klantStore.klantItem.url }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Bron organisatie:</b>
+						<b>{{ t('zaakafhandelapp', 'Source organisation:') }}</b>
 						<p>{{ klantStore.klantItem.bronorganisatie }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Aanmaakkanaal:</b>
+						<b>{{ t('zaakafhandelapp', 'Creation channel:') }}</b>
 						<p>{{ klantStore.klantItem.aanmaakkanaal }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Geverifieerd:</b>
+						<b>{{ t('zaakafhandelapp', 'Verified:') }}</b>
 						<p>{{ klantStore.klantItem.geverifieerd }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Subject Identificatie:</b>
+						<b>{{ t('zaakafhandelapp', 'Subject identification:') }}</b>
 						<p>{{ klantStore.klantItem.subjectIdentificatie }}</p>
 					</div>
 					<div class="gridContent">
-						<b>Subject Type:</b>
+						<b>{{ t('zaakafhandelapp', 'Subject type:') }}</b>
 						<p>{{ klantStore.klantItem.subjectType }}</p>
 					</div>
 				</div>
 				<div class="tabContainer">
 					<BTabs content-class="mt-3" justified>
-						<BTab title="Zaken">
+						<BTab :title="t('zaakafhandelapp', 'Cases')">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
-									:name="zaak.title"
+									:name="zaak.identificatie"
 									:bold="false"
 									:details="zaak.description"
 									:force-display-actions="true">
@@ -123,18 +165,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" title="Geen zaken gevonden">
+							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
 								<template #description>
-									Er zijn geen zaken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Taken">
+						<BTab :title="t('zaakafhandelapp', 'Tasks')">
 							<div v-if="taken.length">
 								<NcListItem v-for="(taak, key) in taken"
 									:key="key"
@@ -150,18 +192,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-tasks" title="Geen taken gevonden">
+							<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
 								<template #description>
-									Er zijn geen taken gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Berichten">
+						<BTab :title="t('zaakafhandelapp', 'Messages')">
 							<div v-if="berichten.length">
 								<NcListItem v-for="(bericht, key) in berichten"
 									:key="key"
@@ -177,45 +219,47 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-mail" title="Geen berichten gevonden">
+							<NcEmptyContent v-else icon="icon-mail" :title="t('zaakafhandelapp', 'No messages found')">
 								<template #description>
-									Er zijn geen berichten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No messages were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Contact Momenten">
-							<div v-if="contactMomenten.length">
-								<NcListItem v-for="(contactMoment, key) in contactMomenten"
+						<BTab :title="t('zaakafhandelapp', 'Contact moments')">
+							<div v-if="filteredContactMomenten.length">
+								<NcListItem v-for="(contactMoment, key) in filteredContactMomenten"
 									:key="key"
-									:name="contactMoment.title"
+									:name="getName(klantStore.klantItem)"
 									:bold="false"
-									:details="contactMoment.description"
 									:force-display-actions="true">
 									<template #icon>
-										<AccountOutline :size="44" />
+										<CardAccountPhoneOutline :size="44" />
+									</template>
+									<template #subname>
+										{{ new Date(contactMoment.startDate).toLocaleString() }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setModal('viewContactMoment')">
+										<NcActionButton @click="contactMomentStore.setContactMomentItem(contactMoment); navigationStore.setSelected('contactMomenten')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-contacts" title="Geen contactmomenten gevonden">
+							<NcEmptyContent v-else icon="icon-contacts" :title="t('zaakafhandelapp', 'No contact moments found')">
 								<template #description>
-									Er zijn geen contactmomenten gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
-						<BTab title="Audit trail">
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')">
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -232,18 +276,18 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 										{{ auditTrail.userName }}
 									</template>
 									<template #actions>
-										<NcActionButton @click="objectStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewObjectAuditTrail')">
+										<NcActionButton @click="klantStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewKlantAuditTrail')">
 											<template #icon>
 												<Eye :size="20" />
 											</template>
-											View details
+											{{ t('zaakafhandelapp', 'View details') }}
 										</NcActionButton>
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-history" title="Geen audit trail gevonden">
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
 								<template #description>
-									Er is geen audit trail gevonden voor deze klant.
+									{{ t('zaakafhandelapp', 'No audit trail was found for this customer.') }}
 								</template>
 							</NcEmptyContent>
 						</BTab>
@@ -257,7 +301,8 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore } from 
 <script>
 // Components
 import { BTabs, BTab } from 'bootstrap-vue'
-import { NcActions, NcActionButton, NcEmptyContent, NcListItem } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcEmptyContent, NcListItem, NcLoadingIcon, NcCounterBubble } from '@nextcloud/vue'
+import { countries } from '../../data/countries.js'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
@@ -268,6 +313,8 @@ import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountO
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
 import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
+import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
+import AccountPlusOutline from 'vue-material-design-icons/AccountPlusOutline.vue'
 
 export default {
 	name: 'KlantDetails',
@@ -275,9 +322,11 @@ export default {
 		NcActions,
 		NcActionButton,
 		NcEmptyContent,
+		NcCounterBubble,
 		BTabs,
 		BTab,
 		NcListItem,
+		NcLoadingIcon,
 		// Icons
 		DotsHorizontal,
 		Pencil,
@@ -287,56 +336,172 @@ export default {
 		TrashCanOutline,
 		Eye,
 		TimelineQuestionOutline,
+		CardAccountPhoneOutline,
+		AccountPlusOutline,
+	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
+			currentActiveKlant: undefined, // whole klant object
 			zaken: [],
 			taken: [],
 			berichten: [],
-			contactMomenten: [],
 			auditTrails: [],
+			loading: true,
+			contactsAvailable: false,
+			exporting: false,
 		}
 	},
+	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
+		filteredContactMomenten() {
+			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === klantStore.klantItem.id)
+		},
+	},
+	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		id(newId) {
+			this.fetchKlantData(newId)
+		},
+	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+	 */
 	mounted() {
-		this.fetchKlantData(klantStore.klantItem.id);
+		this.fetchData(this.id)
+		this.checkContactsAvailability()
 	},
 	methods: {
-		fetchKlantData(id) {
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-006
+		 */
+		checkContactsAvailability() {
+			fetch('/index.php/apps/zaakafhandelapp/api/klanten/contacts/status', { method: 'GET' })
 				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.zaken = data.results;
-					}
-					console.log(this.zaken);
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`);
+				.then((data) => {
+					this.contactsAvailable = data?.available === true
 				})
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.taken = data.results;
-					}
-					console.log(this.taken);
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`);
+				.catch(() => {
+					this.contactsAvailable = false
 				})
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data.results)) {
-						this.berichten = data.results;
+		},
+		/**
+		 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
+		 */
+		saveToContacts() {
+			if (!klantStore.klantItem?.id) {
+				return
+			}
+			this.exporting = true
+			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantStore.klantItem.id}/contacts/export`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({}),
+			})
+				.then(async (response) => {
+					const data = await response.json()
+					if (!response.ok) {
+						throw new Error(data?.error || t('zaakafhandelapp', 'Export failed'))
 					}
-					console.log(this.berichten);
-					return fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`);
+					return data
 				})
-				.then(response => response.json())
-				.then(data => {
-					if (Array.isArray(data)) {
-						this.auditTrails = data;
-					}
-					console.log(this.auditTrails);
+				.then(() => {
+					klantStore.getKlant(this.id)
 				})
-				.catch(error => {
-					console.error('Error fetching klant data:', error);
-				});
+				.catch((err) => {
+					console.error(err)
+				})
+				.finally(() => {
+					this.exporting = false
+				})
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchData(id) {
+			this.loading = true
+
+			klantStore.getKlant(id)
+				.finally(() => {
+					this.loading = false
+				})
+
+			this.fetchContactMomenten()
+			this.fetchKlantData(id)
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		async fetchKlantData(id) {
+			// when using Promise.allSettled, it will return an array of items.
+			// these items contain a status string, which is either 'fulfilled' or 'rejected'.
+			// when fulfilled, it also contains a value, which is the response from the fetch call.
+			const [zakenResult, takenResult, berichtenResult, auditTrailResult] = await Promise.allSettled([
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`).then(response => response.json()),
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`).then(response => response.json()),
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`).then(response => response.json()),
+				fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/audit_trail`).then(response => response.json()),
+			])
+
+			// Handle zaken
+			if (zakenResult.status === 'fulfilled' && Array.isArray(zakenResult.value.results)) {
+				this.zaken = zakenResult.value.results
+			} else {
+				console.error('Error fetching zaken:', zakenResult.reason)
+			}
+
+			// Handle taken
+			if (takenResult.status === 'fulfilled' && Array.isArray(takenResult.value.results)) {
+				this.taken = takenResult.value.results
+			} else {
+				console.error('Error fetching taken:', takenResult.reason)
+			}
+
+			// Handle berichten
+			if (berichtenResult.status === 'fulfilled' && Array.isArray(berichtenResult.value.results)) {
+				this.berichten = berichtenResult.value.results
+			} else {
+				console.error('Error fetching berichten:', berichtenResult.reason)
+			}
+
+			// Handle audit trail
+			if (auditTrailResult.status === 'fulfilled' && Array.isArray(auditTrailResult.value)) {
+				this.auditTrails = auditTrailResult.value
+			} else {
+				console.error('Error fetching audit trail:', auditTrailResult.reason)
+			}
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchContactMomenten() {
+			contactMomentStore.refreshContactMomentenList()
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+
+		getName(klant) {
+			if (klant.type === 'persoon') {
+				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+			}
+			if (klant.type === 'organisatie') {
+				return klant?.bedrijfsnaam ?? 'onbekend'
+			}
+			return 'onbekend'
+		},
+
+		getLandName(landId) {
+			return countries.find(country => country.code === landId)?.name ?? 'onbekend'
 		},
 	},
 }

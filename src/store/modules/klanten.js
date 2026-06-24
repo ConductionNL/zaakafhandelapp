@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Klant } from '../../entities/index.js'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/klanten'
 
@@ -8,19 +9,40 @@ export const useKlantStore = defineStore('klanten', {
 	state: () => ({
 		klantItem: false,
 		klantenList: [],
+		widgetKlantId: null,
+		auditTrailItem: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setKlantItem(klantItem) {
 			this.klantItem = klantItem && new Klant(klantItem)
 			console.log('Active klant item set to ' + klantItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
+		setWidgetKlantId(widgetKlantId) {
+			this.widgetKlantId = widgetKlantId
+			console.log('Widget klant id set to ' + widgetKlantId)
+		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setKlantenList(klantenList) {
 			this.klantenList = klantenList.map(
 			    (klantItem) => new Klant(klantItem),
 			)
 			console.log('Klanten list set to ' + klantenList.length + ' items')
 		},
+		setAuditTrailItem(auditTrailItem) {
+			this.auditTrailItem = auditTrailItem
+		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
 		async refreshKlantenList(search = null) {
 			let endpoint = apiEndpoint
 
@@ -44,7 +66,96 @@ export const useKlantStore = defineStore('klanten', {
 
 			return { response, data, entities }
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
+
+		async searchKlanten(queryParams = null) {
+			let endpoint = apiEndpoint
+
+			if (queryParams !== null && queryParams !== '') {
+				endpoint = endpoint + '?' + queryParams
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.log(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results
+			const entities = data.map((klantItem) => new Klant(klantItem))
+
+			this.setKlantenList(data)
+
+			return { response, data, entities }
+		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
+
+		async searchPersons(search = null) {
+			let endpoint = apiEndpoint
+
+			endpoint = endpoint + '?type=persoon'
+
+			if (search !== null && search !== '') {
+				endpoint = endpoint + '&voornaam=' + search
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.log(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results
+			const entities = data.map((klantItem) => new Klant(klantItem))
+
+			this.setKlantenList(data)
+
+			return { response, data, entities }
+		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
+
+		async searchOrganisations(search = null) {
+			let endpoint = apiEndpoint
+
+			endpoint = endpoint + '?type=organisatie'
+
+			if (search !== null && search !== '') {
+				endpoint = endpoint + '&bedrijfsnaam=' + search
+			}
+
+			const response = await fetch(endpoint, {
+				method: 'GET',
+			})
+
+			if (!response.ok) {
+				console.log(response)
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const data = (await response.json()).results
+			const entities = data.map((klantItem) => new Klant(klantItem))
+
+			this.setKlantenList(data)
+
+			return { response, data, entities }
+		},
+
 		// New function to get a single klant
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-003
+		 */
 		async getKlant(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
@@ -65,6 +176,9 @@ export const useKlantStore = defineStore('klanten', {
 			return { response, data, entity }
 		},
 		// Delete a klant
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async deleteKlant(klantItem) {
 			if (!klantItem.id) {
 				throw new Error('No klant item to delete')
@@ -82,10 +196,14 @@ export const useKlantStore = defineStore('klanten', {
 			}
 
 			this.refreshKlantenList()
+			router.push({ name: 'Klanten' })
 
 			return { response }
 		},
 		// Create or save a klant from store
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async saveKlant(klantItem) {
 			if (!klantItem) {
 				throw new Error('No klant item to save')
@@ -118,6 +236,7 @@ export const useKlantStore = defineStore('klanten', {
 
 			this.setKlantItem(data)
 			this.refreshKlantenList()
+			router.push({ name: 'KlantDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { defineStore } from 'pinia'
 import { Taak } from '../../entities/index.js'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/taken'
 
@@ -8,24 +9,64 @@ export const useTaakStore = defineStore('taken', {
 	state: () => ({
 		taakItem: false,
 		takenList: [],
+		taakZaakId: null,
+		auditTrailItem: null,
+		widgetTaakId: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setTaakItem(taakItem) {
 			this.taakItem = taakItem && new Taak(taakItem)
 			console.log('Active taak item set to ' + taakItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setTakenList(takenList) {
 			this.takenList = takenList.map(
-			    (taakItem) => new Taak(taakItem),
+				(taakItem) => new Taak(taakItem),
 			)
 			console.log('Taken list set to ' + takenList.length + ' items')
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
+		setTaakZaakId(taakZaakId) {
+			this.taakZaakId = taakZaakId
+			console.log('Active taak Zaak Id set to ' + taakZaakId)
+		},
+		setAuditTrailItem(auditTrailItem) {
+			this.auditTrailItem = auditTrailItem
+		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
+		setWidgetTaakId(widgetTaakId) {
+			this.widgetTaakId = widgetTaakId
+			console.log('Active widget taak Id set to ' + widgetTaakId)
+		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
-		async refreshTakenList(search = null) {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-002
+		 */
+		async refreshTakenList(search = null, notClosed = false, user = null) {
 			let endpoint = apiEndpoint
 
-			if (search !== null && search !== '') {
-				endpoint = endpoint + '?_search=' + search
+			const params = new URLSearchParams()
+			if (search) {
+				params.append('_search', search)
+			}
+			if (notClosed) {
+				params.append('status', 'open')
+			}
+			if (user) {
+				params.append('medewerker', user)
+			}
+
+			if (params.toString()) {
+				endpoint += `?${params.toString()}`
 			}
 
 			const response = await fetch(endpoint, {
@@ -45,6 +86,9 @@ export const useTaakStore = defineStore('taken', {
 			return { response, data, entities }
 		},
 		// Function to get a single taak
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-003
+		 */
 		async getTaak(id) {
 			const endpoint = `${apiEndpoint}/${id}`
 
@@ -65,6 +109,9 @@ export const useTaakStore = defineStore('taken', {
 			return { response, data, entity }
 		},
 		// Delete a taak
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
 		async deleteTaak(taakItem) {
 			if (!taakItem.id) {
 				throw new Error('No taak item to delete')
@@ -82,11 +129,16 @@ export const useTaakStore = defineStore('taken', {
 			}
 
 			this.refreshTakenList()
+			// go back to taken list
+			router.replace({ name: 'Taken' })
 
 			return { response }
 		},
 		// Create or save a taak from store
-		async saveTaak(taakItem) {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-004
+		 */
+		async saveTaak(taakItem, options = { redirect: true }) {
 			if (!taakItem) {
 				throw new Error('No taak item to save')
 			}
@@ -117,7 +169,13 @@ export const useTaakStore = defineStore('taken', {
 			const entity = new Taak(data)
 
 			this.setTaakItem(data)
-			this.refreshTakenList()
+			if (!options.doNotRefresh) {
+				this.refreshTakenList()
+			}
+			if (options.redirect) {
+				// go to new item with this id
+				router.push({ name: 'TaakDetail', params: { id: entity.id } })
+			}
 
 			return { response, data, entity }
 		},
