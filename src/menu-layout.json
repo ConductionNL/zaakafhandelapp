@@ -1,0 +1,10 @@
+{
+	"_meta": {
+		"spdx-license": "EUPL-1.2",
+		"spdx-copyright": "2026 Conduction B.V.",
+		"description": "Canonical nav layout (ADR-044): relocations/removals/settingsSection applied by buildManifest"
+	},
+	"relocations": {},
+	"removals": [],
+	"settingsSection": ["Zaaktypen", "Rollen", "AuditTrail", "SettingsMenu"]
+}
