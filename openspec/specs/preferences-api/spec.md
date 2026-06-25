@@ -1,8 +1,12 @@
 ---
+status: done
 retrofit: true
 ---
 
 # Preferences API
+
+## Purpose
+Provides the per-user preference read/write surface of the case-handling app. It retrieves and persists per-user key/value preferences scoped to the authenticated user within the `pref_` namespace, sanitising keys to a safe charset, returning a default when unset, and clearing a preference when an empty value is supplied. Unauthenticated requests are rejected and invalid keys yield a bad-request response.
 
 @e2e exclude pure-backend REST+controller spec — scenarios covered by PHPUnit/Newman, not Playwright UI tests
 

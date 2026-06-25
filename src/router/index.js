@@ -5,14 +5,11 @@
 // routesFromManifest pattern — each manifest page becomes one route
 // (name === page.id, component === a shallow-cloned CnPageRenderer
 // reference, props === true when the path declares a `:` parameter).
+//
+// Router instantiation moved to main.js so the merged manifest produced
+// by buildManifest (ADR-044) flows into both the router and the App prop.
 
-import VueRouter from 'vue-router'
-import Vue from 'vue'
-import { generateUrl } from '@nextcloud/router'
 import { CnPageRenderer } from '@conduction/nextcloud-vue'
-import bundledManifest from '../manifest.json'
-
-Vue.use(VueRouter)
 
 // Shallow-clone CnPageRenderer because the lib's barrel exports are
 // non-extensible (webpack ESM module records). Vue 2's `Vue.extend()`
@@ -28,7 +25,7 @@ const RoutePageRenderer = { ...CnPageRenderer }
  * manifest contract). Pages whose route declares a `:` parameter pass
  * `props: true` so the param flows in as a component prop.
  *
- * @param {object} manifest The bundled manifest (with `pages[]`).
+ * @param {object} manifest The manifest (with `pages[]`), after buildManifest merge.
  * @return {Array<object>} vue-router 3 routes config.
  */
 export function routesFromManifest(manifest) {
@@ -42,12 +39,3 @@ export function routesFromManifest(manifest) {
 	routes.push({ path: '*', redirect: '/' })
 	return routes
 }
-
-const router = new VueRouter({
-	mode: 'hash',
-	base: generateUrl('/apps/zaakafhandelapp'),
-	linkActiveClass: 'active',
-	routes: routesFromManifest(bundledManifest),
-})
-
-export default router

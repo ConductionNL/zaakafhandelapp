@@ -76,7 +76,7 @@ class ZGWZaakOpschortingVerlengingService
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
      */
-    public function applyTransitions(ObjectEntity $zaak, ?array $oldZaak = null, ?DateTimeImmutable $now = null): void
+    public function applyTransitions(ObjectEntity $zaak, ?array $oldZaak=null, ?DateTimeImmutable $now=null): void
     {
         $now = $now ?? new DateTimeImmutable();
         $new = $zaak->jsonSerialize();
@@ -140,7 +140,7 @@ class ZGWZaakOpschortingVerlengingService
         // Resume: shift the deadlines by the elapsed suspension duration.
         $startRaw = (string) ($old['opschorting']['_opschortingGestart'] ?? '');
         if ($startRaw !== '') {
-            $start = new DateTimeImmutable($startRaw);
+            $start       = new DateTimeImmutable($startRaw);
             $elapsedDays = (int) $start->diff($now)->days;
             if ($elapsedDays > 0) {
                 $this->shiftDeadlines($new, $elapsedDays);
@@ -236,7 +236,7 @@ class ZGWZaakOpschortingVerlengingService
                 continue;
             }
 
-            $zaak[$field] = $date->add(new DateInterval('P' . $days . 'D'))->format('Y-m-d');
+            $zaak[$field] = $date->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
         }
     }//end shiftDeadlines()
 
@@ -308,7 +308,7 @@ class ZGWZaakOpschortingVerlengingService
     private function zaaktypeAllows(array $zaak, string $property): bool
     {
         $zaaktype = $this->resolveZaaktype($zaak);
-        $value = ($zaaktype[$property] ?? null);
+        $value    = ($zaaktype[$property] ?? null);
 
         return $value === true || $value === 'true' || $value === '1' || $value === 1;
     }//end zaaktypeAllows()

@@ -35,18 +35,10 @@
 				{ "id": "Berichten",      "label": "Messages",        "icon": "icon-mail",    "route": "Berichten",      "order": 70 }
 			]
 		},
-		{
-			"id": "ConfigGroup",
-			"label": "Configuration",
-			"icon": "icon-settings",
-			"order": 80,
-			"children": [
-				{ "id": "Rollen",      "label": "Roles",       "icon": "icon-user-admin", "route": "Rollen",      "order": 80 },
-				{ "id": "Zaaktypen",   "label": "Case types",  "icon": "icon-files",      "route": "Zaaktypen",   "order": 10 },
-				{ "id": "AuditTrail",  "label": "Audit trail", "icon": "icon-history",    "route": "AuditTrail",  "order": 20 },
-				{ "id": "SettingsMenu","label": "Settings",    "icon": "icon-settings",   "route": "Settings",    "order": 99 }
-			]
-		},
+		{ "id": "Zaaktypen",    "label": "Case types",  "icon": "icon-files",      "route": "Zaaktypen", "section": "settings", "order": 10 },
+		{ "id": "Rollen",       "label": "Roles",       "icon": "icon-user-admin", "route": "Rollen",    "section": "settings", "order": 20 },
+		{ "id": "AuditTrail",   "label": "Audit trail", "icon": "icon-history",    "route": "AuditTrail","section": "settings", "order": 30 },
+		{ "id": "SettingsMenu", "label": "Settings",    "icon": "icon-settings",   "route": "Settings",  "section": "settings", "order": 99 },
 		{
 			"id": "Documentation",
 			"label": "Documentation",
@@ -80,7 +72,21 @@
 			"type": "dashboard",
 			"title": "Dashboard",
 			"config": {
-				"documentationUrl": "https://zaakafhandelapp.conduction.nl"
+				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
+				"dateRange": {
+					"enabled": true,
+					"control": "pills",
+					"showHeaderPicker": true,
+					"persistKey": "zaakafhandelapp-dashboard-range",
+					"default": { "preset": "month" },
+					"presets": [
+						{ "id": "week",    "label": "Week",    "days": 7 },
+						{ "id": "month",   "label": "Maand",   "days": 30 },
+						{ "id": "quarter", "label": "Kwartaal","days": 90 },
+						{ "id": "year",    "label": "Jaar",    "days": 365 },
+						{ "id": "all",     "label": "Alles",   "days": null }
+					]
+				}
 			},
 			"widgets": [
 				{
@@ -165,7 +171,13 @@
 					"dataSource": {
 						"register": "zaakafhandelapp",
 						"schema": "contactmoment",
-						"aggregate": "count"
+						"aggregate": "count",
+						"filter": {
+							"startDate": {
+								"gte": "@workspace.dateFrom?",
+								"lte": "@workspace.dateTo?"
+							}
+						}
 					},
 					"props": {
 						"title": "Contact moments",
@@ -175,7 +187,13 @@
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "contactmoment",
-							"aggregate": "count"
+							"aggregate": "count",
+							"filter": {
+								"startDate": {
+									"gte": "@workspace.dateFrom?",
+									"lte": "@workspace.dateTo?"
+								}
+							}
 						}
 					}
 				},

@@ -170,7 +170,7 @@ class KlantContactSyncService
      *
      * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
      */
-    public function importContact(string $uid, ?string $type = null): array
+    public function importContact(string $uid, ?string $type=null): array
     {
         if ($this->isAvailable() === false) {
             throw new RuntimeException('Nextcloud Contacts is not available');
@@ -185,7 +185,7 @@ class KlantContactSyncService
 
         $existing = $this->findKlantByContactsUid($uid);
         if ($existing !== null) {
-            $merged = array_merge($existing, $klantFields);
+            $merged       = array_merge($existing, $klantFields);
             $merged['id'] = $existing['id'];
             $merged['contactsUid'] = $uid;
 
@@ -253,7 +253,7 @@ class KlantContactSyncService
      *
      * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
      */
-    public function exportKlant(string $klantId, ?string $addressBookKey = null): array
+    public function exportKlant(string $klantId, ?string $addressBookKey=null): array
     {
         if ($this->isAvailable() === false) {
             throw new RuntimeException('Nextcloud Contacts is not available');
@@ -276,7 +276,7 @@ class KlantContactSyncService
         $klant = (array) $klant;
 
         $properties = $this->klantToVCard($klant, null);
-        $created = $this->contactsManager->createOrUpdate($properties, $addressBookKey);
+        $created    = $this->contactsManager->createOrUpdate($properties, $addressBookKey);
 
         $newUid = ($created['UID'] ?? ($properties['UID'] ?? ''));
         $klant['contactsUid'] = $newUid;
@@ -294,7 +294,7 @@ class KlantContactSyncService
      *
      * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
      */
-    public function vCardToKlant(array $contact, ?string $type = null): array
+    public function vCardToKlant(array $contact, ?string $type=null): array
     {
         $org = $this->firstValue(($contact['ORG'] ?? ''));
 
@@ -313,14 +313,14 @@ class KlantContactSyncService
         $structuredName = $this->firstValue(($contact['N'] ?? ''));
         if ($structuredName !== '') {
             $parts = explode(';', $structuredName);
-            $klant['achternaam'] = trim(($parts[0] ?? ''));
-            $klant['voornaam'] = trim(($parts[1] ?? ''));
+            $klant['achternaam']    = trim(($parts[0] ?? ''));
+            $klant['voornaam']      = trim(($parts[1] ?? ''));
             $klant['tussenvoegsel'] = trim(($parts[3] ?? ''));
         } else {
             $fn = $this->firstValue(($contact['FN'] ?? ''));
             if ($fn !== '') {
                 $bits = preg_split('/\s+/', trim($fn), 2);
-                $klant['voornaam'] = ($bits[0] ?? '');
+                $klant['voornaam']   = ($bits[0] ?? '');
                 $klant['achternaam'] = ($bits[1] ?? '');
             }
         }
@@ -330,9 +330,9 @@ class KlantContactSyncService
         if ($address !== '') {
             $adr = explode(';', $address);
             $klant['straatnaam'] = trim(($adr[2] ?? ''));
-            $klant['plaats'] = trim(($adr[3] ?? ''));
-            $klant['postcode'] = trim(($adr[5] ?? ''));
-            $klant['land'] = trim(($adr[6] ?? ''));
+            $klant['plaats']     = trim(($adr[3] ?? ''));
+            $klant['postcode']   = trim(($adr[5] ?? ''));
+            $klant['land']       = trim(($adr[6] ?? ''));
         }
 
         return array_filter($klant, static fn ($v) => $v !== '' && $v !== null);
@@ -359,20 +359,20 @@ class KlantContactSyncService
             $properties['UID'] = $uid;
         }
 
-        $type = ($klant['type'] ?? 'persoon');
-        $voornaam = (string) ($klant['voornaam'] ?? '');
+        $type          = ($klant['type'] ?? 'persoon');
+        $voornaam      = (string) ($klant['voornaam'] ?? '');
         $tussenvoegsel = (string) ($klant['tussenvoegsel'] ?? '');
-        $achternaam = (string) ($klant['achternaam'] ?? '');
-        $bedrijfsnaam = (string) ($klant['bedrijfsnaam'] ?? '');
+        $achternaam    = (string) ($klant['achternaam'] ?? '');
+        $bedrijfsnaam  = (string) ($klant['bedrijfsnaam'] ?? '');
 
         if ($type === 'organisatie' && $bedrijfsnaam !== '') {
-            $properties['FN'] = $bedrijfsnaam;
+            $properties['FN']  = $bedrijfsnaam;
             $properties['ORG'] = $bedrijfsnaam;
         } else {
-            $family = trim(trim($tussenvoegsel . ' ' . $achternaam));
-            $properties['FN'] = trim($voornaam . ' ' . $family);
+            $family           = trim(trim($tussenvoegsel.' '.$achternaam));
+            $properties['FN'] = trim($voornaam.' '.$family);
             // N = Family;Given;Additional;Prefix;Suffix
-            $properties['N'] = $family . ';' . $voornaam . ';;' . $tussenvoegsel . ';';
+            $properties['N'] = $family.';'.$voornaam.';;'.$tussenvoegsel.';';
             if ($bedrijfsnaam !== '') {
                 $properties['ORG'] = $bedrijfsnaam;
             }
@@ -388,13 +388,13 @@ class KlantContactSyncService
             $properties['TEL'] = $phone;
         }
 
-        $street = trim((string) ($klant['straatnaam'] ?? '') . ' ' . (string) ($klant['huisnummer'] ?? ''));
-        $city = (string) ($klant['plaats'] ?? '');
-        $postal = (string) ($klant['postcode'] ?? '');
+        $street  = trim((string) ($klant['straatnaam'] ?? '').' '.(string) ($klant['huisnummer'] ?? ''));
+        $city    = (string) ($klant['plaats'] ?? '');
+        $postal  = (string) ($klant['postcode'] ?? '');
         $country = (string) ($klant['land'] ?? '');
         if ($street !== '' || $city !== '' || $postal !== '' || $country !== '') {
             // ADR = PObox;Extended;Street;City;Region;PostalCode;Country
-            $properties['ADR'] = ';;' . $street . ';' . $city . ';;' . $postal . ';' . $country;
+            $properties['ADR'] = ';;'.$street.';'.$city.';;'.$postal.';'.$country;
         }
 
         foreach (self::NON_VCARD_FIELDS as $forbidden) {
@@ -416,7 +416,7 @@ class KlantContactSyncService
         $uids = [];
         foreach ($klanten as $klant) {
             $klant = (array) $klant;
-            $uid = ($klant['contactsUid'] ?? '');
+            $uid   = ($klant['contactsUid'] ?? '');
             if ($uid !== '') {
                 $uids[] = $uid;
             }

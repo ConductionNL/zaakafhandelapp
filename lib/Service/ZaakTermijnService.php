@@ -96,7 +96,7 @@ class ZaakTermijnService
         if ($needsUiterste === true) {
             $days = $this->durationToDays((string) ($zaaktype['doorlooptijd'] ?? ''));
             if ($days !== null && $days > 0) {
-                $arr['uiterlijkeEinddatumAfdoening'] = $base->add(new DateInterval('P' . $days . 'D'))->format('Y-m-d');
+                $arr['uiterlijkeEinddatumAfdoening'] = $base->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
                 $changed = true;
             }
         }
@@ -104,7 +104,7 @@ class ZaakTermijnService
         if ($needsGepland === true) {
             $days = $this->durationToDays((string) ($zaaktype['servicenorm'] ?? ''));
             if ($days !== null && $days > 0) {
-                $arr['einddatumGepland'] = $base->add(new DateInterval('P' . $days . 'D'))->format('Y-m-d');
+                $arr['einddatumGepland'] = $base->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
                 $changed = true;
             }
         }

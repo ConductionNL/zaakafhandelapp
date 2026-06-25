@@ -1,10 +1,9 @@
-<script setup>
-import { translate as t } from '@nextcloud/l10n'
-</script>
-
 <template>
-	<div>
-		<NcSettingsSection :name="t('zaakafhandelapp', 'Zaak afhandelapp')" :description="t('zaakafhandelapp', 'One central place for case handling within the government')" doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers" />
+	<CnAdminSettingsShell
+		app-id="zaakafhandelapp"
+		app-name="Zaak afhandelapp"
+		doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers"
+		:show-reimport="false">
 		<NcSettingsSection :name="t('zaakafhandelapp', 'Data storage')" :description="t('zaakafhandelapp', 'Configure where data is stored: in the Nextcloud database or open registers, including external storage like mongodb')">
 			<div v-if="!loading">
 				<div v-if="!openRegisterInstalled">
@@ -95,18 +94,21 @@ import { translate as t } from '@nextcloud/l10n'
 				appearance="dark"
 				:name="t('zaakafhandelapp', 'Loading settings')" />
 		</NcSettingsSection>
-	</div>
+	</CnAdminSettingsShell>
 </template>
 
 <script>
 // Components
 import { NcSettingsSection, NcNoteCard, NcSelect, NcButton, NcLoadingIcon } from '@nextcloud/vue'
+import { CnAdminSettingsShell } from '@conduction/nextcloud-vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Restart from 'vue-material-design-icons/Restart.vue'
+import { translate as t, translatePlural as n } from '@nextcloud/l10n'
 
 export default {
 	name: 'Settings',
 	components: {
+		CnAdminSettingsShell,
 		NcSettingsSection,
 		NcNoteCard,
 		NcSelect,
@@ -239,20 +241,20 @@ export default {
 		 */
 		translatedObjectTypesList() {
 			return [
-				{ id: 'berichten', title: t('zaakafhandelapp', 'Messages'), description: t('zaakafhandelapp', 'Configure storage for messages'), helpLink: 'https://example.com/help/berichten' },
-				{ id: 'besluiten', title: t('zaakafhandelapp', 'Decisions'), description: t('zaakafhandelapp', 'Configure storage for decisions'), helpLink: 'https://example.com/help/besluiten' },
-				{ id: 'documenten', title: t('zaakafhandelapp', 'Documents'), description: t('zaakafhandelapp', 'Configure storage for documents'), helpLink: 'https://example.com/help/documenten' },
-				{ id: 'klanten', title: t('zaakafhandelapp', 'Customers'), description: t('zaakafhandelapp', 'Configure storage for customer data'), helpLink: 'https://example.com/help/klanten' },
-				{ id: 'resultaten', title: t('zaakafhandelapp', 'Results'), description: t('zaakafhandelapp', 'Configure storage for results'), helpLink: 'https://example.com/help/resultaten' },
-				{ id: 'taken', title: t('zaakafhandelapp', 'Tasks'), description: t('zaakafhandelapp', 'Configure storage for tasks'), helpLink: 'https://example.com/help/taken' },
-				{ id: 'informatieobjecten', title: t('zaakafhandelapp', 'Information objects'), description: t('zaakafhandelapp', 'Configure storage for information objects'), helpLink: 'https://example.com/help/informatieobjecten' },
-				{ id: 'organisaties', title: t('zaakafhandelapp', 'Organisations'), description: t('zaakafhandelapp', 'Configure storage for organisation data'), helpLink: 'https://example.com/help/organisaties' },
-				{ id: 'personen', title: t('zaakafhandelapp', 'Persons'), description: t('zaakafhandelapp', 'Configure storage for person data'), helpLink: 'https://example.com/help/personen' },
-				{ id: 'zaken', title: t('zaakafhandelapp', 'Cases'), description: t('zaakafhandelapp', 'Configure storage for cases'), helpLink: 'https://example.com/help/zaken' },
-				{ id: 'zaaktypen', title: t('zaakafhandelapp', 'Case types'), description: t('zaakafhandelapp', 'Configure storage for case types'), helpLink: 'https://example.com/help/zaaktypen' },
-				{ id: 'contactmomenten', title: t('zaakafhandelapp', 'Contact moments'), description: t('zaakafhandelapp', 'Configure storage for contact moments'), helpLink: 'https://example.com/help/contactmomenten' },
-				{ id: 'medewerkers', title: t('zaakafhandelapp', 'Employees'), description: t('zaakafhandelapp', 'Configure storage for employees'), helpLink: 'https://example.com/help/medewerkers' },
-				{ id: 'rollen', title: t('zaakafhandelapp', 'Roles'), description: t('zaakafhandelapp', 'Configure storage for roles'), helpLink: 'https://example.com/help/rollen' },
+				{ id: 'berichten', title: t('zaakafhandelapp', 'Messages'), description: t('zaakafhandelapp', 'Configure storage for messages'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'besluiten', title: t('zaakafhandelapp', 'Decisions'), description: t('zaakafhandelapp', 'Configure storage for decisions'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'documenten', title: t('zaakafhandelapp', 'Documents'), description: t('zaakafhandelapp', 'Configure storage for documents'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'klanten', title: t('zaakafhandelapp', 'Customers'), description: t('zaakafhandelapp', 'Configure storage for customer data'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'resultaten', title: t('zaakafhandelapp', 'Results'), description: t('zaakafhandelapp', 'Configure storage for results'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'taken', title: t('zaakafhandelapp', 'Tasks'), description: t('zaakafhandelapp', 'Configure storage for tasks'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'informatieobjecten', title: t('zaakafhandelapp', 'Information objects'), description: t('zaakafhandelapp', 'Configure storage for information objects'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'organisaties', title: t('zaakafhandelapp', 'Organisations'), description: t('zaakafhandelapp', 'Configure storage for organisation data'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'personen', title: t('zaakafhandelapp', 'Persons'), description: t('zaakafhandelapp', 'Configure storage for person data'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'zaken', title: t('zaakafhandelapp', 'Cases'), description: t('zaakafhandelapp', 'Configure storage for cases'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'zaaktypen', title: t('zaakafhandelapp', 'Case types'), description: t('zaakafhandelapp', 'Configure storage for case types'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'contactmomenten', title: t('zaakafhandelapp', 'Contact moments'), description: t('zaakafhandelapp', 'Configure storage for contact moments'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'medewerkers', title: t('zaakafhandelapp', 'Employees'), description: t('zaakafhandelapp', 'Configure storage for employees'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'rollen', title: t('zaakafhandelapp', 'Roles'), description: t('zaakafhandelapp', 'Configure storage for roles'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
 			]
 		},
 	},
@@ -641,6 +643,8 @@ export default {
 		this.fetchAll()
 	},
 	methods: {
+		t,
+		n,
 		getDataProperty(name) {
 			return this[name]
 
@@ -809,9 +813,15 @@ export default {
 						zaken_register: this.zaken.selectedRegister?.value ?? '',
 						zaken_schema: this.zaken.selectedSchema?.value ?? '',
 						zaken_source: this.zaken.selectedSource?.value ?? 'internal',
+						zaaktypen_register: this.zaaktypen.selectedRegister?.value ?? '',
+						zaaktypen_schema: this.zaaktypen.selectedSchema?.value ?? '',
+						zaaktypen_source: this.zaaktypen.selectedSource?.value ?? 'internal',
 						contactmomenten_register: this.contactmomenten.selectedRegister?.value ?? '',
 						contactmomenten_schema: this.contactmomenten.selectedSchema?.value ?? '',
 						contactmomenten_source: this.contactmomenten.selectedSource?.value ?? 'internal',
+						medewerkers_register: this.medewerkers.selectedRegister?.value ?? '',
+						medewerkers_schema: this.medewerkers.selectedSchema?.value ?? '',
+						medewerkers_source: this.medewerkers.selectedSource?.value ?? 'internal',
 						rollen_register: this.rollen.selectedRegister?.value ?? '',
 						rollen_schema: this.rollen.selectedSchema?.value ?? '',
 						rollen_source: this.rollen.selectedSource?.value ?? 'internal',
@@ -859,9 +869,15 @@ export default {
 							zaken_register: data.zaken_register,
 							zaken_schema: data.zaken_schema,
 							zaken_source: data.zaken_source,
+							zaaktypen_register: data.zaaktypen_register,
+							zaaktypen_schema: data.zaaktypen_schema,
+							zaaktypen_source: data.zaaktypen_source,
 							contactmomenten_register: data.contactmomenten_register,
 							contactmomenten_schema: data.contactmomenten_schema,
 							contactmomenten_source: data.contactmomenten_source,
+							medewerkers_register: data.medewerkers_register,
+							medewerkers_schema: data.medewerkers_schema,
+							medewerkers_source: data.medewerkers_source,
 							rollen_register: data.rollen_register,
 							rollen_schema: data.rollen_schema,
 							rollen_source: data.rollen_source,
@@ -891,7 +907,7 @@ export default {
 			delete settingsDataCopy.openRegisters
 			delete settingsDataCopy.availableRegisters
 
-			fetch('/index.php/apps/opencatalogi/settings',
+			fetch('/index.php/apps/zaakafhandelapp/settings',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -926,9 +942,15 @@ export default {
 						zaken_register: '',
 						zaken_schema: '',
 						zaken_source: 'internal',
+						zaaktypen_register: '',
+						zaaktypen_schema: '',
+						zaaktypen_source: 'internal',
 						contactmomenten_register: '',
 						contactmomenten_schema: '',
 						contactmomenten_source: 'internal',
+						medewerkers_register: '',
+						medewerkers_schema: '',
+						medewerkers_source: 'internal',
 						rollen_register: '',
 						rollen_schema: '',
 						rollen_source: 'internal',
