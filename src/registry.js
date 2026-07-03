@@ -37,6 +37,14 @@ import AuditTrailView from './views/audit/AuditTrailView.vue'
 
 import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
 
+// ── kind: "widget" (shared detail-page audit-trail card) ────────────────────
+// Registered under the manifest `audit-trail` widget key so CnWidgetGrid /
+// CnDetailPage resolve it (ADR-036 registry). Thin adapter over the library's
+// CnAuditTrailCard that reads the current object from whichever render path
+// is active (see AuditTrailWidget.vue).
+
+import AuditTrailWidget from './components/widgets/AuditTrailWidget.vue'
+
 // ── kind: "widget" ─────────────────────────────────────────────────────────
 // Settings section body component (type:"settings" sections[].component)
 
@@ -81,6 +89,21 @@ export default {
 		maxSize: { w: 12, h: 8 },
 		allowedSlots: ['body'],
 		propsSchema: {},
+	},
+
+	// ── kind: "widget" (shared detail-page audit-trail card) ────────────────
+	// Resolved by CnWidgetGrid / CnDetailPage via the manifest `audit-trail`
+	// widget key. Self-fetches from the detail object context
+	// (register/schema/objectId) — see AuditTrailWidget.vue.
+	'audit-trail': {
+		kind: 'widget',
+		component: AuditTrailWidget,
+		defaultSize: { w: 6, h: 4 },
+		minSize: { w: 3, h: 2 },
+		maxSize: { w: 12, h: 6 },
+		allowedSlots: ['body', 'sidebar'],
+		propsSchema: {},
+		_note: 'Object change-log card — self-fetches from the detail object context (register/schema/objectId).',
 	},
 
 	// ── kind: "widget" (settings section) ──────────────────────────────────
