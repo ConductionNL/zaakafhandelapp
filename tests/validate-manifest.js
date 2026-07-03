@@ -28,8 +28,8 @@ const MANIFEST_PATH = path.join(REPO_ROOT, 'src', 'manifest.json')
 
 const SCHEMA_CANDIDATES = [
 	process.env.APP_MANIFEST_SCHEMA,
-	path.join(REPO_ROOT, 'node_modules', '@conduction', 'nextcloud-vue', 'src', 'schemas', 'app-manifest.schema.json'),
-	path.join(REPO_ROOT, '..', 'nextcloud-vue', 'src', 'schemas', 'app-manifest.schema.json'),
+	path.join(REPO_ROOT, 'node_modules', '@conduction', 'nextcloud-vue', 'src', 'schemas', 'app-manifest-v2.schema.json'),
+	path.join(REPO_ROOT, '..', 'nextcloud-vue', 'src', 'schemas', 'app-manifest-v2.schema.json'),
 ].filter(Boolean)
 
 function findSchemaPath() {
