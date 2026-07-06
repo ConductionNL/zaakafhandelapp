@@ -1,18 +1,20 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
 <template>
 	<div class="detailContainer">
 		<div id="app-content">
+			<NcLoadingIcon v-if="!berichtStore.berichtItem && loading" :size="64" />
 			<!-- app-content-wrapper is optional, only use if app-content-list  -->
-			<div>
+			<div v-if="berichtStore.berichtItem">
 				<div class="head">
 					<h1 class="h1">
 						{{ berichtStore.berichtItem.onderwerp }}
 					</h1>
 
-					<NcActions :primary="true" menu-name="Acties">
+					<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
 						<template #icon>
 							<DotsHorizontal :size="20" />
 						</template>
@@ -20,61 +22,98 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</NcActions>
 				</div>
 				<div class="detailGrid">
 					<div>
-						<b>Berichttekst:</b>
+						<b>{{ t('zaakafhandelapp', 'Message text:') }}</b>
 						<p>{{ berichtStore.berichtItem.berichttekst }}</p>
 					</div>
 					<div>
-						<b>Inhoud:</b>
+						<b>{{ t('zaakafhandelapp', 'Content:') }}</b>
 						<p>{{ berichtStore.berichtItem.inhoud }}</p>
 					</div>
 					<div>
-						<b>Soort gebruiker:</b>
+						<b>{{ t('zaakafhandelapp', 'User type:') }}</b>
 						<span>{{ berichtStore.berichtItem.soortGebruiker }}</span>
 					</div>
 					<div>
-						<b>Publicatiedatum:</b>
+						<b>{{ t('zaakafhandelapp', 'Publication date:') }}</b>
 						<span>{{ berichtStore.berichtItem.publicatieDatum }}</span>
 					</div>
 					<div>
-						<b>Aanmaak datum:</b>
+						<b>{{ t('zaakafhandelapp', 'Creation date:') }}</b>
 						<span>{{ berichtStore.berichtItem.aanmaakDatum }}</span>
 					</div>
 					<div>
-						<b>Bericht type:</b>
+						<b>{{ t('zaakafhandelapp', 'Message type:') }}</b>
 						<span>{{ berichtStore.berichtItem.berichtType }}</span>
 					</div>
 					<div>
-						<b>Referentie:</b>
+						<b>{{ t('zaakafhandelapp', 'Reference:') }}</b>
 						<span>{{ berichtStore.berichtItem.referentie }}</span>
 					</div>
 					<div>
-						<b>Bericht ID:</b>
+						<b>{{ t('zaakafhandelapp', 'Message ID:') }}</b>
 						<span>{{ berichtStore.berichtItem.berichtID }}</span>
 					</div>
 					<div>
-						<b>Batch ID:</b>
+						<b>{{ t('zaakafhandelapp', 'Batch ID:') }}</b>
 						<span>{{ berichtStore.berichtItem.batchID }}</span>
 					</div>
 					<div>
-						<b>Gebruiker ID:</b>
+						<b>{{ t('zaakafhandelapp', 'User ID:') }}</b>
 						<span>{{ berichtStore.berichtItem.gebruikerID }}</span>
 					</div>
 					<div>
-						<b>Volgorde:</b>
+						<b>{{ t('zaakafhandelapp', 'Order:') }}</b>
 						<span>{{ berichtStore.berichtItem.volgorde }}</span>
 					</div>
+				</div>
+
+				<div class="tabContainer">
+					<BTabs content-class="mt-3" justified>
+						<BTab :title="t('zaakafhandelapp', 'Audit trail')" active>
+							<div v-if="auditTrails.length">
+								<NcListItem v-for="(auditTrail, key) in auditTrails"
+									:key="key"
+									:name="new Date(auditTrail.created).toLocaleString()"
+									:bold="false"
+									:details="auditTrail.action"
+									:counter-number="Object.keys(auditTrail.changed).length"
+									:force-display-actions="true">
+									<template #icon>
+										<TimelineQuestionOutline disable-menu
+											:size="44" />
+									</template>
+									<template #subname>
+										{{ auditTrail.userName }}
+									</template>
+									<template #actions>
+										<NcActionButton @click="berichtStore.setAuditTrailItem(auditTrail); navigationStore.setModal('viewBerichtAuditTrail')">
+											<template #icon>
+												<Eye :size="20" />
+											</template>
+											{{ t('zaakafhandelapp', 'View details') }}
+										</NcActionButton>
+									</template>
+								</NcListItem>
+							</div>
+							<NcEmptyContent v-else icon="icon-history" :title="t('zaakafhandelapp', 'No audit trail found')">
+								<template #description>
+									{{ t('zaakafhandelapp', 'No audit trail was found for this message.') }}
+								</template>
+							</NcEmptyContent>
+						</BTab>
+					</BTabs>
 				</div>
 			</div>
 		</div>
@@ -83,12 +122,15 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcActions, NcActionButton } from '@nextcloud/vue'
+import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
+import { BTabs, BTab } from 'bootstrap-vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
+import TimelineQuestionOutline from 'vue-material-design-icons/TimelineQuestionOutline.vue'
 
 export default {
 	name: 'BerichtDetails',
@@ -96,10 +138,62 @@ export default {
 		// Components
 		NcActions,
 		NcActionButton,
+		NcLoadingIcon,
 		// Icons
 		Pencil,
 		DotsHorizontal,
 		TrashCanOutline,
+	},
+	props: {
+		id: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			currentActiveBericht: null,
+			auditTrails: [],
+			loading: false,
+		}
+	},
+	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		id(newId) {
+			this.fetchData(newId)
+		},
+	},
+	mounted() {
+		this.fetchData(this.id)
+	},
+	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchData(id) {
+			this.loading = true
+
+			berichtStore.getBericht(id)
+				.finally(() => {
+					this.loading = false
+				})
+
+			this.fetchAuditTrails(id)
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
+		fetchAuditTrails(id) {
+			fetch(`/index.php/apps/zaakafhandelapp/api/berichten/${id}/audit_trail`)
+				.then(response => response.json())
+				.then(data => {
+					if (Array.isArray(data)) {
+						this.auditTrails = data
+					}
+				})
+		},
 	},
 }
 </script>
