@@ -1,22 +1,21 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal 
-		v-if="store.modal === 'zaakForm'"
-		ref="modalRef"
+	<NcModal ref="modalRef"
 		label-id="zaakForm"
 		@close="closeModal">
 		<div class="modalContent">
-			<h2>Zaak {{ zaakStore.zaakItem?.id ? 'aanpassen' : 'aanmaken' }}</h2>
+			<h2>{{ zaakStore.zaakItem?.id ? t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>Zaak succesvol {{ zaak.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success" type="error">
-					<p>Zaak niet succesvol {{ zaak.id ? 'aangepast' : 'aangemaakt' }}</p>
+					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -25,46 +24,53 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 
 			<div v-if="success === null" class="form-group">
 				<NcTextField :disabled="zaakLoading"
-					label="Identificatie"
+					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
 					:value.sync="zaak.identificatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Omschrijving"
+					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255"
 					:value.sync="zaak.omschrijving" />
 				<NcTextField :disabled="zaakLoading"
-					label="Bronorganisatie"
+					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
 					:value.sync="zaak.bronorganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="VerantwoordelijkeOrganisatie"
+					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
 					:value.sync="zaak.verantwoordelijkeOrganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
-					label="Startdatum"
+					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
 					:value.sync="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaakType"
 					v-model="zaakType.value"
-					input-label="Zaaktype"
+					:input-label="t('zaakafhandelapp', 'Case type')"
 					:loading="zaakTypeLoading"
 					:disabled="zaakLoading || zaakTypeLoading"
 					required />
 				<NcSelect v-bind="archiefstatus"
 					v-model="archiefstatus.value"
-					input-label="Archiefstatus"
+					:input-label="t('zaakafhandelapp', 'Archive status')"
 					:disabled="zaakLoading"
 					required />
+				<div>
+					<p>{{ t('zaakafhandelapp', 'Final settlement deadline') }}</p>
+					<NcDateTimePicker
+						v-model="zaak.uiterlijkeEinddatumAfdoening"
+						:disabled="zaakLoading"
+						required />
+				</div>
 				<NcTextField :disabled="zaakLoading"
-					label="Registratiedatum"
+					:label="t('zaakafhandelapp', 'Registration date')"
 					maxlength="255"
 					:value.sync="zaak.registratiedatum" />
 				<NcTextArea :disabled="zaakLoading"
-					label="Toelichting"
+					:label="t('zaakafhandelapp', 'Explanation')"
 					:value.sync="zaak.toelichting" />
 			</div>
 
@@ -77,7 +83,7 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 					<ContentSaveOutline v-else-if="!loading && zaak.id" :size="20" />
 					<Plus v-else-if="!loading && !zaak.id" :size="20" />
 				</template>
-				{{ zaak.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ zaak.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -92,6 +98,7 @@ import {
 	NcSelect,
 	NcTextArea,
 	NcLoadingIcon,
+	NcDateTimePicker,
 } from '@nextcloud/vue'
 
 // icons
@@ -109,6 +116,23 @@ export default {
 		NcButton,
 		NcSelect,
 		NcTextArea,
+		NcDateTimePicker,
+	},
+	props: {
+		dashboardWidget: {
+			type: Boolean,
+			default: false,
+			required: false,
+		},
+		/**
+		 * The id of the klant that the zaak is for.
+		 * Currently there is no dropdown for selecting a klant.
+		 * So it currently will pass the klantId with the zaak to the API.
+		 */
+		klantId: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -122,6 +146,7 @@ export default {
 				verantwoordelijkeOrganisatie: '',
 				startdatum: '',
 				archiefstatus: '',
+				uiterlijkeEinddatumAfdoening: null,
 			},
 			loading: false,
 			success: null,
@@ -133,24 +158,27 @@ export default {
 				options: [
 					{
 						id: 'nog_te_archiveren',
-						label: 'Nog te archiveren',
+						label: t('zaakafhandelapp', 'Yet to be archived'),
 					},
 					{
 						id: 'gearchiveerd',
-						label: 'Gearchiveerd',
+						label: t('zaakafhandelapp', 'Archived'),
 					},
 					{
 						id: 'gearchiveerd_procestermijn_onbekend',
-						label: 'Gearchiveerd procestermijn onbekend',
+						label: t('zaakafhandelapp', 'Archived process term unknown'),
 					},
 					{
 						id: 'overgedragen',
-						label: 'Overgedragen',
+						label: t('zaakafhandelapp', 'Transferred'),
 					},
 				],
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		this.setArchiefStatusOptions()
 		this.fetchZaakType()
@@ -160,26 +188,21 @@ export default {
 			this.zaak = {
 				...this.zaak,
 				...zaakStore.zaakItem,
+				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem.uiterlijkeEinddatumAfdoening ? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening) : null,
 			}
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(null)
-			this.success = null
-			this.loading = false
-			this.zaak = {
-				identificatie: '',
-				omschrijving: '',
-				zaaktype: {},
-				registratiedatum: '',
-				toelichting: '',
-				bronorganisatie: '',
-				verantwoordelijkeOrganisatie: '',
-				startdatum: '',
-				archiefstatus: '',
-			}
+			this?.dashboardWidget && this.$emit('close-modal')
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
@@ -190,12 +213,12 @@ export default {
 					this.zaakType = {
 						options: entities.map((zaakType) => ({
 							id: zaakType.id,
-							label: zaakType.name,
+							label: zaakType.identificatie,
 						})),
 						value: selectedZaakType
 							? {
 								id: selectedZaakType.id,
-								label: selectedZaakType.name,
+								label: selectedZaakType.identificatie,
 							  }
 							: null,
 					}
@@ -207,6 +230,9 @@ export default {
 					this.zaakTypeLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+		 */
 		setArchiefStatusOptions() {
 			const selectedArchiefStatusOption = this.archiefstatus.options.find((options) => options.id === this.zaak.archiefstatus)
 
@@ -217,19 +243,31 @@ export default {
 				}
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		saveZaak() {
 			this.loading = true
 
 			const newZaak = new Zaak({
 				...this.zaak,
-				archiefstatus: this.archiefstatus.value.id || '',
-				zaaktype: this.zaakType.value.id || '',
+				archiefstatus: this.archiefstatus.value?.id || '',
+				zaaktype: this.zaakType.value?.id || '',
+				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening ? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString() : null,
+				klant: this.klantId,
 			})
 
-			zaakStore.saveZaak(newZaak)
+			zaakStore.saveZaak(newZaak, { redirect: !this.dashboardWidget })
 				.then(({ response }) => {
 					this.success = response.ok
-					setTimeout(this.closeModal, 2500)
+
+					setTimeout(() => {
+						this?.dashboardWidget && this.$emit('save-success')
+					}, 2000)
+					setTimeout(() => {
+						this.closeModal()
+					}, 2500)
+
 				})
 				.catch((err) => {
 					console.error(err)
@@ -241,3 +279,10 @@ export default {
 	},
 }
 </script>
+
+<style scoped>
+.modalContent {
+    margin: var(--zaa-margin-50, 12px);
+    text-align: center;
+}
+</style>
