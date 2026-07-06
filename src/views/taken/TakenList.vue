@@ -1,5 +1,6 @@
 <script setup>
-import { navigationStore, taakStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { klantStore, navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,7 +10,7 @@ import { navigationStore, taakStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"
 					trailing-button-icon="close"
 					@trailing-button-click="clearText">
@@ -30,46 +31,48 @@ import { navigationStore, taakStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="taakStore.takenList">
-				<NcListItem v-for="(taak, i) in taakStore.takenList.results"
+			<div v-if="taakStore.takenList?.length && users && !loading">
+				<NcListItem v-for="(taak, i) in taakStore.takenList"
 					:key="`${taak}${i}`"
 					:name="taak?.title"
 					:force-display-actions="true"
-					:active="taakStore.taakItem?.id === taak?.id"
-					:details="'1h'"
-					:counter-number="44"
-					@click="navigationStore.setTaakItem(taak)">
+					:active="$route.params?.id === taak?.id"
+					:details="taak.status"
+					:counter-number="taak.deadline ? `${Math.ceil((new Date(taak.deadline) - new Date()) / (1000 * 60 * 60 * 24))} dagen` : 'no deadline'"
+					@click="openTaak(taak)">
 					<template #icon>
-						<CalendarMonthOutline :class="taakStore.taakItem?.id === taak.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<CalendarMonthOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
-						{{ taak?.onderwerp }}
+						{{ getName(taak) }}
 					</template>
 					<template #actions>
 						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setModal('editTaak')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="taakStore.setTaakItem(taak); navigationStore.setDialog('deleteTaak')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!taakStore.takenList"
+		<div v-if="!taakStore.takenList?.length && !loading">
+			Geen taken gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="!taakStore.takenList?.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Taken aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading tasks')" />
 	</NcAppContentList>
 </template>
 <script>
@@ -104,33 +107,69 @@ export default {
 			search: '',
 			loading: true,
 			takenList: [],
+			users: null,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
-		taakStore.refreshTakenList()
+		Promise.all([
+			this.getUsers(),
+			taakStore.refreshTakenList(),
+			klantStore.refreshKlantenList(),
+		]).then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
-		fetchData(newPage) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/taken',
-				{
-					method: 'GET',
-				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.takenList = data
-					})
-					this.loading = false
-				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
-				})
-		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		getUsers() {
+			fetch('/ocs/v1.php/cloud/users/details', {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'OCS-APIRequest': 'true',
+				},
+			}).then(response => response.json()).then(data => {
+
+				this.users = Object.values(data.ocs.data.users)
+			})
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
+		openTaak(taak) {
+			taakStore.setTaakItem(taak)
+			this.$router.push({ params: { id: taak.id } })
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
+		getName(taak) {
+			const medewerker = this.users.find(user => user.email === taak.medewerker)
+			const klant = klantStore.klantenList.find(klant => klant.id === taak.klant)
+
+			if (medewerker) {
+				return medewerker.displayname ?? 'onbekend'
+			}
+			if (klant) {
+				if (klant.type === 'persoon') {
+					return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				}
+				if (klant.type === 'organisatie') {
+					return klant?.bedrijfsnaam ?? 'onbekend'
+				}
+			}
+			return 'onbekend'
 		},
 	},
 }
