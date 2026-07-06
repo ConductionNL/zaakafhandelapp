@@ -5,79 +5,96 @@ import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore }
 
 <template>
 	<div class="personenContainer">
-		<div class="itemContainer">
-			<NcDashboardWidget :items="personenItems"
-				:item-menu="itemMenu"
-				@show="onShow"
-				@startZaak="() => (zaakFormModalOpen = true)"
-				@startContactmoment="() => (contactmomentModalOpen = true)"
-				@startTaak="() => (taakModalOpen = true)">
-				<template #empty-content>
-					<div>
-						<NcEmptyContent v-if="loading" :name="t('zaakafhandelapp', 'Loading person...')">
-							<template #icon>
-								<NcLoadingIcon />
-							</template>
-						</NcEmptyContent>
-						<NcEmptyContent v-if="!loading" :name="t('zaakafhandelapp', 'No persons found')">
-							<template #icon>
-								<AccountOutline />
-							</template>
-						</NcEmptyContent>
-					</div>
-				</template>
-			</NcDashboardWidget>
-		</div>
+		<CnDataTable :rows="personenItems"
+			:columns="columns"
+			:loading="loading"
+			:loading-text="t('zaakafhandelapp', 'Loading person...')"
+			hide-header
+			borderless
+			row-icon="AccountOutline"
+			:empty-text="t('zaakafhandelapp', 'No persons found')"
+			@row-click="onShow">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No persons found')">
+					<template #icon>
+						<AccountOutline />
+					</template>
+				</NcEmptyContent>
+			</template>
+			<template #row-actions="{ row }">
+				<NcActions>
+					<NcActionButton icon="icon-toggle"
+						close-after-click
+						@click="onShow(row)">
+						{{ t('zaakafhandelapp', 'View') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconBriefcaseAccountOutline"
+						close-after-click
+						@click="() => (zaakFormModalOpen = true)">
+						{{ t('zaakafhandelapp', 'Start case') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconCardAccountPhoneOutline"
+						close-after-click
+						@click="() => (contactmomentModalOpen = true)">
+						{{ t('zaakafhandelapp', 'Start contact moment') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconCalendarMonthOutline"
+						close-after-click
+						@click="() => (taakModalOpen = true)">
+						{{ t('zaakafhandelapp', 'Start task') }}
+					</NcActionButton>
+				</NcActions>
+			</template>
+			<template #footer>
+				<NcButton type="primary"
+					:disabled="loading"
+					class="searchButton"
+					@click="() => (searchKlantModalOpen = true)">
+					<template #icon>
+						<Search :size="20" />
+					</template>
+					{{ t('zaakafhandelapp', 'Search') }}
+				</NcButton>
+			</template>
+		</CnDataTable>
 
-		<div class="searchContainer">
-			<NcButton type="primary"
-				:disabled="loading"
-				class="searchButton"
-				@click="() => (searchKlantModalOpen = true)">
-				<template #icon>
-					<Search :size="20" />
-				</template>
-				{{ t('zaakafhandelapp', 'Search') }}
-			</NcButton>
+		<SearchKlantModal v-if="searchKlantModalOpen"
+			:dashboard-widget="true"
+			starting-type="persoon"
+			@selected-klant="createKlantItems($event)"
+			@close-modal="() => (searchKlantModalOpen = false)" />
 
-			<SearchKlantModal v-if="searchKlantModalOpen"
-				:dashboard-widget="true"
-				starting-type="persoon"
-				@selected-klant="createKlantItems($event)"
-				@close-modal="() => (searchKlantModalOpen = false)" />
+		<ViewKlant v-if="isModalOpen"
+			:dashboard-widget="true"
+			:klant-id="selectedKlantId"
+			@close-modal="() => (isModalOpen = false)" />
 
-			<ViewKlant v-if="isModalOpen"
-				:dashboard-widget="true"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (isModalOpen = false)" />
+		<ZaakForm v-if="zaakFormModalOpen"
+			:dashboard-widget="true"
+			:klant-id="selectedKlantId"
+			@close-modal="() => (zaakFormModalOpen = false)"
+			@save-success="fetchZaakItems" />
 
-			<ZaakForm v-if="zaakFormModalOpen"
-				:dashboard-widget="true"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (zaakFormModalOpen = false)"
-				@save-success="fetchZaakItems" />
+		<ContactMomentenForm v-if="contactmomentModalOpen"
+			:dashboard-widget="true"
+			:klant-id="selectedKlantId"
+			@close-modal="() => (contactmomentModalOpen = false)"
+			@save-success="fetchContactMomentenItems" />
 
-			<ContactMomentenForm v-if="contactmomentModalOpen"
-				:dashboard-widget="true"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (contactmomentModalOpen = false)"
-				@save-success="fetchContactMomentenItems" />
-
-			<EditTaak v-if="taakModalOpen"
-				:dashboard-widget="true"
-				client-type="klant"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (taakModalOpen = false)"
-				@save-success="fetchTaakItems" />
-		</div>
+		<EditTaak v-if="taakModalOpen"
+			:dashboard-widget="true"
+			client-type="klant"
+			:klant-id="selectedKlantId"
+			@close-modal="() => (taakModalOpen = false)"
+			@save-success="fetchTaakItems" />
 	</div>
 </template>
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nextcloud/vue'
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
 
-import { getTheme } from '../../services/getTheme.js'
 import { iconCalendarMonthOutline, iconCardAccountPhoneOutline, iconBriefcaseAccountOutline } from '../../services/icons/index.js'
 
 // icons
@@ -90,19 +107,24 @@ import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 import ZaakForm from '../../modals/zaken/ZaakForm.vue'
 import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
 	name: 'PersonenWidget',
 
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
+		NcActions,
+		NcActionButton,
 		Search,
 		AccountOutline,
 		ViewKlant,
 		SearchKlantModal,
-		NcLoadingIcon,
+		ZaakForm,
+		ContactMomentenForm,
+		EditTaak,
 	},
 
 	data() {
@@ -116,33 +138,11 @@ export default {
 			zaakFormModalOpen: false,
 			contactmomentModalOpen: false,
 			taakModalOpen: false,
+			columns: WIDGET_COLUMNS,
+			iconCalendarMonthOutline,
+			iconCardAccountPhoneOutline,
+			iconBriefcaseAccountOutline,
 		}
-	},
-
-	computed: {
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		itemMenu() {
-			return {
-				show: {
-					text: t('zaakafhandelapp', 'View'),
-					icon: 'icon-toggle',
-				},
-				startZaak: {
-					text: t('zaakafhandelapp', 'Start case'),
-					icon: iconBriefcaseAccountOutline,
-				},
-				startContactmoment: {
-					text: t('zaakafhandelapp', 'Start contact moment'),
-					icon: iconCardAccountPhoneOutline,
-				},
-				startTaak: {
-					text: t('zaakafhandelapp', 'Start task'),
-					icon: iconCalendarMonthOutline,
-				},
-			}
-		},
 	},
 
 	methods: {
@@ -156,22 +156,7 @@ export default {
 				id: klant.id,
 				mainText: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
 				subText: klant.emailadres,
-				avatarUrl: this.getItemIcon(),
 			}]
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/account-outline.svg`
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
@@ -234,17 +219,8 @@ export default {
   flex-direction: column;
   height: 100%;
 }
-.itemContainer {
+.personenContainer > .cn-table-container {
   overflow: auto;
-  margin-block-end: var(--zaa-margin-10);
-}
-.searchContainer {
-  display: flex;
-  align-items: end;
-  gap: 10px;
-}
-.searchField {
-  width: auto;
 }
 .searchButton {
   min-width: min-content !important;

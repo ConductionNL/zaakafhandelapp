@@ -5,29 +5,49 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 
 <template>
 	<div class="contactmomentenContainer">
-		<div class="itemContainer">
-			<NcDashboardWidget :items="contactMomentItems"
-				:loading="loading"
-				:item-menu="itemMenu"
-				@show="onShow"
-				@edit="onEdit"
-				@sluiten="onSluiten">
-				<template #empty-content>
-					<NcEmptyContent :name="t('zaakafhandelapp', 'No contact moments found')">
-						<template #icon>
-							<ChatOutline />
-						</template>
-					</NcEmptyContent>
-				</template>
-			</NcDashboardWidget>
-		</div>
-
-		<NcButton type="primary" @click="openModal">
-			<template #icon>
-				<Plus :size="20" />
+		<CnDataTable :rows="contactMomentItems"
+			:columns="columns"
+			:loading="loading"
+			hide-header
+			borderless
+			:row-icon="contactMomentIcon"
+			:empty-text="t('zaakafhandelapp', 'No contact moments found')"
+			@row-click="onShow">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No contact moments found')">
+					<template #icon>
+						<ChatOutline />
+					</template>
+				</NcEmptyContent>
 			</template>
-			{{ t('zaakafhandelapp', 'Start contact moment') }}
-		</NcButton>
+			<template #row-actions="{ row }">
+				<NcActions>
+					<NcActionButton icon="icon-toggle"
+						close-after-click
+						@click="onShow(row)">
+						{{ t('zaakafhandelapp', 'View') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconPencil"
+						close-after-click
+						@click="onEdit(row)">
+						{{ t('zaakafhandelapp', 'Edit') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconProgressClose"
+						close-after-click
+						@click="onSluiten(row)">
+						{{ t('zaakafhandelapp', 'Close') }}
+					</NcActionButton>
+				</NcActions>
+			</template>
+			<template #footer>
+				<NcButton type="primary" @click="openModal">
+					<template #icon>
+						<Plus :size="20" />
+					</template>
+					{{ t('zaakafhandelapp', 'Start contact moment') }}
+				</NcButton>
+			</template>
+		</CnDataTable>
 
 		<ContactMomentenForm v-if="isContactMomentFormOpen"
 			:dashboard-widget="true"
@@ -40,8 +60,8 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
 
 // Entities
 import { ContactMoment } from '../../entities/index.js'
@@ -53,15 +73,19 @@ import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 
 // Modals
 import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
+import { WIDGET_COLUMNS, contactMomentIcon } from './widgetTable.js'
 
 export default {
 	name: 'ContactMomentenWidget',
 
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
+		NcActions,
+		NcActionButton,
 		Plus,
+		ChatOutline,
 		ContactMomentenForm,
 	},
 
@@ -77,28 +101,13 @@ export default {
 			// contactmoment form props
 			contactMomentId: null,
 			isView: false,
+			columns: WIDGET_COLUMNS,
+			// Per-kanaal leading row icon resolver (phone/email/brief/balie),
+			// handed to CnDataTable's `rowIcon` as a (row) => name function.
+			contactMomentIcon,
+			iconPencil,
+			iconProgressClose,
 		}
-	},
-	computed: {
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		itemMenu() {
-			return {
-				show: {
-					text: t('zaakafhandelapp', 'View'),
-					icon: 'icon-toggle',
-				},
-				edit: {
-					text: t('zaakafhandelapp', 'Edit'),
-					icon: iconPencil,
-				},
-				sluiten: {
-					text: t('zaakafhandelapp', 'Close'),
-					icon: iconProgressClose,
-				},
-			}
-		},
 	},
 	mounted() {
 		this.fetchUser()
@@ -155,96 +164,13 @@ export default {
 							return ''
 						})(),
 						subText: new Date(contactMoment.startDate).toLocaleString(),
-						avatarUrl: (() => {
-							switch (contactMoment.kanaal) {
-							case 'telefoon':
-								return this.getItemPhoneIcon()
-							case 'email':
-								return this.getItemEmailIcon()
-							case 'brief':
-								return this.getItemMailboxIcon()
-							case 'balie':
-								return this.getItemAgentIcon()
-							default:
-								return this.getItemIcon()
-							}
-						})(),
+						// drives the per-kanaal leading row icon (contactMomentIcon)
+						kanaal: contactMoment.kanaal,
 					}))
 				})
 				.finally(() => {
 					this.loading = false
 				})
-		},
-		// === ICONS ===
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemPhoneIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/phone-dark.svg` : `${appLocation}/zaakafhandelapp/img/phone.svg`
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemEmailIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/email-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/email-outline.svg`
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemMailboxIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/mailbox-open-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/mailbox-open-outline.svg`
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemAgentIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/face-agent-dark.svg` : `${appLocation}/zaakafhandelapp/img/face-agent.svg`
 		},
 		// === MODAL CONTROL ===
 		/**
@@ -329,8 +255,7 @@ export default {
 	height: 100%;
 }
 
-.itemContainer {
+.contactmomentenContainer > .cn-table-container {
 	overflow: auto;
-	margin-block-end: var(--zaa-margin-10);
 }
 </style>
