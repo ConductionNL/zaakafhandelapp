@@ -30,14 +30,13 @@ import AuditTrailView from './views/audit/AuditTrailView.vue'
 import SettingsForm from './views/settings/Settings.vue'
 
 // --- Detail-tab custom components for ZaakDetail ---
-// Each tab references a thin stub today (`<CnNoteCard>` placeholder
-// pointing at the existing modal-based UI). Implementations land in
-// a follow-up sibling change once runtime regression confirms the
-// dispatcher.
+// Each remaining tab references a thin stub today (`<CnNoteCard>` placeholder
+// pointing at the existing modal-based UI). The besluiten tab was dissolved to
+// a built-in object-table sidebar-tab widget (nextcloud-vue #89), so it no
+// longer needs a component entry here.
 import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
 import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
 import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
-import ZaakBesluitenTab from './components/tabs/ZaakBesluitenTab.vue'
 import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
 import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
 import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
@@ -54,7 +53,6 @@ export default {
 	ZaakTakenTab,
 	ZaakRollenTab,
 	ZaakDocumentenTab,
-	ZaakBesluitenTab,
 	ZaakBerichtenTab,
 	ZaakResultatenTab,
 	ZaakStatussenTab,

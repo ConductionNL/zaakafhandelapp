@@ -396,7 +396,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "zaak",
-				"_note": "CASE archetype — the operational heart of zaakgericht werken. A caseworker opens a zaak to see where it stands and what work remains, so the body leads with the case fields (status, deadlines, verantwoordelijke organisatie) 8-wide beside a Related panel, then surfaces the child collections that drive the case: open Tasks (taak.zaak=@objectId) and the case file's Documents (document.zaak=@objectId), followed by Decisions (besluit) and Results (resultaat) because closing a zaak hinges on them, and a Files leaf for the raw attachment surface. summaryAggregates give at-a-glance counts of open tasks, documents, decisions and roles. The schema declares NO email/calendar/talk linkedTypes, so no comms leaves sit on the body. ADR-049 Phase-4 dissolution assessment: the seven relation tabs stay as config.sidebarTabs[].component STUBS and were NOT dissolved to object-table. Blocker (all seven): the w3 CnObjectSidebar tab renderer resolves only data/metadata/audit-trail widget types (+ a component escape hatch); object-table is a CnWidgetGrid built-in reachable only on the uniform top-level widgets[] shape (slot sidebar / tab:<id>), not on this legacy catalog-shape detail page — wiring it would require migrating the whole page or a lib enhancement. Endpoint reality (independent of the renderer gap): only besluiten has a real parent-zaak-filtered endpoint (api/zrc/zaken/{zaakUuid}/besluiten → {results}, zaakUuid=@objectId); the rollen/statussen/resultaten/zaakinformatieobjecten ZGW list controllers call CallService->index with no query forwarding so their zaak filter is dropped; taken/documenten/resultaten already render in the body via OR object-lists; berichten's bericht.zaak is unverified (relation runs through klantcontact). Per-tab detail in each tab's _note.",
+				"_note": "CASE archetype — the operational heart of zaakgericht werken. A caseworker opens a zaak to see where it stands and what work remains, so the body leads with the case fields (status, deadlines, verantwoordelijke organisatie) 8-wide beside a Related panel, then surfaces the child collections that drive the case: open Tasks (taak.zaak=@objectId) and the case file's Documents (document.zaak=@objectId), followed by Decisions (besluit) and Results (resultaat) because closing a zaak hinges on them, and a Files leaf for the raw attachment surface. summaryAggregates give at-a-glance counts of open tasks, documents, decisions and roles. The schema declares NO email/calendar/talk linkedTypes, so no comms leaves sit on the body. ADR-049 Phase-4 dissolution assessment (updated for nextcloud-vue #89): the w3 CnObjectSidebar now resolves a per-tab widgets[].type:'object-table' to CnWidgetObjectTable and provides cnObjectContext, so besluiten — the ONE relation with a real parent-zaak-filtered endpoint (GET api/zrc/zaken/{zaakUuid}/besluiten → {results:[{url,uuid,zaak,besluit}]}, zaakUuid=@objectId) — IS now wired as an object-table sidebar tab (endpointSource url carrying @objectId in the PATH + responsePath 'results'); no whole-page migration was needed on this legacy catalog-shape detail page. The OTHER SIX stay config.sidebarTabs[].component STUBS for ENDPOINT reasons (not a renderer gap): the rollen/statussen/resultaten/zaakinformatieobjecten ZGW list controllers call CallService->index with no query forwarding so their zaak filter is dropped; taken/documenten/resultaten already render in the body via OR object-lists; berichten's bericht.zaak is unverified (relation runs through klantcontact). Per-tab detail in each tab's _note.",
 				"widgets": [
 					{ "id": "zaak-data", "type": "data", "title": "Case details", "content": { "columns": 2 } },
 					{ "id": "zaak-related", "type": "related", "title": "Related" },
@@ -452,9 +452,26 @@
 						"id": "besluiten",
 						"label": "Decisions",
 						"icon": "icon-checkmark",
-						"component": "ZaakBesluitenTab",
 						"order": 50,
-						"_note": "STUB (ADR-049 Phase-4): the ONE relation with a real parent-zaak-filtered endpoint — api/zrc/zaken/{zaakUuid}/besluiten (ZaakBesluitenController::index, zaakUuid resolved as the zaak OR id = @objectId, returns {results}). Would dissolve to object-table endpointSource {url: '/index.php/apps/zaakafhandelapp/api/zrc/zaken/@objectId/besluiten', responsePath: 'results'}. Blocked only by the missing object-table sidebar-tab renderer in w3 CnObjectSidebar (today: data/metadata/audit-trail)."
+						"widgets": [
+							{
+								"type": "object-table",
+								"props": {
+									"widgetId": "zaak-besluiten-tab",
+									"title": "Decisions",
+									"endpointSource": {
+										"url": "/apps/zaakafhandelapp/api/zrc/zaken/@objectId/besluiten",
+										"responsePath": "results"
+									},
+									"columns": [
+										{ "key": "besluit", "label": "Decision" },
+										{ "key": "url", "label": "Reference" }
+									],
+									"emptyText": "No decisions are linked to this case yet."
+								}
+							}
+						],
+						"_note": "LIVE (ADR-049 Phase-4; nextcloud-vue #89 — CnObjectSidebar object-table tab widget): the ONE relation with a real parent-zaak-filtered endpoint — GET api/zrc/zaken/{zaakUuid}/besluiten (ZaakBesluitenController::index → {results:[{url,uuid,zaak,besluit}]}, zaakUuid=@objectId=the zaak OR id). CnObjectSidebar resolves widgets[].type:'object-table' to CnWidgetObjectTable and provides cnObjectContext {objectId,...}, so @objectId interpolates into the endpointSource.url PATH (useEndpointSource.interpolateUrlTokens); responsePath 'results' plucks the array. Columns mirror the zaakbesluit RELATION payload (besluit reference + relation url): the endpoint returns the relation, not the full besluit resource, so identificatie/besluittype/datum are NOT available here, and NO rowRoute is set — the relation payload carries no besluit id at row.id/@self.id and its 'besluit' field is a bare reference, so a row-click could not resolve a BesluitDetail target."
 					},
 					{
 						"id": "berichten",

@@ -55,7 +55,6 @@ import SettingsForm from './views/settings/Settings.vue'
 import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
 import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
 import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
-import ZaakBesluitenTab from './components/tabs/ZaakBesluitenTab.vue'
 import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
 import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
 import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
@@ -95,12 +94,13 @@ export default {
 	},
 
 	// ── kind: "widget" (ZaakDetail sidebar tabs — ZGW-API relations) ────────
-	// ADR-049 Phase-4 dissolution: these 7 STAY STUBS. None dissolve to an
-	// object-table sidebar widget because the w3 CnObjectSidebar tab renderer
-	// resolves only data/metadata/audit-trail widget types (+ a component escape
-	// hatch); object-table is a CnWidgetGrid built-in reachable only on the
-	// uniform top-level widgets[] shape (slot sidebar / tab:<id>), not on this
-	// legacy catalog-shape detail page. Per-tab endpoint reality below.
+	// ADR-049 Phase-4 dissolution (updated for nextcloud-vue #89): the besluiten
+	// tab was DISSOLVED to a built-in object-table sidebar-tab widget (see
+	// src/manifest.json ZaakDetail config.sidebarTabs[id=besluiten].widgets) —
+	// its former component entry is gone. The remaining SIX stay component STUBS
+	// for ENDPOINT reasons (their ZGW list controllers drop the ?zaak filter, or
+	// the relation is unverified), NOT a renderer gap. Per-tab endpoint reality
+	// below.
 	ZaakTakenTab: {
 		kind: 'widget',
 		component: ZaakTakenTab,
@@ -115,11 +115,6 @@ export default {
 		kind: 'widget',
 		component: ZaakDocumentenTab,
 		_note: 'STUB — ZGW api/zrc/zaakinformatieobjecten exists but index() forwards no query (zaak filter dropped); documents already render in the detail body (widget zaak-documenten). Not dissolved: no object-table sidebar-tab renderer.',
-	},
-	ZaakBesluitenTab: {
-		kind: 'widget',
-		component: ZaakBesluitenTab,
-		_note: 'STUB — REAL zaak-filtered endpoint api/zrc/zaken/@objectId/besluiten (ZaakBesluitenController::index, returns {results}); ready to wire as object-table endpointSource once w3 CnObjectSidebar gains an object-table tab widget (today only data/metadata/audit-trail).',
 	},
 	ZaakBerichtenTab: {
 		kind: 'widget',
