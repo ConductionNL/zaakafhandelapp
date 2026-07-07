@@ -4,6 +4,7 @@ import { TBericht, BerichtID } from './bericht.types'
 export class Bericht implements TBericht {
 
 	public id: string
+	public title: string
 	public batchID: string
 	public aanmaakDatum: string
 	public berichtLeverancierID: string
@@ -19,9 +20,13 @@ export class Bericht implements TBericht {
 	public bijlageType: string
 	public omschrijving: string
 	public volgorde: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TBericht) {
 		this.id = source.id || ''
+		this.title = source.title || ''
 		this.batchID = source.batchID || ''
 		this.aanmaakDatum = source.aanmaakDatum || ''
 		this.berichtLeverancierID = source.berichtLeverancierID || ''
@@ -42,6 +47,7 @@ export class Bericht implements TBericht {
 	public validate(): SafeParseReturnType<TBericht, unknown> {
 		const schema = z.object({
 			id: z.string(),
+			title: z.string(),
 			batchID: z.string(),
 			aanmaakDatum: z.string(),
 			berichtLeverancierID: z.string(),

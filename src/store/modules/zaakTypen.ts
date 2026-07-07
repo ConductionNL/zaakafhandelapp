@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { TZaakType, ZaakType } from '../../entities/index.js'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen'
 
@@ -13,13 +14,19 @@ type TOptions = {
 export const useZaakTypeStore = defineStore('zaakTypen', {
 	state: () => ({
 		zaakTypeItem: null,
-		zaakTypenList: [],
+		zaakTypeList: [],
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZaakTypeItem(zaakTypeItem: ZaakType | TZaakType) {
 			this.zaakTypeItem = zaakTypeItem && new ZaakType(zaakTypeItem)
 			console.info('Active zaaktype item set to ' + zaakTypeItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZaakTypeList(zaakTypeList: ZaakType[] | TZaakType[]) {
 			this.zaakTypeList = zaakTypeList.map(
 			    (zaakTypeItem) => new ZaakType(zaakTypeItem),
@@ -70,6 +77,10 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 			id: string,
 			options: TOptions = {},
 		): Promise<{ response: Response, data: TZaakType, entity: ZaakType }> {
+			if (!id || typeof id !== 'string' || id.trim() === '') {
+				throw new Error('Invalid or missing id for fetching zaaktype item')
+			}
+
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching zaaktype item with id: ' + id)
@@ -114,12 +125,9 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 				method: 'DELETE',
 			})
 
-			if (!response.ok) {
-				console.error(response)
-				throw new Error(`HTTP error! status: ${response.status}`)
-			}
-
+			this.setZaakTypeItem(null)
 			this.refreshZaakTypenList()
+			router.push({ name: 'Zaaktypen' })
 
 			return { response }
 		},
@@ -169,6 +177,7 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 
 			options.setItem && this.setZaakTypeItem(data)
 			this.refreshZaakTypenList()
+			router.push({ name: 'ZaaktypeDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

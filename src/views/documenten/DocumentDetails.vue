@@ -1,5 +1,6 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { documentStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -12,7 +13,7 @@ import { navigationStore } from '../../store/store.js'
 				</h1>
 				<div class="grid">
 					<div class="gridContent">
-						<h4>Sammenvatting:</h4>
+						<h4>{{ t('zaakafhandelapp', 'Summary:') }}</h4>
 						<span>{{ zaak.summary }}</span>
 					</div>
 				</div>
@@ -21,7 +22,7 @@ import { navigationStore } from '../../store/store.js'
 		<NcLoadingIcon v-if="loading"
 			:size="100"
 			appearance="dark"
-			name="Zaak details aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading case details')" />
 	</div>
 </template>
 
@@ -47,6 +48,9 @@ export default {
 	},
 	watch: {
 		documentId: {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(documentId) {
 				this.fetchData(documentId)
 			},
@@ -55,9 +59,12 @@ export default {
 	},
 	// First time the is no emit so lets grap it directly
 	mounted() {
-		this.fetchData(store.documentItem)
+		this.fetchData(documentStore.documentItem)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(documentId) {
 			this.loading = true
 			fetch(
