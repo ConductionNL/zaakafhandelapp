@@ -396,7 +396,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "zaak",
-				"_note": "CASE archetype — the operational heart of zaakgericht werken. A caseworker opens a zaak to see where it stands and what work remains, so the body leads with the case fields (status, deadlines, verantwoordelijke organisatie) 8-wide beside a Related panel, then surfaces the child collections that drive the case: open Tasks (taak.zaak=@objectId) and the case file's Documents (document.zaak=@objectId), followed by Decisions (besluit) and Results (resultaat) because closing a zaak hinges on them, and a Files leaf for the raw attachment surface. summaryAggregates give at-a-glance counts of open tasks, documents, decisions and roles. The schema declares NO email/calendar/talk linkedTypes, so no comms leaves sit on the body. The seven ZGW-API-backed component tabs stay in config.sidebarTabs — they use a hybrid ZGW-API data path (filtered by zaakUrl, not OR) with no grid-widget analogue.",
+				"_note": "CASE archetype — the operational heart of zaakgericht werken. A caseworker opens a zaak to see where it stands and what work remains, so the body leads with the case fields (status, deadlines, verantwoordelijke organisatie) 8-wide beside a Related panel, then surfaces every child collection that drives the case, each FK-scoped by zaak=@objectId: open Tasks (taak.zaak), the case file's Documents (document.zaak), Decisions (besluit.zaak) and Results (resultaat.zaak) because closing a zaak hinges on them, the Parties involved (rol.zaak — betrokkenen bound to this case in a capacity), and a Files leaf for the raw attachment surface. summaryAggregates count open tasks, documents, decisions and roles. The zaak schema declares NO email/calendar/talk linkedTypes, so no comms leaves sit on the body, and audit history stays in the sidebar tab only. The former ZGW-API sidebar tabs are dropped per the audit-only sidebar rule: taken/documenten/besluiten/resultaten/rollen are now OR-backed body lists; statussen (no OR status FK) and berichten (bericht carries no zaak FK) have no OR analogue and are the nc-vue wish-list gap for a hybrid ZGW-API data source.",
 				"widgets": [
 					{ "id": "zaak-data", "type": "data", "title": "Case details", "content": { "columns": 2 } },
 					{ "id": "zaak-related", "type": "related", "title": "Related" },
@@ -404,8 +404,8 @@
 					{ "id": "zaak-documenten", "type": "object-list", "title": "Documents", "content": { "register": "zaakafhandelapp", "schema": "document", "filter": { "zaak": "@objectId" }, "sort": { "field": "creatiedatum", "dir": "desc" }, "columns": [ { "key": "titel", "label": "Title" }, { "key": "status", "label": "Status" }, { "key": "creatiedatum", "label": "Created" } ], "limit": 50, "rowRoute": "DocumentDetail" } },
 					{ "id": "zaak-besluiten", "type": "object-list", "title": "Decisions", "content": { "register": "zaakafhandelapp", "schema": "besluit", "filter": { "zaak": "@objectId" }, "columns": [ { "key": "besluit", "label": "Decision" }, { "key": "url", "label": "Reference" } ], "limit": 25, "rowRoute": "BesluitDetail" } },
 					{ "id": "zaak-resultaten", "type": "object-list", "title": "Results", "content": { "register": "zaakafhandelapp", "schema": "resultaat", "filter": { "zaak": "@objectId" }, "columns": [ { "key": "resultaattype", "label": "Result type" }, { "key": "toelichting", "label": "Explanation" } ], "limit": 25, "rowRoute": "ResultaatDetail" } },
-					{ "id": "zaak-files", "type": "integration", "integrationId": "files", "title": "Attachments" },
-					{ "id": "zaak-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "zaak-rollen", "type": "object-list", "title": "Parties involved", "content": { "register": "zaakafhandelapp", "schema": "rol", "filter": { "zaak": "@objectId" }, "sort": { "field": "registratiedatum", "dir": "desc" }, "columns": [ { "key": "omschrijvingGeneriek", "label": "Role" }, { "key": "betrokkeneType", "label": "Party type" }, { "key": "roltoelichting", "label": "Explanation" } ], "limit": 50, "rowRoute": "RolDetail" } },
+					{ "id": "zaak-files", "type": "integration", "integrationId": "files", "title": "Attachments" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "zaak-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 5 },
@@ -414,8 +414,8 @@
 					{ "id": "4", "widgetId": "zaak-documenten", "gridX": 6, "gridY": 5, "gridWidth": 6, "gridHeight": 4 },
 					{ "id": "5", "widgetId": "zaak-besluiten", "gridX": 0, "gridY": 9, "gridWidth": 6, "gridHeight": 3 },
 					{ "id": "6", "widgetId": "zaak-resultaten", "gridX": 6, "gridY": 9, "gridWidth": 6, "gridHeight": 3 },
-					{ "id": "7", "widgetId": "zaak-files", "gridX": 0, "gridY": 12, "gridWidth": 12, "gridHeight": 4 },
-					{ "id": "8", "widgetId": "zaak-audit", "gridX": 0, "gridY": 16, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "7", "widgetId": "zaak-rollen", "gridX": 0, "gridY": 12, "gridWidth": 12, "gridHeight": 3 },
+					{ "id": "8", "widgetId": "zaak-files", "gridX": 0, "gridY": 15, "gridWidth": 12, "gridHeight": 4 }
 				],
 				"summaryAggregates": [
 					{ "label": "Open tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "zaak": "@objectId" } },
@@ -423,68 +423,13 @@
 					{ "label": "Decisions", "register": "zaakafhandelapp", "schema": "besluit", "metric": "count", "filter": { "zaak": "@objectId" } },
 					{ "label": "Roles", "register": "zaakafhandelapp", "schema": "rol", "metric": "count", "filter": { "zaak": "@objectId" } }
 				],
-				"sidebarTabs": [
-					{
-						"id": "taken",
-						"label": "Tasks",
-						"icon": "icon-checkmark",
-						"component": "ZaakTakenTab",
-						"order": 20,
-						"_note": "Hybrid ZGW-API data path; fetches related taken via ZGW-API taak endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					},
-					{
-						"id": "rollen",
-						"label": "Roles",
-						"icon": "icon-user-admin",
-						"component": "ZaakRollenTab",
-						"order": 30,
-						"_note": "Hybrid ZGW-API data path; fetches related rollen via ZGW-API rol endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					},
-					{
-						"id": "documenten",
-						"label": "Documents",
-						"icon": "icon-files",
-						"component": "ZaakDocumentenTab",
-						"order": 40,
-						"_note": "Hybrid ZGW-API data path; fetches related zaakinformatieobjecten via ZGW-API endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					},
-					{
-						"id": "besluiten",
-						"label": "Decisions",
-						"icon": "icon-checkmark",
-						"component": "ZaakBesluitenTab",
-						"order": 50,
-						"_note": "Hybrid ZGW-API data path; fetches related besluiten via ZGW-API besluit endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					},
-					{
-						"id": "berichten",
-						"label": "Messages",
-						"icon": "icon-mail",
-						"component": "ZaakBerichtenTab",
-						"order": 60,
-						"_note": "Hybrid ZGW-API data path; fetches related berichten via ZGW-API klantcontact endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					},
-					{
-						"id": "resultaten",
-						"label": "Results",
-						"icon": "icon-checkmark",
-						"component": "ZaakResultatenTab",
-						"order": 70,
-						"_note": "Hybrid ZGW-API data path; fetches related resultaten via ZGW-API resultaat endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					},
-					{
-						"id": "statussen",
-						"label": "Statuses",
-						"icon": "icon-history",
-						"component": "ZaakStatussenTab",
-						"order": 80,
-						"_note": "Hybrid ZGW-API data path; fetches related statussen via ZGW-API status endpoint filtered by zaakUrl, not OR; no current widget analogue"
-					}
-				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -533,19 +478,20 @@
 				"widgets": [
 					{ "id": "taak-data", "type": "data", "title": "Task details", "content": { "columns": 2 } },
 					{ "id": "taak-related", "type": "related", "title": "Related" },
-					{ "id": "taak-files", "type": "integration", "integrationId": "files", "title": "Attachments" },
-					{ "id": "taak-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "taak-files", "type": "integration", "integrationId": "files", "title": "Attachments" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "taak-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 4 },
 					{ "id": "2", "widgetId": "taak-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 },
-					{ "id": "3", "widgetId": "taak-files", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 4 },
-					{ "id": "4", "widgetId": "taak-audit", "gridX": 0, "gridY": 8, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "3", "widgetId": "taak-files", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 4 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -584,16 +530,14 @@
 					{ "id": "klant-related", "type": "related", "title": "Related" },
 					{ "id": "klant-zaken", "type": "object-list", "title": "Cases", "content": { "register": "zaakafhandelapp", "schema": "zaak", "filter": { "klant": "@objectId" }, "sort": { "field": "registratiedatum", "dir": "desc" }, "columns": [ { "key": "identificatie", "label": "Reference" }, { "key": "omschrijving", "label": "Description" }, { "key": "status", "label": "Status" } ], "limit": 50, "rowRoute": "ZaakDetail" } },
 					{ "id": "klant-contactmomenten", "type": "object-list", "title": "Contact moments", "content": { "register": "zaakafhandelapp", "schema": "contactmoment", "filter": { "klant": "@objectId" }, "sort": { "field": "startDate", "dir": "desc" }, "columns": [ { "key": "notitie", "label": "Note" }, { "key": "kanaal", "label": "Channel" }, { "key": "startDate", "label": "Date" } ], "limit": 50, "rowRoute": "ContactmomentDetail" } },
-					{ "id": "klant-taken", "type": "object-list", "title": "Tasks", "content": { "register": "zaakafhandelapp", "schema": "taak", "filter": { "klant": "@objectId" }, "columns": [ { "key": "title", "label": "Task" }, { "key": "status", "label": "Status" }, { "key": "deadline", "label": "Deadline" } ], "limit": 25, "rowRoute": "TaakDetail" } },
-					{ "id": "klant-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "klant-taken", "type": "object-list", "title": "Tasks", "content": { "register": "zaakafhandelapp", "schema": "taak", "filter": { "klant": "@objectId" }, "columns": [ { "key": "title", "label": "Task" }, { "key": "status", "label": "Status" }, { "key": "deadline", "label": "Deadline" } ], "limit": 25, "rowRoute": "TaakDetail" } }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "klant-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 5 },
 					{ "id": "2", "widgetId": "klant-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 },
 					{ "id": "3", "widgetId": "klant-zaken", "gridX": 0, "gridY": 5, "gridWidth": 12, "gridHeight": 4 },
 					{ "id": "4", "widgetId": "klant-contactmomenten", "gridX": 0, "gridY": 9, "gridWidth": 6, "gridHeight": 4 },
-					{ "id": "5", "widgetId": "klant-taken", "gridX": 6, "gridY": 9, "gridWidth": 6, "gridHeight": 4 },
-					{ "id": "6", "widgetId": "klant-audit", "gridX": 0, "gridY": 13, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "5", "widgetId": "klant-taken", "gridX": 6, "gridY": 9, "gridWidth": 6, "gridHeight": 4 }
 				],
 				"summaryAggregates": [
 					{ "label": "Cases", "register": "zaakafhandelapp", "schema": "zaak", "metric": "count", "filter": { "klant": "@objectId" } },
@@ -602,7 +546,10 @@
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -639,15 +586,13 @@
 					{ "id": "mw-data", "type": "data", "title": "Employee details", "content": { "columns": 2 } },
 					{ "id": "mw-related", "type": "related", "title": "Related" },
 					{ "id": "mw-taken", "type": "object-list", "title": "Assigned tasks", "content": { "register": "zaakafhandelapp", "schema": "taak", "filter": { "medewerker": "@objectId" }, "sort": { "field": "deadline", "dir": "asc" }, "columns": [ { "key": "title", "label": "Task" }, { "key": "status", "label": "Status" }, { "key": "deadline", "label": "Deadline" } ], "limit": 50, "rowRoute": "TaakDetail" } },
-					{ "id": "mw-contactmomenten", "type": "object-list", "title": "Contact moments", "content": { "register": "zaakafhandelapp", "schema": "contactmoment", "filter": { "medewerker": "@objectId" }, "sort": { "field": "startDate", "dir": "desc" }, "columns": [ { "key": "notitie", "label": "Note" }, { "key": "kanaal", "label": "Channel" }, { "key": "startDate", "label": "Date" } ], "limit": 25, "rowRoute": "ContactmomentDetail" } },
-					{ "id": "mw-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "mw-contactmomenten", "type": "object-list", "title": "Contact moments", "content": { "register": "zaakafhandelapp", "schema": "contactmoment", "filter": { "medewerker": "@objectId" }, "sort": { "field": "startDate", "dir": "desc" }, "columns": [ { "key": "notitie", "label": "Note" }, { "key": "kanaal", "label": "Channel" }, { "key": "startDate", "label": "Date" } ], "limit": 25, "rowRoute": "ContactmomentDetail" } }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "mw-data", "gridX": 0, "gridY": 0, "gridWidth": 6, "gridHeight": 4 },
 					{ "id": "2", "widgetId": "mw-related", "gridX": 6, "gridY": 0, "gridWidth": 6, "gridHeight": 4 },
 					{ "id": "3", "widgetId": "mw-taken", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 4 },
-					{ "id": "4", "widgetId": "mw-contactmomenten", "gridX": 0, "gridY": 8, "gridWidth": 12, "gridHeight": 4 },
-					{ "id": "5", "widgetId": "mw-audit", "gridX": 0, "gridY": 12, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "4", "widgetId": "mw-contactmomenten", "gridX": 0, "gridY": 8, "gridWidth": 12, "gridHeight": 4 }
 				],
 				"summaryAggregates": [
 					{ "label": "Open tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "medewerker": "@objectId" } }
@@ -655,7 +600,10 @@
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -698,18 +646,19 @@
 				"_note": "INTERACTION-LOG archetype — a single logged contact (call, email, counter visit) captured against a klant/zaak. The record's whole value is the note plus who/when/which-channel, so the body is a wide 3-column data widget (notitie, kanaal, startDate, status) with a Related panel that resolves its FKs (klant, zaak, taak, medewerker) so the handler can jump to the case or customer. No child collections; the contactmoment schema declares NO email/calendar/talk linkedTypes (the channel/date are plain fields), so no comms leaves — the layout is intentionally minimal: data + related.",
 				"widgets": [
 					{ "id": "cm-data", "type": "data", "title": "Contact moment", "content": { "columns": 3 } },
-					{ "id": "cm-related", "type": "related", "title": "Related" },
-					{ "id": "cm-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "cm-related", "type": "related", "title": "Related" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "cm-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 5 },
-					{ "id": "2", "widgetId": "cm-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 },
-					{ "id": "3", "widgetId": "cm-audit", "gridX": 0, "gridY": 5, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "2", "widgetId": "cm-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -753,19 +702,20 @@
 				"widgets": [
 					{ "id": "bericht-data", "type": "data", "title": "Message", "content": { "columns": 2 } },
 					{ "id": "bericht-related", "type": "related", "title": "Related" },
-					{ "id": "bericht-files", "type": "integration", "integrationId": "files", "title": "Attachments" },
-					{ "id": "bericht-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "bericht-files", "type": "integration", "integrationId": "files", "title": "Attachments" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "bericht-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 5 },
 					{ "id": "2", "widgetId": "bericht-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 },
-					{ "id": "3", "widgetId": "bericht-files", "gridX": 0, "gridY": 5, "gridWidth": 12, "gridHeight": 4 },
-					{ "id": "4", "widgetId": "bericht-audit", "gridX": 0, "gridY": 9, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "3", "widgetId": "bericht-files", "gridX": 0, "gridY": 5, "gridWidth": 12, "gridHeight": 4 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -800,18 +750,19 @@
 				"_note": "ROLE / PARTY-IN-CASE archetype — a junction record binding a betrokkene (person/organisation) to a zaak in a specific capacity (initiator, behandelaar, belanghebbende…). The body is data-led (roltype, omschrijvingGeneriek, betrokkeneType, contactpersoonRol, roltoelichting) 8-wide beside a Related panel that resolves the linked zaak and the betrokkene so a handler can navigate both sides of the relationship. It has no child collections and the schema declares NO comms linkedTypes, so the layout is deliberately minimal: data + related, no files or comms leaves.",
 				"widgets": [
 					{ "id": "rol-data", "type": "data", "title": "Role details", "content": { "columns": 2 } },
-					{ "id": "rol-related", "type": "related", "title": "Related" },
-					{ "id": "rol-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "rol-related", "type": "related", "title": "Related" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "rol-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 5 },
-					{ "id": "2", "widgetId": "rol-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 },
-					{ "id": "3", "widgetId": "rol-audit", "gridX": 0, "gridY": 5, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "2", "widgetId": "rol-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -847,14 +798,12 @@
 				"widgets": [
 					{ "id": "zt-data", "type": "data", "title": "Case type definition", "content": { "columns": 3 } },
 					{ "id": "zt-related", "type": "related", "title": "Related" },
-					{ "id": "zt-zaken", "type": "object-list", "title": "Cases of this type", "content": { "register": "zaakafhandelapp", "schema": "zaak", "filter": { "zaaktype": "@objectId" }, "sort": { "field": "registratiedatum", "dir": "desc" }, "columns": [ { "key": "identificatie", "label": "Reference" }, { "key": "omschrijving", "label": "Description" }, { "key": "status", "label": "Status" }, { "key": "uiterlijkeEinddatumAfdoening", "label": "Deadline" } ], "limit": 50, "rowRoute": "ZaakDetail" } },
-					{ "id": "zt-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "zt-zaken", "type": "object-list", "title": "Cases of this type", "content": { "register": "zaakafhandelapp", "schema": "zaak", "filter": { "zaaktype": "@objectId" }, "sort": { "field": "registratiedatum", "dir": "desc" }, "columns": [ { "key": "identificatie", "label": "Reference" }, { "key": "omschrijving", "label": "Description" }, { "key": "status", "label": "Status" }, { "key": "uiterlijkeEinddatumAfdoening", "label": "Deadline" } ], "limit": 50, "rowRoute": "ZaakDetail" } }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "zt-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 6 },
 					{ "id": "2", "widgetId": "zt-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 6 },
-					{ "id": "3", "widgetId": "zt-zaken", "gridX": 0, "gridY": 6, "gridWidth": 12, "gridHeight": 5 },
-					{ "id": "4", "widgetId": "zt-audit", "gridX": 0, "gridY": 11, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "3", "widgetId": "zt-zaken", "gridX": 0, "gridY": 6, "gridWidth": 12, "gridHeight": 5 }
 				],
 				"summaryAggregates": [
 					{ "label": "Cases of this type", "register": "zaakafhandelapp", "schema": "zaak", "metric": "count", "filter": { "zaaktype": "@objectId" } }
@@ -862,7 +811,10 @@
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -906,19 +858,20 @@
 				"widgets": [
 					{ "id": "besluit-data", "type": "data", "title": "Decision details", "content": { "columns": 2 } },
 					{ "id": "besluit-related", "type": "related", "title": "Related" },
-					{ "id": "besluit-files", "type": "integration", "integrationId": "files", "title": "Decision document" },
-					{ "id": "besluit-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "besluit-files", "type": "integration", "integrationId": "files", "title": "Decision document" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "besluit-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 4 },
 					{ "id": "2", "widgetId": "besluit-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 },
-					{ "id": "3", "widgetId": "besluit-files", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 5 },
-					{ "id": "4", "widgetId": "besluit-audit", "gridX": 0, "gridY": 9, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "3", "widgetId": "besluit-files", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 5 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -954,19 +907,20 @@
 				"widgets": [
 					{ "id": "doc-files", "type": "integration", "integrationId": "files", "title": "Document" },
 					{ "id": "doc-data", "type": "data", "title": "Metadata", "content": { "columns": 1 } },
-					{ "id": "doc-related", "type": "related", "title": "Related" },
-					{ "id": "doc-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "doc-related", "type": "related", "title": "Related" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "doc-files", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 6 },
 					{ "id": "2", "widgetId": "doc-data", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 6 },
-					{ "id": "3", "widgetId": "doc-related", "gridX": 0, "gridY": 6, "gridWidth": 12, "gridHeight": 3 },
-					{ "id": "4", "widgetId": "doc-audit", "gridX": 0, "gridY": 9, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "3", "widgetId": "doc-related", "gridX": 0, "gridY": 6, "gridWidth": 12, "gridHeight": 3 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -1000,18 +954,19 @@
 				"_note": "OUTCOME archetype — the resultaat classifies how a case ended (resultaattype + toelichting) and feeds the archiving/selectielijst regime. The schema is intentionally thin, so the page is deliberately minimal: a data widget (resultaattype, toelichting) beside a Related panel that resolves the parent zaak. No child collections, no attachments to speak of, and NO comms linkedTypes — a result is a classification, so data + related is the right, honest layout rather than padding it with empty leaves.",
 				"widgets": [
 					{ "id": "res-data", "type": "data", "title": "Result details", "content": { "columns": 2 } },
-					{ "id": "res-related", "type": "related", "title": "Related" },
-					{ "id": "res-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "res-related", "type": "related", "title": "Related" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "res-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 4 },
-					{ "id": "2", "widgetId": "res-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 },
-					{ "id": "3", "widgetId": "res-audit", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "2", "widgetId": "res-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
@@ -1046,18 +1001,19 @@
 				"_note": "STATUS-EVENT archetype — a single entry in a case's status timeline (statustype, datum, statustoelichting). It is one immutable point in the zaak's history, so the page is intentionally minimal: a data widget showing the status entry beside a Related panel that resolves the parent zaak so the reader can jump back to the full timeline on the case. No children, no attachments, NO comms linkedTypes — padding a single timeline event with leaves would be dishonest, so data + related is exactly right.",
 				"widgets": [
 					{ "id": "status-data", "type": "data", "title": "Status entry", "content": { "columns": 2 } },
-					{ "id": "status-related", "type": "related", "title": "Related" },
-					{ "id": "status-audit", "type": "audit-trail", "title": "Audit trail" }
+					{ "id": "status-related", "type": "related", "title": "Related" }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "status-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 4 },
-					{ "id": "2", "widgetId": "status-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 },
-					{ "id": "3", "widgetId": "status-audit", "gridX": 0, "gridY": 4, "gridWidth": 12, "gridHeight": 4, "showTitle": false }
+					{ "id": "2", "widgetId": "status-related", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 }
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {
 					"enabled": true,
-					"showMetadata": true
+					"showMetadata": true,
+					"tabs": [
+						{ "id": "audit", "label": "History", "component": "CnAuditTrailTab" }
+					]
 				}
 			}
 		},
