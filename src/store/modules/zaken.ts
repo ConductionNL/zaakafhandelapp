@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { TZaak, Zaak } from '../../entities/index.js'
+import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/zaken'
 
@@ -14,17 +15,27 @@ export const useZaakStore = defineStore('zaken', {
 	state: () => ({
 		zaakItem: null,
 		zakenList: [],
+		auditTrailItem: null,
 	}),
 	actions: {
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZaakItem(zaakItem: Zaak | TZaak) {
 			this.zaakItem = zaakItem && new Zaak(zaakItem)
 			console.info('Active zaak item set to ' + zaakItem)
 		},
+		/**
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 */
 		setZakenList(zakenList: Zaak[] | TZaak[]) {
 			this.zakenList = zakenList.map(
 			    (zaakItem) => new Zaak(zaakItem),
 			)
 			console.info('Zaken list set to ' + zakenList.length + ' items')
+		},
+		setAuditTrailItem(auditTrailItem: unknown) {
+			this.auditTrailItem = auditTrailItem
 		},
 		/**
 		 * Refresh the list of zaken items.
@@ -120,6 +131,7 @@ export const useZaakStore = defineStore('zaken', {
 			}
 
 			this.refreshZakenList()
+			router.push({ name: 'Zaken' })
 
 			return { response }
 		},
@@ -140,13 +152,13 @@ export const useZaakStore = defineStore('zaken', {
 				throw new Error('No zaak item to save')
 			}
 
-			const isNewZaak = !zaakItem.uuid
+			const isNewZaak = !zaakItem.id
 			const endpoint = isNewZaak
 				? `${apiEndpoint}`
-				: `${apiEndpoint}/${zaakItem.uuid}`
+				: `${apiEndpoint}/${zaakItem.id}`
 			const method = isNewZaak ? 'POST' : 'PUT'
 
-			console.info('Saving zaak item with id: ' + zaakItem.uuid)
+			console.info('Saving zaak item with id: ' + zaakItem.id)
 
 			const response = await fetch(
 				endpoint,
@@ -169,6 +181,7 @@ export const useZaakStore = defineStore('zaken', {
 
 			options.setItem && this.setZaakItem(data)
 			this.refreshZakenList()
+			router.push({ name: 'ZaakDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

@@ -1,11 +1,14 @@
 <template>
-	<div>
-		<NcSettingsSection :name="'Zaak Afhandelapp'" description="Eén centrale plek voor zaakafhandeling binnen de overheid" doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers" />
-		<NcSettingsSection :name="'Data storage'" description="Korte uitleg over dat je kan opslaan in de nextcloud database of open registers en via open registers ook in externe opslag zo al mongo db">
+	<CnAdminSettingsShell
+		app-id="zaakafhandelapp"
+		app-name="Zaak afhandelapp"
+		doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers"
+		:show-reimport="false">
+		<NcSettingsSection :name="t('zaakafhandelapp', 'Data storage')" :description="t('zaakafhandelapp', 'Configure where data is stored: in the Nextcloud database or open registers, including external storage like mongodb')">
 			<div v-if="!loading">
 				<div v-if="!openRegisterInstalled">
 					<NcNoteCard type="info">
-						Je hebt nog geen Open Registers geïnstalleerd, we raden je aan om dat wel te doen.
+						{{ t('zaakafhandelapp', 'You have not yet installed open registers, we recommend that you do so.') }}
 					</NcNoteCard>
 
 					<NcButton
@@ -15,13 +18,13 @@
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
 							<Restart v-if="!loading && !saving" :size="20" />
 						</template>
-						Installeer Open Registers
+						{{ t('zaakafhandelapp', 'Install open registers') }}
 					</NcButton>
 				</div>
 
-				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister')">
+				<div v-if="!openRegisterInstalled && (settingsData.berichten_source === 'openregister' || settingsData.besluiten_source === 'openregister' || settingsData.documenten_source === 'openregister' || settingsData.klanten_source === 'openregister' || settingsData.resultaten_source === 'openregister' || settingsData.taken_source === 'openregister' || settingsData.informatieobjecten_source === 'openregister' || settingsData.organisaties_source === 'openregister' || settingsData.personen_source === 'openregister' || settingsData.zaken_source === 'openregister' || settingsData.contactmomenten_source === 'openregister' || settingsData.medewerkers_source === 'openregister' || settingsData.rollen_source === 'openregister')">
 					<NcNoteCard type="warning">
-						Het lijkt erop dat je een open register hebt geselecteerd maar dat deze nog niet geïnstalleerd is. Dit kan problemen geven. Wil je de instelling resetten?
+						{{ t('zaakafhandelapp', 'It looks like you have selected an open register but it is not yet installed. this may cause problems. would you like to reset the setting?') }}
 					</NcNoteCard>
 					<NcButton
 						type="primary"
@@ -30,35 +33,35 @@
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
 							<Restart v-if="!loading && !saving" :size="20" />
 						</template>
-						Reset
+						{{ t('zaakafhandelapp', 'Reset') }}
 					</NcButton>
 				</div>
 
-				<div v-for="objectType in objectTypesList" :key="objectType.id">
+				<div v-for="objectType in translatedObjectTypesList" :key="objectType.id">
 					<h3>{{ objectType.title }}</h3>
 					<p>{{ objectType.description }}</p>
 					<NcButton v-if="objectType.helpLink" @click="openLink(objectType.helpLink, '_blank')">
-						Meer informatie
+						{{ t('zaakafhandelapp', 'More information') }}
 					</NcButton>
 					<div class="selectionContainer">
 						<NcSelect v-bind="labelOptions"
 							v-model="getDataProperty(objectType.id).selectedSource"
 							required
-							input-label="Source"
+							:input-label="t('zaakafhandelapp', 'Source')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister'"
 							v-bind="availableRegistersOptions"
 							v-model="getDataProperty(objectType.id).selectedRegister"
-							input-label="Register"
+							:input-label="t('zaakafhandelapp', 'Register')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcSelect v-if="getDataProperty(objectType.id).selectedSource?.value === 'openregister' && getDataProperty(objectType.id).selectedRegister?.value"
 							v-bind="getDataProperty(objectType.id).availableSchemas"
 							v-model="getDataProperty(objectType.id).selectedSchema"
-							input-label="Schema"
+							:input-label="t('zaakafhandelapp', 'Schema')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
@@ -70,7 +73,7 @@
 								<NcLoadingIcon v-if="loading || getDataProperty(objectType.id).loading" :size="20" />
 								<Plus v-if="!loading && !getDataProperty(objectType.id).loading" :size="20" />
 							</template>
-							Opslaan
+							{{ t('zaakafhandelapp', 'Save') }}
 						</NcButton>
 					</div>
 				</div>
@@ -82,27 +85,30 @@
 						<NcLoadingIcon v-if="saving" :size="20" />
 						<Plus v-if="!saving" :size="20" />
 					</template>
-					Alles opslaan
+					{{ t('zaakafhandelapp', 'Save all') }}
 				</NcButton>
 			</div>
 			<NcLoadingIcon v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
-				name="Settings aan het laden" />
+				:name="t('zaakafhandelapp', 'Loading settings')" />
 		</NcSettingsSection>
-	</div>
+	</CnAdminSettingsShell>
 </template>
 
 <script>
 // Components
 import { NcSettingsSection, NcNoteCard, NcSelect, NcButton, NcLoadingIcon } from '@nextcloud/vue'
+import { CnAdminSettingsShell } from '@conduction/nextcloud-vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Restart from 'vue-material-design-icons/Restart.vue'
+import { translate as t, translatePlural as n } from '@nextcloud/l10n'
 
 export default {
 	name: 'Settings',
 	components: {
+		CnAdminSettingsShell,
 		NcSettingsSection,
 		NcNoteCard,
 		NcSelect,
@@ -205,32 +211,60 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+			medewerkers: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
+			rollen: {
+				selectedSource: '',
+				selectedRegister: '',
+				selectedSchema: '',
+				availableSchemas: [],
+				loading: false,
+			},
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
 					{ label: 'OpenRegister', value: 'openregister' },
 				],
 			},
-			objectTypesList: [
-				{ id: 'berichten', title: 'Berichten', description: 'Configureer de opslag voor berichten', helpLink: 'https://example.com/help/berichten' },
-				{ id: 'besluiten', title: 'Besluiten', description: 'Configureer de opslag voor besluiten', helpLink: 'https://example.com/help/besluiten' },
-				{ id: 'documenten', title: 'Documenten', description: 'Configureer de opslag voor documenten', helpLink: 'https://example.com/help/documenten' },
-				{ id: 'klanten', title: 'Klanten', description: 'Configureer de opslag voor klantgegevens', helpLink: 'https://example.com/help/klanten' },
-				{ id: 'resultaten', title: 'Resultaten', description: 'Configureer de opslag voor resultaten', helpLink: 'https://example.com/help/resultaten' },
-				{ id: 'taken', title: 'Taken', description: 'Configureer de opslag voor taken', helpLink: 'https://example.com/help/taken' },
-				{ id: 'informatieobjecten', title: 'Informatieobjecten', description: 'Configureer de opslag voor informatieobjecten', helpLink: 'https://example.com/help/informatieobjecten' },
-				{ id: 'organisaties', title: 'Organisaties', description: 'Configureer de opslag voor organisatiegegevens', helpLink: 'https://example.com/help/organisaties' },
-				{ id: 'personen', title: 'Personen', description: 'Configureer de opslag voor persoonsgegevens', helpLink: 'https://example.com/help/personen' },
-				{ id: 'zaken', title: 'Zaken', description: 'Configureer de opslag voor zaken', helpLink: 'https://example.com/help/zaken' },
-				{ id: 'zaaktypen', title: 'Zaaktypen', description: 'Configureer de opslag voor zaaktypen', helpLink: 'https://example.com/help/zaaktypen' },
-				{ id: 'contactmomenten', title: 'Contactmomenten', description: 'Configureer de opslag voor contactmomenten', helpLink: 'https://example.com/help/contactmomenten' },
-			],
+			objectTypesList: [],
 		}
+	},
+
+	computed: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
+		translatedObjectTypesList() {
+			return [
+				{ id: 'berichten', title: t('zaakafhandelapp', 'Messages'), description: t('zaakafhandelapp', 'Configure storage for messages'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'besluiten', title: t('zaakafhandelapp', 'Decisions'), description: t('zaakafhandelapp', 'Configure storage for decisions'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'documenten', title: t('zaakafhandelapp', 'Documents'), description: t('zaakafhandelapp', 'Configure storage for documents'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'klanten', title: t('zaakafhandelapp', 'Customers'), description: t('zaakafhandelapp', 'Configure storage for customer data'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'resultaten', title: t('zaakafhandelapp', 'Results'), description: t('zaakafhandelapp', 'Configure storage for results'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'taken', title: t('zaakafhandelapp', 'Tasks'), description: t('zaakafhandelapp', 'Configure storage for tasks'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'informatieobjecten', title: t('zaakafhandelapp', 'Information objects'), description: t('zaakafhandelapp', 'Configure storage for information objects'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'organisaties', title: t('zaakafhandelapp', 'Organisations'), description: t('zaakafhandelapp', 'Configure storage for organisation data'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'personen', title: t('zaakafhandelapp', 'Persons'), description: t('zaakafhandelapp', 'Configure storage for person data'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'zaken', title: t('zaakafhandelapp', 'Cases'), description: t('zaakafhandelapp', 'Configure storage for cases'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'zaaktypen', title: t('zaakafhandelapp', 'Case types'), description: t('zaakafhandelapp', 'Configure storage for case types'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'contactmomenten', title: t('zaakafhandelapp', 'Contact moments'), description: t('zaakafhandelapp', 'Configure storage for contact moments'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'medewerkers', title: t('zaakafhandelapp', 'Employees'), description: t('zaakafhandelapp', 'Configure storage for employees'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+				{ id: 'rollen', title: t('zaakafhandelapp', 'Roles'), description: t('zaakafhandelapp', 'Configure storage for roles'), helpLink: 'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers' },
+			]
+		},
 	},
 
 	watch: {
 
 		'berichten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -241,6 +275,9 @@ export default {
 			deep: true,
 		},
 		'berichten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -252,6 +289,9 @@ export default {
 			deep: true,
 		},
 		'besluiten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -262,6 +302,9 @@ export default {
 			deep: true,
 		},
 		'besluiten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -273,6 +316,9 @@ export default {
 			deep: true,
 		},
 		'documenten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -283,6 +329,9 @@ export default {
 			deep: true,
 		},
 		'documenten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -294,6 +343,9 @@ export default {
 			deep: true,
 		},
 		'klanten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -304,6 +356,9 @@ export default {
 			deep: true,
 		},
 		'klanten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -315,6 +370,9 @@ export default {
 			deep: true,
 		},
 		'resultaten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -325,6 +383,9 @@ export default {
 			deep: true,
 		},
 		'resultaten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -336,6 +397,9 @@ export default {
 			deep: true,
 		},
 		'taken.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -346,6 +410,9 @@ export default {
 			deep: true,
 		},
 		'taken.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -357,6 +424,9 @@ export default {
 			deep: true,
 		},
 		'informatieobjecten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -367,6 +437,9 @@ export default {
 			deep: true,
 		},
 		'informatieobjecten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -378,6 +451,9 @@ export default {
 			deep: true,
 		},
 		'organisaties.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -388,6 +464,9 @@ export default {
 			deep: true,
 		},
 		'organisaties.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -399,6 +478,9 @@ export default {
 			deep: true,
 		},
 		'personen.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -409,6 +491,9 @@ export default {
 			deep: true,
 		},
 		'personen.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -420,6 +505,9 @@ export default {
 			deep: true,
 		},
 		'zaken.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -430,6 +518,9 @@ export default {
 			deep: true,
 		},
 		'zaken.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -440,7 +531,37 @@ export default {
 			},
 			deep: true,
 		},
+		'zaaktypen.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.zaaktypen.selectedRegister = ''
+					this.zaaktypen.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'zaaktypen.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'zaaktypen')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.zaaktypen.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
 		'contactmomenten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -451,6 +572,9 @@ export default {
 			deep: true,
 		},
 		'contactmomenten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -461,16 +585,73 @@ export default {
 			},
 			deep: true,
 		},
+		'medewerkers.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+
+					this.medewerkers.selectedRegister = ''
+					this.medewerkers.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'medewerkers.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
+			handler(newValue, oldValue) {
+
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'medewerkers')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.medewerkers.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
+		'rollen.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
+			handler(newValue) {
+				if (newValue?.value === 'internal') {
+					this.rollen.selectedRegister = ''
+					this.rollen.selectedSchema = ''
+				}
+			},
+			deep: true,
+		},
+		'rollen.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
+			handler(newValue, oldValue) {
+				if (this.initialization === true && oldValue === '') return
+				if (newValue) {
+					this.setRegisterSchemaOptions(newValue?.value, 'rollen')
+					oldValue !== '' && newValue?.value !== oldValue.value && (this.rollen.selectedSchema = '')
+				}
+			},
+			deep: true,
+		},
 
 	},
 	mounted() {
 		this.fetchAll()
 	},
 	methods: {
+		t,
+		n,
 		getDataProperty(name) {
 			return this[name]
 
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		setRegisterSchemaOptions(registerId, property) {
 			const selectedRegister = this.availableRegisters.find((register) => register.id.toString() === registerId)
 
@@ -481,6 +662,9 @@ export default {
 				})),
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchAll() {
 			this.loading = true
 
@@ -528,6 +712,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		saveConfig(configId) {
 			this[configId].loading = true
 			this.saving = true
@@ -573,6 +760,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 
 		saveAll() {
 			this.saving = true
@@ -623,9 +813,18 @@ export default {
 						zaken_register: this.zaken.selectedRegister?.value ?? '',
 						zaken_schema: this.zaken.selectedSchema?.value ?? '',
 						zaken_source: this.zaken.selectedSource?.value ?? 'internal',
+						zaaktypen_register: this.zaaktypen.selectedRegister?.value ?? '',
+						zaaktypen_schema: this.zaaktypen.selectedSchema?.value ?? '',
+						zaaktypen_source: this.zaaktypen.selectedSource?.value ?? 'internal',
 						contactmomenten_register: this.contactmomenten.selectedRegister?.value ?? '',
 						contactmomenten_schema: this.contactmomenten.selectedSchema?.value ?? '',
 						contactmomenten_source: this.contactmomenten.selectedSource?.value ?? 'internal',
+						medewerkers_register: this.medewerkers.selectedRegister?.value ?? '',
+						medewerkers_schema: this.medewerkers.selectedSchema?.value ?? '',
+						medewerkers_source: this.medewerkers.selectedSource?.value ?? 'internal',
+						rollen_register: this.rollen.selectedRegister?.value ?? '',
+						rollen_schema: this.rollen.selectedSchema?.value ?? '',
+						rollen_source: this.rollen.selectedSource?.value ?? 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -670,9 +869,18 @@ export default {
 							zaken_register: data.zaken_register,
 							zaken_schema: data.zaken_schema,
 							zaken_source: data.zaken_source,
+							zaaktypen_register: data.zaaktypen_register,
+							zaaktypen_schema: data.zaaktypen_schema,
+							zaaktypen_source: data.zaaktypen_source,
 							contactmomenten_register: data.contactmomenten_register,
 							contactmomenten_schema: data.contactmomenten_schema,
 							contactmomenten_source: data.contactmomenten_source,
+							medewerkers_register: data.medewerkers_register,
+							medewerkers_schema: data.medewerkers_schema,
+							medewerkers_source: data.medewerkers_source,
+							rollen_register: data.rollen_register,
+							rollen_schema: data.rollen_schema,
+							rollen_source: data.rollen_source,
 						}
 
 					})
@@ -686,6 +894,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 
 		resetConfig() {
 			this.saving = true
@@ -696,7 +907,7 @@ export default {
 			delete settingsDataCopy.openRegisters
 			delete settingsDataCopy.availableRegisters
 
-			fetch('/index.php/apps/opencatalogi/settings',
+			fetch('/index.php/apps/zaakafhandelapp/settings',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -731,9 +942,18 @@ export default {
 						zaken_register: '',
 						zaken_schema: '',
 						zaken_source: 'internal',
+						zaaktypen_register: '',
+						zaaktypen_schema: '',
+						zaaktypen_source: 'internal',
 						contactmomenten_register: '',
 						contactmomenten_schema: '',
 						contactmomenten_source: 'internal',
+						medewerkers_register: '',
+						medewerkers_schema: '',
+						medewerkers_source: 'internal',
+						rollen_register: '',
+						rollen_schema: '',
+						rollen_source: 'internal',
 					}),
 					headers: {
 						'Content-Type': 'application/json',
@@ -752,6 +972,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
+		 */
 		openLink(url, type = '') {
 			window.open(url, type)
 		},
