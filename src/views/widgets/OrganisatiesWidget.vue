@@ -5,38 +5,50 @@ import { klantStore, navigationStore } from '../../store/store.js'
 
 <template>
 	<div class="openZakenContainer">
-		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
-				:loading="loading"
-				:item-menu="itemMenu"
-				@show="onShow">
-				<template #empty-content>
-					<NcEmptyContent :name="t('zaakafhandelapp', 'No organisations found')">
+		<CnDataTable :rows="items"
+			:columns="columns"
+			:loading="loading"
+			hide-header
+			borderless
+			row-icon="OfficeBuildingOutline"
+			:empty-text="t('zaakafhandelapp', 'No organisations found')"
+			@row-click="onShow">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No organisations found')">
+					<template #icon>
+						<OfficeBuildingOutline />
+					</template>
+				</NcEmptyContent>
+			</template>
+			<template #row-actions="{ row }">
+				<NcActions>
+					<NcActionButton icon="icon-toggle"
+						close-after-click
+						@click="onShow(row)">
+						{{ t('zaakafhandelapp', 'View') }}
+					</NcActionButton>
+				</NcActions>
+			</template>
+			<template #footer>
+				<div class="searchContainer">
+					<NcTextField :disabled="loading"
+						:label="t('zaakafhandelapp', 'Search by company name')"
+						maxlength="255"
+						class="OrgSearchField"
+						:value.sync="searchOrganisatie" />
+
+					<NcButton type="primary"
+						:disabled="loading"
+						class="searchButton"
+						@click="search">
 						<template #icon>
-							<OfficeBuildingOutline />
+							<Search :size="20" />
 						</template>
-					</NcEmptyContent>
-				</template>
-			</NcDashboardWidget>
-		</div>
-
-		<div class="searchContainer">
-			<NcTextField :disabled="loading"
-				:label="t('zaakafhandelapp', 'Search by company name')"
-				maxlength="255"
-				class="OrgSearchField"
-				:value.sync="searchOrganisatie" />
-
-			<NcButton type="primary"
-				:disabled="loading"
-				class="searchButton"
-				@click="search">
-				<template #icon>
-					<Search :size="20" />
-				</template>
-				{{ t('zaakafhandelapp', 'Search') }}
-			</NcButton>
-		</div>
+						{{ t('zaakafhandelapp', 'Search') }}
+					</NcButton>
+				</div>
+			</template>
+		</CnDataTable>
 
 		<ViewKlant v-if="isModalOpen"
 			:dashboard-widget="true"
@@ -48,19 +60,22 @@ import { klantStore, navigationStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton, NcTextField } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcEmptyContent, NcButton, NcTextField, NcActions, NcActionButton } from '@nextcloud/vue'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
+import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
 	name: 'OrganisatiesWidget',
 
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
+		NcActions,
+		NcActionButton,
 		Search,
 		NcTextField,
 		OfficeBuildingOutline,
@@ -74,6 +89,7 @@ export default {
 			organisatieItems: [],
 			searchOrganisatie: '',
 			selectedKlantId: '',
+			columns: WIDGET_COLUMNS,
 		}
 	},
 
@@ -83,17 +99,6 @@ export default {
 		 */
 		items() {
 			return this.organisatieItems
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		itemMenu() {
-			return {
-				show: {
-					text: t('zaakafhandelapp', 'View'),
-					icon: 'icon-toggle',
-				},
-			}
 		},
 	},
 
@@ -113,7 +118,6 @@ export default {
 						id: organisatie.id,
 						mainText: organisatie.bedrijfsnaam,
 						subText: organisatie.websiteUrl,
-						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
@@ -130,27 +134,12 @@ export default {
 						id: organisatie.id,
 						mainText: organisatie.bedrijfsnaam,
 						subText: organisatie.websiteUrl,
-						avatarUrl: this.getItemIcon(),
 					}))
 					this.loading = false
 				})
 				.finally(() => {
 					this.loading = false
 				})
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/office-building-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/office-building-outline.svg`
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
@@ -173,13 +162,14 @@ export default {
     flex-direction: column;
     height: 100%;
 }
-.itemContainer{
+.openZakenContainer > .cn-table-container {
    overflow: auto;
 }
 .searchContainer {
 	display: flex;
 	align-items: end;
 	gap: 10px;
+	flex: 1;
 }
 .OrgSearchField {
 	width: auto;

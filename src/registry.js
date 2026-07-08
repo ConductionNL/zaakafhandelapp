@@ -37,13 +37,10 @@ import AuditTrailView from './views/audit/AuditTrailView.vue'
 
 import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
 
-// ── kind: "widget" (shared detail-page audit-trail card) ────────────────────
-// Registered under the manifest `audit-trail` widget key so CnWidgetGrid /
-// CnDetailPage resolve it (ADR-036 registry). Thin adapter over the library's
-// CnAuditTrailCard that reads the current object from whichever render path
-// is active (see AuditTrailWidget.vue).
-
-import AuditTrailWidget from './components/widgets/AuditTrailWidget.vue'
+// NOTE: the `audit-trail` widget key is a library built-in (CnAuditTrailWidget).
+// The former app-local adapter registry entry was removed in ADR-049 Phase-4 —
+// CnDetailPage resolves manifest `type: "audit-trail"` widgets against the lib
+// built-in, which self-fetches from the detail object-context merge.
 
 // ── kind: "widget" ─────────────────────────────────────────────────────────
 // Settings section body component (type:"settings" sections[].component)
@@ -58,7 +55,6 @@ import SettingsForm from './views/settings/Settings.vue'
 import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
 import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
 import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
-import ZaakBesluitenTab from './components/tabs/ZaakBesluitenTab.vue'
 import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
 import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
 import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
@@ -91,21 +87,6 @@ export default {
 		propsSchema: {},
 	},
 
-	// ── kind: "widget" (shared detail-page audit-trail card) ────────────────
-	// Resolved by CnWidgetGrid / CnDetailPage via the manifest `audit-trail`
-	// widget key. Self-fetches from the detail object context
-	// (register/schema/objectId) — see AuditTrailWidget.vue.
-	'audit-trail': {
-		kind: 'widget',
-		component: AuditTrailWidget,
-		defaultSize: { w: 6, h: 4 },
-		minSize: { w: 3, h: 2 },
-		maxSize: { w: 12, h: 6 },
-		allowedSlots: ['body', 'sidebar'],
-		propsSchema: {},
-		_note: 'Object change-log card — self-fetches from the detail object context (register/schema/objectId).',
-	},
-
 	// ── kind: "widget" (settings section) ──────────────────────────────────
 	SettingsForm: {
 		kind: 'widget',
@@ -113,39 +94,41 @@ export default {
 	},
 
 	// ── kind: "widget" (ZaakDetail sidebar tabs — ZGW-API relations) ────────
+	// ADR-049 Phase-4 dissolution (updated for nextcloud-vue #89): the besluiten
+	// tab was DISSOLVED to a built-in object-table sidebar-tab widget (see
+	// src/manifest.json ZaakDetail config.sidebarTabs[id=besluiten].widgets) —
+	// its former component entry is gone. The remaining SIX stay component STUBS
+	// for ENDPOINT reasons (their ZGW list controllers drop the ?zaak filter, or
+	// the relation is unverified), NOT a renderer gap. Per-tab endpoint reality
+	// below.
 	ZaakTakenTab: {
 		kind: 'widget',
 		component: ZaakTakenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related taken via ZGW-API taak endpoint filtered by zaakUrl, not OR',
+		_note: 'STUB — parent-zaak taken already render in the detail body (widget zaak-taken). api/taken forwards ?zaak=@objectId (OR). Not dissolved: no object-table sidebar-tab renderer.',
 	},
 	ZaakRollenTab: {
 		kind: 'widget',
 		component: ZaakRollenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related rollen via ZGW-API rol endpoint filtered by zaakUrl, not OR',
+		_note: 'STUB — ZGW api/zrc/rollen exists but RollenController::index forwards no query (zaak filter dropped); OR api/objects/rollen?zaak=@objectId is reachable (rol.zaak=@objectId proven by the Roles summaryAggregate). Not dissolved: no object-table sidebar-tab renderer.',
 	},
 	ZaakDocumentenTab: {
 		kind: 'widget',
 		component: ZaakDocumentenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related zaakinformatieobjecten via ZGW-API endpoint filtered by zaakUrl, not OR',
-	},
-	ZaakBesluitenTab: {
-		kind: 'widget',
-		component: ZaakBesluitenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related besluiten via ZGW-API besluit endpoint filtered by zaakUrl, not OR',
+		_note: 'STUB — ZGW api/zrc/zaakinformatieobjecten exists but index() forwards no query (zaak filter dropped); documents already render in the detail body (widget zaak-documenten). Not dissolved: no object-table sidebar-tab renderer.',
 	},
 	ZaakBerichtenTab: {
 		kind: 'widget',
 		component: ZaakBerichtenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related berichten via ZGW-API klantcontact endpoint filtered by zaakUrl, not OR',
+		_note: 'STUB — api/berichten (OR, forwards params) is reachable but bericht.zaak is UNVERIFIED (relation runs via klantcontact; schema seeded externally). Endpoint-not-built for a zaak filter; also no object-table sidebar-tab renderer.',
 	},
 	ZaakResultatenTab: {
 		kind: 'widget',
 		component: ZaakResultatenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related resultaten via ZGW-API resultaat endpoint filtered by zaakUrl, not OR',
+		_note: 'STUB — ZGW api/zrc/resultaten exists but index() forwards no query (zaak filter dropped); results already render in the detail body (widget zaak-resultaten). Not dissolved: no object-table sidebar-tab renderer.',
 	},
 	ZaakStatussenTab: {
 		kind: 'widget',
 		component: ZaakStatussenTab,
-		_note: 'Hybrid ZGW-API data path; fetches related statussen via ZGW-API status endpoint filtered by zaakUrl, not OR',
+		_note: 'STUB — ZGW api/zrc/statussen exists but index() forwards no query (zaak filter dropped); status.zaak unverified. Endpoint-not-built for a zaak filter; also no object-table sidebar-tab renderer.',
 	},
 }

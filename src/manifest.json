@@ -396,7 +396,7 @@
 			"config": {
 				"register": "zaakafhandelapp",
 				"schema": "zaak",
-				"_note": "CASE archetype — the operational heart of zaakgericht werken. ADR-062 rev3: the lead row splits the zaak into two field-scoped data widgets — 'Case identity' (identificatie/omschrijving/zaaktype/klant/verantwoordelijke org) and 'Process & planning' (archiefstatus/start-eind dates/uiterlijkeEinddatumAfdoening/betalingsindicatie) — 8-wide, with the KPI stats-block (open tasks/documents/decisions/roles, @objectId-scoped) and Related panel stacked 4-wide top-right. Below sit every child collection FK-scoped by zaak=@objectId: Tasks (taak.zaak), Documents (document.zaak), Decisions (besluit.zaak), Results (resultaat.zaak), Parties involved (rol.zaak), each keeping create ON (genuinely user-created children, pre-linked to this zaak) with viewAllRoute to its index, then a Files leaf. NOTE: zaak has NO OR 'status' field (status timeline is ZGW-API-only) so it is not shown as a column. The zaak schema declares NO email/calendar/talk linkedTypes → no comms leaves; audit history stays in the sidebar tab only. statussen (no OR status FK) and berichten (bericht carries no zaak FK) remain the nc-vue wish-list gap for a hybrid ZGW-API data source.",
+				"_note": "CASE archetype — the operational heart of zaakgericht werken. ADR-062 rev3: the lead row splits the zaak into two field-scoped data widgets — 'Case identity' (identificatie/omschrijving/zaaktype/klant/verantwoordelijke org) and 'Process & planning' (archiefstatus/start-eind dates/uiterlijkeEinddatumAfdoening/betalingsindicatie) — 8-wide, with the KPI stats-block (open tasks/documents/decisions/roles, @objectId-scoped) and Related panel stacked 4-wide top-right. Below sit every child collection FK-scoped by zaak=@objectId: Tasks (taak.zaak), Documents (document.zaak), Decisions (besluit.zaak), Results (resultaat.zaak), Parties involved (rol.zaak), each keeping create ON (genuinely user-created children, pre-linked to this zaak) with viewAllRoute to its index, then a Files leaf. NOTE: zaak has NO OR 'status' field (status timeline is ZGW-API-only) so it is not shown as a column. The zaak schema declares NO email/calendar/talk linkedTypes → no comms leaves; audit history stays in the sidebar tab only. ADR-049 Phase-4 (nextcloud-vue #89) sidebar work is PRESERVED from development: besluiten renders as a LIVE object-table sidebar tab off the parent-zaak-filtered ZGW endpoint, and six legacy component-stub tabs stay with their endpoint-reason _notes; statussen/berichten remain the hybrid ZGW-API data-source wish-list gap.",
 				"widgets": [
 					{ "id": "zaak-data", "type": "data", "title": "Case identity", "icon": "Gavel", "content": { "columns": 2, "include": [ "identificatie", "omschrijving", "toelichting", "zaaktype", "klant", "bronorganisatie", "verantwoordelijkeOrganisatie", "registratiedatum" ] } },
 					{ "id": "zaak-proces", "type": "data", "title": "Process & planning", "icon": "Timeline", "content": { "columns": 2, "include": [ "archiefstatus", "startdatum", "einddatumGepland", "uiterlijkeEinddatumAfdoening", "einddatum", "publicatiedatum", "communicatiekanaal", "betalingsindicatie", "selectielijstklasse" ] } },
@@ -420,6 +420,81 @@
 					{ "id": "8", "widgetId": "zaak-resultaten", "gridX": 6, "gridY": 15, "gridWidth": 6, "gridHeight": 3 },
 					{ "id": "9", "widgetId": "zaak-rollen", "gridX": 0, "gridY": 18, "gridWidth": 12, "gridHeight": 3 },
 					{ "id": "10", "widgetId": "zaak-files", "gridX": 0, "gridY": 21, "gridWidth": 12, "gridHeight": 4 }
+				],
+				"sidebarTabs": [
+					{
+						"id": "taken",
+						"label": "Tasks",
+						"icon": "icon-checkmark",
+						"component": "ZaakTakenTab",
+						"order": 20,
+						"_note": "STUB (ADR-049 Phase-4): parent-zaak taken already render in the detail body (widget zaak-taken). api/taken (TakenController->objectService) forwards ?zaak=@objectId (taak.zaak=@objectId proven by the body list). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
+					},
+					{
+						"id": "rollen",
+						"label": "Roles",
+						"icon": "icon-user-admin",
+						"component": "ZaakRollenTab",
+						"order": 30,
+						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/rollen exists but RollenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped. OR api/objects/rollen?zaak=@objectId IS reachable (rol.zaak=@objectId proven by the Roles summaryAggregate). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
+					},
+					{
+						"id": "documenten",
+						"label": "Documents",
+						"icon": "icon-files",
+						"component": "ZaakDocumentenTab",
+						"order": 40,
+						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/zaakinformatieobjecten exists but ZaakInformatieObjectenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped. Parent-zaak documents already render in the detail body (widget zaak-documenten). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
+					},
+					{
+						"id": "besluiten",
+						"label": "Decisions",
+						"icon": "icon-checkmark",
+						"order": 50,
+						"widgets": [
+							{
+								"type": "object-table",
+								"props": {
+									"widgetId": "zaak-besluiten-tab",
+									"title": "Decisions",
+									"endpointSource": {
+										"url": "/apps/zaakafhandelapp/api/zrc/zaken/@objectId/besluiten",
+										"responsePath": "results"
+									},
+									"columns": [
+										{ "key": "besluit", "label": "Decision" },
+										{ "key": "url", "label": "Reference" }
+									],
+									"emptyText": "No decisions are linked to this case yet."
+								}
+							}
+						],
+						"_note": "LIVE (ADR-049 Phase-4; nextcloud-vue #89 — CnObjectSidebar object-table tab widget): the ONE relation with a real parent-zaak-filtered endpoint — GET api/zrc/zaken/{zaakUuid}/besluiten (ZaakBesluitenController::index → {results:[{url,uuid,zaak,besluit}]}, zaakUuid=@objectId=the zaak OR id). CnObjectSidebar resolves widgets[].type:'object-table' to CnWidgetObjectTable and provides cnObjectContext {objectId,...}, so @objectId interpolates into the endpointSource.url PATH (useEndpointSource.interpolateUrlTokens); responsePath 'results' plucks the array. Columns mirror the zaakbesluit RELATION payload (besluit reference + relation url): the endpoint returns the relation, not the full besluit resource, so identificatie/besluittype/datum are NOT available here, and NO rowRoute is set — the relation payload carries no besluit id at row.id/@self.id and its 'besluit' field is a bare reference, so a row-click could not resolve a BesluitDetail target."
+					},
+					{
+						"id": "berichten",
+						"label": "Messages",
+						"icon": "icon-mail",
+						"component": "ZaakBerichtenTab",
+						"order": 60,
+						"_note": "STUB (ADR-049 Phase-4): api/berichten (BerichtenController->objectService) forwards request params but a bericht.zaak field is UNVERIFIED — the schema is seeded externally (not in-repo), bericht is absent from the body/summaryAggregates, and this relation runs through klantcontact, not a direct zaak field. Endpoint-not-built for a parent-zaak filter; also no object-table sidebar-tab renderer in w3 CnObjectSidebar."
+					},
+					{
+						"id": "resultaten",
+						"label": "Results",
+						"icon": "icon-checkmark",
+						"component": "ZaakResultatenTab",
+						"order": 70,
+						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/resultaten exists but ResultatenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped. Parent-zaak results already render in the detail body (widget zaak-resultaten). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
+					},
+					{
+						"id": "statussen",
+						"label": "Statuses",
+						"icon": "icon-history",
+						"component": "ZaakStatussenTab",
+						"order": 80,
+						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/statussen exists but StatusenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped; a status.zaak field is also unverified (status absent from body/summaryAggregates). Endpoint-not-built for a parent-zaak filter; also no object-table sidebar-tab renderer in w3 CnObjectSidebar."
+					}
 				],
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"sidebar": {

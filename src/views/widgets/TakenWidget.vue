@@ -5,37 +5,57 @@ import { taakStore, navigationStore } from '../../store/store.js'
 
 <template>
 	<div class="takenContainer">
-		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
-				:loading="loading"
-				:item-menu="itemMenu"
-				@show="onShow"
-				@statusClose="onCloseStatus"
-				@statusHandled="onHandledStatus">
-				<template #empty-content>
-					<NcEmptyContent :name="t('zaakafhandelapp', 'No open tasks')">
+		<CnDataTable :rows="items"
+			:columns="columns"
+			:loading="loading"
+			hide-header
+			borderless
+			row-icon="CalendarMonthOutline"
+			:empty-text="t('zaakafhandelapp', 'No open tasks')"
+			@row-click="onShow">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No open tasks')">
+					<template #icon>
+						<Folder />
+					</template>
+				</NcEmptyContent>
+			</template>
+			<template #row-actions="{ row }">
+				<NcActions>
+					<NcActionButton icon="icon-toggle"
+						close-after-click
+						@click="onShow(row)">
+						{{ t('zaakafhandelapp', 'View') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconProgressClose"
+						close-after-click
+						@click="onCloseStatus(row)">
+						{{ t('zaakafhandelapp', 'Close') }}
+					</NcActionButton>
+					<NcActionButton :icon="iconCalendarCheckOutline"
+						close-after-click
+						@click="onHandledStatus(row)">
+						{{ t('zaakafhandelapp', 'Complete task') }}
+					</NcActionButton>
+				</NcActions>
+			</template>
+			<template #footer>
+				<div class="buttonContainer">
+					<NcButton type="primary" @click="openModal">
 						<template #icon>
-							<Folder />
+							<Plus :size="20" />
 						</template>
-					</NcEmptyContent>
-				</template>
-			</NcDashboardWidget>
-		</div>
-
-		<div class="buttonContainer">
-			<NcButton type="primary" @click="openModal">
-				<template #icon>
-					<Plus :size="20" />
-				</template>
-				{{ t('zaakafhandelapp', 'Create task') }}
-			</NcButton>
-			<NcButton type="primary" @click="fetchTaakItems">
-				<template #icon>
-					<Refresh :size="20" />
-				</template>
-				{{ t('zaakafhandelapp', 'Refresh') }}
-			</NcButton>
-		</div>
+						{{ t('zaakafhandelapp', 'Create task') }}
+					</NcButton>
+					<NcButton type="primary" @click="fetchTaakItems">
+						<template #icon>
+							<Refresh :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Refresh') }}
+					</NcButton>
+				</div>
+			</template>
+		</CnDataTable>
 
 		<EditTaakForm v-if="isModalOpen"
 			:dashboard-widget="true"
@@ -47,8 +67,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
 
 // Entities
 import { Taak } from '../../entities/index.js'
@@ -60,15 +80,20 @@ import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
 	name: 'TakenWidget',
 
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
+		NcActions,
+		NcActionButton,
 		Plus,
+		Folder,
+		Refresh,
 		EditTaakForm: EditTaak,
 	},
 
@@ -77,7 +102,11 @@ export default {
 			loading: false,
 			isModalOpen: false,
 			taakItems: [],
+			taakId: null,
 			userEmail: null,
+			columns: WIDGET_COLUMNS,
+			iconProgressClose,
+			iconCalendarCheckOutline,
 		}
 	},
 
@@ -87,25 +116,6 @@ export default {
 		 */
 		items() {
 			return this.taakItems
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		itemMenu() {
-			return {
-				show: {
-					text: t('zaakafhandelapp', 'View'),
-					icon: 'icon-toggle',
-				},
-				statusClose: {
-					text: t('zaakafhandelapp', 'Close'),
-					icon: iconProgressClose,
-				},
-				statusHandled: {
-					text: t('zaakafhandelapp', 'Complete task'),
-					icon: iconCalendarCheckOutline,
-				},
-			}
 		},
 	},
 
@@ -158,25 +168,10 @@ export default {
 						id: taak.id,
 						mainText: taak.title,
 						subText: `${taak.deadline ? new Date(taak.deadline).toLocaleDateString() : ''} ${taak.deadline && taak.type ? '-' : ''}  ${taak.type}`,
-						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
 				})
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/calendar-month-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/calendar-month-outline.svg`
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
@@ -263,9 +258,8 @@ export default {
 	height: 100%;
 }
 
-.itemContainer {
+.takenContainer > .cn-table-container {
 	overflow: auto;
-	margin-block-end: var(--zaa-margin-10);
 }
 
 .buttonContainer {

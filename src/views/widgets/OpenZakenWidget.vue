@@ -7,36 +7,42 @@ import { zaakStore } from '../../store/store.js'
 		<p v-if="overdueCount > 0" class="overdueHeader">
 			{{ overdueHeaderText }}
 		</p>
-		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
-				:loading="loading"
-				@show="onShow">
-				<template #empty-content>
-					<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
-						<template #icon>
-							<Folder />
-						</template>
-					</NcEmptyContent>
-				</template>
-			</NcDashboardWidget>
-		</div>
-		<NcButton type="primary" @click="search">
-			<template #icon>
-				<OpenInApp :size="20" />
+		<CnDataTable :rows="items"
+			:columns="columns"
+			:loading="loading"
+			hide-header
+			borderless
+			row-icon="BriefcaseAccountOutline"
+			:empty-text="t('zaakafhandelapp', 'No open cases')">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
+					<template #icon>
+						<Folder />
+					</template>
+				</NcEmptyContent>
 			</template>
-			Zaken bekijken
-		</NcButton>
+			<template #footer>
+				<NcButton type="primary" @click="search">
+					<template #icon>
+						<OpenInApp :size="20" />
+					</template>
+					Zaken bekijken
+				</NcButton>
+			</template>
+		</CnDataTable>
 	</div>
 </template>
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcEmptyContent, NcButton } from '@nextcloud/vue'
 import { translate as t, translatePlural as n } from '@nextcloud/l10n'
-import { getTheme } from '../../services/getTheme.js'
 import { deriveZaakUrgency, urgencyLabel } from '../../services/zaakUrgency.js'
 import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
+
+import { WIDGET_COLUMNS } from './widgetTable.js'
 
 const URGENCY_RANK = { verlopen: 0, 'bijna-verlopen': 1, 'op-tijd': 2 }
 
@@ -44,7 +50,7 @@ export default {
 	name: 'OpenZakenWidget',
 
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
 		OpenInApp,
@@ -55,6 +61,7 @@ export default {
 		return {
 			loading: false,
 			zaken: [],
+			columns: WIDGET_COLUMNS,
 		}
 	},
 
@@ -86,7 +93,6 @@ export default {
 						id: zaak.id,
 						mainText: zaak.identificatie,
 						subText: [label, deadline].filter(Boolean).join(' · ') || zaak.zaaktype,
-						avatarUrl: this.getItemIcon(),
 					}
 				})
 		},
@@ -121,30 +127,10 @@ export default {
 				})
 		},
 		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/briefcase-account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/briefcase-account-outline.svg`
-		},
-		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
 		 */
 		search() {
 			console.info('click')
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
-		 */
-		onShow() {
-			window.open('/apps/opencatalogi/catalogi', '_self')
 		},
 	},
 
@@ -157,9 +143,8 @@ export default {
     flex-direction: column;
     height: 100%;
 }
-.itemContainer{
-   overflow: auto;
-   margin-block-end: var(--zaa-margin-10);
+.openZakenContainer > .cn-table-container {
+	overflow: auto;
 }
 .overdueHeader {
    color: var(--color-error);

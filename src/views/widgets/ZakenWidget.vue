@@ -5,26 +5,29 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 
 <template>
 	<div class="zakenContainer">
-		<div class="itemContainer">
-			<NcDashboardWidget :items="items"
-				:loading="loading"
-				@show="onShow">
-				<template #empty-content>
-					<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
-						<template #icon>
-							<Folder />
-						</template>
-					</NcEmptyContent>
-				</template>
-			</NcDashboardWidget>
-		</div>
-
-		<NcButton type="primary" @click="openModal">
-			<template #icon>
-				<Plus :size="20" />
+		<CnDataTable :rows="items"
+			:columns="columns"
+			:loading="loading"
+			hide-header
+			borderless
+			row-icon="BriefcaseAccountOutline"
+			:empty-text="t('zaakafhandelapp', 'No open cases')">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
+					<template #icon>
+						<Folder />
+					</template>
+				</NcEmptyContent>
 			</template>
-			{{ t('zaakafhandelapp', 'Create case') }}
-		</NcButton>
+			<template #footer>
+				<NcButton type="primary" @click="openModal">
+					<template #icon>
+						<Plus :size="20" />
+					</template>
+					{{ t('zaakafhandelapp', 'Create case') }}
+				</NcButton>
+			</template>
+		</CnDataTable>
 
 		<ZaakForm v-if="isModalOpen"
 			:dashboard-widget="true"
@@ -35,17 +38,18 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcEmptyContent, NcButton } from '@nextcloud/vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
 
 import ZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
+import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
 	name: 'ZakenWidget',
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
 		Plus,
@@ -56,6 +60,7 @@ export default {
 			loading: false,
 			isModalOpen: false,
 			zaakItems: [],
+			columns: WIDGET_COLUMNS,
 		}
 	},
 	computed: {
@@ -81,7 +86,6 @@ export default {
 						id: zaak.id,
 						mainText: zaak.identificatie,
 						subText: zaak.zaaktype,
-						avatarUrl: this.getItemIcon(),
 					}))
 
 					this.loading = false
@@ -102,32 +106,6 @@ export default {
 			this.isModalOpen = false
 			navigationStore.setModal(null)
 		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
-
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/briefcase-account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/briefcase-account-outline.svg`
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
-		 */
-		search() {
-			console.info('click')
-		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
-		 */
-		onShow() {
-			window.open('/apps/opencatalogi/catalogi', '_self')
-		},
 	},
 }
 </script>
@@ -139,10 +117,9 @@ export default {
     flex-direction: column;
     height: 100%;
 }
-.itemContainer{
+.zakenContainer > .cn-table-container {
 	overflow: auto;
-	margin-block-end: var(--zaa-margin-10);
- }
+}
 </style>
 <style>
 :root {

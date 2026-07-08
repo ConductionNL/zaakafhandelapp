@@ -74,7 +74,11 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             git curl ca-certificates gnupg jq unzip zip \
-            libzip-dev libpng-dev python3 nodejs
+            libzip-dev libpng-dev python3
+          # Node is required by actions/checkout@v4 (a JS action) which runs
+          # inside this php:8.3-cli container; the stock image ships no node.
+          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+          apt-get install -y --no-install-recommends nodejs
           docker-php-ext-install -j"$(nproc)" zip gd
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -109,9 +113,10 @@ jobs:
   # HARD GATE 3 — frontend unit suite (Vitest, OFFLINE; no NC needed).
   #
   # Runs the pure-logic Vitest suite under tests/vitest/** (Pinia store
-  # state transitions, util/formatter calc, form-validation mappers). These
-  # need no DOM/NC runtime — @nextcloud/* and @conduction/nextcloud-vue are
-  # aliased to deterministic stubs in vitest.config.js. Always gating.
+  # state transitions, util/formatter calc, form-validation mappers, and any
+  # offline component mounts). These need no DOM/NC runtime — @nextcloud/* and
+  # @conduction/nextcloud-vue are aliased to deterministic stubs in
+  # vitest.config.js. Always gating.
   # ---------------------------------------------------------------------------
   frontend-unit:
     name: Frontend unit (Vitest — ${{ inputs.app-id }})
@@ -147,7 +152,11 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             git curl ca-certificates gnupg jq unzip zip \
-            libzip-dev libpng-dev python3 nodejs
+            libzip-dev libpng-dev python3
+          # Node is required by actions/checkout@v4 (a JS action) which runs
+          # inside this php:8.3-cli container; the stock image ships no node.
+          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+          apt-get install -y --no-install-recommends nodejs
           docker-php-ext-install -j"$(nproc)" zip gd
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

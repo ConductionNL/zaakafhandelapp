@@ -15,7 +15,6 @@ import {
 	registerIcons,
 	registerTranslations,
 	buildManifest,
-	registerDashboardWidget,
 } from '@conduction/nextcloud-vue'
 import pinia from './pinia.js'
 import App from './App.vue'
@@ -26,23 +25,17 @@ import registry from './registry.js'
 import { initializeStores } from './store/store.js'
 import { routesFromManifest } from './router/index.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
-import AuditTrailWidget from './components/widgets/AuditTrailWidget.vue'
 
 // Library CSS — must be explicit import (webpack tree-shakes side-effect imports from aliased packages)
 import '@conduction/nextcloud-vue/css/index.css'
 
-// Register `audit-trail` into the shared widget-type catalog so CnDetailPage's
-// config-grid body (which resolves widget `type` via the catalog, not the
-// app registry) can render it as a body widget, mirroring the app-registry
-// entry used by the slot CnWidgetGrid path.
-registerDashboardWidget('audit-trail', {
-	renderer: AuditTrailWidget,
-	form: null,
-	defaultContent: {},
-	displayName: 'Audit trail',
-	icon: 'History',
-	surfaces: ['detail-page'],
-})
+// NOTE: the `audit-trail` widget key is a library built-in (CnAuditTrailWidget,
+// self-registered into the shared dashboardWidgetRegistry via the lib barrel).
+// CnDetailPage resolves the manifest `type: "audit-trail"` body widgets against
+// that built-in, which self-fetches register/schema/objectId from the detail
+// object-context merge. The former app-local AuditTrailWidget adapter that
+// shadowed this key (registerDashboardWidget override + registry entry) has been
+// removed — ADR-049 Phase-4 dissolution.
 
 Vue.mixin({ methods: { t, n } })
 Vue.use(PiniaVuePlugin)
