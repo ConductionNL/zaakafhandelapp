@@ -1,59 +1,67 @@
 <script setup>
-import { navigationStore } from '../../store/store.js'
+import { translate as t } from '@nextcloud/l10n'
+import { navigationStore, besluitStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcAppContentList>
-		<ul v-if="!loading">
-			<NcListItem v-for="(zaken, i) in zakenList.results"
-				:key="`${zaken}${i}`"
-				:name="zaken?.name"
-				:active="store.zakenItem === zaken?.id"
-				:details="'1h'"
-				:counter-number="44"
+	<div>
+		<div v-if="besluiten[zaakId]?.besluiten?.length">
+			<NcListItem v-for="(besluit, i) in besluiten[zaakId]?.besluiten"
+				:key="`${besluit}${i}`"
+				:name="besluit?.besluit"
+				:bold="true"
+				:active="besluitStore.besluitItem?.id === besluit?.id"
 				:force-display-actions="true"
-				@click="store.setMetadataItem(zaken.id)">
+				@click="toggleBesluit(besluit)">
 				<template #icon>
-					<BriefcaseAccountOutline :class="store.zakenItem === zaken.id && 'selectedZaakIcon'"
-						disable-menu
+					<BriefcaseAccountOutline disable-menu
 						:size="44" />
 				</template>
 				<template #subname>
-					{{ zaken?.summary }}
+					{{ besluit?.zaak }}
 				</template>
 				<template #actions>
-					<NcActionButton>
-						Button one
+					<NcActionButton @click="(besluitStore.zaakId = zaakId); besluitStore.setBesluitItem(besluit); navigationStore.setModal('besluitForm')">
+						<template #icon>
+							<Pencil :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
-					<NcActionButton>
-						Button two
-					</NcActionButton>
-					<NcActionButton>
-						Button three
+					<NcActionButton @click="(besluitStore.zaakId = zaakId); besluitStore.setBesluitItem(besluit); navigationStore.setModal('deleteBesluit')">
+						<template #icon>
+							<TrashCanOutline :size="20" />
+						</template>
+						{{ t('zaakafhandelapp', 'Remove from case') }}
 					</NcActionButton>
 				</template>
 			</NcListItem>
-		</ul>
+		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<div v-if="!besluiten[zaakId]?.besluiten?.length && !besluiten[zaakId]?.loading">
+			{{ t('zaakafhandelapp', 'No decisions found.') }}
+		</div>
+
+		<NcLoadingIcon v-if="!besluiten[zaakId]?.besluiten?.length && besluiten[zaakId]?.loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Besluiten aan het laden" />
-	</NcAppContentList>
+			:name="t('zaakafhandelapp', 'Loading decisions')" />
+	</div>
 </template>
 <script>
-import { NcListItem, NcActionButton, NcAppContentList, NcLoadingIcon } from '@nextcloud/vue'
-// eslint-disable-next-line n/no-missing-import
-import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline'
+// Components
+import { NcListItem, NcActionButton, NcLoadingIcon } from '@nextcloud/vue'
+
+// Icons
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
+import Pencil from 'vue-material-design-icons/Pencil.vue'
+import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 
 export default {
 	name: 'ZaakBesluiten',
 	components: {
 		NcListItem,
 		NcActionButton,
-		NcAppContentList,
-		BriefcaseAccountOutline,
 		NcLoadingIcon,
 	},
 	props: {
@@ -64,48 +72,65 @@ export default {
 	},
 	data() {
 		return {
+			// this is saved in a cache like system for easier navigation between zaken and to avoid unnecessary wait time for the end user
+			// eg. besluiten[zaakId] = { besluiten: [], loading: false }
+			besluiten: { 1: { besluiten: [], loading: false } },
 			search: '',
 			loading: true,
-			zakenList: [],
 		}
 	},
 	watch: {
-		zaakId: {
-			handler(zaakId) {
-				this.fetchData(zaakId)
-			},
-			deep: true,
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
+		zaakId(newVal) {
+			this.fetchData()
 		},
 	},
 	mounted() {
-		this.fetchData(store.zaakItem)
+		this.fetchData()
 	},
 	methods: {
-		fetchData(zaakId) {
-			this.loading = true
-			fetch(
-				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' + zaakId + '/besluiten',
-				{
-					method: 'GET',
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
+		fetchData() {
+			this.besluiten = {
+				...this.besluiten,
+				[this.zaakId]: {
+					besluiten: [],
+					loading: true,
 				},
-			)
-				.then((response) => {
-					response.json().then((data) => {
-						this.zakenList = data
-					})
-					this.loading = false
+			}
+
+			besluitStore.getBesluiten(this.zaakId)
+				.then(({ data }) => {
+					this.besluiten[this.zaakId].besluiten = data
 				})
-				.catch((err) => {
-					console.error(err)
-					this.loading = false
+				.finally(() => {
+					this.besluiten[this.zaakId].loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
+		toggleBesluit(besluit) {
+			if (besluitStore.besluitItem?.id === besluit.id) {
+				besluitStore.setBesluitItem(null)
+			} else {
+				besluitStore.setBesluitItem(besluit)
+			}
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
 	},
 }
 </script>
+
 <style>
 .listHeader {
     position: sticky;
