@@ -10,6 +10,7 @@
 **Requires:** [OpenRegister](https://apps.nextcloud.com/apps/openregister) (install from the [Nextcloud App Store](https://apps.nextcloud.com/apps/openregister)).
 
 - 📁 Cases (zaken) with zaaktypen, statussen, rollen, eigenschappen, besluiten and resultaten
+- ⏸️ Opschorting and verlenging (suspend/extend) on a running case
 - ✅ Tasks (taken) assigned to medewerkers or klanten
 - 👥 Klanten, personen and organisaties with contactmoment logging
 - 💬 In-case messaging (berichten) with a message audit trail
@@ -27,6 +28,7 @@ Create a [feature request](https://github.com/ConductionNL/zaakafhandelapp/issue
 **Vereist:** [OpenRegister](https://apps.nextcloud.com/apps/openregister) (te installeren via de [Nextcloud App Store](https://apps.nextcloud.com/apps/openregister)).
 
 - 📁 Zaken met zaaktypen, statussen, rollen, eigenschappen, besluiten en resultaten
+- ⏸️ Opschorting en verlenging op een lopende zaak
 - ✅ Taken toegewezen aan medewerkers of klanten
 - 👥 Klanten, personen en organisaties met contactmomentregistratie
 - 💬 Berichten binnen een zaak met audittrail
@@ -39,8 +41,8 @@ Maak een [bug report](https://github.com/ConductionNL/zaakafhandelapp/issues/new
 
 Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issues/new/choose)
     ]]></description>
-	<version>0.2.7</version>
-	<licence>agpl</licence>
+	<version>0.2.8</version>
+	<licence>EUPL-1.2</licence>
 	<author mail="info@conduction.nl" homepage="https://www.conduction.nl/">Conduction</author>
 	<namespace>ZaakAfhandelApp</namespace>
 	<category>organization</category>

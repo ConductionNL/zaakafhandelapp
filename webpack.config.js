@@ -48,9 +48,10 @@ webpackConfig.entry = {
 	},
 }
 
-// Use local source when available (monorepo dev), otherwise fall back to npm
+// Use local source when available (monorepo dev), otherwise fall back to npm.
+// Set USE_LOCAL_LIB=false to force the npm-installed dist build.
 const localLib = path.resolve(__dirname, '../nextcloud-vue/src')
-const useLocalLib = fs.existsSync(localLib)
+const useLocalLib = process.env.USE_LOCAL_LIB !== 'false' && fs.existsSync(localLib)
 
 webpackConfig.resolve = webpackConfig.resolve || {}
 webpackConfig.resolve.modules = [path.resolve(__dirname, 'node_modules'), 'node_modules']
