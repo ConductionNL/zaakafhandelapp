@@ -1,8 +1,9 @@
 import { SafeParseReturnType, z } from 'zod'
-import { TZaak, zaakTypeID } from './zaak.types'
+import { TOpschorting, TVerlenging, TZaak, zaakTypeID } from './zaak.types'
 
 export class Zaak implements TZaak {
 
+	public id: string
 	public uuid: string
 	public omschrijving: string
 	public identificatie: string
@@ -24,8 +25,18 @@ export class Zaak implements TZaak {
 	public laatsteBetaaldatum: string
 	public selectielijstklasse: string
 	public hoofdzaak: string
+	public klant: string
+	public berichten: string[]
+	public opschorting: TOpschorting
+	public verlenging: TVerlenging
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
+	 */
 
 	constructor(source: TZaak) {
+		this.id = source.id || ''
 		this.uuid = source.uuid || ''
 		this.omschrijving = source.omschrijving || ''
 		this.identificatie = source.identificatie || ''
@@ -47,10 +58,15 @@ export class Zaak implements TZaak {
 		this.laatsteBetaaldatum = source.laatsteBetaaldatum || ''
 		this.selectielijstklasse = source.selectielijstklasse || ''
 		this.hoofdzaak = source.hoofdzaak || ''
+		this.klant = source.klant || ''
+		this.berichten = source.berichten || []
+		this.opschorting = source.opschorting || { indicatie: false, reden: '' }
+		this.verlenging = source.verlenging || { reden: '', duur: '' }
 	}
 
 	public validate(): SafeParseReturnType<TZaak, unknown> {
 		const schema = z.object({
+			id: z.string().optional(),
 			uuid: z.string().optional(),
 			omschrijving: z.string().min(1),
 			identificatie: z.string().min(1),
@@ -72,6 +88,16 @@ export class Zaak implements TZaak {
 			laatsteBetaaldatum: z.string(),
 			selectielijstklasse: z.string(),
 			hoofdzaak: z.string(),
+			klant: z.string(),
+			berichten: z.array(z.string()),
+			opschorting: z.object({
+				indicatie: z.boolean(),
+				reden: z.string(),
+			}).optional(),
+			verlenging: z.object({
+				reden: z.string(),
+				duur: z.string(),
+			}).optional(),
 		})
 
 		return schema.safeParse(this)
