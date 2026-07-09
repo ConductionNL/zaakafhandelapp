@@ -40,6 +40,19 @@ between systems.
   with screenshots and lifecycle tables.
 - **[Page review](./app-review.md)** — a page-by-page walkthrough of the app UI.
 
+## Data model
+
+The `taak`, `status`, `bericht`, `besluit`, `resultaat`, and `rol` schemas that
+back this app are provisioned live in OpenRegister register 239
+(`zaakafhandelapp`) — there is no register JSON checked into this repo yet.
+`taak.zaak` and `status.zaak` carry `format: uuid` + a `$ref` to the `zaak`
+schema so FK values resolve to names in the UI instead of rendering raw UUIDs.
+`bericht`, `besluit`, `resultaat`, and `rol` were added directly via the
+OpenRegister API (register 239's schema linkage was updated in place) to stop
+their detail pages 404'ing on a missing collection. Follow-up: codify these six
+schemas as a register JSON file in this repo so schema changes are
+version-controlled instead of living only in the running instance.
+
 ## Getting started
 
 Install the Zaak Afhandel App from the
