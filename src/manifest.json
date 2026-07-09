@@ -400,7 +400,10 @@
 				"widgets": [
 					{ "id": "zaak-data", "type": "data", "title": "Case identity", "icon": "Gavel", "content": { "columns": 2, "include": [ "identificatie", "omschrijving", "toelichting", "zaaktype", "klant", "bronorganisatie", "verantwoordelijkeOrganisatie", "registratiedatum" ] } },
 					{ "id": "zaak-proces", "type": "data", "title": "Process & planning", "icon": "Timeline", "content": { "columns": 2, "include": [ "archiefstatus", "startdatum", "einddatumGepland", "uiterlijkeEinddatumAfdoening", "einddatum", "publicatiedatum", "communicatiekanaal", "betalingsindicatie", "selectielijstklasse" ] } },
-					{ "id": "zaak-kpis", "type": "stats-block", "title": "Case totals", "icon": "ChartBar", "content": { "entries": [ { "title": "Open tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Taken", "query": { "zaak": "@objectId" } } }, { "title": "Documents", "register": "zaakafhandelapp", "schema": "document", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Documenten", "query": { "zaak": "@objectId" } } }, { "title": "Decisions", "register": "zaakafhandelapp", "schema": "besluit", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Besluiten", "query": { "zaak": "@objectId" } } }, { "title": "Roles", "register": "zaakafhandelapp", "schema": "rol", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Rollen", "query": { "zaak": "@objectId" } } } ] } },
+					{ "id": "zaak-kpis-open-tasks", "type": "stats-block", "title": "Open tasks", "icon": "ChartBar", "content": { "entries": [ { "title": "Open tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Taken", "query": { "zaak": "@objectId" } } } ] } },
+					{ "id": "zaak-kpis-documents", "type": "stats-block", "title": "Documents", "icon": "ChartBar", "content": { "entries": [ { "title": "Documents", "register": "zaakafhandelapp", "schema": "document", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Documenten", "query": { "zaak": "@objectId" } } } ] } },
+					{ "id": "zaak-kpis-decisions", "type": "stats-block", "title": "Decisions", "icon": "ChartBar", "content": { "entries": [ { "title": "Decisions", "register": "zaakafhandelapp", "schema": "besluit", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Besluiten", "query": { "zaak": "@objectId" } } } ] } },
+					{ "id": "zaak-kpis-roles", "type": "stats-block", "title": "Roles", "icon": "ChartBar", "content": { "entries": [ { "title": "Roles", "register": "zaakafhandelapp", "schema": "rol", "metric": "count", "filter": { "zaak": "@objectId" }, "route": { "name": "Rollen", "query": { "zaak": "@objectId" } } } ] } },
 					{ "id": "zaak-related", "type": "related", "title": "Related", "icon": "LinkVariant" },
 					{ "id": "zaak-taken", "type": "object-list", "title": "Tasks", "icon": "ClipboardCheckOutline", "content": { "register": "zaakafhandelapp", "schema": "taak", "filter": { "zaak": "@objectId" }, "sort": { "field": "deadline", "dir": "asc" }, "columns": [ { "key": "title", "label": "Task" }, { "key": "status", "label": "Status" }, { "key": "deadline", "label": "Deadline" } ], "limit": 25, "rowRoute": "TaakDetail", "viewAllRoute": "Taken", "viewAllQuery": { "zaak": "@objectId" }, "emptyText": "No tasks on this case yet" } },
 					{ "id": "zaak-documenten", "type": "object-list", "title": "Documents", "icon": "FileDocument", "content": { "register": "zaakafhandelapp", "schema": "document", "filter": { "zaak": "@objectId" }, "sort": { "field": "creatiedatum", "dir": "desc" }, "columns": [ { "key": "titel", "label": "Title" }, { "key": "status", "label": "Status" }, { "key": "creatiedatum", "label": "Created" } ], "limit": 25, "rowRoute": "DocumentDetail", "viewAllRoute": "Documenten", "viewAllQuery": { "zaak": "@objectId" }, "emptyText": "No documents on this case yet" } },
@@ -411,15 +414,18 @@
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "zaak-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 5 },
-					{ "id": "2", "widgetId": "zaak-proces", "gridX": 0, "gridY": 5, "gridWidth": 8, "gridHeight": 6 },
-					{ "id": "3", "widgetId": "zaak-kpis", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 5 },
-					{ "id": "4", "widgetId": "zaak-related", "gridX": 8, "gridY": 5, "gridWidth": 4, "gridHeight": 6 },
-					{ "id": "5", "widgetId": "zaak-taken", "gridX": 0, "gridY": 11, "gridWidth": 6, "gridHeight": 4 },
-					{ "id": "6", "widgetId": "zaak-documenten", "gridX": 6, "gridY": 11, "gridWidth": 6, "gridHeight": 4 },
-					{ "id": "7", "widgetId": "zaak-besluiten", "gridX": 0, "gridY": 15, "gridWidth": 6, "gridHeight": 3 },
-					{ "id": "8", "widgetId": "zaak-resultaten", "gridX": 6, "gridY": 15, "gridWidth": 6, "gridHeight": 3 },
-					{ "id": "9", "widgetId": "zaak-rollen", "gridX": 0, "gridY": 18, "gridWidth": 12, "gridHeight": 3 },
-					{ "id": "10", "widgetId": "zaak-files", "gridX": 0, "gridY": 21, "gridWidth": 12, "gridHeight": 4 }
+					{ "id": "2", "widgetId": "zaak-proces", "gridX": 0, "gridY": 8, "gridWidth": 8, "gridHeight": 6 },
+					{ "id": "11", "widgetId": "zaak-kpis-open-tasks", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "12", "widgetId": "zaak-kpis-documents", "gridX": 8, "gridY": 2, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "13", "widgetId": "zaak-kpis-decisions", "gridX": 8, "gridY": 4, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "14", "widgetId": "zaak-kpis-roles", "gridX": 8, "gridY": 6, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "4", "widgetId": "zaak-related", "gridX": 8, "gridY": 8, "gridWidth": 4, "gridHeight": 6 },
+					{ "id": "5", "widgetId": "zaak-taken", "gridX": 0, "gridY": 14, "gridWidth": 6, "gridHeight": 4 },
+					{ "id": "6", "widgetId": "zaak-documenten", "gridX": 6, "gridY": 14, "gridWidth": 6, "gridHeight": 4 },
+					{ "id": "7", "widgetId": "zaak-besluiten", "gridX": 0, "gridY": 18, "gridWidth": 6, "gridHeight": 3 },
+					{ "id": "8", "widgetId": "zaak-resultaten", "gridX": 6, "gridY": 18, "gridWidth": 6, "gridHeight": 3 },
+					{ "id": "9", "widgetId": "zaak-rollen", "gridX": 0, "gridY": 21, "gridWidth": 12, "gridHeight": 3 },
+					{ "id": "10", "widgetId": "zaak-files", "gridX": 0, "gridY": 24, "gridWidth": 12, "gridHeight": 4 }
 				],
 				"sidebarTabs": [
 					{
@@ -601,7 +607,9 @@
 				"widgets": [
 					{ "id": "klant-data", "type": "data", "title": "Identity", "icon": "AccountBoxOutline", "content": { "columns": 2, "include": [ "type", "voornaam", "tussenvoegsel", "achternaam", "bsn", "geboortedatum", "geslacht", "land", "bedrijfsnaam", "kvkNummer" ] } },
 					{ "id": "klant-contact", "type": "data", "title": "Contact details", "icon": "Phone", "content": { "columns": 2, "include": [ "emailadres", "telefoonnummer", "straatnaam", "huisnummer", "postcode", "plaats", "functie", "websiteUrl", "aanmaakkanaal" ] } },
-					{ "id": "klant-kpis", "type": "stats-block", "title": "Relation totals", "icon": "ChartBar", "content": { "entries": [ { "title": "Cases", "register": "zaakafhandelapp", "schema": "zaak", "metric": "count", "filter": { "klant": "@objectId" }, "route": { "name": "Zaken", "query": { "klant": "@objectId" } } }, { "title": "Contact moments", "register": "zaakafhandelapp", "schema": "contactmoment", "metric": "count", "filter": { "klant": "@objectId" }, "route": { "name": "Contactmomenten", "query": { "klant": "@objectId" } } }, { "title": "Tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "klant": "@objectId" }, "route": { "name": "Taken", "query": { "klant": "@objectId" } } } ] } },
+					{ "id": "klant-kpis-cases", "type": "stats-block", "title": "Cases", "icon": "ChartBar", "content": { "entries": [ { "title": "Cases", "register": "zaakafhandelapp", "schema": "zaak", "metric": "count", "filter": { "klant": "@objectId" }, "route": { "name": "Zaken", "query": { "klant": "@objectId" } } } ] } },
+					{ "id": "klant-kpis-contact-moments", "type": "stats-block", "title": "Contact moments", "icon": "ChartBar", "content": { "entries": [ { "title": "Contact moments", "register": "zaakafhandelapp", "schema": "contactmoment", "metric": "count", "filter": { "klant": "@objectId" }, "route": { "name": "Contactmomenten", "query": { "klant": "@objectId" } } } ] } },
+					{ "id": "klant-kpis-tasks", "type": "stats-block", "title": "Tasks", "icon": "ChartBar", "content": { "entries": [ { "title": "Tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "klant": "@objectId" }, "route": { "name": "Taken", "query": { "klant": "@objectId" } } } ] } },
 					{ "id": "klant-related", "type": "related", "title": "Related", "icon": "LinkVariant" },
 					{ "id": "klant-zaken", "type": "object-list", "title": "Cases", "icon": "Gavel", "content": { "register": "zaakafhandelapp", "schema": "zaak", "filter": { "klant": "@objectId" }, "sort": { "field": "registratiedatum", "dir": "desc" }, "columns": [ { "key": "identificatie", "label": "Reference" }, { "key": "omschrijving", "label": "Description" }, { "key": "uiterlijkeEinddatumAfdoening", "label": "Deadline" } ], "limit": 25, "rowRoute": "ZaakDetail", "viewAllRoute": "Zaken", "viewAllQuery": { "klant": "@objectId" }, "allowCreate": false, "emptyText": "No cases for this relation yet" } },
 					{ "id": "klant-contactmomenten", "type": "object-list", "title": "Contact moments", "icon": "MessageTextOutline", "content": { "register": "zaakafhandelapp", "schema": "contactmoment", "filter": { "klant": "@objectId" }, "sort": { "field": "startDate", "dir": "desc" }, "columns": [ { "key": "notitie", "label": "Note" }, { "key": "kanaal", "label": "Channel" }, { "key": "startDate", "label": "Date" } ], "limit": 25, "rowRoute": "ContactmomentDetail", "viewAllRoute": "Contactmomenten", "viewAllQuery": { "klant": "@objectId" }, "emptyText": "No contact moments logged yet" } },
@@ -610,7 +618,9 @@
 				"layout": [
 					{ "id": "1", "widgetId": "klant-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 6 },
 					{ "id": "2", "widgetId": "klant-contact", "gridX": 0, "gridY": 6, "gridWidth": 8, "gridHeight": 6 },
-					{ "id": "3", "widgetId": "klant-kpis", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 6 },
+					{ "id": "8", "widgetId": "klant-kpis-cases", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "9", "widgetId": "klant-kpis-contact-moments", "gridX": 8, "gridY": 2, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "10", "widgetId": "klant-kpis-tasks", "gridX": 8, "gridY": 4, "gridWidth": 4, "gridHeight": 2 },
 					{ "id": "4", "widgetId": "klant-related", "gridX": 8, "gridY": 6, "gridWidth": 4, "gridHeight": 6 },
 					{ "id": "5", "widgetId": "klant-zaken", "gridX": 0, "gridY": 12, "gridWidth": 12, "gridHeight": 4 },
 					{ "id": "6", "widgetId": "klant-contactmomenten", "gridX": 0, "gridY": 16, "gridWidth": 6, "gridHeight": 4 },
@@ -657,13 +667,15 @@
 				"_note": "EMPLOYEE (person) archetype — an internal handler's workload view. The medewerker schema is thin (voornaam/achternaam/email/telefoonnummer) and carries NO object FK fields, so the empty round-1 Related panel was dropped (honest content over padding). The lead row is the compact contact card 8-wide beside a KPI stats-block (assigned tasks + handled contact moments, medewerker=@objectId). The value of the page is the two workload lists below — Assigned tasks (taak.medewerker) and Contact moments handled (contactmoment.medewerker) — both allowCreate:false: this is a workload/assignment view, tasks and contacts are created against their case/customer, not from an employee profile. NO comms leaves: the schema declares no email/calendar/talk linkedTypes.",
 				"widgets": [
 					{ "id": "mw-data", "type": "data", "title": "Employee details", "icon": "AccountBoxOutline", "content": { "columns": 2 } },
-					{ "id": "mw-kpis", "type": "stats-block", "title": "Workload", "icon": "ChartBar", "content": { "entries": [ { "title": "Open tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "medewerker": "@objectId" }, "route": { "name": "Taken", "query": { "medewerker": "@objectId" } } }, { "title": "Contact moments", "register": "zaakafhandelapp", "schema": "contactmoment", "metric": "count", "filter": { "medewerker": "@objectId" }, "route": { "name": "Contactmomenten", "query": { "medewerker": "@objectId" } } } ] } },
+					{ "id": "mw-kpis-open-tasks", "type": "stats-block", "title": "Open tasks", "icon": "ChartBar", "content": { "entries": [ { "title": "Open tasks", "register": "zaakafhandelapp", "schema": "taak", "metric": "count", "filter": { "medewerker": "@objectId" }, "route": { "name": "Taken", "query": { "medewerker": "@objectId" } } } ] } },
+					{ "id": "mw-kpis-contact-moments", "type": "stats-block", "title": "Contact moments", "icon": "ChartBar", "content": { "entries": [ { "title": "Contact moments", "register": "zaakafhandelapp", "schema": "contactmoment", "metric": "count", "filter": { "medewerker": "@objectId" }, "route": { "name": "Contactmomenten", "query": { "medewerker": "@objectId" } } } ] } },
 					{ "id": "mw-taken", "type": "object-list", "title": "Assigned tasks", "icon": "ClipboardCheckOutline", "content": { "register": "zaakafhandelapp", "schema": "taak", "filter": { "medewerker": "@objectId" }, "sort": { "field": "deadline", "dir": "asc" }, "columns": [ { "key": "title", "label": "Task" }, { "key": "status", "label": "Status" }, { "key": "deadline", "label": "Deadline" } ], "limit": 25, "rowRoute": "TaakDetail", "viewAllRoute": "Taken", "viewAllQuery": { "medewerker": "@objectId" }, "allowCreate": false, "emptyText": "No tasks assigned to this employee" } },
 					{ "id": "mw-contactmomenten", "type": "object-list", "title": "Contact moments", "icon": "MessageTextOutline", "content": { "register": "zaakafhandelapp", "schema": "contactmoment", "filter": { "medewerker": "@objectId" }, "sort": { "field": "startDate", "dir": "desc" }, "columns": [ { "key": "notitie", "label": "Note" }, { "key": "kanaal", "label": "Channel" }, { "key": "startDate", "label": "Date" } ], "limit": 25, "rowRoute": "ContactmomentDetail", "viewAllRoute": "Contactmomenten", "viewAllQuery": { "medewerker": "@objectId" }, "allowCreate": false, "emptyText": "No contact moments handled yet" } }
 				],
 				"layout": [
 					{ "id": "1", "widgetId": "mw-data", "gridX": 0, "gridY": 0, "gridWidth": 8, "gridHeight": 4 },
-					{ "id": "2", "widgetId": "mw-kpis", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 4 },
+					{ "id": "5", "widgetId": "mw-kpis-open-tasks", "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "6", "widgetId": "mw-kpis-contact-moments", "gridX": 8, "gridY": 2, "gridWidth": 4, "gridHeight": 2 },
 					{ "id": "3", "widgetId": "mw-taken", "gridX": 0, "gridY": 4, "gridWidth": 6, "gridHeight": 4 },
 					{ "id": "4", "widgetId": "mw-contactmomenten", "gridX": 6, "gridY": 4, "gridWidth": 6, "gridHeight": 4 }
 				],
