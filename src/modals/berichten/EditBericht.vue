@@ -1,14 +1,15 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog v-if="navigationStore.modal === 'editBericht'"
-		name="Bericht"
+		:name="t('zaakafhandelapp', 'Message')"
 		size="normal"
-		:can-close="false">
+		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>Bericht succesvol aangepast</p>
+			<p>{{ t('zaakafhandelapp', 'Message successfully updated') }}</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -18,72 +19,72 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.title"
-				label="Title" />
+				:label="t('zaakafhandelapp', 'Title')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.onderwerp"
-				label="Onderwerp" />
+				:label="t('zaakafhandelapp', 'Subject')" />
 
 			<NcTextArea
 				:disabled="loading"
 				:value.sync="berichtItem.berichttekst"
-				label="Berichttekst" />
+				:label="t('zaakafhandelapp', 'Message text')" />
 
 			<NcTextArea
 				:disabled="loading"
 				:value.sync="berichtItem.inhoud"
-				label="Inhoud (base64)" />
+				:label="t('zaakafhandelapp', 'Content (base64)')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.bijlageType"
-				label="Bijlage type" />
+				:label="t('zaakafhandelapp', 'Attachment type')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.soortGebruiker"
-				label="Soort gebruiker" />
+				:label="t('zaakafhandelapp', 'User type')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.publicatieDatum"
-				label="Publicatiedatum" />
+				:label="t('zaakafhandelapp', 'Publication date')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.aanmaakDatum"
-				label="Aanmaak datum" />
+				:label="t('zaakafhandelapp', 'Creation date')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.berichtType"
-				label="Bericht type" />
+				:label="t('zaakafhandelapp', 'Message type')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.referentie"
-				label="Referentie" />
+				:label="t('zaakafhandelapp', 'Reference')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.berichtID"
-				label="Bericht ID" />
+				:label="t('zaakafhandelapp', 'Message ID')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.batchID"
-				label="Batch ID" />
+				:label="t('zaakafhandelapp', 'Batch ID')" />
 
 			<NcTextField
 				:disabled="true"
 				:value="klantStore.klantItem?.id || berichtItem.gebruikerID"
-				label="Gebruiker ID" />
+				:label="t('zaakafhandelapp', 'User ID')" />
 
 			<NcTextField
 				:disabled="loading"
 				:value.sync="berichtItem.onderwerp"
-				label="Volgorde" />
+				:label="t('zaakafhandelapp', 'Order')" />
 		</div>
 
 		<template #actions>
@@ -91,7 +92,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? 'Sluiten' : 'Annuleer' }}
+				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
 				<template #icon>
@@ -108,7 +109,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 					<ContentSaveOutline v-if="!loading && berichtStore.berichtItem?.id" :size="20" />
 					<Plus v-if="!loading && !berichtStore.berichtItem?.id" :size="20" />
 				</template>
-				{{ berichtStore.berichtItem?.id ? 'Opslaan' : 'Aanmaken' }}
+				{{ berichtStore.berichtItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -136,6 +137,12 @@ export default {
 		Plus,
 		Help,
 	},
+	props: {
+		dashboardWidget: {
+			type: Boolean,
+			required: false,
+		},
+	},
 	data() {
 		return {
 			success: false,
@@ -160,6 +167,9 @@ export default {
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+	 */
 	updated() {
 		if (navigationStore.modal === 'editBericht' && !this.hasUpdated) {
 			if (berichtStore.berichtItem?.id) {
@@ -187,6 +197,17 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
+		closeModalFromButton() {
+			setTimeout(() => {
+				this.closeModal()
+			}, 300)
+		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(false)
 			this.success = false
@@ -209,7 +230,12 @@ export default {
 				gebruikerID: '',
 				volgorde: '',
 			}
+			this.$emit('close-modal')
+
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async editBericht() {
 			this.loading = true
 			try {
@@ -220,12 +246,19 @@ export default {
 				this.success = true
 				this.loading = false
 				setTimeout(this.closeModal, 2000)
+				if (this.dashboardWidget === true) {
+					this.$emit('save-success')
+				}
+
 			} catch (error) {
 				this.loading = false
 				this.success = false
 				this.error = error.message || 'An error occurred while saving the bericht'
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},

@@ -1,0 +1,11 @@
+{
+  "label": "User guide",
+  "position": 1,
+  "collapsible": true,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "title": "User guide",
+    "description": "Workflows for case handlers — opening the app, registering a new zaak, assigning roles, tracking status, adding tasks, logging contact moments, attaching documents and recording besluiten."
+  }
+}
