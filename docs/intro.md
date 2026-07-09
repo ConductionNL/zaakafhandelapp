@@ -28,9 +28,10 @@ Zaak Afhandel App (ZAA) brings structured case handling (*zaakafhandeling*) into
 Nextcloud using Dutch government ZGW (*Zaakgericht Werken*) terminology and
 patterns. Case workers manage incoming cases from intake through resolution:
 assign tasks, exchange messages, log customer interactions, record decisions, and
-track every status transition — all from within Nextcloud. It also provides
-gateway and service-bus functionality for routing and translating API calls
-between systems.
+track every status transition — including opschorting and verlenging to suspend
+or extend a running case — all from within Nextcloud. It also exposes a ZGW
+(ZRC/ZTC/DRC/BRC) REST API surface so other ZGW-speaking systems can integrate
+directly, built on OpenRegister for storage, search, RBAC and audit.
 
 ## Documentation
 
