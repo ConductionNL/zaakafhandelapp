@@ -3,7 +3,7 @@
 // Copyright (C) 2026 Conduction B.V.
 //
 // validate-manifest.js — schema-validates src/manifest.json against the
-// @conduction/nextcloud-vue app-manifest schema using Ajv.
+// @conduction/nextcloud-vue v2 app-manifest schema using Ajv.
 //
 // Usage:
 //   node tests/validate-manifest.js
@@ -12,10 +12,14 @@
 //   0 — manifest validates against the schema with zero errors
 //   1 — manifest fails validation (or schema/manifest cannot be loaded)
 //
+// src/manifest.json declares the v2 schema ($schema → app-manifest-v2.schema.json),
+// so we validate against v2 (the v1 app-manifest.schema.json predates the
+// config.widgets/config.layout body-grid shape and rejects every detail page).
+//
 // Schema lookup order (first hit wins):
 //   1. Env var APP_MANIFEST_SCHEMA — explicit absolute path to a schema JSON
-//   2. node_modules/@conduction/nextcloud-vue/src/schemas/app-manifest.schema.json
-//   3. ../nextcloud-vue/src/schemas/app-manifest.schema.json (sibling worktree)
+//   2. node_modules/@conduction/nextcloud-vue/src/schemas/app-manifest-v2.schema.json
+//   3. ../nextcloud-vue/src/schemas/app-manifest-v2.schema.json (sibling worktree)
 
 'use strict'
 

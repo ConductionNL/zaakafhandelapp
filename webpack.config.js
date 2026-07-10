@@ -132,8 +132,21 @@ webpackConfig.optimization = {
 				filename: appId + '-shared-nc-vue.js',
 			},
 			vendor: {
+				// Catch-all for EVERY remaining node_modules dependency (lower
+				// priority than ncVue, so @nextcloud/vue + @conduction/nextcloud-vue
+				// still land in shared-nc-vue). Previously this group enumerated a
+				// hand-maintained allowlist (vue|pinia|core-js|…); any transitive
+				// library @conduction/nextcloud-vue requires that was NOT on the list
+				// (ajv, ajv-formats, @vue/devtools-api, apexcharts, …) stayed in the
+				// main entry chunk while the nc-vue shared chunk __webpack_require__'d
+				// its factory — the nc-vue chunk loads BEFORE main, so the factory
+				// was undefined → "Cannot read properties of undefined (reading
+				// 'call')" at first mount. Sweeping all of node_modules into this
+				// eagerly-loaded shared-vendor chunk (loaded before shared-nc-vue)
+				// guarantees every shared factory is registered before nc-vue needs
+				// it, regardless of which library it is.
 				name: appId + '-shared-vendor',
-				test: /[\\/]node_modules[\\/](vue|pinia|vue-material-design-icons|@vueuse|core-js)[\\/]/,
+				test: /[\\/]node_modules[\\/]/,
 				priority: 20,
 				reuseExistingChunk: true,
 				enforce: true,
