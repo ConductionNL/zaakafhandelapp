@@ -1,6 +1,17 @@
 export type zaakTypeID = string // create an alias for string called ZaakTypeID to make it easier for developers to understand that this is a ID from a ZaakType
 
+export type TOpschorting = {
+    indicatie: boolean;
+    reden: string;
+}
+
+export type TVerlenging = {
+    reden: string;
+    duur: string; // ISO 8601 duration, e.g. P14D
+}
+
 export type TZaak = {
+    id: string;
     uuid: string;
     omschrijving: string;
     identificatie: string;
@@ -22,4 +33,8 @@ export type TZaak = {
     laatsteBetaaldatum: string;
     selectielijstklasse: string;
     hoofdzaak: string;
+    klant: string;
+    berichten: string[];
+    opschorting: TOpschorting;
+    verlenging: TVerlenging;
 }
