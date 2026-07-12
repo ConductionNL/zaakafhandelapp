@@ -1,0 +1,66 @@
+---
+sidebar_position: 1
+---
+
+# Zaak Afhandel App
+
+ZGW-aligned case handling for Dutch municipalities, inside Nextcloud — zaken
+(cases), defined status workflows, the work queue, tasks for staff and citizens,
+attached documents, and a record of every decision (*besluit*). No separate case
+system, no second login.
+
+:::warning Deprecated
+
+The Zaak Afhandel App is no longer actively developed. Its functionality has been
+superseded by:
+
+- **[Procest](https://procest.app)** — process and case management for Nextcloud
+- **[Pipelinq](https://pipelinq.app)** — CRM and pipeline management for Nextcloud
+
+We recommend migrating to one of these apps. This documentation is preserved for
+reference.
+
+:::
+
+## What is the Zaak Afhandel App?
+
+Zaak Afhandel App (ZAA) brings structured case handling (*zaakafhandeling*) into
+Nextcloud using Dutch government ZGW (*Zaakgericht Werken*) terminology and
+patterns. Case workers manage incoming cases from intake through resolution:
+assign tasks, exchange messages, log customer interactions, record decisions, and
+track every status transition — including opschorting and verlenging to suspend
+or extend a running case — all from within Nextcloud. It also exposes a ZGW
+(ZRC/ZTC/DRC/BRC) REST API surface so other ZGW-speaking systems can integrate
+directly, built on OpenRegister for storage, search, RBAC and audit.
+
+## Documentation
+
+- **[Features](./FEATURES.md)** — the archived feature overview.
+- **[Features (detailed)](./features/README.md)** — case management, tasks,
+  contact moments, documents, decisions, dashboard, search, and notifications,
+  with screenshots and lifecycle tables.
+- **[Page review](./app-review.md)** — a page-by-page walkthrough of the app UI.
+
+## Data model
+
+The `taak`, `status`, `bericht`, `besluit`, `resultaat`, and `rol` schemas that
+back this app are provisioned live in OpenRegister register 239
+(`zaakafhandelapp`) — there is no register JSON checked into this repo yet.
+`taak.zaak` and `status.zaak` carry `format: uuid` + a `$ref` to the `zaak`
+schema so FK values resolve to names in the UI instead of rendering raw UUIDs.
+`bericht`, `besluit`, `resultaat`, and `rol` were added directly via the
+OpenRegister API (register 239's schema linkage was updated in place) to stop
+their detail pages 404'ing on a missing collection. Follow-up: codify these six
+schemas as a register JSON file in this repo so schema changes are
+version-controlled instead of living only in the running instance.
+
+## Getting started
+
+Install the Zaak Afhandel App from the
+[Nextcloud app store](https://apps.nextcloud.com/apps/zaakafhandelapp) or enable
+it in your Nextcloud admin settings.
+
+Free and open source under the EUPL-1.2 license, built for
+[Open Webconcept](https://openwebconcept.nl) by
+[Conduction B.V.](https://conduction.nl) For support, contact
+support@conduction.nl.

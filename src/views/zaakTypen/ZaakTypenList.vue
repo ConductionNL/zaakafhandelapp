@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 				<NcTextField
 					:value.sync="search"
 					:show-trailing-button="search !== ''"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					class="searchField"
 					@trailing-button-click="clearText">
@@ -22,47 +23,57 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 						</template>
 						Ververs
 					</NcActionButton>
+					<NcActionButton @click="zaakTypeStore.setZaakTypeItem(null); navigationStore.setModal('zaaktypeForm')">
+						<template #icon>
+							<Plus :size="20" />
+						</template>
+						Zaaktype toevoegen
+					</NcActionButton>
 				</NcActions>
 			</div>
 
-			<div v-if="!zaakTypeStore.zaakTypenList?.length">
-				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypenList"
+			<div v-if="zaakTypeStore.zaakTypeList?.length">
+				<NcListItem v-for="(zaaktype, i) in zaakTypeStore.zaakTypeList"
 					:key="`${zaaktype}${i}`"
-					:name="zaaktype?.name"
+					:name="zaaktype?.identificatie"
 					:force-display-actions="true"
-					:active="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id"
+					:active="$route.params.id === zaaktype?.id"
 					:details="'1h'"
 					:counter-number="44"
-					@click="zaakTypeStore.setZaakTypeItem(zaaktype)">
+					@click="openZaakType(zaaktype)">
 					<template #icon>
-						<AlphaTBoxOutline :class="zaakTypeStore.zaakTypeItem?.id === zaaktype?.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<AlphaTBoxOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
-						{{ zaaktype?.summary }}
+						{{ zaaktype?.omschrijvingGeneriek }}
 					</template>
 					<template #actions>
-						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('zaakTypeForm')">
+						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('zaaktypeForm')">
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
+						</NcActionButton>
+						<NcActionButton @click="zaakTypeStore.setZaakTypeItem(zaaktype); navigationStore.setModal('deleteZaaktype')">
+							<template #icon>
+								<TrashCanOutline :size="20" />
+							</template>
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<div v-if="!zaakTypeStore.zaakTypenList.length">
-			No zaaktypen have been defined yet.
+		<div v-if="!zaakTypeStore.zaakTypeList?.length && !loading">
+			Geen zaaktypen gedefinieerd.
 		</div>
 
-		<NcLoadingIcon v-if="loading"
+		<NcLoadingIcon v-if="!zaakTypeStore.zaakTypeList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Zaaktypen aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading case types')" />
 	</NcAppContentList>
 </template>
 
@@ -75,6 +86,8 @@ import Magnify from 'vue-material-design-icons/Magnify.vue'
 import AlphaTBoxOutline from 'vue-material-design-icons/AlphaTBoxOutline.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
 export default {
 	name: 'ZaakTypenList',
@@ -98,6 +111,9 @@ export default {
 			loading: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.loading = true
 
@@ -105,8 +121,22 @@ export default {
 			.then(() => {
 				this.loading = false
 			})
+			.catch((err) => {
+				console.error(err)
+				this.loading = false
+			})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
+		 */
+		openZaakType(zaaktype) {
+			zaakTypeStore.setZaakTypeItem(zaaktype)
+			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaaktype.id } })
+		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

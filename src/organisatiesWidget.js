@@ -1,0 +1,14 @@
+import Vue from 'vue'
+import OrganisatiesWidget from './views/widgets/OrganisatiesWidget.vue'
+
+// Library CSS (CnDataTable styles live in the lib's central CSS, not in the
+// SFC) — the widget bundle loads standalone on the Dashboard, without main.js.
+import '@conduction/nextcloud-vue/css/index.css'
+
+OCA.Dashboard.register('zaakAfhandelApp_organisaties_widget', async (el, { widget }) => {
+	Vue.mixin({ methods: { t, n } })
+	const View = Vue.extend(OrganisatiesWidget)
+	new View({
+		propsData: { title: widget.title },
+	}).$mount(el)
+})

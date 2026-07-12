@@ -1,0 +1,66 @@
+publiccodeYmlVersion: "0.4"
+
+name: Zaak Afhandel App
+url: "https://github.com/ConductionNL/zaakafhandelapp"
+softwareVersion: "0.2.7"
+releaseDate: "2026-07-07"
+developmentStatus: beta
+softwareType: "standalone/other"
+
+platforms:
+  - nextcloud
+
+categories:
+  - case-management
+  - it-service-management
+
+description:
+  en:
+    shortDescription: >
+      Case handling and workflow management for Dutch government organisations on Nextcloud.
+    longDescription: >
+      Zaak Afhandel App (ZAA) is a case handling application for Dutch government
+      organisations, built on Nextcloud and OpenRegister. It implements the Dutch
+      Zaakgericht Werken (ZGW) standard for case-oriented working and exposes a ZGW
+      (ZRC/ZTC/DRC/BRC) REST API surface so other ZGW-speaking systems can integrate.
+      ZAA enables municipalities and other public bodies to manage cases, tasks, and
+      klant (customer) interactions within a Nextcloud environment.
+    features:
+      - Zaakgericht Werken (ZGW) case management
+      - ZGW (ZRC/ZTC/DRC/BRC) REST API surface
+      - Task management
+      - Klant (customer) interaction tracking
+
+  nl:
+    shortDescription: >
+      Zaakafhandeling en workflowbeheer voor Nederlandse overheidsorganisaties op Nextcloud.
+    longDescription: >
+      Zaak Afhandel App (ZAA) is een zaakafhandelingstoepassing voor Nederlandse
+      overheidsorganisaties, gebouwd op Nextcloud en OpenRegister. Het implementeert
+      de Nederlandse Zaakgericht Werken (ZGW)-standaard en biedt een ZGW
+      (ZRC/ZTC/DRC/BRC) REST-API zodat andere ZGW-systemen kunnen koppelen. ZAA stelt
+      gemeenten en andere overheidsinstanties in staat zaken, taken en
+      klantinteracties te beheren binnen een Nextcloud-omgeving.
+    features:
+      - Zaakgericht Werken (ZGW)-zaakbeheer
+      - ZGW (ZRC/ZTC/DRC/BRC) REST-API
+      - Takenbeheer
+      - Bijhouden van klantinteracties
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: "Conduction B.V."
+  repoOwner: "Conduction B.V."
+
+maintenance:
+  type: community
+  contacts:
+    - name: Conduction B.V.
+      email: info@conduction.nl
+      affiliation: Conduction B.V.
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - nl
+    - en
