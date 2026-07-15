@@ -77,8 +77,8 @@ let initialized = false
  * resolution will live here.
  *
  * @return {Promise<ReturnType<typeof useObjectStore>>} The configured lib store.
-  *
-  * @spec openspec/specs/state-stores/spec.md#REQ-005
+ *
+ * @spec openspec/specs/state-stores/spec.md#REQ-005
  */
 export async function initializeStores() {
 	const objectStore = useObjectStore(pinia)

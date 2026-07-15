@@ -23,7 +23,7 @@ import menuLayout from './menu-layout.json'
 import customComponents from './customComponents.js'
 import registry from './registry.js'
 import { initializeStores } from './store/store.js'
-import { routesFromManifest } from './router/index.js'
+import { routesFromManifest, registerRouter } from './router/index.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
 
 // Library CSS — must be explicit import (webpack tree-shakes side-effect imports from aliased packages)
@@ -107,6 +107,8 @@ const router = new VueRouter({
 	linkActiveClass: 'active',
 	routes: routesFromManifest(mergedManifest),
 })
+// Wire the module-level router delegate (legacy stores' `router.push`).
+registerRouter(router)
 
 // Pass shallow copies of the registry maps to CnAppRoot. The lib exports
 // `defaultPageTypes` (and consumers' `customComponents`) as frozen module
