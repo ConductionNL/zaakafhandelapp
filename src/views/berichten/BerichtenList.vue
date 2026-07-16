@@ -1,4 +1,5 @@
 <script setup>
+import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, berichtStore } from '../../store/store.js'
 </script>
 
@@ -9,7 +10,7 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 				<NcTextField class="searchField"
 					disabled
 					:value.sync="search"
-					label="Search"
+					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
 					@trailing-button-click="clearText">
@@ -30,19 +31,17 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 					</NcActionButton>
 				</NcActions>
 			</div>
-			<div v-if="berichtStore.berichtenList">
+			<div v-if="berichtStore.berichtenList?.length">
 				<NcListItem v-for="(bericht, i) in berichtStore.berichtenList"
 					:key="`${bericht}${i}`"
-					:name="bericht?.onderwerp"
-					:active="berichtStore.berichtItem?.id === bericht?.id"
+					:name="bericht?.onderwerp || bericht?.title || 'onbekend'"
+					:active="$route.params.id === bericht?.id"
 					:details="'1h'"
 					:counter-number="44"
 					:force-display-actions="true"
-					@click="berichtStore.setBerichtItem(bericht)">
+					@click="openBericht(bericht)">
 					<template #icon>
-						<ChatOutline :class="berichtStore.berichtItem?.id === bericht.id && 'selectedZaakIcon'"
-							disable-menu
-							:size="44" />
+						<ChatOutline disable-menu :size="44" />
 					</template>
 					<template #subname>
 						{{ bericht?.berichttekst }}
@@ -52,24 +51,28 @@ import { navigationStore, berichtStore } from '../../store/store.js'
 							<template #icon>
 								<Pencil :size="20" />
 							</template>
-							Bewerken
+							{{ t('zaakafhandelapp', 'Edit') }}
 						</NcActionButton>
 						<NcActionButton @click="berichtStore.setBerichtItem(bericht); navigationStore.setDialog('deleteBericht')">
 							<template #icon>
 								<TrashCanOutline :size="20" />
 							</template>
-							Verwijderen
+							{{ t('zaakafhandelapp', 'Delete') }}
 						</NcActionButton>
 					</template>
 				</NcListItem>
 			</div>
 		</ul>
 
-		<NcLoadingIcon v-if="!berichtStore.berichtenList"
+		<div v-if="!berichtStore.berichtenList?.length && !loading">
+			Geen berichten gedefinieerd.
+		</div>
+
+		<NcLoadingIcon v-if="berichtStore.berichtenList.length && loading"
 			class="loadingIcon"
 			:size="64"
 			appearance="dark"
-			name="Klanten aan het laden" />
+			:name="t('zaakafhandelapp', 'Loading messages')" />
 	</NcAppContentList>
 </template>
 <script>
@@ -109,17 +112,38 @@ export default {
 			berichtenList: [],
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
-		berichtStore.refreshBerichtenList()
+		berichtStore.refreshBerichtenList().then(() => {
+			this.loading = false
+		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
+		openBericht(bericht) {
+			berichtStore.setBerichtItem(bericht)
+			this.$router.push({ name: 'BerichtDetail', params: { id: bericht.id } })
+		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		editBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
 			navigationStore.setModal('editBericht')
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		storeBericht(bericht) {
 			berichtStore.setBerichtItem(bericht)
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(newPage) {
 			this.loading = true
 			fetch(
@@ -139,6 +163,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
