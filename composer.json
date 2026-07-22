@@ -26,8 +26,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"OCA\\ZaakAfhandelApp\\Tests\\": "tests/",
-			"OCA\\OpenRegister\\": "tests/Stubs/"
+			"OCA\\ZaakAfhandelApp\\Tests\\": "tests/"
 		}
 	},
 	"scripts": {
