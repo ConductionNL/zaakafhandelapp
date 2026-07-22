@@ -56,10 +56,18 @@ if ($autoloader !== null && is_dir(__DIR__.'/../vendor/nextcloud/ocp/OCP') === t
 // nextcloud/ocp stub package registered above, and the OpenRegister classes the
 // ZGW services type-hint (ObjectEntity, ObjectService, RegisterMapper,
 // SchemaMapper, Schema, CustomValidationException) are resolved from the
-// lightweight, signature-matching stubs under tests/Stubs/. The autoload-dev
-// PSR-4 entry in composer.json already maps OCA\OpenRegister\ to tests/Stubs/;
-// the explicit registration below is a belt-and-braces fallback for runs where
-// the optimised classmap has not been regenerated.
-if ($autoloader !== null && class_exists(\OCA\OpenRegister\Db\ObjectEntity::class) === false) {
+// lightweight, signature-matching stubs under tests/Stubs/.
+//
+// The OCA\OpenRegister\ => tests/Stubs/ PSR-4 mapping deliberately lives ONLY
+// here (test-time) and NOT in composer.json autoload-dev: a dev-built vendor/
+// (the shared dev instance builds with dev) would otherwise fold the stubs into
+// the runtime classmap and SHADOW the real OpenRegister classes instance-wide,
+// 500ing every app. See openregister#2036 / hermiq#21. Registering on the
+// loader here is lazy (findFile only resolves when a class is actually
+// requested), so ordering vs the OCP registration above is fine. We register
+// unconditionally — do NOT guard with class_exists(): a failed class_exists()
+// probe against another registered autoloader (e.g. phpstan's PharAutoloader)
+// poisons resolution so a subsequent addPsr4() no longer takes effect.
+if ($autoloader !== null) {
     $autoloader->addPsr4('OCA\\OpenRegister\\', __DIR__.'/Stubs/');
 }
