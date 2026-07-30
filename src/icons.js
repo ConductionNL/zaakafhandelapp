@@ -20,11 +20,14 @@ import AccountStarOutline from 'vue-material-design-icons/AccountStarOutline.vue
 import AccountTieOutline from 'vue-material-design-icons/AccountTieOutline.vue'
 import BookOpenVariantOutline from 'vue-material-design-icons/BookOpenVariantOutline.vue'
 import ChartBar from 'vue-material-design-icons/ChartBar.vue'
+import ChartBoxOutline from 'vue-material-design-icons/ChartBoxOutline.vue'
 import CheckCircleOutline from 'vue-material-design-icons/CheckCircleOutline.vue'
 import ClipboardCheckOutline from 'vue-material-design-icons/ClipboardCheckOutline.vue'
 import CogOutline from 'vue-material-design-icons/CogOutline.vue'
 import Email from 'vue-material-design-icons/Email.vue'
+import EmailOutline from 'vue-material-design-icons/EmailOutline.vue'
 import FileDocument from 'vue-material-design-icons/FileDocument.vue'
+import FileDocumentMultipleOutline from 'vue-material-design-icons/FileDocumentMultipleOutline.vue'
 import FolderAccountOutline from 'vue-material-design-icons/FolderAccountOutline.vue'
 import FolderCogOutline from 'vue-material-design-icons/FolderCogOutline.vue'
 import FolderOutline from 'vue-material-design-icons/FolderOutline.vue'
@@ -38,6 +41,7 @@ import MessageTextOutline from 'vue-material-design-icons/MessageTextOutline.vue
 import NoteTextOutline from 'vue-material-design-icons/NoteTextOutline.vue'
 import Phone from 'vue-material-design-icons/Phone.vue'
 import ScaleBalance from 'vue-material-design-icons/ScaleBalance.vue'
+import SitemapOutline from 'vue-material-design-icons/SitemapOutline.vue'
 import Timeline from 'vue-material-design-icons/Timeline.vue'
 import ViewDashboardOutline from 'vue-material-design-icons/ViewDashboardOutline.vue'
 
@@ -50,11 +54,14 @@ export default {
 	AccountTieOutline,
 	BookOpenVariantOutline,
 	ChartBar,
+	ChartBoxOutline,
 	CheckCircleOutline,
 	ClipboardCheckOutline,
 	CogOutline,
 	Email,
+	EmailOutline,
 	FileDocument,
+	FileDocumentMultipleOutline,
 	FolderAccountOutline,
 	FolderCogOutline,
 	FolderOutline,
@@ -68,6 +75,7 @@ export default {
 	NoteTextOutline,
 	Phone,
 	ScaleBalance,
+	SitemapOutline,
 	Timeline,
 	ViewDashboardOutline,
 }

@@ -431,7 +431,7 @@
 					{
 						"id": "taken",
 						"label": "Tasks",
-						"icon": "icon-checkmark",
+						"icon": "FormatListChecks",
 						"component": "ZaakTakenTab",
 						"order": 20,
 						"_note": "STUB (ADR-049 Phase-4): parent-zaak taken already render in the detail body (widget zaak-taken). api/taken (TakenController->objectService) forwards ?zaak=@objectId (taak.zaak=@objectId proven by the body list). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
@@ -439,7 +439,7 @@
 					{
 						"id": "rollen",
 						"label": "Roles",
-						"icon": "icon-user-admin",
+						"icon": "AccountKeyOutline",
 						"component": "ZaakRollenTab",
 						"order": 30,
 						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/rollen exists but RollenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped. OR api/objects/rollen?zaak=@objectId IS reachable (rol.zaak=@objectId proven by the Roles summaryAggregate). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
@@ -447,7 +447,7 @@
 					{
 						"id": "documenten",
 						"label": "Documents",
-						"icon": "icon-files",
+						"icon": "FileDocumentMultipleOutline",
 						"component": "ZaakDocumentenTab",
 						"order": 40,
 						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/zaakinformatieobjecten exists but ZaakInformatieObjectenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped. Parent-zaak documents already render in the detail body (widget zaak-documenten). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
@@ -455,7 +455,7 @@
 					{
 						"id": "besluiten",
 						"label": "Decisions",
-						"icon": "icon-checkmark",
+						"icon": "Gavel",
 						"order": 50,
 						"widgets": [
 							{
@@ -480,7 +480,7 @@
 					{
 						"id": "berichten",
 						"label": "Messages",
-						"icon": "icon-mail",
+						"icon": "EmailOutline",
 						"component": "ZaakBerichtenTab",
 						"order": 60,
 						"_note": "STUB (ADR-049 Phase-4): api/berichten (BerichtenController->objectService) forwards request params but a bericht.zaak field is UNVERIFIED — the schema is seeded externally (not in-repo), bericht is absent from the body/summaryAggregates, and this relation runs through klantcontact, not a direct zaak field. Endpoint-not-built for a parent-zaak filter; also no object-table sidebar-tab renderer in w3 CnObjectSidebar."
@@ -488,7 +488,7 @@
 					{
 						"id": "resultaten",
 						"label": "Results",
-						"icon": "icon-checkmark",
+						"icon": "ChartBoxOutline",
 						"component": "ZaakResultatenTab",
 						"order": 70,
 						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/resultaten exists but ResultatenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped. Parent-zaak results already render in the detail body (widget zaak-resultaten). Not dissolved: no object-table sidebar-tab renderer in w3 CnObjectSidebar."
@@ -496,7 +496,7 @@
 					{
 						"id": "statussen",
 						"label": "Statuses",
-						"icon": "icon-history",
+						"icon": "SitemapOutline",
 						"component": "ZaakStatussenTab",
 						"order": 80,
 						"_note": "STUB (ADR-049 Phase-4): ZGW api/zrc/statussen exists but StatusenController::index calls CallService->index with no query forwarding, so a ?zaak filter is dropped; a status.zaak field is also unverified (status absent from body/summaryAggregates). Endpoint-not-built for a parent-zaak filter; also no object-table sidebar-tab renderer in w3 CnObjectSidebar."
