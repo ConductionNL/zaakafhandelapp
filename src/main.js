@@ -22,6 +22,7 @@ import bundledManifest from './manifest.json'
 import menuLayout from './menu-layout.json'
 import customComponents from './customComponents.js'
 import registry from './registry.js'
+import appIcons from './icons.js'
 import { initializeStores } from './store/store.js'
 import { routesFromManifest, registerRouter } from './router/index.js'
 import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip.js'
@@ -44,7 +45,7 @@ Vue.use(VueRouter)
 Vue.directive('tooltip', Tooltip)
 
 // Register library-side icon set + lib translations once at bootstrap.
-registerIcons()
+registerIcons(appIcons)
 try {
 	registerTranslations()
 } catch (e) {
