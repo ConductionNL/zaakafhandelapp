@@ -29,6 +29,41 @@ class Application extends App implements IBootstrap
     public const APP_ID = 'zaakafhandelapp';
 
     /**
+     * OpenRegister object-lifecycle events ZaakRegisterEventListener observes.
+     *
+     * @var array<int,string>
+     */
+    private const OBJECT_EVENTS = [
+        \OCA\OpenRegister\Event\ObjectCreatedEvent::class,
+        \OCA\OpenRegister\Event\ObjectUpdatedEvent::class,
+        \OCA\OpenRegister\Event\ObjectDeletedEvent::class,
+        \OCA\OpenRegister\Event\ObjectCreatingEvent::class,
+        \OCA\OpenRegister\Event\ObjectUpdatingEvent::class,
+        \OCA\OpenRegister\Event\ObjectDeletingEvent::class,
+    ];
+
+    /**
+     * Schema slugs ZaakRegisterEventListener acts on.
+     *
+     * The union of every slug tested by handleObjectCreating/Created/
+     * Updating/Updated/Deleted, read off ZGWRegistryService::SCHEMAS — the
+     * single hardcoded source those handlers compare against. Slug matching in
+     * OpenRegister's subscription is case-insensitive, so the lowercase
+     * `zaaktypeinformatieobjecttype` here still resolves the instance's
+     * `zaaktypeInformatieobjecttype` schema.
+     *
+     * @var array<int,string>
+     */
+    private const ZGW_SCHEMAS = [
+        'zaak',
+        'status',
+        'besluit',
+        'zaakinformatieobject',
+        'besluitinformatieobject',
+        'zaaktypeinformatieobjecttype',
+    ];
+
+    /**
      * Constructor
      *
      * @param array $urlParams
@@ -47,31 +82,70 @@ class Application extends App implements IBootstrap
         $context->registerDashboardWidget(PersonenWidget::class);
         $context->registerDashboardWidget(OrganisatiesWidget::class);
 
-        $context->registerEventListener(
-            \OCA\OpenRegister\Event\ObjectCreatedEvent::class,
-            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
-        );
-        $context->registerEventListener(
-            \OCA\OpenRegister\Event\ObjectUpdatedEvent::class,
-            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
-        );
-        $context->registerEventListener(
-            \OCA\OpenRegister\Event\ObjectDeletedEvent::class,
-            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
-        );
-        $context->registerEventListener(
-            \OCA\OpenRegister\Event\ObjectCreatingEvent::class,
-            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
-        );
-        $context->registerEventListener(
-            \OCA\OpenRegister\Event\ObjectUpdatingEvent::class,
-            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
-        );
-        $context->registerEventListener(
-            \OCA\OpenRegister\Event\ObjectDeletingEvent::class,
-            \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class
-        );
+        // ZGW object-lifecycle observer. Every handler in
+        // ZaakRegisterEventListener opens by resolving the written object's
+        // schema slug and comparing it against ZGWRegistryService's hardcoded
+        // SCHEMAS map; the union of every slug any handler tests for is
+        // declared here so an unrelated app's object write no longer
+        // constructs the listener (nor its six injected services) at all.
+        //
+        // Registers are deliberately NOT declared: the listener never inspects
+        // the register, and ZGWRegistryService's register slugs (zaken /
+        // documenten / besluiten / catalogi) resolve to nothing on a stock
+        // instance — declaring them would be an outage, not a narrowing.
+        //
+        // The in-handler `$slug === $this->registry->get*Schema()` guards stay
+        // in place as defence in depth.
+        foreach (self::OBJECT_EVENTS as $event) {
+            $this->registerFilteredObjectListener(
+                context: $context,
+                event: $event,
+                listener: \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class,
+                registers: null,
+                schemas: self::ZGW_SCHEMAS
+            );
+        }
     }//end register()
+
+    /**
+     * Register an object-lifecycle listener that declares its interest up front.
+     *
+     * OpenRegister's `ObjectEventSubscription` records the register/schema slugs
+     * a listener reacts to and routes dispatches through a single shared proxy,
+     * so an uninterested listener is neither constructed nor invoked. When
+     * OpenRegister is absent — ZaakAfhandelApp carries no hard dependency on it
+     * — this degrades to the plain global registration it replaced, which is
+     * exactly the behaviour every listener had before.
+     *
+     * @param IRegistrationContext   $context   Registration context.
+     * @param string                 $event     OpenRegister event class name.
+     * @param string                 $listener  Listener class name.
+     * @param array<int,string>|null $registers Register slugs, or null for all.
+     * @param array<int,string>|null $schemas   Schema slugs, or null for all.
+     *
+     * @return void
+     */
+    private function registerFilteredObjectListener(
+        IRegistrationContext $context,
+        string $event,
+        string $listener,
+        ?array $registers,
+        ?array $schemas
+    ): void {
+        $subscription = '\\OCA\\OpenRegister\\Event\\ObjectEventSubscription';
+        if (class_exists($subscription) === true) {
+            $subscription::register(
+                context: $context,
+                event: $event,
+                listener: $listener,
+                registers: $registers,
+                schemas: $schemas
+            );
+            return;
+        }
+
+        $context->registerEventListener(event: $event, listener: $listener);
+    }//end registerFilteredObjectListener()
 
     /**
      * Boot the application.
