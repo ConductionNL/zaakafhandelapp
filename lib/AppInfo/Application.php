@@ -6,6 +6,7 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCA\ZaakAfhandelApp\Dashboard\ZakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\TakenWidget;
 use OCA\ZaakAfhandelApp\Dashboard\OpenZakenWidget;
@@ -81,6 +82,74 @@ class Application extends App implements IBootstrap
         $context->registerDashboardWidget(ContactmomentenWidget::class);
         $context->registerDashboardWidget(PersonenWidget::class);
         $context->registerDashboardWidget(OrganisatiesWidget::class);
+    }//end register()
+
+    /**
+     * Register an object-lifecycle listener that declares its interest up front.
+     *
+     * OpenRegister's `ObjectEventSubscription` records the register/schema slugs
+     * a listener reacts to and routes dispatches through a single shared proxy,
+     * so an uninterested listener is neither constructed nor invoked. When
+     * OpenRegister is absent — ZaakAfhandelApp carries no hard dependency on it
+     * — this degrades to the plain global registration it replaced, which is
+     * exactly the behaviour every listener had before.
+     *
+     * This MUST be called from boot(), never from register(). Nextcloud enables
+     * each app's autoloader immediately before calling that app's own
+     * register(), so during register() OpenRegister's classes are only
+     * autoloadable to apps that register after it — the class_exists() guard
+     * below would silently resolve to false purely because of this app's
+     * position in the enabled-app list, and the unfiltered fallback would look
+     * identical to a working narrowing. boot() runs only after every app's
+     * register() has completed, so the guard resolves regardless of ordering.
+     *
+     * @param IEventDispatcher       $dispatcher The live event dispatcher.
+     * @param string                 $event      OpenRegister event class name.
+     * @param string                 $listener   Listener class name.
+     * @param array<int,string>|null $registers  Register slugs, or null for all.
+     * @param array<int,string>|null $schemas    Schema slugs, or null for all.
+     *
+     * @return void
+     */
+    private function registerFilteredObjectListener(
+        IEventDispatcher $dispatcher,
+        string $event,
+        string $listener,
+        ?array $registers,
+        ?array $schemas
+    ): void {
+        $subscription = '\\OCA\\OpenRegister\\Event\\ObjectEventSubscription';
+        if (class_exists($subscription) === true) {
+            $subscription::subscribe(
+                dispatcher: $dispatcher,
+                event: $event,
+                listener: $listener,
+                registers: $registers,
+                schemas: $schemas
+            );
+            return;
+        }
+
+        // Loud on purpose. This fallback is correct but UNFILTERED, and while it
+        // was silent it was indistinguishable from a working narrowing.
+        \OCP\Server::get(\Psr\Log\LoggerInterface::class)->warning(
+            'OpenRegister ObjectEventSubscription unavailable: '.$listener
+            .' fell back to an UNFILTERED registration for '.$event
+            .' and will be invoked on every object write instance-wide.',
+            ['app' => self::APP_ID]
+        );
+
+        $dispatcher->addServiceListener($event, $listener);
+    }//end registerFilteredObjectListener()
+
+    /**
+     * Boot the application.
+     *
+     * @param IBootContext $context The boot context.
+     */
+    public function boot(IBootContext $context): void
+    {
+        $dispatcher = $context->getServerContainer()->get(IEventDispatcher::class);
 
         // ZGW object-lifecycle observer. Every handler in
         // ZaakRegisterEventListener opens by resolving the written object's
@@ -98,64 +167,12 @@ class Application extends App implements IBootstrap
         // in place as defence in depth.
         foreach (self::OBJECT_EVENTS as $event) {
             $this->registerFilteredObjectListener(
-                context: $context,
+                dispatcher: $dispatcher,
                 event: $event,
                 listener: \OCA\ZaakAfhandelApp\EventListener\ZaakRegisterEventListener::class,
                 registers: null,
                 schemas: self::ZGW_SCHEMAS
             );
         }
-    }//end register()
-
-    /**
-     * Register an object-lifecycle listener that declares its interest up front.
-     *
-     * OpenRegister's `ObjectEventSubscription` records the register/schema slugs
-     * a listener reacts to and routes dispatches through a single shared proxy,
-     * so an uninterested listener is neither constructed nor invoked. When
-     * OpenRegister is absent — ZaakAfhandelApp carries no hard dependency on it
-     * — this degrades to the plain global registration it replaced, which is
-     * exactly the behaviour every listener had before.
-     *
-     * @param IRegistrationContext   $context   Registration context.
-     * @param string                 $event     OpenRegister event class name.
-     * @param string                 $listener  Listener class name.
-     * @param array<int,string>|null $registers Register slugs, or null for all.
-     * @param array<int,string>|null $schemas   Schema slugs, or null for all.
-     *
-     * @return void
-     */
-    private function registerFilteredObjectListener(
-        IRegistrationContext $context,
-        string $event,
-        string $listener,
-        ?array $registers,
-        ?array $schemas
-    ): void {
-        $subscription = '\\OCA\\OpenRegister\\Event\\ObjectEventSubscription';
-        if (class_exists($subscription) === true) {
-            $subscription::register(
-                context: $context,
-                event: $event,
-                listener: $listener,
-                registers: $registers,
-                schemas: $schemas
-            );
-            return;
-        }
-
-        $context->registerEventListener(event: $event, listener: $listener);
-    }//end registerFilteredObjectListener()
-
-    /**
-     * Boot the application.
-     *
-     * @param IBootContext $context The boot context.
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $context is required by IBootstrap::boot();
-     *   this app has no boot-time logic but must implement the interface method.
-     */
-    public function boot(IBootContext $context): void
-    {
     }//end boot()
 }//end class
