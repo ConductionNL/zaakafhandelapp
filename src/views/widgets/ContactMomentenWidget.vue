@@ -40,7 +40,7 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 				</NcActions>
 			</template>
 			<template #footer>
-				<NcButton type="primary" @click="openModal">
+				<NcButton variant="primary" @click="openModal">
 					<template #icon>
 						<Plus :size="20" />
 					</template>

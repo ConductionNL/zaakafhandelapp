@@ -3,7 +3,7 @@
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="search"
+					v-model="search"
 					:show-trailing-button="search !== ''"
 					label="Search"
 					class="searchField"

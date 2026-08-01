@@ -20,7 +20,7 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</NcEmptyContent>
 			</template>
 			<template #footer>
-				<NcButton type="primary" @click="openModal">
+				<NcButton variant="primary" @click="openModal">
 					<template #icon>
 						<Plus :size="20" />
 					</template>

@@ -11,7 +11,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 		:close-on-click-outside="false"
 		@closing="closeModal">
 		<div class="searchContainer">
-			<NcTextField :value.sync="query"
+			<NcTextField v-model="query"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Search contacts')"
 				maxlength="255"
@@ -19,7 +19,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				@keydown.enter="search">
 				<Magnify :size="20" />
 			</NcTextField>
-			<NcButton type="primary"
+			<NcButton variant="primary"
 				:disabled="loading || !query"
 				class="searchButton"
 				@click="search">
@@ -76,7 +76,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal">
+			<NcButton variant="secondary" @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>

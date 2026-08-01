@@ -132,7 +132,6 @@ import Cog from 'vue-material-design-icons/Cog.vue'
 
 export default {
 	name: 'MainMenu',
-	emits: ['open-settings'],
 	components: {
 		NcAppNavigation,
 		NcAppNavigationList,
@@ -151,6 +150,7 @@ export default {
 		BadgeAccountOutline,
 		Cog,
 	},
+	emits: ['open-settings'],
 }
 </script>
 <style>

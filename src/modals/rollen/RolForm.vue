@@ -23,8 +23,8 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<NcTextField
+					v-model="rolItem.betrokkene"
 					:disabled="loading"
-					:value.sync="rolItem.betrokkene"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Involved party (URL)')" />
 
@@ -37,21 +37,21 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<NcTextField
+					v-model="rolItem.afwijkendeNaamBetrokkene"
 					:disabled="loading"
-					:value.sync="rolItem.afwijkendeNaamBetrokkene"
 					maxlength="625"
 					:label="t('zaakafhandelapp', 'Deviating name involved party')" />
 
 				<NcTextField
+					v-model="rolItem.roltype"
 					:disabled="loading"
-					:value.sync="rolItem.roltype"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Role type')"
 					required />
 
 				<NcTextArea
+					v-model="rolItem.roltoelichting"
 					:disabled="loading"
-					:value.sync="rolItem.roltoelichting"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Role explanation')"
 					:error="!rolItem.roltoelichting" />
@@ -69,7 +69,7 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					|| !betrokkeneTypeOptions.value?.id
 					|| !rolItem.roltype
 					|| !rolItem.roltoelichting"
-				type="primary"
+				variant="primary"
 				@click="editRol()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

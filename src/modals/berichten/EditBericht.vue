@@ -17,73 +17,73 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 
 		<div v-if="!success" class="form-group">
 			<NcTextField
+				v-model="berichtItem.title"
 				:disabled="loading"
-				:value.sync="berichtItem.title"
 				:label="t('zaakafhandelapp', 'Title')" />
 
 			<NcTextField
+				v-model="berichtItem.onderwerp"
 				:disabled="loading"
-				:value.sync="berichtItem.onderwerp"
 				:label="t('zaakafhandelapp', 'Subject')" />
 
 			<NcTextArea
+				v-model="berichtItem.berichttekst"
 				:disabled="loading"
-				:value.sync="berichtItem.berichttekst"
 				:label="t('zaakafhandelapp', 'Message text')" />
 
 			<NcTextArea
+				v-model="berichtItem.inhoud"
 				:disabled="loading"
-				:value.sync="berichtItem.inhoud"
 				:label="t('zaakafhandelapp', 'Content (base64)')" />
 
 			<NcTextField
+				v-model="berichtItem.bijlageType"
 				:disabled="loading"
-				:value.sync="berichtItem.bijlageType"
 				:label="t('zaakafhandelapp', 'Attachment type')" />
 
 			<NcTextField
+				v-model="berichtItem.soortGebruiker"
 				:disabled="loading"
-				:value.sync="berichtItem.soortGebruiker"
 				:label="t('zaakafhandelapp', 'User type')" />
 
 			<NcTextField
+				v-model="berichtItem.publicatieDatum"
 				:disabled="loading"
-				:value.sync="berichtItem.publicatieDatum"
 				:label="t('zaakafhandelapp', 'Publication date')" />
 
 			<NcTextField
+				v-model="berichtItem.aanmaakDatum"
 				:disabled="loading"
-				:value.sync="berichtItem.aanmaakDatum"
 				:label="t('zaakafhandelapp', 'Creation date')" />
 
 			<NcTextField
+				v-model="berichtItem.berichtType"
 				:disabled="loading"
-				:value.sync="berichtItem.berichtType"
 				:label="t('zaakafhandelapp', 'Message type')" />
 
 			<NcTextField
+				v-model="berichtItem.referentie"
 				:disabled="loading"
-				:value.sync="berichtItem.referentie"
 				:label="t('zaakafhandelapp', 'Reference')" />
 
 			<NcTextField
+				v-model="berichtItem.berichtID"
 				:disabled="loading"
-				:value.sync="berichtItem.berichtID"
 				:label="t('zaakafhandelapp', 'Message ID')" />
 
 			<NcTextField
+				v-model="berichtItem.batchID"
 				:disabled="loading"
-				:value.sync="berichtItem.batchID"
 				:label="t('zaakafhandelapp', 'Batch ID')" />
 
 			<NcTextField
 				:disabled="true"
-				:value="klantStore.klantItem?.id || berichtItem.gebruikerID"
+				:model-value="klantStore.klantItem?.id || berichtItem.gebruikerID"
 				:label="t('zaakafhandelapp', 'User ID')" />
 
 			<NcTextField
+				v-model="berichtItem.onderwerp"
 				:disabled="loading"
-				:value.sync="berichtItem.onderwerp"
 				:label="t('zaakafhandelapp', 'Order')" />
 		</div>
 
@@ -102,7 +102,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 			</NcButton>
 			<NcButton v-if="!success"
 				:disabled="loading"
-				type="primary"
+				variant="primary"
 				@click="editBericht()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import { reactive } from 'vue'
 import { translate as ncT } from '@nextcloud/l10n'
 import { CnAppRoot, CnObjectSidebar } from '@conduction/nextcloud-vue'
 import Modals from './modals/Modals.vue'
@@ -69,7 +69,7 @@ export default {
 	provide() {
 		return {
 			// Channel for CnDetailPage → host-rendered CnObjectSidebar.
-			// Vue.observable makes the plain object reactive for Vue 2.
+			// `reactive()` is Vue 3's replacement for `Vue.observable()`.
 			objectSidebarState: this.objectSidebarState,
 		}
 	},
@@ -126,7 +126,7 @@ export default {
 
 	data() {
 		return {
-			objectSidebarState: Vue.observable({
+			objectSidebarState: reactive({
 				active: false,
 				open: true,
 				objectType: '',

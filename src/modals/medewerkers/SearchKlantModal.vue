@@ -14,46 +14,46 @@ import { klantStore } from '../../store/store.js'
 		<div class="listContainer">
 			<div class="filtersContainer">
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Date of birth + last name') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="bsn"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'BSN') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="bedrijfsnaam"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Company name') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="kvkNummer"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Chamber of commerce number') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch v-model="klantenSearchType"
 					value="postcode_huisnummer"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Postal code + house number') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch v-model="klantenSearchType"
 					value="emailadres"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Email address') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch v-model="klantenSearchType"
 					value="telefoonnummer"
 					name="klantenSearchType"
 					type="radio">
@@ -68,21 +68,21 @@ import { klantStore } from '../../store/store.js'
 					:disabled="loading"
 					class="date-picker" />
 
-				<NcTextField :disabled="loading"
+				<NcTextField v-model="searchQuery"
+					:disabled="loading"
 					:label="t('zaakafhandelapp', 'Last name')"
 					maxlength="255"
-					class="searchField"
-					:value.sync="searchQuery" />
+					class="searchField" />
 			</div>
 			<div v-else>
-				<NcTextField :disabled="loading"
+				<NcTextField v-model="searchQuery"
+					:disabled="loading"
 					:label="searchLabel"
 					maxlength="255"
-					class="searchField"
-					:value.sync="searchQuery" />
+					class="searchField" />
 			</div>
 
-			<NcButton type="primary"
+			<NcButton variant="primary"
 				:disabled="loading
 					|| !searchQuery
 					// If the search type is geboortedatum_achternaam, the geboortedatum is required
@@ -134,7 +134,7 @@ import { klantStore } from '../../store/store.js'
 
 		<template #actions>
 			<NcButton
-				type="secondary"
+				variant="secondary"
 				@click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
@@ -142,7 +142,7 @@ import { klantStore } from '../../store/store.js'
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
-				type="primary"
+				variant="primary"
 				:disabled="!selectedKlant"
 				@click="addKlant()">
 				<template #icon>

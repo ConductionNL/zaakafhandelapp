@@ -300,7 +300,10 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 
 <script>
 // Components
-import { BTabs, BTab } from 'bootstrap-vue'
+// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
+// the app-local replacements; see src/components/tabs/Tabs.vue.
+import BTabs from '../../components/tabs/Tabs.vue'
+import BTab from '../../components/tabs/Tab.vue'
 import { NcActions, NcActionButton, NcEmptyContent, NcListItem, NcLoadingIcon, NcCounterBubble } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 
@@ -492,7 +495,11 @@ export default {
 
 		getName(klant) {
 			if (klant.type === 'persoon') {
-				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				// A template literal is NEVER nullish, so `?? 'onbekend'` was dead
+				// code and a missing part rendered the word "undefined". Join
+				// only the parts that are present.
+				return [klant.voornaam, klant.tussenvoegsel, klant.achternaam]
+					.filter(Boolean).join(' ') || 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'

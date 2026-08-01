@@ -13,32 +13,32 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<div v-if="!success" class="form-group">
-			<NcTextField :disabled="loading"
+			<NcTextField v-model="medewerkerItem.voornaam"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'First name')"
-				maxlength="255"
-				:value.sync="medewerkerItem.voornaam" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField v-model="medewerkerItem.tussenvoegsel"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Middle name')"
-				maxlength="255"
-				:value.sync="medewerkerItem.tussenvoegsel" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField v-model="medewerkerItem.achternaam"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Last name')"
-				maxlength="255"
-				:value.sync="medewerkerItem.achternaam" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField v-model="medewerkerItem.email"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Email address')"
-				maxlength="255"
-				:value.sync="medewerkerItem.email" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField v-model="medewerkerItem.telefoonnummer"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Phone number')"
 				minlength="10"
 				maxlength="11"
-				placeholder="06 12345678"
-				:value.sync="medewerkerItem.telefoonnummer" />
+				placeholder="06 12345678" />
 		</div>
 
 		<template #actions>
@@ -57,7 +57,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 			</NcButton>
 			<NcButton v-if="!success"
 				:disabled="loading"
-				type="primary"
+				variant="primary"
 				@click="editMedewerker()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

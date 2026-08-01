@@ -30,7 +30,7 @@ import { rolStore, navigationStore } from '../../store/store.js'
 			</NcButton>
 			<NcButton v-if="success === null"
 				:disabled="loading"
-				type="error"
+				variant="error"
 				@click="deleteRol()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

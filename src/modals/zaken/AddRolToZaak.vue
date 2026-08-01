@@ -28,7 +28,7 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 
 			<NcButton v-if="success === null"
 				:disabled="!rollen?.value || loading"
-				type="primary"
+				variant="primary"
 				@click="addRolToZaak">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

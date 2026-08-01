@@ -17,8 +17,8 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 
 		<div v-if="!success" class="form-group">
 			<NcTextField
+				v-model="taakItem.title"
 				:disabled="loading"
-				:value.sync="taakItem.title"
 				required
 				:label="t('zaakafhandelapp', 'Title')"
 				maxlength="255" />
@@ -39,19 +39,19 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 			</div>
 
 			<NcTextField
+				v-model="taakItem.onderwerp"
 				:disabled="loading"
-				:value.sync="taakItem.onderwerp"
 				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255" />
 
 			<NcTextArea
+				v-model="taakItem.toelichting"
 				:disabled="loading"
-				:value.sync="taakItem.toelichting"
 				:label="t('zaakafhandelapp', 'Explanation')" />
 
 			<div>
 				<NcCheckboxRadioSwitch v-if="clientType === 'both'"
-					:checked.sync="useMedewerkerInsteadOfKlant"
+					v-model="useMedewerkerInsteadOfKlant"
 					type="switch">
 					{{ t('zaakafhandelapp', 'Customer / employee') }}
 				</NcCheckboxRadioSwitch>
@@ -123,7 +123,7 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 					|| (clientType === 'both' && useMedewerkerInsteadOfKlant && !medewerkers.value?.id)
 					|| (clientType === 'klant' && !klanten.value?.id)
 					|| (clientType === 'medewerker' && !medewerkers.value?.id)"
-				type="primary"
+				variant="primary"
 				@click="editTaak()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

@@ -13,46 +13,46 @@ import { klantStore } from '../../store/store.js'
 		<div class="listContainer">
 			<div class="filtersContainer">
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Date of birth + last name') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'persoon' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="bsn"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'BSN') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="bedrijfsnaam"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Company name') }}
 				</NcCheckboxRadioSwitch>
 				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+					v-model="klantenSearchType"
 					value="kvkNummer"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Chamber of commerce number') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch v-model="klantenSearchType"
 					value="postcode_huisnummer"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Postal code + house number') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch v-model="klantenSearchType"
 					value="emailadres"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Email address') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch v-model="klantenSearchType"
 					value="telefoonnummer"
 					name="klantenSearchType"
 					type="radio">
@@ -67,32 +67,32 @@ import { klantStore } from '../../store/store.js'
 				<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
 					<NcDateTimePicker v-model="searchQuery[0]" :disabled="loading" class="date-picker" />
 
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[1]"
+						:disabled="loading"
 						:label="t('zaakafhandelapp', 'Last name')"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[1]" />
+						class="klantSearchField" />
 				</div>
 				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[0]"
+						:disabled="loading"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[0]" />
+						class="klantSearchField" />
 
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[1]"
+						:disabled="loading"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[1]" />
+						class="klantSearchField" />
 				</div>
 				<div v-else>
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[0]"
+						:disabled="loading"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[0]" />
+						class="klantSearchField" />
 				</div>
 			</div>
 
-			<NcButton type="primary"
+			<NcButton variant="primary"
 				:disabled="loading
 					|| !searchQuery[0]
 					|| klantenSearchType === 'geboortedatum_achternaam' && !searchQuery[1]
@@ -143,14 +143,14 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal()">
+			<NcButton variant="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
-				type="primary"
+				variant="primary"
 				:disabled="!selectedKlant"
 				@click="selectKlant()">
 				<template #icon>

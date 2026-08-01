@@ -22,7 +22,7 @@ import { zaakStore } from '../../store/store.js'
 				</NcEmptyContent>
 			</template>
 			<template #footer>
-				<NcButton type="primary" @click="search">
+				<NcButton variant="primary" @click="search">
 					<template #icon>
 						<OpenInApp :size="20" />
 					</template>

@@ -109,7 +109,7 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 						</h4>
 						<span v-if="zaakStore.zaakItem.zaaktype" class="zaakType">
 							{{ zaakType?.identificatie }}
-							<NcButton v-tooltip="'bekijken'" type="tertiary-no-background" @click="goToZaakType(zaakType)">
+							<NcButton title="bekijken" variant="tertiary-no-background" @click="goToZaakType(zaakType)">
 								<template #icon>
 									<OpenInApp :size="20" />
 								</template>
@@ -231,7 +231,10 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 
 <script>
 // Components
-import { BTabs, BTab } from 'bootstrap-vue'
+// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
+// the app-local replacements; see src/components/tabs/Tabs.vue.
+import BTabs from '../../components/tabs/Tabs.vue'
+import BTab from '../../components/tabs/Tab.vue'
 import { NcActions, NcActionButton, NcButton, NcListItem, NcEmptyContent, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 
 // Icons

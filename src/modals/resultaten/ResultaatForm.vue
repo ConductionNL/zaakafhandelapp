@@ -26,22 +26,22 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="resultaat.resultaattype"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Result type')"
 					maxlength="1000"
-					:value.sync="resultaat.resultaattype"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="resultaat.toelichting"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Explanation')"
-					maxlength="255"
-					:value.sync="resultaat.toelichting" />
+					maxlength="255" />
 			</div>
 
 			<NcButton v-if="success === null"
 				:disabled="loading
 					|| !zaak.value?.id
 					|| !resultaat.resultaattype"
-				type="primary"
+				variant="primary"
 				@click="saveResultaat()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

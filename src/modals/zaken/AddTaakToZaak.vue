@@ -28,7 +28,7 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 
 			<NcButton v-if="success === null"
 				:disabled="!taken?.value || loading"
-				type="primary"
+				variant="primary"
 				@click="addTaakToZaak">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

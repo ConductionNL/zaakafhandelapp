@@ -8,7 +8,7 @@ import { navigationStore, rolStore } from '../../store/store.js'
 		<ul>
 			<div class="listHeader">
 				<NcTextField
-					:value.sync="search"
+					v-model="search"
 					:show-trailing-button="search !== ''"
 					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"

@@ -22,4 +22,13 @@ Util::addStyle($appId, 'main');
 ?>
 
 
-<div id="content"></div>
+<?php
+// ⚠️ The host element is `zaakafhandelapp-app`, NOT `content`.
+//
+// Vue 2's `$mount('#content')` REPLACED the matched element, so this div being
+// a duplicate of Nextcloud's own `layout.user.php` `#content` wrapper never
+// showed. Vue 3's `mount()` renders INSIDE the match, so keeping the id would
+// make the app render inside core's wrapper and break the NcContent layout —
+// with no error. Renaming the host sidesteps which div wins entirely.
+?>
+<div id="zaakafhandelapp-app"></div>

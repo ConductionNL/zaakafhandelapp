@@ -31,13 +31,13 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			</template>
 			<template #footer>
 				<div class="searchContainer">
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchOrganisatie"
+						:disabled="loading"
 						:label="t('zaakafhandelapp', 'Search by company name')"
 						maxlength="255"
-						class="OrgSearchField"
-						:value.sync="searchOrganisatie" />
+						class="OrgSearchField" />
 
-					<NcButton type="primary"
+					<NcButton variant="primary"
 						:disabled="loading"
 						class="searchButton"
 						@click="search">

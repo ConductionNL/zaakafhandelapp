@@ -29,10 +29,10 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<div class="form-group">
-					<NcTextField :disabled="zaakLoading"
+					<NcTextField v-model="besluit.besluit"
+						:disabled="zaakLoading"
 						:label="t('zaakafhandelapp', 'Decision')"
 						maxlength="1000"
-						:value.sync="besluit.besluit"
 						required />
 				</div>
 			</div>
@@ -41,7 +41,7 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 				:disabled="loading
 					|| !zaak.value?.id
 					|| !besluit.besluit"
-				type="primary"
+				variant="primary"
 				@click="saveBesluit()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

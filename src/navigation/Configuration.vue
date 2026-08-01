@@ -5,7 +5,7 @@
 				<CogOutline :size="20" />
 			</template>
 		</NcAppNavigationItem>
-		<NcAppSettingsDialog :open.sync="settingsOpen" :show-navigation="true" :name="t('zaakafhandelapp', 'Application settings')">
+		<NcAppSettingsDialog v-model:open="settingsOpen" :show-navigation="true" :name="t('zaakafhandelapp', 'Application settings')">
 			<NcAppSettingsSection
 				v-if="!loading"
 				id="storage"
@@ -26,26 +26,26 @@
 					<Connection :size="20" />
 				</template>
 				<div class="wrapper">
-					<NcCheckboxRadioSwitch :checked.sync="configuration.external" type="switch">
+					<NcCheckboxRadioSwitch v-model="configuration.external" type="switch">
 						{{ t('forms', 'Enable sharing') }}
 					</NcCheckboxRadioSwitch>
 
 					<b>{{ t('zaakafhandelapp', 'Mongo DB') }}</b>
-					<NcTextField :value.sync="configuration.mongodbLocation"
+					<NcTextField v-model="configuration.mongodbLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.mongodbLocation !== ''"
 						@trailing-button-click="configuration.mongodbLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.mongodbKey"
+					<NcTextField v-model="configuration.mongodbKey"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.mongodbKey !== ''"
 						@trailing-button-click="configuration.mongodbKey = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.mongodbCluster"
+					<NcTextField v-model="configuration.mongodbCluster"
 						:label="t('zaakafhandelapp', 'The cluster')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.mongodbCluster !== ''"
@@ -55,21 +55,21 @@
 				</div>
 				<div class="wrapper">
 					<b>{{ t('zaakafhandelapp', 'Customers API') }}</b>
-					<NcTextField :value.sync="configuration.klantenLocation"
+					<NcTextField v-model="configuration.klantenLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.klantenLocation !== ''"
 						@trailing-button-click="configuration.klantenLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.klantenKey"
+					<NcTextField v-model="configuration.klantenKey"
 						:label="t('zaakafhandelapp', 'The credential (auth key)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.klantenKey !== ''"
 						@trailing-button-click="configuration.klantenKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.klantenAuthType"
+					<NcTextField v-model="configuration.klantenAuthType"
 						:label="t('zaakafhandelapp', 'Customer auth type')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.klantenAuthType !== ''"
@@ -79,21 +79,21 @@
 				</div>
 				<div class="wrapper">
 					<b>{{ t('zaakafhandelapp', 'Cases register') }}</b>
-					<NcTextField :value.sync="configuration.zrcLocation"
+					<NcTextField v-model="configuration.zrcLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.zrcLocation !== ''"
 						@trailing-button-click="configuration.zrcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.zrcKey"
+					<NcTextField v-model="configuration.zrcKey"
 						:label="t('zaakafhandelapp', 'The credential (auth key)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.zrcKey !== ''"
 						@trailing-button-click="configuration.zrcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.zrcAuthType"
+					<NcTextField v-model="configuration.zrcAuthType"
 						:label="t('zaakafhandelapp', 'Cases register auth type')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.zrcAuthType !== ''"
@@ -103,21 +103,21 @@
 				</div>
 				<div class="wrapper">
 					<b>{{ t('zaakafhandelapp', 'Objects register') }}</b>
-					<NcTextField :value.sync="configuration.orcLocation"
+					<NcTextField v-model="configuration.orcLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.orcLocation !== ''"
 						@trailing-button-click="configuration.orcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.orcKey"
+					<NcTextField v-model="configuration.orcKey"
 						:label="t('zaakafhandelapp', 'The credential (auth key)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.orcKey !== ''"
 						@trailing-button-click="configuration.orcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.orcAuthType"
+					<NcTextField v-model="configuration.orcAuthType"
 						:label="t('zaakafhandelapp', 'Objects register auth type')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.orcAuthType !== ''"
@@ -127,21 +127,21 @@
 				</div>
 				<div class="wrapper">
 					<b>{{ t('zaakafhandelapp', 'Documents register') }}</b>
-					<NcTextField :value.sync="configuration.drcLocation"
+					<NcTextField v-model="configuration.drcLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.drcLocation !== ''"
 						@trailing-button-click="configuration.drcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.drcKey"
+					<NcTextField v-model="configuration.drcKey"
 						:label="t('zaakafhandelapp', 'The credential (auth key)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.drcKey !== ''"
 						@trailing-button-click="configuration.drcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.drcAuthType"
+					<NcTextField v-model="configuration.drcAuthType"
 						:label="t('zaakafhandelapp', 'Documents register auth type')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.drcAuthType !== ''"
@@ -151,21 +151,21 @@
 				</div>
 				<div class="wrapper">
 					<b>{{ t('zaakafhandelapp', 'Decisions register') }}</b>
-					<NcTextField :value.sync="configuration.brcLocation"
+					<NcTextField v-model="configuration.brcLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.brcLocation !== ''"
 						@trailing-button-click="configuration.brcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.brcKey"
+					<NcTextField v-model="configuration.brcKey"
 						:label="t('zaakafhandelapp', 'The credential (auth key)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.brcKey !== ''"
 						@trailing-button-click="configuration.brcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.brcAuthType"
+					<NcTextField v-model="configuration.brcAuthType"
 						:label="t('zaakafhandelapp', 'Decisions register auth type')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.brcAuthType !== ''"
@@ -175,21 +175,21 @@
 				</div>
 				<div class="wrapper">
 					<b>{{ t('zaakafhandelapp', 'Case type catalogue') }}</b>
-					<NcTextField :value.sync="configuration.ztcLocation"
+					<NcTextField v-model="configuration.ztcLocation"
 						:label="t('zaakafhandelapp', 'The location (URL)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.ztcLocation !== ''"
 						@trailing-button-click="configuration.ztcLocation = ''">
 						<Web :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.ztcKey"
+					<NcTextField v-model="configuration.ztcKey"
 						:label="t('zaakafhandelapp', 'The credential (auth key)')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.ztcKey !== ''"
 						@trailing-button-click="configuration.ztcKey = ''">
 						<Lock :size="20" />
 					</NcTextField>
-					<NcTextField :value.sync="configuration.ztcAuthType"
+					<NcTextField v-model="configuration.ztcAuthType"
 						:label="t('zaakafhandelapp', 'Case type catalogue auth type')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.ztcAuthType !== ''"
@@ -207,27 +207,27 @@
 					<OfficeBuildingOutline :size="20" />
 				</template>
 				<div class="wrapper">
-					<NcTextField :value.sync="configuration.organisationName"
+					<NcTextField v-model="configuration.organisationName"
 						:label="t('zaakafhandelapp', 'The name of your organisation')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.organisationName !== ''"
 						@trailing-button-click="configuration.organisationName = ''" />
-					<NcTextField :value.sync="configuration.organisationOIN"
+					<NcTextField v-model="configuration.organisationOIN"
 						:label="t('zaakafhandelapp', 'The OIN of your organisation')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.organisationOIN !== ''"
 						@trailing-button-click="configuration.organisationOIN = ''" />
-					<NcTextField :value.sync="configuration.organisationRSIN"
+					<NcTextField v-model="configuration.organisationRSIN"
 						:label="t('zaakafhandelapp', 'The RSIN of your organisation')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.organisationRSIN !== ''"
 						@trailing-button-click="configuration.organisationRSIN = ''" />
-					<NcTextField :value.sync="configuration.organisationKVK"
+					<NcTextField v-model="configuration.organisationKVK"
 						:label="t('zaakafhandelapp', 'The KVK of your organisation')"
 						trailing-button-icon="close"
 						:show-trailing-button="configuration.organisationKVK !== ''"
 						@trailing-button-click="configuration.organisationKVK = ''" />
-					<NcTextArea :value.sync="configuration.organisationPKI"
+					<NcTextArea v-model="configuration.organisationPKI"
 						:label="t('zaakafhandelapp', 'A PKI for your organisation')"
 						:placeholder="t('zaakafhandelapp', 'Your public PKI certificates here')"
 						helper-text="PKI certificates are used for connections on the FCS network" />
@@ -236,7 +236,7 @@
 			<NcButton
 				v-if="!loading"
 				:aria-label="t('zaakafhandelapp', 'Save')"
-				type="primary"
+				variant="primary"
 				wide
 				@click="saveConfig()">
 				<template #icon>
