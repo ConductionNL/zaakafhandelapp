@@ -38,7 +38,7 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 			</NcButton>
 			<NcButton v-if="success === null"
 				:disabled="loading"
-				type="error"
+				variant="error"
 				@click="deleteResultaat()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

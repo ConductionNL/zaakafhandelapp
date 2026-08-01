@@ -53,7 +53,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							<NcButton
 								:disabled="loading"
 								:loading="fetchLoading"
-								type="primary"
+								variant="primary"
 								@click="openSearchKlantModal('persoon')">
 								<template #icon>
 									<Plus :size="20" />
@@ -68,7 +68,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							<NcButton
 								:disabled="loading"
 								:loading="fetchLoading"
-								type="primary"
+								variant="primary"
 								@click="openSearchKlantModal('organisatie')">
 								<template #icon>
 									<Plus :size="20" />
@@ -83,7 +83,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							<NcButton
 								:disabled="loading"
 								:loading="fetchLoading"
-								type="primary"
+								variant="primary"
 								@click="klant = null">
 								<template #icon>
 									<Minus :size="20" />
@@ -103,7 +103,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</div>
 
 				<div v-if="!success" class="form-group">
-					<NcTextArea :value.sync="contactMoment.notitie"
+					<NcTextArea v-model="contactMoment.notitie"
 						:label="t('zaakafhandelapp', 'Note')"
 						:disabled="loading"
 						:loading="fetchLoading"
@@ -219,7 +219,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		<template #actions>
 			<NcButton
 				:disabled="loading || success"
-				type="secondary"
+				variant="secondary"
 				@click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
@@ -254,7 +254,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</NcActions>
 			<NcButton
 				v-if="!isView"
-				type="primary"
+				variant="primary"
 				:disabled="!contactMomenten[selectedContactMoment].klant || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment(selectedContactMoment)">
@@ -270,7 +270,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 <script>
 // Components
-import { BTabs, BTab } from 'bootstrap-vue'
+// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
+// the app-local replacements; see src/components/tabs/Tabs.vue.
+import BTabs from '../../components/tabs/Tabs.vue'
+import BTab from '../../components/tabs/Tab.vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
 import _ from 'lodash'
 

@@ -17,15 +17,17 @@
  *                      Output lands in
  *                      `docs/static/screenshots/tutorials/{user,admin}/`.
  *
- * Point at a running Nextcloud with NEXTCLOUD_URL (default
- * http://localhost:8080). `globalSetup` logs in once (admin/admin by
- * default; override with NC_ADMIN_USER / NC_ADMIN_PASS) and persists
- * the session to `tests/e2e/.auth/admin.json`; every spec reuses it via
- * `use.storageState`.
+ * Point at a running Nextcloud with PLAYWRIGHT_BASE_URL (or BASE_URL, which is
+ * what the shared ConductionNL quality workflow exports). There is deliberately
+ * NO default — see tests/e2e/base-url.ts. `globalSetup` logs in once
+ * (admin/admin by default; override with NC_ADMIN_USER / NC_ADMIN_PASS) and
+ * persists the session to `tests/e2e/.auth/admin.json`; every spec reuses it
+ * via `use.storageState`.
  */
 
 import { defineConfig, devices } from '@playwright/test'
 import * as path from 'path'
+import { resolveBaseUrl } from './tests/e2e/base-url'
 
 export default defineConfig({
 	testDir: './tests/e2e',
@@ -42,7 +44,7 @@ export default defineConfig({
 	outputDir: 'tests/e2e/test-results',
 
 	use: {
-		baseURL: process.env.NEXTCLOUD_URL || 'http://localhost:8080',
+		baseURL: resolveBaseUrl(),
 		storageState: path.resolve(__dirname, 'tests/e2e/.auth/admin.json'),
 		trace: 'on-first-retry',
 		screenshot: 'only-on-failure',

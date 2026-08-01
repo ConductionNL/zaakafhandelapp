@@ -12,7 +12,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		@closing="closeModalFromButton()">
 		<div v-if="!isView" class="tabContainer">
 			<div class="newTabButtonContainer">
-				<NcButton type="primary"
+				<NcButton variant="primary"
 					class="newTabButton"
 					:aria-label="t('zaakafhandelapp', 'New contact moment')"
 					@click="() => newTab()">
@@ -31,8 +31,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					<template #title>
 						{{ contactMomenten[i].klant ? getInitials(contactMomenten[i].klant) : 'Leeg' }}
 						<NcButton v-if="tabs.length > 1 && !success"
-							v-tooltip="'Sluiten'"
-							type="tertiary"
+							title="Sluiten"
+							variant="tertiary"
 							aria-label="Sluiten"
 							@click="closeTab(i)">
 							<template #icon>
@@ -89,7 +89,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<div>
 									<NcButton :disabled="loading"
 										:loading="fetchLoading"
-										type="primary"
+										variant="primary"
 										@click="openSearchKlantModal('persoon')">
 										<template #icon>
 											<Plus :size="20" />
@@ -103,7 +103,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<div>
 									<NcButton :disabled="loading"
 										:loading="fetchLoading"
-										type="primary"
+										variant="primary"
 										@click="openSearchKlantModal('organisatie')">
 										<template #icon>
 											<Plus :size="20" />
@@ -117,7 +117,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 								<div>
 									<NcButton :disabled="loading"
 										:loading="fetchLoading"
-										type="primary"
+										variant="primary"
 										@click="removeKlant(i)">
 										<template #icon>
 											<Minus :size="20" />
@@ -137,7 +137,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						</div>
 
 						<div class="form-group">
-							<NcTextArea :value.sync="contactMomenten[i].notitie"
+							<NcTextArea v-model="contactMomenten[i].notitie"
 								label="Notitie"
 								:disabled="loading"
 								:loading="fetchLoading"
@@ -346,7 +346,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<div>
 							<NcButton :disabled="loading"
 								:loading="fetchLoading"
-								type="primary"
+								variant="primary"
 								@click="openSearchKlantModal('persoon')">
 								<template #icon>
 									<Plus :size="20" />
@@ -360,7 +360,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<div>
 							<NcButton :disabled="loading"
 								:loading="fetchLoading"
-								type="primary"
+								variant="primary"
 								@click="openSearchKlantModal('organisatie')">
 								<template #icon>
 									<Plus :size="20" />
@@ -374,7 +374,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						<div>
 							<NcButton :disabled="loading"
 								:loading="fetchLoading"
-								type="primary"
+								variant="primary"
 								@click="klant = null">
 								<template #icon>
 									<Minus :size="20" />
@@ -394,7 +394,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</div>
 
 				<div v-if="!success" class="form-group">
-					<NcTextArea :value.sync="contactMoment.notitie"
+					<NcTextArea v-model="contactMoment.notitie"
 						label="Notitie"
 						:disabled="loading"
 						:loading="fetchLoading"
@@ -523,7 +523,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				@close-modal="closeSearchKlantModal" />
 		</div>
 		<template #actions>
-			<NcButton :disabled="loading || success" type="secondary" @click="closeModal()">
+			<NcButton :disabled="loading || success" variant="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
@@ -543,7 +543,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Medewerker taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een klant taak kan alleen worden aangemaakt als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					title="Een klant taak kan alleen worden aangemaakt als het contactmoment opgeslagen is en er een klant is geselecteerd."
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id }"
 					:close-after-click="true"
 					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
@@ -554,7 +554,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					Klant taak aanmaken
 				</NcActionButton>
 				<NcActionButton v-if="!isView"
-					v-tooltip="'Een zaak kan alleen worden gestart als het contactmoment opgeslagen is en er een klant is geselecteerd.'"
+					title="Een zaak kan alleen worden gestart als het contactmoment opgeslagen is en er een klant is geselecteerd."
 					:class="{ 'actionButtonDisabled': !contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id }"
 					:close-after-click="true"
 					:disabled="!contactMomenten[selectedContactMoment]?.klant?.id || !contactMomenten[selectedContactMoment]?.id"
@@ -576,7 +576,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			</NcActions>
 
 			<NcButton v-if="!isView"
-				type="primary"
+				variant="primary"
 				:disabled="!contactMomenten[selectedContactMoment]?.klant || !medewerkers.values[selectedContactMoment - 1]?.id || !channels.values[selectedContactMoment - 1]?.value || loading || success || fetchLoading"
 				:loading="loading"
 				@click="addContactMoment(selectedContactMoment)">
@@ -614,7 +614,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 <script>
 // Components
-import { BTabs, BTab } from 'bootstrap-vue'
+// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
+// the app-local replacements; see src/components/tabs/Tabs.vue.
+import BTabs from '../../components/tabs/Tabs.vue'
+import BTab from '../../components/tabs/Tab.vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcSelect } from '@nextcloud/vue'
 import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'

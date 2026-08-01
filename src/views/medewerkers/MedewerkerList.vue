@@ -7,7 +7,7 @@ import { navigationStore, medewerkerStore } from '../../store/store.js'
 	<NcAppContentList>
 		<ul>
 			<div class="listHeader">
-				<NcTextField :value.sync="search"
+				<NcTextField v-model="search"
 					:show-trailing-button="search !== ''"
 					:label="t('zaakafhandelapp', 'Search')"
 					class="searchField"

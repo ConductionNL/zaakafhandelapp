@@ -35,9 +35,9 @@ import { klantStore, navigationStore } from '../../store/store.js'
 						:label="t('zaakafhandelapp', 'Search by company name')"
 						maxlength="255"
 						class="OrgSearchField"
-						:value.sync="searchOrganisatie" />
+						v-model="searchOrganisatie" />
 
-					<NcButton type="primary"
+					<NcButton variant="primary"
 						:disabled="loading"
 						class="searchButton"
 						@click="search">

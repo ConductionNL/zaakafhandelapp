@@ -12,7 +12,7 @@
 					</NcNoteCard>
 
 					<NcButton
-						type="primary"
+						variant="primary"
 						@click="openLink('/index.php/settings/apps/organization/openregister', '_blank')">
 						<template #icon>
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
@@ -27,7 +27,7 @@
 						{{ t('zaakafhandelapp', 'It looks like you have selected an open register but it is not yet installed. this may cause problems. would you like to reset the setting?') }}
 					</NcNoteCard>
 					<NcButton
-						type="primary"
+						variant="primary"
 						@click="resetConfig()">
 						<template #icon>
 							<NcLoadingIcon v-if="loading || saving" :size="20" />
@@ -66,7 +66,7 @@
 							:disabled="loading || getDataProperty(objectType.id).loading" />
 
 						<NcButton
-							type="primary"
+							variant="primary"
 							:disabled="loading || saving || getDataProperty(objectType.id).loading || !getDataProperty(objectType.id).selectedSource?.value || getDataProperty(objectType.id).selectedSource?.value === 'openregister' && (!getDataProperty(objectType.id).selectedRegister?.value || !getDataProperty(objectType.id).selectedSchema?.value)"
 							@click="saveConfig(objectType.id)">
 							<template #icon>
@@ -78,7 +78,7 @@
 					</div>
 				</div>
 				<NcButton
-					type="primary"
+					variant="primary"
 					:disabled="saving"
 					@click="saveAll()">
 					<template #icon>

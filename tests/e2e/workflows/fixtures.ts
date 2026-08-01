@@ -37,9 +37,14 @@
 
 import { request, type APIRequestContext } from '@playwright/test'
 import * as path from 'path'
+import { resolveBaseUrl } from '../base-url'
 
 const STORAGE_STATE = path.resolve(__dirname, '..', '.auth', 'admin.json')
-const BASE = process.env.NEXTCLOUD_URL || 'http://localhost:8080'
+// ⚠️ No `|| 'http://localhost:8080'` fallback. THIS module writes: it creates
+// and deletes OpenRegister objects over the API, so an unset environment used
+// to seed fixtures into the SHARED dev container while the run reported green
+// against it. See tests/e2e/base-url.ts.
+const BASE = resolveBaseUrl()
 const OR = '/index.php/apps/openregister/api'
 const REGISTER = 'zaakafhandelapp'
 

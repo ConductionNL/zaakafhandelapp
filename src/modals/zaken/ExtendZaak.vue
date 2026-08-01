@@ -21,12 +21,12 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			{{ t('zaakafhandelapp', 'Extending the case shifts its planned and statutory deadlines forward by the chosen duration (Awb art. 4:14, verdaging — single use).') }}
 		</p>
 
-		<NcTextArea :value.sync="reden"
+		<NcTextArea v-model="reden"
 			:label="t('zaakafhandelapp', 'Reason for extension')"
 			:disabled="loading"
 			required />
 
-		<NcTextField :value.sync="durationDays"
+		<NcTextField v-model="durationDays"
 			type="number"
 			:label="maxDays ? t('zaakafhandelapp', 'Extension in days (max {max})', { max: maxDays }) : t('zaakafhandelapp', 'Extension in days')"
 			:disabled="loading"
@@ -34,13 +34,13 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			min="1" />
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal">
+			<NcButton variant="secondary" @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
-			<NcButton type="primary"
+			<NcButton variant="primary"
 				:disabled="loading || !reden.trim() || !validDuration"
 				@click="submit">
 				<template #icon>

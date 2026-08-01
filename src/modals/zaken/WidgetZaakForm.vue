@@ -26,26 +26,26 @@ import { navigationStore, zaakStore, zaakTypeStore, klantStore } from '../../sto
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
-					:value.sync="zaak.identificatie"
+					v-model="zaak.identificatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255"
-					:value.sync="zaak.omschrijving" />
+					v-model="zaak.omschrijving" />
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
-					:value.sync="zaak.bronorganisatie"
+					v-model="zaak.bronorganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
-					:value.sync="zaak.verantwoordelijkeOrganisatie"
+					v-model="zaak.verantwoordelijkeOrganisatie"
 					required />
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
-					:value.sync="zaak.startdatum"
+					v-model="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaakType"
 					v-model="zaakType.value"
@@ -67,15 +67,15 @@ import { navigationStore, zaakStore, zaakTypeStore, klantStore } from '../../sto
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Registration date')"
 					maxlength="255"
-					:value.sync="zaak.registratiedatum" />
+					v-model="zaak.registratiedatum" />
 				<NcTextArea :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Explanation')"
-					:value.sync="zaak.toelichting" />
+					v-model="zaak.toelichting" />
 			</div>
 
 			<NcButton v-if="success === null"
 				:disabled="loading || !zaak.identificatie || zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum"
-				type="primary"
+				variant="primary"
 				@click="saveZaak()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

@@ -300,7 +300,10 @@ import { navigationStore, klantStore, taakStore, berichtStore, zaakStore, contac
 
 <script>
 // Components
-import { BTabs, BTab } from 'bootstrap-vue'
+// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
+// the app-local replacements; see src/components/tabs/Tabs.vue.
+import BTabs from '../../components/tabs/Tabs.vue'
+import BTab from '../../components/tabs/Tab.vue'
 import { NcActions, NcActionButton, NcEmptyContent, NcListItem, NcLoadingIcon, NcCounterBubble } from '@nextcloud/vue'
 import { countries } from '../../data/countries.js'
 

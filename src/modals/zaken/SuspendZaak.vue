@@ -25,19 +25,19 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 		</p>
 
 		<NcTextArea v-if="!isSuspended"
-			:value.sync="reden"
+			v-model="reden"
 			:label="t('zaakafhandelapp', 'Reason for suspension')"
 			:disabled="loading"
 			required />
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal">
+			<NcButton variant="secondary" @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
-			<NcButton type="primary"
+			<NcButton variant="primary"
 				:disabled="loading || (!isSuspended && !reden.trim())"
 				@click="submit">
 				<template #icon>

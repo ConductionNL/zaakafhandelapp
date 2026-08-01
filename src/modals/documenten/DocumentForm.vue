@@ -30,13 +30,13 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 				<div class="form-group">
 					<NcTextField :label="t('zaakafhandelapp', 'Identification')"
 						maxlength="40"
-						:value.sync="document.identificatie"
+						v-model="document.identificatie"
 						required />
 
 					<NcTextField :label="t('zaakafhandelapp', 'Source organisation')"
 						minlength="1"
 						maxlength="9"
-						:value.sync="document.bronorganisatie"
+						v-model="document.bronorganisatie"
 						required />
 
 					<div>
@@ -49,7 +49,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 
 					<NcTextField :label="t('zaakafhandelapp', 'Title')"
 						maxlength="200"
-						:value.sync="document.titel"
+						v-model="document.titel"
 						required />
 
 					<NcSelect v-bind="vertrouwelijkheidaanduidingOptions"
@@ -59,48 +59,48 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 					<NcTextField :label="t('zaakafhandelapp', 'Author')"
 						minlength="1"
 						maxlength="200"
-						:value.sync="document.auteur"
+						v-model="document.auteur"
 						required />
 
 					<NcSelect v-bind="statusOptions"
 						v-model="statusOptions.value"
 						:input-label="t('zaakafhandelapp', 'Status')" />
 
-					<NcCheckboxRadioSwitch :checked.sync="document.inhoudIsVervallen">
+					<NcCheckboxRadioSwitch v-model="document.inhoudIsVervallen">
 						{{ t('zaakafhandelapp', 'Content expired') }}
 					</NcCheckboxRadioSwitch>
 
 					<NcTextField :label="t('zaakafhandelapp', 'Format')"
 						maxlength="255"
-						:value.sync="document.formaat" />
+						v-model="document.formaat" />
 
 					<NcTextField :label="t('zaakafhandelapp', 'Language')"
 						minlength="3"
 						maxlength="3"
-						:value.sync="document.taal"
+						v-model="document.taal"
 						required />
 
 					<NcTextField :label="t('zaakafhandelapp', 'File name')"
 						maxlength="255"
-						:value.sync="document.bestandsnaam" />
+						v-model="document.bestandsnaam" />
 
 					<NcTextField :label="t('zaakafhandelapp', 'Content')"
 						maxlength="255"
-						:value.sync="document.inhoud" />
+						v-model="document.inhoud" />
 
 					<NcInputField :label="t('zaakafhandelapp', 'File size')"
 						type="number"
 						min="0"
 						max="9223372036854776000"
-						:value.sync="document.bestandsomvang" />
+						v-model="document.bestandsomvang" />
 
 					<NcTextField :label="t('zaakafhandelapp', 'Link')"
 						maxlength="200"
-						:value.sync="document.link" />
+						v-model="document.link" />
 
 					<NcTextField :label="t('zaakafhandelapp', 'Description')"
 						maxlength="1000"
-						:value.sync="document.beschrijving" />
+						v-model="document.beschrijving" />
 
 					<div>
 						{{ t('zaakafhandelapp', 'Receipt date') }}
@@ -116,12 +116,12 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 							confirm />
 					</div>
 
-					<NcCheckboxRadioSwitch :checked.sync="document.indicatieGebruiksrecht">
+					<NcCheckboxRadioSwitch v-model="document.indicatieGebruiksrecht">
 						{{ t('zaakafhandelapp', 'Rights indication') }}
 					</NcCheckboxRadioSwitch>
 
 					<NcTextField :label="t('zaakafhandelapp', 'Appearance')"
-						:value.sync="document.verschijningsvorm" />
+						v-model="document.verschijningsvorm" />
 
 					<!--
                         TODO:
@@ -133,16 +133,16 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 						minlength="1"
 						maxlength="200"
 						required
-						:value.sync="document.informatieobjecttype" />
+						v-model="document.informatieobjecttype" />
 
 					<!-- <NcTextField label="trefwoorden"
-						:value.sync="document.trefwoorden" /> -->
+						v-model="document.trefwoorden" /> -->
 				</div>
 			</div>
 
 			<NcButton v-if="success === null"
 				:disabled="loading || !isValid()"
-				type="primary"
+				variant="primary"
 				@click="saveDocument()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

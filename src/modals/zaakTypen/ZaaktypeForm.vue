@@ -19,95 +19,95 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 
 			<div v-if="success === null" class="form-group">
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.identificatie"
+					v-model="zaaktype.identificatie"
 					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
 					required />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.omschrijving"
+					v-model="zaaktype.omschrijving"
 					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.omschrijvingGeneriek"
+					v-model="zaaktype.omschrijvingGeneriek"
 					:label="t('zaakafhandelapp', 'Generic description')"
 					maxlength="9"
 					required />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.vertrouwelijkheidaanduiding"
+					v-model="zaaktype.vertrouwelijkheidaanduiding"
 					:label="t('zaakafhandelapp', 'Confidentiality designation')"
 					maxlength="9"
 					required />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.doel"
+					v-model="zaaktype.doel"
 					:label="t('zaakafhandelapp', 'Goal')"
 					maxlength="9"
 					required />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.aanleiding"
+					v-model="zaaktype.aanleiding"
 					:label="t('zaakafhandelapp', 'Cause')"
 					required />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.toelichting"
+					v-model="zaaktype.toelichting"
 					:label="t('zaakafhandelapp', 'Explanation')"
 					maxlength="255" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.indicatieInternOfExtern"
+					v-model="zaaktype.indicatieInternOfExtern"
 					:label="t('zaakafhandelapp', 'Internal or external indication')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.handelingInitiator" :label="t('zaakafhandelapp', 'Action initiator')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.handelingInitiator" :label="t('zaakafhandelapp', 'Action initiator')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.onderwerp" :label="t('zaakafhandelapp', 'Subject')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.onderwerp" :label="t('zaakafhandelapp', 'Subject')" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.handelingBehandelaar"
+					v-model="zaaktype.handelingBehandelaar"
 					:label="t('zaakafhandelapp', 'Action handler')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.doorlooptijd" :label="t('zaakafhandelapp', 'Lead time')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.doorlooptijd" :label="t('zaakafhandelapp', 'Lead time')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.servicenorm" :label="t('zaakafhandelapp', 'Service standard')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.servicenorm" :label="t('zaakafhandelapp', 'Service standard')" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.opschortingEnAanhoudingMogelijk"
+					v-model="zaaktype.opschortingEnAanhoudingMogelijk"
 					:label="t('zaakafhandelapp', 'Suspension and stay possible')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.verlengingMogelijk" :label="t('zaakafhandelapp', 'Extension possible')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.verlengingMogelijk" :label="t('zaakafhandelapp', 'Extension possible')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.verlengingstermijn" :label="t('zaakafhandelapp', 'Extension term')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.verlengingstermijn" :label="t('zaakafhandelapp', 'Extension term')" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.publicatieIndicatie"
+					v-model="zaaktype.publicatieIndicatie"
 					:label="t('zaakafhandelapp', 'Publication indication')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.publicatietekst" :label="t('zaakafhandelapp', 'Publication text')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.publicatietekst" :label="t('zaakafhandelapp', 'Publication text')" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.productenOfDiensten"
+					v-model="zaaktype.productenOfDiensten"
 					:label="t('zaakafhandelapp', 'Products or services')" />
 
 				<NcTextField :disabled="loading"
-					:value.sync="zaaktype.selectielijstProcestype"
+					v-model="zaaktype.selectielijstProcestype"
 					:label="t('zaakafhandelapp', 'Selection list process type')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.referentieproces" :label="t('zaakafhandelapp', 'Reference process name')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.referentieproces" :label="t('zaakafhandelapp', 'Reference process name')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.catalogus" :label="t('zaakafhandelapp', 'Catalogue')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.catalogus" :label="t('zaakafhandelapp', 'Catalogue')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.beginGeldigheid" :label="t('zaakafhandelapp', 'Start of validity')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.beginGeldigheid" :label="t('zaakafhandelapp', 'Start of validity')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.eindeGeldigheid" :label="t('zaakafhandelapp', 'End of validity')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.eindeGeldigheid" :label="t('zaakafhandelapp', 'End of validity')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.beginObject" :label="t('zaakafhandelapp', 'Start of object')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.beginObject" :label="t('zaakafhandelapp', 'Start of object')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.eindeObject" :label="t('zaakafhandelapp', 'End of object')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.eindeObject" :label="t('zaakafhandelapp', 'End of object')" />
 
-				<NcTextField :disabled="loading" :value.sync="zaaktype.versiedatum" :label="t('zaakafhandelapp', 'Version date')" />
+				<NcTextField :disabled="loading" v-model="zaaktype.versiedatum" :label="t('zaakafhandelapp', 'Version date')" />
 			</div>
 
 			<NcButton v-if="success === null"
@@ -117,7 +117,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 					|| !zaaktype.doel
 					|| !zaaktype.aanleiding
 					|| loading"
-				type="primary"
+				variant="primary"
 				@click="saveZaakType()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

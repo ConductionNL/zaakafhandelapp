@@ -7,14 +7,14 @@ import { navigationStore, klantStore } from '../../store/store.js'
 	<NcAppSidebar
 		:name="t('zaakafhandelapp', 'Search')"
 		:subname="t('zaakafhandelapp', 'Search within your municipality')"
-		:active.sync="activeTab">
+		v-model:active="activeTab">
 		<NcAppSidebarTab id="search-tab"
 			:name="t('zaakafhandelapp', 'Search')"
 			:order="1">
 			<template #icon>
 				<Magnify :size="20" />
 			</template>
-			<NcTextField :value.sync="klantenSearch"
+			<NcTextField v-model="klantenSearch"
 				:label="t('zaakafhandelapp', 'Search')" />
 
 			<div v-if="klantenList && !loading">
@@ -70,46 +70,46 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				<AccountGroupOutline :size="20" />
 			</template>
 
-			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+			<NcCheckboxRadioSwitch v-model="klantenSearchType"
 				value="voornaam"
 				name="klantenSearchType"
 				type="radio">
 				{{ t('zaakafhandelapp', 'First name') }}
 			</NcCheckboxRadioSwitch>
-			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+			<NcCheckboxRadioSwitch v-model="klantenSearchType"
 				disabled
 				value="geboortedatum_achternaam"
 				name="klantenSearchType"
 				type="radio">
 				{{ t('zaakafhandelapp', 'Date of birth + last name') }}
 			</NcCheckboxRadioSwitch>
-			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+			<NcCheckboxRadioSwitch v-model="klantenSearchType"
 				disabled
 				value="postcode_huisnummer"
 				name="klantenSearchType"
 				type="radio">
 				{{ t('zaakafhandelapp', 'Postal code + house number') }}
 			</NcCheckboxRadioSwitch>
-			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+			<NcCheckboxRadioSwitch v-model="klantenSearchType"
 				value="emailadres"
 				name="klantenSearchType"
 				type="radio">
 				{{ t('zaakafhandelapp', 'Email address') }}
 			</NcCheckboxRadioSwitch>
-			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+			<NcCheckboxRadioSwitch v-model="klantenSearchType"
 				value="telefoonnummer"
 				name="klantenSearchType"
 				type="radio">
 				{{ t('zaakafhandelapp', 'Phone number') }}
 			</NcCheckboxRadioSwitch>
-			<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+			<NcCheckboxRadioSwitch v-model="klantenSearchType"
 				value="bsn"
 				name="klantenSearchType"
 				type="radio">
 				{{ t('zaakafhandelapp', 'BSN') }}
 			</NcCheckboxRadioSwitch>
 
-			<NcTextField :value.sync="personenSearch"
+			<NcTextField v-model="personenSearch"
 				:label="t('zaakafhandelapp', 'Search')" />
 
 			<div v-if="klantenList && !personenLoading && !loading">
@@ -164,7 +164,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 			<template #icon>
 				<OfficeBuildingOutline :size="20" />
 			</template>
-			<NcTextField :value.sync="organisatiesSearch"
+			<NcTextField v-model="organisatiesSearch"
 				:label="t('zaakafhandelapp', 'Search')" />
 
 			<div v-if="klantenList && !organisatiesLoading && !loading">

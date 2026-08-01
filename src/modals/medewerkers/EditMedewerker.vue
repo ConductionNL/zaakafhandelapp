@@ -16,29 +16,29 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'First name')"
 				maxlength="255"
-				:value.sync="medewerkerItem.voornaam" />
+				v-model="medewerkerItem.voornaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Middle name')"
 				maxlength="255"
-				:value.sync="medewerkerItem.tussenvoegsel" />
+				v-model="medewerkerItem.tussenvoegsel" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Last name')"
 				maxlength="255"
-				:value.sync="medewerkerItem.achternaam" />
+				v-model="medewerkerItem.achternaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Email address')"
 				maxlength="255"
-				:value.sync="medewerkerItem.email" />
+				v-model="medewerkerItem.email" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Phone number')"
 				minlength="10"
 				maxlength="11"
 				placeholder="06 12345678"
-				:value.sync="medewerkerItem.telefoonnummer" />
+				v-model="medewerkerItem.telefoonnummer" />
 		</div>
 
 		<template #actions>
@@ -57,7 +57,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 			</NcButton>
 			<NcButton v-if="!success"
 				:disabled="loading"
-				type="primary"
+				variant="primary"
 				@click="editMedewerker()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

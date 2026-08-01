@@ -26,27 +26,27 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'First name')"
 				maxlength="255"
-				:value.sync="klantItem.voornaam" />
+				v-model="klantItem.voornaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Second first name')"
 				maxlength="255"
-				:value.sync="klantItem.tweedeVoornaam" />
+				v-model="klantItem.tweedeVoornaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Middle name')"
 				maxlength="255"
-				:value.sync="klantItem.tussenvoegsel" />
+				v-model="klantItem.tussenvoegsel" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Last name')"
 				maxlength="255"
-				:value.sync="klantItem.achternaam" />
+				v-model="klantItem.achternaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'BSN')"
 				maxlength="255"
-				:value.sync="klantItem.bsn" />
+				v-model="klantItem.bsn" />
 			<div>
 				<p>{{ t('zaakafhandelapp', 'Date of birth') }}</p>
 				<NcDateTimePicker v-model="klantItem.geboortedatum"
@@ -71,87 +71,87 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Phone number')"
 				maxlength="255"
-				:value.sync="klantItem.telefoonnummer" />
+				v-model="klantItem.telefoonnummer" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Email address')"
 				maxlength="255"
-				:value.sync="klantItem.emailadres" />
+				v-model="klantItem.emailadres" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Street name')"
 				maxlength="255"
-				:value.sync="klantItem.straatnaam" />
+				v-model="klantItem.straatnaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'City')"
 				maxlength="255"
-				:value.sync="klantItem.plaats" />
+				v-model="klantItem.plaats" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Postal code')"
 				maxlength="255"
-				:value.sync="klantItem.postcode" />
+				v-model="klantItem.postcode" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'House number')"
 				maxlength="255"
-				:value.sync="klantItem.huisnummer" />
+				v-model="klantItem.huisnummer" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Function')"
 				maxlength="255"
-				:value.sync="klantItem.functie" />
+				v-model="klantItem.functie" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Creation channel')"
 				maxlength="255"
-				:value.sync="klantItem.aanmaakkanaal" />
+				v-model="klantItem.aanmaakkanaal" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Source organisation')"
 				maxlength="255"
-				:value.sync="klantItem.bronorganisatie" />
+				v-model="klantItem.bronorganisatie" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Company name')"
 				maxlength="255"
-				:value.sync="klantItem.bedrijfsnaam" />
+				v-model="klantItem.bedrijfsnaam" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Chamber of commerce number')"
 				maxlength="255"
-				:value.sync="klantItem.kvkNummer" />
+				v-model="klantItem.kvkNummer" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Website URL')"
 				maxlength="255"
-				:value.sync="klantItem.websiteUrl" />
+				v-model="klantItem.websiteUrl" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'URL')"
 				maxlength="255"
-				:value.sync="klantItem.url" />
+				v-model="klantItem.url" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Verified')"
 				maxlength="255"
-				:value.sync="klantItem.geverifieerd" />
+				v-model="klantItem.geverifieerd" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255"
-				:value.sync="klantItem.subject" />
+				v-model="klantItem.subject" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Subject identification')"
 				maxlength="255"
-				:value.sync="klantItem.subjectIdentificatie" />
+				v-model="klantItem.subjectIdentificatie" />
 
 			<NcTextField :disabled="loading"
 				:label="t('zaakafhandelapp', 'Subject type')"
 				maxlength="255"
-				:value.sync="klantItem.subjectType" />
+				v-model="klantItem.subjectType" />
 		</div>
 
 		<template #actions>
@@ -169,7 +169,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			</NcButton>
 			<NcButton v-if="!success"
 				:disabled="loading || !klantItem.type"
-				type="primary"
+				variant="primary"
 				@click="editKlant()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

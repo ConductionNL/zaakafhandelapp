@@ -41,13 +41,13 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			</template>
 			<template #footer>
 				<div class="buttonContainer">
-					<NcButton type="primary" @click="openModal">
+					<NcButton variant="primary" @click="openModal">
 						<template #icon>
 							<Plus :size="20" />
 						</template>
 						{{ t('zaakafhandelapp', 'Create task') }}
 					</NcButton>
-					<NcButton type="primary" @click="fetchTaakItems">
+					<NcButton variant="primary" @click="fetchTaakItems">
 						<template #icon>
 							<Refresh :size="20" />
 						</template>

@@ -46,7 +46,7 @@ import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore }
 				</NcActions>
 			</template>
 			<template #footer>
-				<NcButton type="primary"
+				<NcButton variant="primary"
 					:disabled="loading"
 					class="searchButton"
 					@click="() => (searchKlantModalOpen = true)">

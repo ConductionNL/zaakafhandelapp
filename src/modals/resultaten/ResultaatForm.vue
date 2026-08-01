@@ -29,19 +29,19 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Result type')"
 					maxlength="1000"
-					:value.sync="resultaat.resultaattype"
+					v-model="resultaat.resultaattype"
 					required />
 				<NcTextField :disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Explanation')"
 					maxlength="255"
-					:value.sync="resultaat.toelichting" />
+					v-model="resultaat.toelichting" />
 			</div>
 
 			<NcButton v-if="success === null"
 				:disabled="loading
 					|| !zaak.value?.id
 					|| !resultaat.resultaattype"
-				type="primary"
+				variant="primary"
 				@click="saveResultaat()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />

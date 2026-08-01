@@ -4,7 +4,7 @@
 			<div class="listHeader">
 				<NcTextField class="searchField"
 					disabled
-					:value.sync="search"
+					v-model="search"
 					label="Search"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
