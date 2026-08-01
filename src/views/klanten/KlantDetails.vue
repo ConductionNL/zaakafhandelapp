@@ -495,7 +495,11 @@ export default {
 
 		getName(klant) {
 			if (klant.type === 'persoon') {
-				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				// A template literal is NEVER nullish, so `?? 'onbekend'` was dead
+				// code and a missing part rendered the word "undefined". Join
+				// only the parts that are present.
+				return [klant.voornaam, klant.tussenvoegsel, klant.achternaam]
+					.filter(Boolean).join(' ') || 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'

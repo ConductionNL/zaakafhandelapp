@@ -28,15 +28,15 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 					:disabled="zaakLoading" />
 
 				<div class="form-group">
-					<NcTextField :label="t('zaakafhandelapp', 'Identification')"
+					<NcTextField v-model="document.identificatie"
+						:label="t('zaakafhandelapp', 'Identification')"
 						maxlength="40"
-						v-model="document.identificatie"
 						required />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Source organisation')"
+					<NcTextField v-model="document.bronorganisatie"
+						:label="t('zaakafhandelapp', 'Source organisation')"
 						minlength="1"
 						maxlength="9"
-						v-model="document.bronorganisatie"
 						required />
 
 					<div>
@@ -47,19 +47,19 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 							confirm />
 					</div>
 
-					<NcTextField :label="t('zaakafhandelapp', 'Title')"
+					<NcTextField v-model="document.titel"
+						:label="t('zaakafhandelapp', 'Title')"
 						maxlength="200"
-						v-model="document.titel"
 						required />
 
 					<NcSelect v-bind="vertrouwelijkheidaanduidingOptions"
 						v-model="vertrouwelijkheidaanduidingOptions.value"
 						:input-label="t('zaakafhandelapp', 'Confidentiality indication')" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Author')"
+					<NcTextField v-model="document.auteur"
+						:label="t('zaakafhandelapp', 'Author')"
 						minlength="1"
 						maxlength="200"
-						v-model="document.auteur"
 						required />
 
 					<NcSelect v-bind="statusOptions"
@@ -70,37 +70,37 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 						{{ t('zaakafhandelapp', 'Content expired') }}
 					</NcCheckboxRadioSwitch>
 
-					<NcTextField :label="t('zaakafhandelapp', 'Format')"
-						maxlength="255"
-						v-model="document.formaat" />
+					<NcTextField v-model="document.formaat"
+						:label="t('zaakafhandelapp', 'Format')"
+						maxlength="255" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Language')"
+					<NcTextField v-model="document.taal"
+						:label="t('zaakafhandelapp', 'Language')"
 						minlength="3"
 						maxlength="3"
-						v-model="document.taal"
 						required />
 
-					<NcTextField :label="t('zaakafhandelapp', 'File name')"
-						maxlength="255"
-						v-model="document.bestandsnaam" />
+					<NcTextField v-model="document.bestandsnaam"
+						:label="t('zaakafhandelapp', 'File name')"
+						maxlength="255" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Content')"
-						maxlength="255"
-						v-model="document.inhoud" />
+					<NcTextField v-model="document.inhoud"
+						:label="t('zaakafhandelapp', 'Content')"
+						maxlength="255" />
 
-					<NcInputField :label="t('zaakafhandelapp', 'File size')"
+					<NcInputField v-model="document.bestandsomvang"
+						:label="t('zaakafhandelapp', 'File size')"
 						type="number"
 						min="0"
-						max="9223372036854776000"
-						v-model="document.bestandsomvang" />
+						max="9223372036854776000" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Link')"
-						maxlength="200"
-						v-model="document.link" />
+					<NcTextField v-model="document.link"
+						:label="t('zaakafhandelapp', 'Link')"
+						maxlength="200" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Description')"
-						maxlength="1000"
-						v-model="document.beschrijving" />
+					<NcTextField v-model="document.beschrijving"
+						:label="t('zaakafhandelapp', 'Description')"
+						maxlength="1000" />
 
 					<div>
 						{{ t('zaakafhandelapp', 'Receipt date') }}
@@ -120,8 +120,8 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 						{{ t('zaakafhandelapp', 'Rights indication') }}
 					</NcCheckboxRadioSwitch>
 
-					<NcTextField :label="t('zaakafhandelapp', 'Appearance')"
-						v-model="document.verschijningsvorm" />
+					<NcTextField v-model="document.verschijningsvorm"
+						:label="t('zaakafhandelapp', 'Appearance')" />
 
 					<!--
                         TODO:
@@ -129,11 +129,11 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
                         ondertekening and integriteit zou hier nog moeten komen
                     -->
 
-					<NcTextField :label="t('zaakafhandelapp', 'Information object type')"
+					<NcTextField v-model="document.informatieobjecttype"
+						:label="t('zaakafhandelapp', 'Information object type')"
 						minlength="1"
 						maxlength="200"
-						required
-						v-model="document.informatieobjecttype" />
+						required />
 
 					<!-- <NcTextField label="trefwoorden"
 						v-model="document.trefwoorden" /> -->

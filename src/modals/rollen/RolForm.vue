@@ -23,8 +23,8 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<NcTextField
-					:disabled="loading"
 					v-model="rolItem.betrokkene"
+					:disabled="loading"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Involved party (URL)')" />
 
@@ -37,21 +37,21 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<NcTextField
-					:disabled="loading"
 					v-model="rolItem.afwijkendeNaamBetrokkene"
+					:disabled="loading"
 					maxlength="625"
 					:label="t('zaakafhandelapp', 'Deviating name involved party')" />
 
 				<NcTextField
-					:disabled="loading"
 					v-model="rolItem.roltype"
+					:disabled="loading"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Role type')"
 					required />
 
 				<NcTextArea
-					:disabled="loading"
 					v-model="rolItem.roltoelichting"
+					:disabled="loading"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Role explanation')"
 					:error="!rolItem.roltoelichting" />

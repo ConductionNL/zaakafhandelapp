@@ -2,9 +2,9 @@
 	<NcAppContentList>
 		<ul>
 			<div class="listHeader">
-				<NcTextField class="searchField"
+				<NcTextField v-model="search"
+					class="searchField"
 					disabled
-					v-model="search"
 					label="Search"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"

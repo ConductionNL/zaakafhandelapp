@@ -29,10 +29,10 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<div class="form-group">
-					<NcTextField :disabled="zaakLoading"
+					<NcTextField v-model="besluit.besluit"
+						:disabled="zaakLoading"
 						:label="t('zaakafhandelapp', 'Decision')"
 						maxlength="1000"
-						v-model="besluit.besluit"
 						required />
 				</div>
 			</div>

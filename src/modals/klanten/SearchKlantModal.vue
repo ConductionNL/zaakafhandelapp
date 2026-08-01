@@ -67,28 +67,28 @@ import { klantStore } from '../../store/store.js'
 				<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
 					<NcDateTimePicker v-model="searchQuery[0]" :disabled="loading" class="date-picker" />
 
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[1]"
+						:disabled="loading"
 						:label="t('zaakafhandelapp', 'Last name')"
 						maxlength="255"
-						class="klantSearchField"
-						v-model="searchQuery[1]" />
+						class="klantSearchField" />
 				</div>
 				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[0]"
+						:disabled="loading"
 						maxlength="255"
-						class="klantSearchField"
-						v-model="searchQuery[0]" />
+						class="klantSearchField" />
 
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[1]"
+						:disabled="loading"
 						maxlength="255"
-						class="klantSearchField"
-						v-model="searchQuery[1]" />
+						class="klantSearchField" />
 				</div>
 				<div v-else>
-					<NcTextField :disabled="loading"
+					<NcTextField v-model="searchQuery[0]"
+						:disabled="loading"
 						maxlength="255"
-						class="klantSearchField"
-						v-model="searchQuery[0]" />
+						class="klantSearchField" />
 				</div>
 			</div>
 

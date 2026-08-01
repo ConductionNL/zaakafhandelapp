@@ -133,7 +133,11 @@ export default {
 				})
 		},
 		getName(medewerker) {
-			return `${medewerker.voornaam} ${medewerker.tussenvoegsel} ${medewerker.achternaam}` ?? t('zaakafhandelapp', 'Unknown')
+			// A template literal is NEVER nullish, so `?? t(…)` was dead code and a
+			// missing part rendered the word "undefined". Join only the parts
+			// that are present.
+			return [medewerker.voornaam, medewerker.tussenvoegsel, medewerker.achternaam]
+				.filter(Boolean).join(' ') || t('zaakafhandelapp', 'Unknown')
 		},
 
 		getLandName(landId) {

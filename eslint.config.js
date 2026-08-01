@@ -68,4 +68,16 @@ module.exports = defineConfig([{
 		'import/no-named-as-default-member': 'off',
 		'n/no-missing-import': 'off',
 	},
+}, {
+	// The flat config enrols `.ts` into the lint set (the eslintrc setup this
+	// replaced only ever ran over `.js`/`.vue`), which newly exposes the store
+	// modules to `eslint-plugin-jsdoc`. That plugin does not read TypeScript
+	// type declarations, so every `@param {TBesluit}` / `@return {Besluit}`
+	// referring to a real, imported TS type is reported as "undefined" — 40
+	// warnings, all false. TypeScript already checks these (`npx tsc --noEmit`),
+	// so the rule is redundant here rather than merely inconvenient.
+	files: ['**/*.ts'],
+	rules: {
+		'jsdoc/no-undefined-types': 'off',
+	},
 }, ...conductionVue3Fixes])

@@ -17,63 +17,63 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 
 		<div v-if="!success" class="form-group">
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.title"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Title')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.onderwerp"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Subject')" />
 
 			<NcTextArea
-				:disabled="loading"
 				v-model="berichtItem.berichttekst"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Message text')" />
 
 			<NcTextArea
-				:disabled="loading"
 				v-model="berichtItem.inhoud"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Content (base64)')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.bijlageType"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Attachment type')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.soortGebruiker"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'User type')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.publicatieDatum"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Publication date')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.aanmaakDatum"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Creation date')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.berichtType"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Message type')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.referentie"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Reference')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.berichtID"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Message ID')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.batchID"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Batch ID')" />
 
 			<NcTextField
@@ -82,8 +82,8 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 				:label="t('zaakafhandelapp', 'User ID')" />
 
 			<NcTextField
-				:disabled="loading"
 				v-model="berichtItem.onderwerp"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Order')" />
 		</div>
 

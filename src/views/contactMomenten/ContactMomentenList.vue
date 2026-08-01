@@ -7,9 +7,9 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 	<NcAppContentList>
 		<ul>
 			<div class="listHeader">
-				<NcTextField class="searchField"
+				<NcTextField v-model="search"
+					class="searchField"
 					disabled
-					v-model="search"
 					:label="t('zaakafhandelapp', 'Search')"
 					trailing-button-icon="close"
 					:show-trailing-button="search !== ''"
@@ -154,7 +154,11 @@ export default {
 				return 'onbekend'
 			}
 			if (klant.type === 'persoon') {
-				return `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` ?? 'onbekend'
+				// A template literal is NEVER nullish, so `?? 'onbekend'` was dead
+				// code and a missing part rendered the word "undefined". Join
+				// only the parts that are present.
+				return [klant.voornaam, klant.tussenvoegsel, klant.achternaam]
+					.filter(Boolean).join(' ') || 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'

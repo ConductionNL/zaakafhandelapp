@@ -17,8 +17,8 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 
 		<div v-if="!success" class="form-group">
 			<NcTextField
-				:disabled="loading"
 				v-model="taakItem.title"
+				:disabled="loading"
 				required
 				:label="t('zaakafhandelapp', 'Title')"
 				maxlength="255" />
@@ -39,14 +39,14 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 			</div>
 
 			<NcTextField
-				:disabled="loading"
 				v-model="taakItem.onderwerp"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255" />
 
 			<NcTextArea
-				:disabled="loading"
 				v-model="taakItem.toelichting"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Explanation')" />
 
 			<div>

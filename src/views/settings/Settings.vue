@@ -695,7 +695,10 @@ export default {
 							}
 
 							this[objectType] = {
-								selectedSource: this.labelOptions.options.find((option) => option.value === data[objectType + '_source'] ?? data[objectType + '_source']),
+								// `===` binds tighter than `??`, so this parsed as
+								// `(option.value === data[x]) ?? data[x]` — a boolean is
+								// never nullish, so the right-hand side was dead code.
+								selectedSource: this.labelOptions.options.find((option) => option.value === data[objectType + '_source']),
 								selectedRegister: this.availableRegistersOptions.options.find((option) => option.value === data[objectType + '_register']),
 								selectedSchema: this[objectType]?.availableSchemas?.options?.find((option) => option.value === data[objectType + '_schema']),
 							}

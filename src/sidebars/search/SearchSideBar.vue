@@ -5,9 +5,9 @@ import { navigationStore, klantStore } from '../../store/store.js'
 
 <template>
 	<NcAppSidebar
+		v-model:active="activeTab"
 		:name="t('zaakafhandelapp', 'Search')"
-		:subname="t('zaakafhandelapp', 'Search within your municipality')"
-		v-model:active="activeTab">
+		:subname="t('zaakafhandelapp', 'Search within your municipality')">
 		<NcAppSidebarTab id="search-tab"
 			:name="t('zaakafhandelapp', 'Search')"
 			:order="1">

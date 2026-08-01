@@ -23,29 +23,29 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="zaak.identificatie"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
-					v-model="zaak.identificatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="zaak.omschrijving"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Description')"
-					maxlength="255"
-					v-model="zaak.omschrijving" />
-				<NcTextField :disabled="zaakLoading"
+					maxlength="255" />
+				<NcTextField v-model="zaak.bronorganisatie"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
-					v-model="zaak.bronorganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="zaak.verantwoordelijkeOrganisatie"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
-					v-model="zaak.verantwoordelijkeOrganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="zaak.startdatum"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
-					v-model="zaak.startdatum"
 					required />
 				<NcSelect v-bind="zaakType"
 					v-model="zaakType.value"
@@ -65,13 +65,13 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						:disabled="zaakLoading"
 						required />
 				</div>
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="zaak.registratiedatum"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Registration date')"
-					maxlength="255"
-					v-model="zaak.registratiedatum" />
-				<NcTextArea :disabled="zaakLoading"
-					:label="t('zaakafhandelapp', 'Explanation')"
-					v-model="zaak.toelichting" />
+					maxlength="255" />
+				<NcTextArea v-model="zaak.toelichting"
+					:disabled="zaakLoading"
+					:label="t('zaakafhandelapp', 'Explanation')" />
 			</div>
 
 			<NcButton v-if="success === null"

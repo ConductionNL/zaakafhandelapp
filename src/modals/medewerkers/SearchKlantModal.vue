@@ -68,18 +68,18 @@ import { klantStore } from '../../store/store.js'
 					:disabled="loading"
 					class="date-picker" />
 
-				<NcTextField :disabled="loading"
+				<NcTextField v-model="searchQuery"
+					:disabled="loading"
 					:label="t('zaakafhandelapp', 'Last name')"
 					maxlength="255"
-					class="searchField"
-					v-model="searchQuery" />
+					class="searchField" />
 			</div>
 			<div v-else>
-				<NcTextField :disabled="loading"
+				<NcTextField v-model="searchQuery"
+					:disabled="loading"
 					:label="searchLabel"
 					maxlength="255"
-					class="searchField"
-					v-model="searchQuery" />
+					class="searchField" />
 			</div>
 
 			<NcButton variant="primary"

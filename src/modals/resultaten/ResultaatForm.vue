@@ -26,15 +26,15 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="resultaat.resultaattype"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Result type')"
 					maxlength="1000"
-					v-model="resultaat.resultaattype"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField v-model="resultaat.toelichting"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Explanation')"
-					maxlength="255"
-					v-model="resultaat.toelichting" />
+					maxlength="255" />
 			</div>
 
 			<NcButton v-if="success === null"
