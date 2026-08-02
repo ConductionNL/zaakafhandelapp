@@ -70,8 +70,8 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 				</div>
 
 				<div class="tabContainer">
-					<BTabs content-class="mt-3" justified>
-						<BTab :title="t('zaakafhandelapp', 'Audit trail')" active>
+					<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Contact moment details')">
+						<CnTab :title="t('zaakafhandelapp', 'Audit trail')" active>
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -102,8 +102,8 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 									{{ t('zaakafhandelapp', 'No audit trail was found for this contact moment.') }}
 								</template>
 							</NcEmptyContent>
-						</BTab>
-					</BTabs>
+						</CnTab>
+					</CnTabs>
 				</div>
 			</div>
 		</div>
@@ -113,10 +113,7 @@ import { navigationStore, contactMomentStore } from '../../store/store.js'
 <script>
 // Components
 import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcLoadingIcon } from '@nextcloud/vue'
-// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
-// the app-local replacements; see src/components/tabs/Tabs.vue.
-import BTabs from '../../components/tabs/Tabs.vue'
-import BTab from '../../components/tabs/Tab.vue'
+import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
 
 // Entities
 import { ContactMoment } from '../../entities/index.js'

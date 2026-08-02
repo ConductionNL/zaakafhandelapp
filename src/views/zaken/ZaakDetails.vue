@@ -161,36 +161,36 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 					</div>
 				</div>
 				<div class="tabContainer">
-					<BTabs content-class="mt-3" justified>
+					<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Case details')">
 						<!-- TODO: Fix tabs -->
-						<BTab title="Eigenschappen" active>
+						<CnTab title="Eigenschappen" active>
 							<ZaakEigenschappen :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Documenten">
+						</CnTab>
+						<CnTab title="Documenten">
 							<ZaakDocumenten :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Resultaten">
+						</CnTab>
+						<CnTab title="Resultaten">
 							<ZaakResultaten :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Rollen">
+						</CnTab>
+						<CnTab title="Rollen">
 							<ZaakRollen :zaak-url="zaakStore.zaakItem?.url" />
-						</BTab>
-						<BTab title="Taken">
+						</CnTab>
+						<CnTab title="Taken">
 							<ZaakTaken :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Besluiten">
+						</CnTab>
+						<CnTab title="Besluiten">
 							<ZaakBesluiten :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Berichten">
+						</CnTab>
+						<CnTab title="Berichten">
 							<ZaakBerichten :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Zaken">
+						</CnTab>
+						<CnTab title="Zaken">
 							<ZakenZaken :zaak-id="zaakStore.zaakItem?.id" />
-						</BTab>
-						<BTab title="Synchronisaties">
+						</CnTab>
+						<CnTab title="Synchronisaties">
 							Todo: Koppelings info met DSO
-						</BTab>
-						<BTab title="Audit trail">
+						</CnTab>
+						<CnTab title="Audit trail">
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -221,8 +221,8 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 									Er is geen audit trail gevonden voor deze zaak.
 								</template>
 							</NcEmptyContent>
-						</BTab>
-					</BTabs>
+						</CnTab>
+					</CnTabs>
 				</div>
 			</div>
 		</div>
@@ -231,10 +231,7 @@ import { navigationStore, zaakStore, zaakTypeStore, resultaatStore, besluitStore
 
 <script>
 // Components
-// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
-// the app-local replacements; see src/components/tabs/Tabs.vue.
-import BTabs from '../../components/tabs/Tabs.vue'
-import BTab from '../../components/tabs/Tab.vue'
+import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
 import { NcActions, NcActionButton, NcButton, NcListItem, NcEmptyContent, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 
 // Icons
@@ -272,8 +269,8 @@ export default {
 		NcListItem,
 		NcEmptyContent,
 		NcNoteCard,
-		BTabs,
-		BTab,
+		CnTabs,
+		CnTab,
 		NcLoadingIcon,
 		// Views
 		ZaakEigenschappen,
