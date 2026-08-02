@@ -110,8 +110,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						:placeholder="t('zaakafhandelapp', 'Note')" />
 				</div>
 				<div class="tabContainer">
-					<BTabs content-class="mt-3" justified>
-						<BTab
+					<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Customer contact moments')">
+						<CnTab
 							:title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
 							<div v-if="klantContactmomenten.length">
 								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
@@ -138,8 +138,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
-						</BTab>
-						<BTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
+						</CnTab>
+						<CnTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
@@ -163,8 +163,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
-						</BTab>
-						<BTab :title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
+						</CnTab>
+						<CnTab :title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
 							<div v-if="taken.length">
 								<NcListItem v-for="(taak, key) in taken"
 									:key="key"
@@ -189,8 +189,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
-						</BTab>
-						<BTab :title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
+						</CnTab>
+						<CnTab :title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
 							<div v-if="klant?.producten?.length">
 								<NcListItem v-for="(product, key) in klant.producten"
 									:key="key"
@@ -211,8 +211,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									{{ t('zaakafhandelapp', 'No products were found for this customer.') }}
 								</template>
 							</NcEmptyContent>
-						</BTab>
-					</BTabs>
+						</CnTab>
+					</CnTabs>
 				</div>
 			</div>
 		</div>
@@ -270,10 +270,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 <script>
 // Components
-// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
-// the app-local replacements; see src/components/tabs/Tabs.vue.
-import BTabs from '../../components/tabs/Tabs.vue'
-import BTab from '../../components/tabs/Tab.vue'
+import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
 import _ from 'lodash'
 
@@ -307,8 +304,8 @@ export default {
 		NcListItem,
 		NcActionButton,
 		NcEmptyContent,
-		BTabs,
-		BTab,
+		CnTabs,
+		CnTab,
 		// Icons
 		Plus,
 		BriefcaseAccountOutline,

@@ -65,8 +65,8 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 				</div>
 
 				<div class="tabContainer">
-					<BTabs content-class="mt-3" justified>
-						<BTab :title="t('zaakafhandelapp', 'Audit trail')" active>
+					<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Task details')">
+						<CnTab :title="t('zaakafhandelapp', 'Audit trail')" active>
 							<div v-if="auditTrails.length">
 								<NcListItem v-for="(auditTrail, key) in auditTrails"
 									:key="key"
@@ -97,8 +97,8 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 									{{ t('zaakafhandelapp', 'No audit trail was found for this task.') }}
 								</template>
 							</NcEmptyContent>
-						</BTab>
-					</BTabs>
+						</CnTab>
+					</CnTabs>
 				</div>
 			</div>
 		</div>
@@ -108,10 +108,7 @@ import { navigationStore, taakStore, klantStore, medewerkerStore } from '../../s
 <script>
 // Components
 import { NcActions, NcActionButton, NcListItem, NcEmptyContent, NcActionLink, NcLoadingIcon } from '@nextcloud/vue'
-// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
-// the app-local replacements; see src/components/tabs/Tabs.vue.
-import BTabs from '../../components/tabs/Tabs.vue'
-import BTab from '../../components/tabs/Tab.vue'
+import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
 
 // Icons
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'

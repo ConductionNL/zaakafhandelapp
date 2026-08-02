@@ -23,8 +23,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</NcButton>
 			</div>
 
-			<BTabs card class="contactmomentTabsContainer">
-				<BTab v-for="i in tabs"
+			<CnTabs card class="contactmomentTabsContainer" :aria-label="t('zaakafhandelapp', 'Open contact moments')">
+				<CnTab v-for="i in tabs"
 					:key="'dyn-tab-' + i"
 					:active="selectedContactMoment === i"
 					@click="selectedContactMoment = i">
@@ -157,8 +157,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							</div>
 						</div>
 						<div class="tabContainer">
-							<BTabs content-class="mt-3" justified>
-								<BTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
+							<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Customer contact moments')">
+								<CnTab :title="`Contactmomenten ${contactMomenten[i].klant ? (contactMomenten[i].klantContactmomenten?.length ? `(${contactMomenten[i].klantContactmomenten.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].klantContactmomenten?.length">
 										<NcListItem
 											v-for="(klantContactmoment, key) in contactMomenten[i].klantContactmomenten"
@@ -195,8 +195,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											Er zijn geen contactmomenten gevonden voor deze klant.
 										</template>
 									</NcEmptyContent>
-								</BTab>
-								<BTab :title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
+								</CnTab>
+								<CnTab :title="`Zaken ${contactMomenten[i].klant ? (contactMomenten[i].zaken?.length ? `(${contactMomenten[i].zaken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].zaken?.length">
 										<NcListItem v-for="(zaak, key) in contactMomenten[i].zaken"
 											:key="key"
@@ -229,8 +229,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											Er zijn geen zaken gevonden voor deze klant.
 										</template>
 									</NcEmptyContent>
-								</BTab>
-								<BTab :title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
+								</CnTab>
+								<CnTab :title="`Taken ${contactMomenten[i].klant ? (contactMomenten[i].taken?.length ? `(${contactMomenten[i].taken.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[i].taken?.length">
 										<NcListItem v-for="(taak, key) in contactMomenten[i].taken"
 											:key="key"
@@ -263,8 +263,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											Er zijn geen taken gevonden voor deze klant.
 										</template>
 									</NcEmptyContent>
-								</BTab>
-								<BTab :title="`Producten ${contactMomenten[selectedContactMoment]?.klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
+								</CnTab>
+								<CnTab :title="`Producten ${contactMomenten[selectedContactMoment]?.klant ? (contactMomenten[selectedContactMoment].klant?.producten?.length ? `(${contactMomenten[selectedContactMoment].klant?.producten?.length})` : '(0)') : ''}`">
 									<div v-if="contactMomenten[selectedContactMoment]?.klant?.producten?.length">
 										<NcListItem
 											v-for="(product, key) in contactMomenten[selectedContactMoment].klant.producten"
@@ -287,8 +287,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 											Er zijn geen producten gevonden voor deze klant.
 										</template>
 									</NcEmptyContent>
-								</BTab>
-							</BTabs>
+								</CnTab>
+							</CnTabs>
 						</div>
 
 						<SearchKlantModal v-if="searchKlantModalOpen && i === selectedContactMoment"
@@ -298,8 +298,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							@selected-klant="fetchKlantData($event)"
 							@close-modal="closeSearchKlantModal" />
 					</div>
-				</BTab>
-			</BTabs>
+				</CnTab>
+			</CnTabs>
 		</div>
 		<div v-if="isView">
 			<NcNoteCard v-if="success" type="success">
@@ -401,8 +401,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 						placeholder="Notitie" />
 				</div>
 				<div class="tabContainer">
-					<BTabs content-class="mt-3" justified>
-						<BTab
+					<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Customer contact moments')">
+						<CnTab
 							:title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
 							<div v-if="klantContactmomenten.length">
 								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
@@ -429,8 +429,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									Er zijn geen contactmomenten gevonden voor deze klant.
 								</template>
 							</NcEmptyContent>
-						</BTab>
-						<BTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
+						</CnTab>
+						<CnTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
 							<div v-if="zaken.length">
 								<NcListItem v-for="(zaak, key) in zaken"
 									:key="key"
@@ -454,8 +454,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									Er zijn geen zaken gevonden voor deze klant.
 								</template>
 							</NcEmptyContent>
-						</BTab>
-						<BTab :title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
+						</CnTab>
+						<CnTab :title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
 							<div v-if="taken.length">
 								<NcListItem v-for="(taak, key) in taken"
 									:key="key"
@@ -480,8 +480,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									Er zijn geen taken gevonden voor deze klant.
 								</template>
 							</NcEmptyContent>
-						</BTab>
-						<BTab
+						</CnTab>
+						<CnTab
 							:title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
 							<div v-if="klant?.producten?.length">
 								<NcListItem v-for="(product, key) in klant.producten"
@@ -503,8 +503,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									Er zijn geen producten gevonden voor deze klant.
 								</template>
 							</NcEmptyContent>
-						</BTab>
-					</BTabs>
+						</CnTab>
+					</CnTabs>
 				</div>
 
 				<SearchKlantModal v-if="searchKlantModalOpen"
@@ -614,10 +614,7 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 
 <script>
 // Components
-// `bootstrap-vue@2` is Vue 2-only — there is no Vue 3 release of it. These are
-// the app-local replacements; see src/components/tabs/Tabs.vue.
-import BTabs from '../../components/tabs/Tabs.vue'
-import BTab from '../../components/tabs/Tab.vue'
+import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
 import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent, NcSelect } from '@nextcloud/vue'
 import { generateUrl } from '@nextcloud/router'
 import _ from 'lodash'
@@ -661,8 +658,8 @@ export default {
 		NcActionButton,
 		NcEmptyContent,
 		EditTaakForm: EditTaak,
-		BTabs,
-		BTab,
+		CnTabs,
+		CnTab,
 		NcSelect,
 		// Icons
 		Plus,
