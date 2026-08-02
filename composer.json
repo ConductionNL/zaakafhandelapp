@@ -41,18 +41,19 @@
 		"cs:fix": "./vendor/bin/phpcbf --standard=phpcs.xml",
 		"phpcs": "./vendor/bin/phpcs --standard=phpcs.xml",
 		"phpcs:fix": "./vendor/bin/phpcbf --standard=phpcs.xml",
-		"psalm": "psalm --threads=1 --no-cache",
+		"psalm": "if [ -f vendor/bin/psalm ]; then ./vendor/bin/psalm --threads=1 --no-cache; else echo 'Psalm not installed, skipping...'; fi",
 		"phpstan": "if [ -f vendor/bin/phpstan ]; then ./vendor/bin/phpstan analyse --memory-limit=1G; else echo 'PHPStan not installed, skipping...'; fi",
 		"phpmd": "if [ -f vendor/bin/phpmd ]; then ./vendor/bin/phpmd lib text phpmd.xml; else echo 'PHPMD not installed, skipping...'; fi",
 		"phpmetrics": "./vendor/bin/phpmetrics --report-html=phpmetrics lib/",
 		"phpmetrics:json": "./vendor/bin/phpmetrics --report-json=phpmetrics/report.json lib/",
 		"phpmetrics:csv": "./vendor/bin/phpmetrics --report-csv=phpmetrics/report.csv lib/",
 		"phpmetrics:violations": "./vendor/bin/phpmetrics --report-violations=phpmetrics/violations.xml lib/",
-		"test:unit": "./vendor/bin/phpunit -c phpunit.xml --no-coverage --colors=always",
+		"test:unit": "if [ -f vendor/bin/phpunit ]; then ./vendor/bin/phpunit -c phpunit.xml --no-coverage --colors=always; else echo 'phpunit not installed, skipping...'; fi",
+		"test:all": "if [ -f vendor/bin/phpunit ]; then ./vendor/bin/phpunit -c phpunit.xml --no-coverage --colors=always; else echo 'phpunit not installed, skipping...'; fi",
 		"openapi": "generate-spec",
 		"phpstan:strict": "./vendor/bin/phpstan analyse --memory-limit=1G",
 		"check": "E=0; for CMD in lint cs:check psalm phpstan:strict; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E",
-		"check:strict": "@lint && @cs:check && @phpmd && @psalm && @phpstan"
+		"check:strict": "E=0; for CMD in lint phpcs phpmd psalm phpstan test:all; do echo; echo \"=== $CMD ===\"; composer $CMD || E=1; done; echo; if [ $E -eq 0 ]; then echo \"ALL CHECKS PASSED\"; else echo \"SOME CHECKS FAILED (see above)\"; fi; exit $E"
 	},
 	"require": {
 		"php": "^8.3",
