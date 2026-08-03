@@ -3,6 +3,7 @@
 namespace OCA\ZaakAfhandelApp\Service;
 
 use OCA\OpenRegister\Db\ObjectEntity;
+use RuntimeException;
 
 /**
  * Handles zaak lifecycle: reopen, delete, vertrouwelijkheidaanduiding.
@@ -26,7 +27,7 @@ class ZGWZaakLifecycleService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWZaakLifecycleService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWZaakLifecycleService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -158,12 +159,14 @@ class ZGWZaakLifecycleService
 
         $current = $zaakArray['vertrouwelijkheidaanduiding'] ?? null;
 
+        // Inherit the zaaktype default when no classification has been set yet.
         if ($current === null) {
-            // Inherit the zaaktype default when no classification has been set yet.
             $zaakArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
-        } else {
-            // Enforce minimum: if the zaak's classification is lower than the zaaktype
-            // minimum, raise it to the minimum.
+        }
+
+        // Enforce minimum: if the zaak's classification is lower than the zaaktype
+        // minimum, raise it to the minimum.
+        if ($current !== null) {
             $currentRank = self::VERTROUWELIJKHEID_ORDER[$current] ?? -1;
             $minimumRank = self::VERTROUWELIJKHEID_ORDER[$ztMinimum] ?? 0;
 

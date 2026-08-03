@@ -30,6 +30,7 @@ use DateInterval;
 use DateTimeImmutable;
 use OCA\OpenRegister\Db\ObjectEntity;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Derives the termijn fields of a zaak from its zaaktype on creation (REQ-001).
@@ -53,7 +54,7 @@ class ZaakTermijnService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZaakTermijnService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZaakTermijnService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -94,28 +95,52 @@ class ZaakTermijnService
             return;
         }
 
+        // Both termijnen derive the same way - a zaaktype term added to the base
+        // date - so they are driven from one table rather than two copies of the
+        // same block: [target field => [zaaktype term, whether it still needs one]].
+        $derivations = [
+            'uiterlijkeEinddatumAfdoening' => ['doorlooptijd', $needsUiterste],
+            'einddatumGepland'             => ['servicenorm', $needsGepland],
+        ];
+
         $changed = false;
-
-        if ($needsUiterste === true) {
-            $days = $this->durationToDays((string) ($zaaktype['doorlooptijd'] ?? ''));
-            if ($days !== null && $days > 0) {
-                $arr['uiterlijkeEinddatumAfdoening'] = $base->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
-                $changed = true;
+        foreach ($derivations as $field => [$term, $needed]) {
+            if ($needed === false) {
+                continue;
             }
-        }
 
-        if ($needsGepland === true) {
-            $days = $this->durationToDays((string) ($zaaktype['servicenorm'] ?? ''));
-            if ($days !== null && $days > 0) {
-                $arr['einddatumGepland'] = $base->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
-                $changed = true;
+            $date = $this->termijnDate((string) ($zaaktype[$term] ?? ''), $base);
+            if ($date === null) {
+                continue;
             }
+
+            $arr[$field] = $date;
+            $changed     = true;
         }
 
         if ($changed === true) {
             $zaak->setObject($arr);
         }
     }//end deriveTermijnen()
+
+    /**
+     * Add a zaaktype term to the base date.
+     *
+     * @param string            $duration The zaaktype term as an ISO 8601 duration.
+     * @param DateTimeImmutable $base     The derivation base date.
+     *
+     * @return ?string The derived date as Y-m-d, or null when the term is absent
+     *                 or unparsable.
+     */
+    private function termijnDate(string $duration, DateTimeImmutable $base): ?string
+    {
+        $days = $this->durationToDays($duration);
+        if ($days === null || $days <= 0) {
+            return null;
+        }
+
+        return $base->add(new DateInterval('P'.$days.'D'))->format('Y-m-d');
+    }//end termijnDate()
 
     /**
      * Resolve the derivation base date: startdatum, else registratiedatum.
@@ -187,19 +212,19 @@ class ZaakTermijnService
             return (int) $duration;
         }
 
-        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $m) !== 1) {
+        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $matches) !== 1) {
             $this->logger->warning('ZaakTermijnService: unparsable duration, skipping derivation', ['duration' => $duration]);
             return null;
         }
 
-        if (($m[1] ?? '') === '' && ($m[2] ?? '') === '' && ($m[3] ?? '') === '' && ($m[4] ?? '') === '') {
+        if (($matches[1] ?? '') === '' && ($matches[2] ?? '') === '' && ($matches[3] ?? '') === '' && ($matches[4] ?? '') === '') {
             return null;
         }
 
-        $years  = (int) ($m[1] ?? 0);
-        $months = (int) ($m[2] ?? 0);
-        $weeks  = (int) ($m[3] ?? 0);
-        $days   = (int) ($m[4] ?? 0);
+        $years  = (int) ($matches[1] ?? 0);
+        $months = (int) ($matches[2] ?? 0);
+        $weeks  = (int) ($matches[3] ?? 0);
+        $days   = (int) ($matches[4] ?? 0);
 
         return ($years * 365) + ($months * 30) + ($weeks * 7) + $days;
     }//end durationToDays()

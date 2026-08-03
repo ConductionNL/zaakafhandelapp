@@ -348,7 +348,7 @@ class ObjectsController extends Controller
                 return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
             }
 
-            $auditTrail = $this->objectService->getAuditTrail($objectType, $id);
+            $auditTrail = $this->objectService->getAuditTrail($id);
             return new JSONResponse($auditTrail);
         } catch (Exception $e) {
             return new JSONResponse(
@@ -381,7 +381,7 @@ class ObjectsController extends Controller
 
         try {
             // Fetch the object by its ID
-            $relations = $this->objectService->getRelations($objectType, $id);
+            $relations = $this->objectService->getRelations($id);
 
             // Return the object as a JSON response
             return new JSONResponse($relations);
@@ -414,7 +414,7 @@ class ObjectsController extends Controller
             return $typeError;
         }
 
-        $uses = $this->objectService->getUses($objectType, $id);
+        $uses = $this->objectService->getUses($id);
         return new JSONResponse($uses);
     }//end getUses()
 }//end class

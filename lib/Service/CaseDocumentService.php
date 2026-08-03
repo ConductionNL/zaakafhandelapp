@@ -56,17 +56,7 @@ class CaseDocumentService
         $name    = $this->sanitiseName($bestandsnaam);
 
         try {
-            if ($folder->nodeExists($name) === true) {
-                $node = $folder->get($name);
-                if ($node instanceof File === true) {
-                    $node->putContent($content);
-                    $file = $node;
-                } else {
-                    throw new CaseDocumentException("Path '$name' is not a file.");
-                }
-            } else {
-                $file = $folder->newFile($name, $content);
-            }
+            $file = $this->putFile($folder, $name, $content);
         } catch (NotFoundException $e) {
             throw new CaseDocumentException('Could not write the document file: '.$e->getMessage());
         }
@@ -76,6 +66,35 @@ class CaseDocumentService
             'bestandsomvang' => $file->getSize(),
         ];
     }//end writeDocument()
+
+    /**
+     * Creates the file, or overwrites it in place when it already exists.
+     *
+     * @param Folder $folder  The per-zaak folder to write into.
+     * @param string $name    The sanitised file name.
+     * @param string $content The decoded file content.
+     *
+     * @return File The created or updated file.
+     *
+     * @throws CaseDocumentException When the path exists but is not a file.
+     * @throws NotFoundException     When the folder lookup fails; writeDocument()
+     *                               translates it into a CaseDocumentException.
+     */
+    private function putFile(Folder $folder, string $name, string $content): File
+    {
+        if ($folder->nodeExists($name) === false) {
+            return $folder->newFile($name, $content);
+        }
+
+        $node = $folder->get($name);
+        if ($node instanceof File === false) {
+            throw new CaseDocumentException("Path '$name' is not a file.");
+        }
+
+        $node->putContent($content);
+
+        return $node;
+    }//end putFile()
 
     /**
      * Replaces the content of an existing file (NC versioning retains old bytes).

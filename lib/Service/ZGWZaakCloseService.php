@@ -6,6 +6,7 @@ use DateTime;
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Exception\CustomValidationException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Handles closing a zaak (setting eindstatus). ZRC-007/ZRC-021.
@@ -29,7 +30,7 @@ class ZGWZaakCloseService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWZaakCloseService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWZaakCloseService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;

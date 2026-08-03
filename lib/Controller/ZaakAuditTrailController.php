@@ -92,7 +92,7 @@ class ZaakAuditTrailController extends Controller
         }
 
         try {
-            $entries = $this->objectService->getAuditTrail('zaken', $zaakUuid);
+            $entries = $this->objectService->getAuditTrail($zaakUuid);
             $mapped  = array_map(fn (array $entry): array => $this->mapAuditTrail($entry, $zaakUuid), $entries);
 
             return new JSONResponse(['results' => array_values($mapped)]);
@@ -121,7 +121,7 @@ class ZaakAuditTrailController extends Controller
         }
 
         try {
-            $entries = $this->objectService->getAuditTrail('zaken', $zaakUuid);
+            $entries = $this->objectService->getAuditTrail($zaakUuid);
 
             foreach ($entries as $entry) {
                 $mapped = $this->mapAuditTrail((array) $entry, $zaakUuid);

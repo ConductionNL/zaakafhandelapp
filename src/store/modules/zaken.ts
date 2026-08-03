@@ -13,9 +13,9 @@ type TOptions = {
 
 export const useZaakStore = defineStore('zaken', {
 	state: () => ({
-		zaakItem: null,
-		zakenList: [],
-		auditTrailItem: null,
+		zaakItem: null as Zaak | null,
+		zakenList: [] as Zaak[],
+		auditTrailItem: null as Record<string, unknown> | null,
 	}),
 	actions: {
 		/**
@@ -34,7 +34,7 @@ export const useZaakStore = defineStore('zaken', {
 			)
 			console.info('Zaken list set to ' + zakenList.length + ' items')
 		},
-		setAuditTrailItem(auditTrailItem: unknown) {
+		setAuditTrailItem(auditTrailItem: Record<string, unknown>) {
 			this.auditTrailItem = auditTrailItem
 		},
 		/**

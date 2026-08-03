@@ -33,6 +33,7 @@ use DateInterval;
 use DateTimeImmutable;
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Exception\CustomValidationException;
+use RuntimeException;
 
 /**
  * Applies opschorting/verlenging transitions to a zaak on update, gating on the
@@ -55,7 +56,7 @@ class ZGWZaakOpschortingVerlengingService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWZaakOpschortingVerlengingService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWZaakOpschortingVerlengingService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -88,9 +89,9 @@ class ZGWZaakOpschortingVerlengingService
             $oldZaak = $this->resolveOldZaak($zaak);
         }
 
-        $changed = false;
-
-        $changed = $this->handleOpschorting($new, $oldZaak, $now) || $changed;
+        // Both handlers must run, so each call sits on the LEFT of the || and is
+        // never short-circuited away.
+        $changed = $this->handleOpschorting($new, $oldZaak, $now);
         $changed = $this->handleVerlenging($new, $oldZaak) || $changed;
 
         if ($changed === true) {
@@ -177,12 +178,40 @@ class ZGWZaakOpschortingVerlengingService
             return false;
         }
 
-        $oldHadVerlenging = is_array($old['verlenging'] ?? null) === true
-            && (($old['verlenging']['duur'] ?? '') !== '');
+        $duurDays = $this->assertVerlengingAllowed($new, $old, $newVerlenging);
 
+        $this->shiftDeadlines($new, $duurDays);
+
+        return true;
+    }//end handleVerlenging()
+
+    /**
+     * Run the ZGW verlenging preconditions, aborting the write on the first failure.
+     *
+     * Split out of handleVerlenging() so that method reads as "decide whether this
+     * is a new verlenging, then apply it", with the validation gauntlet - which is
+     * where all of the branching lives - stated once in one place.
+     *
+     * @param array<string,mixed> $new        The new zaak.
+     * @param array<string,mixed> $old        The previously persisted zaak.
+     * @param array<string,mixed> $verlenging The verlenging group being applied.
+     *
+     * @return integer The validated verlenging duration in days.
+     *
+     * @throws CustomValidationException When any precondition fails.
+     *
+     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
+     */
+    private function assertVerlengingAllowed(array $new, array $old, array $verlenging): int
+    {
         // The same persisted verlenging being re-saved unchanged is not a new
         // extension and must not shift the deadlines again.
-        if ($oldHadVerlenging === true) {
+        $oldDuur = '';
+        if (is_array($old['verlenging'] ?? null) === true) {
+            $oldDuur = (string) ($old['verlenging']['duur'] ?? '');
+        }
+
+        if ($oldDuur !== '') {
             $this->fail('verlenging', 'verlenging-already-applied', 'De zaak is al verlengd (verdaging is eenmalig)');
         }
 
@@ -196,13 +225,13 @@ class ZGWZaakOpschortingVerlengingService
             $this->fail('verlenging', 'verlenging-not-allowed', 'Het zaaktype staat verlenging niet toe');
         }
 
-        $reden = (string) ($newVerlenging['reden'] ?? '');
+        $reden = (string) ($verlenging['reden'] ?? '');
         if (trim($reden) === '') {
             $this->fail('verlenging.reden', 'required', 'Een reden voor verlenging is verplicht');
         }
 
-        $duurDays = $this->durationToDays((string) $newVerlenging['duur']);
-        if ($duurDays === null || $duurDays <= 0) {
+        $duurDays = (int) $this->durationToDays((string) $verlenging['duur']);
+        if ($duurDays <= 0) {
             $this->fail('verlenging.duur', 'invalid-duration', 'De duur is geen geldige ISO 8601 duur');
         }
 
@@ -212,10 +241,8 @@ class ZGWZaakOpschortingVerlengingService
             $this->fail('verlenging.duur', 'duration-exceeds-termijn', 'De duur overschrijdt de verlengingstermijn van het zaaktype');
         }
 
-        $this->shiftDeadlines($new, $duurDays);
-
-        return true;
-    }//end handleVerlenging()
+        return $duurDays;
+    }//end assertVerlengingAllowed()
 
     /**
      * Shift einddatumGepland and uiterlijkeEinddatumAfdoening forward by N days.
@@ -252,8 +279,8 @@ class ZGWZaakOpschortingVerlengingService
      */
     private function resolveOldZaak(ObjectEntity $zaak): array
     {
-        $uuid = $zaak->getUuid();
-        if ($uuid === null || $uuid === '') {
+        $uuid = (string) $zaak->getUuid();
+        if ($uuid === '') {
             return [];
         }
 
@@ -292,8 +319,8 @@ class ZGWZaakOpschortingVerlengingService
      */
     private function assertOpen(array $zaak, string $group): void
     {
-        $einddatum = ($zaak['einddatum'] ?? null);
-        if ($einddatum !== null && $einddatum !== '') {
+        $einddatum = (string) ($zaak['einddatum'] ?? '');
+        if ($einddatum !== '') {
             $this->fail($group, 'zaak-closed', 'De zaak is gesloten');
         }
     }//end assertOpen()
@@ -313,7 +340,9 @@ class ZGWZaakOpschortingVerlengingService
         $zaaktype = $this->resolveZaaktype($zaak);
         $value    = ($zaaktype[$property] ?? null);
 
-        return $value === true || $value === 'true' || $value === '1' || $value === 1;
+        // The switch is stored as a bool on some entities and as a string on
+        // others, so accept every truthy spelling in one strict lookup.
+        return in_array($value, [true, 'true', '1', 1], true);
     }//end zaaktypeAllows()
 
     /**
@@ -343,8 +372,8 @@ class ZGWZaakOpschortingVerlengingService
      */
     private function resolveZaaktype(array $zaak): array
     {
-        $zaaktypeUrl = ($zaak['zaaktype'] ?? null);
-        if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+        $zaaktypeUrl = (string) ($zaak['zaaktype'] ?? '');
+        if ($zaaktypeUrl === '') {
             return [];
         }
 
@@ -379,19 +408,19 @@ class ZGWZaakOpschortingVerlengingService
             return (int) $duration;
         }
 
-        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $m) !== 1) {
+        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $matches) !== 1) {
             return null;
         }
 
-        // Reject an empty "P".
-        if (($m[1] ?? '') === '' && ($m[2] ?? '') === '' && ($m[3] ?? '') === '' && ($m[4] ?? '') === '') {
+        // Reject an empty "P": one concatenation instead of four emptiness tests.
+        if (($matches[1] ?? '').($matches[2] ?? '').($matches[3] ?? '').($matches[4] ?? '') === '') {
             return null;
         }
 
-        $years  = (int) ($m[1] ?? 0);
-        $months = (int) ($m[2] ?? 0);
-        $weeks  = (int) ($m[3] ?? 0);
-        $days   = (int) ($m[4] ?? 0);
+        $years  = (int) ($matches[1] ?? 0);
+        $months = (int) ($matches[2] ?? 0);
+        $weeks  = (int) ($matches[3] ?? 0);
+        $days   = (int) ($matches[4] ?? 0);
 
         return ($years * 365) + ($months * 30) + ($weeks * 7) + $days;
     }//end durationToDays()

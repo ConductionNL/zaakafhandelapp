@@ -61,15 +61,18 @@ interface IObjectService
     /**
      * Creates or updates an object.
      *
-     * @param string  $objectType    The type
-     * @param array   $object        The data
-     * @param boolean $updateVersion Whether to bump version
+     * An update always bumps the object version; there is no suppress-the-bump
+     * variant, because nothing in this app ever wanted one and a boolean flag
+     * selecting between two behaviours belongs in two methods, not one argument.
+     *
+     * @param string $objectType The type
+     * @param array  $object     The data
      *
      * @return mixed The saved object
      *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
-    public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed;
+    public function saveObject(string $objectType, array $object): mixed;
 
     /**
      * Deletes an object.

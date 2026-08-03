@@ -7,6 +7,7 @@ use OCA\OpenRegister\Db\RegisterMapper;
 use OCA\OpenRegister\Db\Schema;
 use OCA\OpenRegister\Db\SchemaMapper;
 use OCA\OpenRegister\Exception\CustomValidationException;
+use RuntimeException;
 
 /**
  * Service for ZGW OIO and besluit operations.
@@ -38,7 +39,7 @@ class ZGWLogicService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWLogicService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWLogicService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -174,9 +175,9 @@ class ZGWLogicService
     {
         $ztIotArray = $ztIot->jsonSerialize();
 
-        $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
+        $iotOmschrijving = $ztIotArray['informatieobjecttype'];
 
-        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $iotOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
         $this->objectService->clearCurrents();
 
         $zaaktype      = $this->getObjectByEndpointUrl($ztIotArray['zaaktype']);
@@ -219,9 +220,9 @@ class ZGWLogicService
     {
         $ztIotArray = $ztIot->jsonSerialize();
 
-        $informatieObjectTypeOmschrijving = $ztIotArray['informatieobjecttype'];
+        $iotOmschrijving = $ztIotArray['informatieobjecttype'];
 
-        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $informatieObjectTypeOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
+        $iots = $this->objectService->findAll(['filters' => ['omschrijving' => $iotOmschrijving, 'register' => $this->registerMapper->find($this->registry->getZtcRegister())->getId(), 'schema' => $this->schemaMapper->find($this->registry->getIOTSchema())->getId()]]);
 
         $iot = array_shift($iots);
 

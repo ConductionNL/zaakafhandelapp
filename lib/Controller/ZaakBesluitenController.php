@@ -4,7 +4,6 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use Exception;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
-use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -43,7 +42,6 @@ class ZaakBesluitenController extends Controller
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
-        private readonly ZGWRegistryService $registryService,
         private readonly IURLGenerator $urlGenerator,
         private readonly IUserSession $userSession,
     ) {

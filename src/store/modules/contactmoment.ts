@@ -7,7 +7,7 @@ const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/contactmomenten'
 
 export const useContactMomentStore = defineStore('contactmomenten', {
 	state: () => ({
-		contactMomentItem: null as ContactMoment,
+		contactMomentItem: null as ContactMoment | null,
 		contactMomentenList: [] as ContactMoment[],
 	}),
 	actions: {
