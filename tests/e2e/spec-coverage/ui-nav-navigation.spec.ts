@@ -19,9 +19,8 @@
  */
 
 import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { dismissSupportModal, expandNav, openIndexSidebar } from './helpers'
+import { APP } from '../app-path'
 
 /**
  * The main-section nav entries and the page heading each lands on. Dashboard
@@ -35,6 +34,11 @@ const MAIN_NAV: Array<{ id: string, heading: string }> = [
 	{ id: 'Medewerkers', heading: 'Employees' },
 	{ id: 'Contactmomenten', heading: 'Contact moments' },
 	{ id: 'Berichten', heading: 'Messages' },
+	// `Rollen` declares `section: "settings"` in src/manifest.json, so it is
+	// not a main-section entry at all — it lives in the settings foldout.
+	// `expandNav()` opens that foldout, so it is still reachable and still
+	// covered here, but the list below no longer claims it is visible by
+	// default (which is what SETTINGS_NAV_IDS already said).
 	{ id: 'Rollen', heading: 'Roles' },
 ]
 
@@ -56,6 +60,10 @@ async function bootNav(page: Page): Promise<void> {
 	await dismissSupportModal(page)
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 	await expect(page.locator('[data-testid="cn-nav"]')).toBeVisible({ timeout: 10_000 })
+	// Only the group holding the active route auto-expands, and the
+	// settings-section entries sit in a closed foldout, so every entry outside
+	// CasesGroup is rendered-but-hidden until a user opens its container.
+	await expandNav(page)
 }
 
 test.describe('ui-nav-navigation — clicking left-nav entries lands on the right page', () => {
@@ -67,8 +75,11 @@ test.describe('ui-nav-navigation — clicking left-nav entries lands on the righ
 			const entry = page.locator(`[data-testid="cn-nav-entry-${id}"]`)
 			await expect(entry).toBeVisible({ timeout: 10_000 })
 			await entry.click()
-			// The destination index page mounts with its heading.
+			// The destination index page mounts with its heading. The heading
+			// lives in the index sidebar's header (CnIndexPage `showTitle`
+			// defaults to false), and that sidebar is closed on load.
 			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 10_000 })
+			await openIndexSidebar(page)
 			await expect(page.getByRole('heading', { name: heading, exact: true }).first()).toBeVisible({ timeout: 10_000 })
 		})
 	}

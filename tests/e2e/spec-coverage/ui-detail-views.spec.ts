@@ -29,8 +29,7 @@
 
 import { test, expect, type Page } from '@playwright/test'
 import { dismissSupportModal } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 // A syntactically-valid-but-nonexistent id. The detail page resolves no
 // record and renders its header chrome + empty body, which is the stable,

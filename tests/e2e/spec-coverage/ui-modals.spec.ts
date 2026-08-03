@@ -11,8 +11,7 @@
 
 import { test, expect } from '@playwright/test'
 import { dismissSupportModal } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 

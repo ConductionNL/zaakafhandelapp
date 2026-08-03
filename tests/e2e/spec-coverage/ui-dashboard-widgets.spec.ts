@@ -14,10 +14,12 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel } from './helpers'
+import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers'
+import { APP } from '../app-path'
 
-const DASHBOARD = '/apps/dashboard'
-const APP = '/apps/zaakafhandelapp'
+// Front-controller form for the same reason as APP — see tests/e2e/app-path.ts.
+// `php -S` applies no rewrite, so a bare `/apps/dashboard` 404s there.
+const DASHBOARD = '/index.php/apps/dashboard'
 
 test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure', () => {
 
@@ -38,7 +40,8 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		await dismissSupportModal(page)
 		// Wait for app nav
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible({ timeout: 10_000 })
+		// The search tab lives in the index sidebar, closed on load.
+		await openIndexSidebar(page)
 		await page.getByRole('tab', { name: 'Search' }).first().click()
 		const searchBox = page.getByRole('textbox', { name: 'Search' })
 		await expect(searchBox).toBeVisible()
@@ -57,8 +60,9 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		await expect(navEntryByLabel(page, 'Contact moments')).toBeVisible({ timeout: 15_000 })
 		// List chrome confirms the component is mounted — contactmomenten uses "Add Contactmoment"
 		await expect(page.getByRole('button', { name: 'Add Contactmoment' })).toBeVisible({ timeout: 10_000 })
-		// Cards radio confirms list container present (use .first() to avoid strict mode)
-		await expect(page.getByRole('radio', { name: 'Cards' }).first()).toBeVisible()
+		// The Cards segment confirms the list container is present. CnActionsBar
+		// renders the view-mode toggle as aria-pressed buttons, not radios.
+		await expect(page.getByRole('button', { name: 'Cards' }).first()).toBeVisible()
 	})
 
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#showing-a-widget-item
@@ -68,9 +72,13 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		// Wait for app to mount first
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
-		// The detail sidebar shows even in empty state — confirming item-detail linking is wired
-		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
-		// The right sidebar Search + Columns tabs confirm the sidebar component is fully mounted
+		// The sidebar opens from the list chrome — confirming item-detail
+		// linking is wired. Its header carries the page title, not the
+		// "Details" name this test used to expect (that is CnObjectSidebar's
+		// fallback for a selected record, which an empty list never has).
+		await openIndexSidebar(page)
+		await expect(page.getByRole('heading', { name: 'Cases', exact: true }).first()).toBeVisible({ timeout: 10_000 })
+		// The Search + Columns tabs confirm the sidebar component is fully mounted
 		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible()
 		await expect(page.getByRole('tab', { name: 'Columns' }).first()).toBeVisible()
 	})

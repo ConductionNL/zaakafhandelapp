@@ -7,9 +7,8 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { dismissSupportModal, expandNav, navEntryByLabel, openIndexSidebar } from './helpers'
+import { APP } from '../app-path'
 
 test.describe('ui-search-navigation — search sidebar, config nav, permissions, utilities', () => {
 
@@ -21,8 +20,8 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		// The Search nav item is active (highlighted)
 		await expect(navEntryByLabel(page, 'Search')).toBeVisible({ timeout: 10_000 })
-		// The sidebar search tab is present (use first to avoid strict-mode on multiple tabs)
-		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible({ timeout: 10_000 })
+		// The search tab lives in the index sidebar, which is closed on load.
+		await openIndexSidebar(page)
 		await page.getByRole('tab', { name: 'Search' }).first().click()
 		const searchBox = page.getByRole('textbox', { name: 'Search' })
 		await expect(searchBox).toBeVisible()
@@ -38,6 +37,9 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('saving configuration from the nav panel — Settings button is accessible in nav', async ({ page }) => {
 		await page.goto(`${APP}/#/`)
 		await dismissSupportModal(page)
+		// On the Dashboard route neither menu group holds the active route, so
+		// both are collapsed and their entries are hidden until expanded.
+		await expandNav(page)
 		// Wait for app nav to confirm SPA mounted
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		// The Settings button is in the app navigation panel (not the NC header "Settings menu").
@@ -52,6 +54,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('resolving permissions — the app initialises and navigation items are visible to admin', async ({ page }) => {
 		await page.goto(`${APP}/#/`)
 		await dismissSupportModal(page)
+		await expandNav(page)
 		// Admin user sees all nav items — confirms permission flags are resolved correctly
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible()
@@ -79,6 +82,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('rendering an icon — navigation SVG/img icons are present in the DOM', async ({ page }) => {
 		await page.goto(`${APP}/#/`)
 		await dismissSupportModal(page)
+		await expandNav(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		// SVG/img elements are injected by the MDI icon provider — at least one should be
 		// present in the app navigation area

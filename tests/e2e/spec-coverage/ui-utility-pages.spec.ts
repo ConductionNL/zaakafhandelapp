@@ -34,8 +34,7 @@
 
 import { test, expect } from '@playwright/test'
 import { dismissSupportModal, spaNavigate, navEntryByLabel } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', () => {
 

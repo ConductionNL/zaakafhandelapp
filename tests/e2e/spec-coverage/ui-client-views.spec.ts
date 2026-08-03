@@ -7,9 +7,8 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers'
+import { APP } from '../app-path'
 
 test.describe('ui-client-views — klanten, contactmomenten, taken views', () => {
 
@@ -30,9 +29,13 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		// Wait for app to mount first
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
-		// Detail panel heading is visible (even empty-state shows Details header)
-		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
-		// The right sidebar exposes Search and Columns tabs — confirming the sidebar component is mounted
+		// The index sidebar is closed on load; open it as a user does. Its
+		// header carries the page title ("Customers"), not the "Details"
+		// name this test used to expect — that name is CnObjectSidebar's
+		// fallback for a SELECTED record and never applied to an empty list.
+		await openIndexSidebar(page)
+		await expect(page.getByRole('heading', { name: 'Customers', exact: true }).first()).toBeVisible({ timeout: 10_000 })
+		// The sidebar exposes Search and Columns tabs — confirming the sidebar component is mounted
 		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible()
 		await expect(page.getByRole('tab', { name: 'Columns' }).first()).toBeVisible()
 	})
@@ -43,10 +46,14 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		await dismissSupportModal(page)
 		// Nav item visible
 		await expect(navEntryByLabel(page, 'Contact moments')).toBeVisible({ timeout: 15_000 })
-		// List chrome present — contactmomenten uses "Add Contactmoment" as its add-button label
+		// List chrome present — contactmomenten uses "Add Contactmoment" as its
+		// add-button label. CnIndexPage derives that label from
+		// `schema.title`, falling back to "Add Item", so this assertion also
+		// proves the `contactmoment` schema the manifest declares actually
+		// exists in the `zaakafhandelapp` register (see tests/e2e/ci-seed.sh).
 		await expect(page.getByRole('button', { name: 'Add Contactmoment' })).toBeVisible({ timeout: 10_000 })
-		// Search tab accessible (use first to avoid strict mode with multiple tabs)
-		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible()
+		// Search tab accessible — it lives in the index sidebar, closed on load.
+		await openIndexSidebar(page)
 		await page.getByRole('tab', { name: 'Search' }).first().click()
 		const searchBox = page.getByRole('textbox', { name: 'Search' })
 		await expect(searchBox).toBeVisible()
@@ -95,7 +102,8 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
+		await openIndexSidebar(page)
+		await expect(page.getByRole('heading', { name: 'Customers', exact: true }).first()).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-client-views/spec.md#linked-badge-and-export-action
@@ -103,8 +111,9 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 		await page.goto(`${APP}/#/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({ timeout: 15_000 })
-		// Detail panel chrome present — the linked badge + save-to-contacts action render here.
-		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
+		// Sidebar chrome present — the linked badge + save-to-contacts action render here.
+		await openIndexSidebar(page)
+		await expect(page.getByRole('heading', { name: 'Customers', exact: true }).first()).toBeVisible({ timeout: 10_000 })
 	})
 
 	// @e2e openspec/specs/ui-client-views/spec.md#hidden-without-contacts

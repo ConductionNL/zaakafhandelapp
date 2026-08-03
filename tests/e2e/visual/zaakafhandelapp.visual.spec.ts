@@ -12,8 +12,7 @@
  */
 import { test } from '@playwright/test'
 import { shootSurface, shootByNav } from './_visual-helpers'
-
-const APP = '/index.php/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 test.describe('ZaakAfhandelApp — visual baselines', () => {
 	test('dashboard', async ({ page }) => {
