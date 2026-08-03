@@ -276,3 +276,14 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ] || [ "${CI:-}" = "true" ]; then
 fi
 
 echo "[ci-seed] done."
+
+# ── TEMPORARY: bundle-dependence control — REVERTED BEFORE MERGE ─────────────
+# Truncate, do not delete. globalSetup's ensureBundleBuilt() gates on
+# fs.existsSync(), so a deleted bundle is silently rebuilt and the control
+# proves nothing. A 65-byte file still "exists".
+# Runs AFTER the gate above on purpose, so the gate is exercised against the
+# REAL bundle first.
+CONTROL_BUNDLE="$(cd "${SCRIPT_DIR}/../.." && pwd)/js/zaakafhandelapp-main.js"
+echo "[control] bundle bytes BEFORE: $(stat -c%s "$CONTROL_BUNDLE")"
+printf '/* truncated by the e2e bundle-dependence control */\n' > "$CONTROL_BUNDLE"
+echo "[control] bundle bytes AFTER:  $(stat -c%s "$CONTROL_BUNDLE")"
