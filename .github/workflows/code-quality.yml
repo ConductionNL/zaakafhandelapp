@@ -16,6 +16,22 @@ jobs:
       enable-psalm: true
       enable-phpstan: true
 
+      # `enable-phpunit` defaults to FALSE in the shared workflow and this
+      # caller never set it, so the 99 unit tests under tests/Unit had never
+      # run in CI. The job still listed itself as
+      # `PHPUnit (PHP ${{ matrix.php-version }}, NC ${{ matrix.nextcloud-ref }})`
+      # and reported `skipped` — GitHub evaluates a matrix job's `if:` before
+      # expanding the matrix, so the placeholders stay literal and a disabled
+      # job looks exactly like a repo with no PHP tests.
+      #
+      # No matrix input is required: `php-test-versions` and `nextcloud-test-refs`
+      # both default to non-empty arrays in the callee.
+      #
+      # Note the callee ALSO skips this job when `php-quality` fails, which is
+      # what kept it dark in the sibling repos. zaakafhandelapp's php-quality
+      # went fully green in #312, so this boolean is the only thing left.
+      enable-phpunit: true
+
       # zaakafhandelapp is a manifest-v2 (CnAppRoot) app: every index/detail
       # page in src/manifest.json reads and writes DIRECTLY through
       # `/apps/openregister/api/objects/zaakafhandelapp/<schema>`, and
