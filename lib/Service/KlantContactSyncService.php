@@ -45,24 +45,22 @@ class KlantContactSyncService
     private const KLANT_TYPE = 'klanten';
 
     /**
-     * Klant fields that have a privacy-sensitive nature and SHALL never be
-     * written to a shared addressbook vCard (REQ-003).
-     *
-     * @var array<int, string>
-     */
-    private const NON_VCARD_FIELDS = ['bsn'];
-
-    /**
      * Constructor.
      *
-     * @param IContactsManager $contactsManager The Nextcloud contacts manager.
-     * @param ObjectService    $objectService   The app object service (OpenRegister).
-     * @param LoggerInterface  $logger          The logger.
+     * The mapper carries a default so the three collaborators that actually
+     * reach outside this process stay the constructor's story; it is a pure,
+     * dependency-free shape translator.
+     *
+     * @param IContactsManager  $contactsManager The Nextcloud contacts manager.
+     * @param ObjectService     $objectService   The app object service (OpenRegister).
+     * @param LoggerInterface   $logger          The logger.
+     * @param KlantVCardMapper  $mapper          The klant <-> vCard shape mapper.
      */
     public function __construct(
         private readonly IContactsManager $contactsManager,
         private readonly ObjectService $objectService,
         private readonly LoggerInterface $logger,
+        private readonly KlantVCardMapper $mapper=new KlantVCardMapper(),
     ) {
     }//end __construct()
 
@@ -299,46 +297,7 @@ class KlantContactSyncService
      */
     public function vCardToKlant(array $contact, ?string $type=null): array
     {
-        $org = $this->firstValue(($contact['ORG'] ?? ''));
-
-        if ($type === null) {
-            $type = ($org !== '') ? 'organisatie' : 'persoon';
-        }
-
-        $klant = [
-            'type'           => $type,
-            'emailadres'     => $this->firstValue(($contact['EMAIL'] ?? '')),
-            'telefoonnummer' => $this->firstValue(($contact['TEL'] ?? '')),
-            'bedrijfsnaam'   => $org,
-        ];
-
-        // N = Family;Given;Additional;Prefix;Suffix
-        $structuredName = $this->firstValue(($contact['N'] ?? ''));
-        if ($structuredName !== '') {
-            $parts = explode(';', $structuredName);
-            $klant['achternaam']    = trim(($parts[0] ?? ''));
-            $klant['voornaam']      = trim(($parts[1] ?? ''));
-            $klant['tussenvoegsel'] = trim(($parts[3] ?? ''));
-        } else {
-            $fn = $this->firstValue(($contact['FN'] ?? ''));
-            if ($fn !== '') {
-                $bits = preg_split('/\s+/', trim($fn), 2);
-                $klant['voornaam']   = ($bits[0] ?? '');
-                $klant['achternaam'] = ($bits[1] ?? '');
-            }
-        }
-
-        // ADR = PObox;Extended;Street;City;Region;PostalCode;Country
-        $address = $this->firstValue(($contact['ADR'] ?? ''));
-        if ($address !== '') {
-            $adr = explode(';', $address);
-            $klant['straatnaam'] = trim(($adr[2] ?? ''));
-            $klant['plaats']     = trim(($adr[3] ?? ''));
-            $klant['postcode']   = trim(($adr[5] ?? ''));
-            $klant['land']       = trim(($adr[6] ?? ''));
-        }
-
-        return array_filter($klant, static fn ($v) => $v !== '' && $v !== null);
+        return $this->mapper->vCardToKlant($contact, $type);
     }//end vCardToKlant()
 
     /**
@@ -356,55 +315,7 @@ class KlantContactSyncService
      */
     public function klantToVCard(array $klant, ?string $uid): array
     {
-        $properties = [];
-
-        if ($uid !== null && $uid !== '') {
-            $properties['UID'] = $uid;
-        }
-
-        $type          = ($klant['type'] ?? 'persoon');
-        $voornaam      = (string) ($klant['voornaam'] ?? '');
-        $tussenvoegsel = (string) ($klant['tussenvoegsel'] ?? '');
-        $achternaam    = (string) ($klant['achternaam'] ?? '');
-        $bedrijfsnaam  = (string) ($klant['bedrijfsnaam'] ?? '');
-
-        if ($type === 'organisatie' && $bedrijfsnaam !== '') {
-            $properties['FN']  = $bedrijfsnaam;
-            $properties['ORG'] = $bedrijfsnaam;
-        } else {
-            $family           = trim(trim($tussenvoegsel.' '.$achternaam));
-            $properties['FN'] = trim($voornaam.' '.$family);
-            // N = Family;Given;Additional;Prefix;Suffix
-            $properties['N'] = $family.';'.$voornaam.';;'.$tussenvoegsel.';';
-            if ($bedrijfsnaam !== '') {
-                $properties['ORG'] = $bedrijfsnaam;
-            }
-        }
-
-        $email = (string) ($klant['emailadres'] ?? '');
-        if ($email !== '') {
-            $properties['EMAIL'] = $email;
-        }
-
-        $phone = (string) ($klant['telefoonnummer'] ?? '');
-        if ($phone !== '') {
-            $properties['TEL'] = $phone;
-        }
-
-        $street  = trim((string) ($klant['straatnaam'] ?? '').' '.(string) ($klant['huisnummer'] ?? ''));
-        $city    = (string) ($klant['plaats'] ?? '');
-        $postal  = (string) ($klant['postcode'] ?? '');
-        $country = (string) ($klant['land'] ?? '');
-        if ($street !== '' || $city !== '' || $postal !== '' || $country !== '') {
-            // ADR = PObox;Extended;Street;City;Region;PostalCode;Country
-            $properties['ADR'] = ';;'.$street.';'.$city.';;'.$postal.';'.$country;
-        }
-
-        foreach (self::NON_VCARD_FIELDS as $forbidden) {
-            unset($properties[$forbidden]);
-        }
-
-        return $properties;
+        return $this->mapper->klantToVCard($klant, $uid);
     }//end klantToVCard()
 
     /**
@@ -484,15 +395,6 @@ class KlantContactSyncService
      */
     private function firstValue(mixed $value): string
     {
-        if (is_array($value) === true) {
-            $first = ($value[0] ?? '');
-            if (is_array($first) === true) {
-                return (string) ($first['value'] ?? '');
-            }
-
-            return (string) $first;
-        }
-
-        return (string) $value;
+        return $this->mapper->firstValue($value);
     }//end firstValue()
 }//end class

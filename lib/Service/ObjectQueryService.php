@@ -104,10 +104,13 @@ class ObjectQueryService
      *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
-    public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
+    public function saveObject(string $objectType, array $object): mixed
     {
         $mapper = $this->mapperService->getMapper($objectType);
-        return isset($object['id']) ? $mapper->updateFromArray($object['id'], $object, $updateVersion) : $mapper->createFromArray($object);
+
+        // An update always bumps the object version - passed explicitly rather
+        // than relying on the mapper's own default so the intent stays visible.
+        return isset($object['id']) ? $mapper->updateFromArray($object['id'], $object, true) : $mapper->createFromArray($object);
     }//end saveObject()
 
     /**

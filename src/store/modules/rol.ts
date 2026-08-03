@@ -17,10 +17,10 @@ type TOptions = {
 
 export const useRolStore = defineStore('rollen', {
 	state: () => ({
-		rolItem: null as Rol,
+		rolItem: null as Rol | null,
 		rollenList: [] as Rol[],
-		zaakId: null as string,
-		zaakUrl: null as string,
+		zaakId: null as string | null,
+		zaakUrl: null as string | null,
 		/**
 		 * Extra data to pass through the application.
 		 *

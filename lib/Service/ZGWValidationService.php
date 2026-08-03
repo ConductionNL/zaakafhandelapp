@@ -5,6 +5,7 @@ namespace OCA\ZaakAfhandelApp\Service;
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Exception\CustomValidationException;
 use OCP\AppFramework\Db\DoesNotExistException;
+use RuntimeException;
 
 /**
  * Validation service for ZGW cross-object references.
@@ -30,7 +31,7 @@ class ZGWValidationService
     {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWValidationService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWValidationService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;

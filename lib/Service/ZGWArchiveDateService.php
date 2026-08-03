@@ -8,6 +8,7 @@ use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Db\RegisterMapper;
 use OCA\OpenRegister\Db\SchemaMapper;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Service for calculating archive dates based on afleidingswijze.
@@ -44,7 +45,7 @@ class ZGWArchiveDateService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWArchiveDateService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWArchiveDateService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;

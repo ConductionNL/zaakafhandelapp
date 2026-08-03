@@ -115,9 +115,9 @@ class ObjectService implements IObjectService
      *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
      */
-    public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
+    public function saveObject(string $objectType, array $object): mixed
     {
-        return $this->queryService->saveObject($objectType, $object, $updateVersion);
+        return $this->queryService->saveObject($objectType, $object);
     }//end saveObject()
 
     /**
@@ -159,8 +159,17 @@ class ObjectService implements IObjectService
      *
      * Routes through OR's ObjectService::getObjectUsedBy to avoid calling non-existent
      * methods on the OR ObjectServiceMapperAdapter (C5 fix).
+     *
+     * OR resolves the relation graph from the object UUID alone, so this method takes
+     * no $objectType. It used to accept one and silently ignore it, which read as if
+     * the lookup were type-scoped when it never was; scoping by type is the caller's
+     * job (see ObjectsController::validateObjectType).
+     *
+     * @param string $id The object uuid.
+     *
+     * @return array<int, mixed> The objects referencing this one.
      */
-    public function getRelations(string $objectType, string $id): array
+    public function getRelations(string $id): array
     {
         $orService = $this->mapperService->getOpenRegisters();
         if ($orService === null) {
@@ -175,8 +184,15 @@ class ObjectService implements IObjectService
      *
      * Routes through OR's ObjectService::getObjectUses to avoid calling non-existent
      * methods on the OR ObjectServiceMapperAdapter (C5 fix).
+     *
+     * Takes no $objectType for the same reason as getRelations(): OR resolves uses
+     * from the uuid alone, so an ignored type parameter only misrepresented the scope.
+     *
+     * @param string $id The object uuid.
+     *
+     * @return array<int, mixed> The objects this one points to.
      */
-    public function getUses(string $objectType, string $id): array
+    public function getUses(string $id): array
     {
         $orService = $this->mapperService->getOpenRegisters();
         if ($orService === null) {
@@ -191,8 +207,17 @@ class ObjectService implements IObjectService
      *
      * Routes through OR's ObjectService::getLogs to avoid calling the non-existent
      * getAuditTrail method on the OR ObjectServiceMapperAdapter (C5 fix).
+     *
+     * Takes no $objectType: OR keys its logs by object uuid, and the callers that
+     * must not leak another type's trail already gate on the object itself (see
+     * ObjectsController::getAuditTrail, which resolves the object through OR's RBAC
+     * before reaching this method).
+     *
+     * @param string $id The object uuid.
+     *
+     * @return array<int, mixed> The serialized audit trail entries.
      */
-    public function getAuditTrail(string $objectType, string $id): array
+    public function getAuditTrail(string $id): array
     {
         $orService = $this->mapperService->getOpenRegisters();
         if ($orService === null) {

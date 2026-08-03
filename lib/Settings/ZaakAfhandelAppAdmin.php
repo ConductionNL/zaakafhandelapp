@@ -37,7 +37,9 @@ class ZaakAfhandelAppAdmin implements ISettings
             'mySetting' => $this->config->getSystemValue('zaakafhandelapp_setting', true),
         ];
 
-        return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, 'admin');
+        // RENDER_AS_BLANK: the Settings framework embeds this template inside the
+        // admin settings page, so the response must not add page chrome of its own.
+        return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, TemplateResponse::RENDER_AS_BLANK);
     }//end getForm()
 
     public function getSection()

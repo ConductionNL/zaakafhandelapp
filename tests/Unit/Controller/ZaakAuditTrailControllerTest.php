@@ -72,7 +72,7 @@ class ZaakAuditTrailControllerTest extends TestCase
     public function testIndexMapsOrEntriesToZgwAudittrailShape(): void
     {
         $this->objectService->method('getAuditTrail')
-            ->with('zaken', self::ZAAK)
+            ->with(self::ZAAK)
             ->willReturn(
                 [
                     ['uuid' => 'e1', 'action' => 'create', 'created' => '2026-06-14T10:00:00Z'],

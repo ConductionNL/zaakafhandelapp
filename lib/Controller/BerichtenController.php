@@ -93,7 +93,8 @@ class BerichtenController extends Controller
              $this->appName,
              'error',
              ['error' => $e->getMessage()],
-             '500'
+             TemplateResponse::RENDER_AS_ERROR,
+             Http::STATUS_INTERNAL_SERVER_ERROR
             );
         }//end try
     }//end page()
@@ -227,7 +228,7 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
         }
 
-        $auditTrail = $this->objectService->getAuditTrail('berichten', $id);
+        $auditTrail = $this->objectService->getAuditTrail($id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()
 }//end class
