@@ -34,23 +34,38 @@ const BUNDLE_PATH = path.join(APP_ROOT, 'js', 'zaakafhandelapp-main.js')
 /**
  * Ensure the webpack bundle exists before specs hit `/apps/zaakafhandelapp`.
  *
- * The shared `ConductionNL/.github/quality.yml` Playwright job runs
- * `npm ci` + `npx playwright install` before the spec run, but never
- * `npm run build`. On a fresh CI VM the `js/zaakafhandelapp-main.js`
- * artefact doesn't exist, so the rendered page loads a 404 script tag
- * and the Vue app never mounts — every selector wait then times out.
+ * The shared `ConductionNL/.github/quality.yml` Playwright job now HAS a
+ * "Build app frontend" step (`npm run build`) that runs before the spec
+ * run — the note that used to stand here, saying it did not, is stale.
  *
- * Skipping the build entirely on CI would require a cross-repo PR to
- * `ConductionNL/.github` adding a `npm run build` step to the shared
- * workflow; doing it here keeps the fix self-contained.
- *
- * Note: locally, the app running in the dev container is usually
- * mounted from a separate checkout, so this build only helps CI / a
- * checkout that serves its own `js/`.
+ * Locally, the app running in the dev container is usually mounted from a
+ * separate checkout, so this build only helps a checkout that serves its
+ * own `js/`.
  */
 function ensureBundleBuilt(): void {
 	if (fs.existsSync(BUNDLE_PATH)) {
 		return
+	}
+	// On CI this is a hard error, not something to repair.
+	//
+	// The shared workflow has already run its own "Build app frontend" step by
+	// the time we get here, so a missing bundle means that step did not produce
+	// one — and silently rebuilding turns a broken build into a green run with
+	// nothing to show for it. It also makes the bundle genuinely untestable:
+	// a positive control that removes the bundle to prove the specs depend on it
+	// gets healed right back before the first spec runs, and the suite passes.
+	// (Observed on opencatalogi: a run passed 82/82 with the bundle deleted,
+	// because this function rebuilt it — the control proved nothing until it was
+	// changed to truncate the file instead.)
+	//
+	// Locally the rebuild stays, because there it is a genuine convenience:
+	// a fresh checkout has no `js/` and nothing else is going to build it.
+	if (process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') {
+		throw new Error(
+			`[playwright globalSetup] bundle missing at ${BUNDLE_PATH} on CI. `
+			+ 'The workflow\'s "Build app frontend" step should already have produced it — '
+			+ 'check that step rather than rebuilding here, because a rebuild would hide it.',
+		)
 	}
 	// eslint-disable-next-line no-console
 	console.log(`[playwright globalSetup] bundle missing at ${BUNDLE_PATH}; running 'npm run build' once…`)
