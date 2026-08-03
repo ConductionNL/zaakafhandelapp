@@ -87,6 +87,34 @@ export async function dismissSupportModal(page: Page): Promise<void> {
 }
 
 /**
+ * Close the first-visit product tour (CnWalkthrough) if it is showing.
+ *
+ * src/manifest.json declares `walkthrough.enabled: true` with a
+ * `trigger: "first-visit"` tour whose first step is a centred, full-screen
+ * step on the Dashboard page. CnWalkthrough renders that as a modal dialog
+ * over a `.cn-walkthrough__dim--full` backdrop, and the backdrop swallows
+ * pointer events for the whole viewport.
+ *
+ * On the instance this suite was authored against, the tour had already been
+ * completed — `walkthrough.completionConfigKey` (`walkthrough_completed_version`)
+ * was set — so it never appeared. On a freshly installed Nextcloud it appears
+ * on every visit to the app root until someone completes or dismisses it, and
+ * every click on that route then fails with "subtree intercepts pointer
+ * events" rather than anything about the control being clicked.
+ *
+ * Closing it is what a user does, and nothing in this suite covers the tour
+ * itself. `Close tour` is CnWalkthrough's own close-button label and is unique
+ * to it.
+ */
+export async function dismissWalkthrough(page: Page): Promise<void> {
+	const close = page.getByRole('button', { name: 'Close tour' }).first()
+	if (await close.isVisible({ timeout: 2_000 }).catch(() => false)) {
+		await close.click()
+		await expect(close).toBeHidden({ timeout: 5_000 })
+	}
+}
+
+/**
  * Open the index page's Search/Columns sidebar and wait for it to render.
  *
  * WHY THIS IS A STEP AND NOT AN ASSUMPTION
@@ -109,6 +137,7 @@ export async function dismissSupportModal(page: Page): Promise<void> {
  * `CnActionsBar`), rather than an assertion relaxed to match a closed sidebar.
  */
 export async function openIndexSidebar(page: Page): Promise<void> {
+	await dismissWalkthrough(page)
 	const toggle = page.getByRole('button', { name: 'Search and columns' }).first()
 	await expect(toggle).toBeVisible({ timeout: 15_000 })
 	// The toggle reflects state via aria-pressed, so this stays idempotent —
@@ -139,6 +168,9 @@ export async function openIndexSidebar(page: Page): Promise<void> {
  * under `section: "settings"`.)
  */
 export async function expandNav(page: Page): Promise<void> {
+	// The first-visit tour's full-screen backdrop intercepts every click,
+	// including the group toggles below.
+	await dismissWalkthrough(page)
 	const nav = page.locator('[data-testid="cn-nav"]')
 	await expect(nav).toBeVisible({ timeout: 15_000 })
 
