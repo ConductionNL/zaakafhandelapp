@@ -15,9 +15,11 @@
 
 import { test, expect } from '@playwright/test'
 import { dismissSupportModal, navEntryByLabel } from './helpers'
+import { APP } from '../app-path'
 
-const DASHBOARD = '/apps/dashboard'
-const APP = '/apps/zaakafhandelapp'
+// Front-controller form for the same reason as APP — see tests/e2e/app-path.ts.
+// `php -S` applies no rewrite, so a bare `/apps/dashboard` 404s there.
+const DASHBOARD = '/index.php/apps/dashboard'
 
 test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure', () => {
 

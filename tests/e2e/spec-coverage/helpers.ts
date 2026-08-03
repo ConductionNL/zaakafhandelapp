@@ -7,8 +7,7 @@
 
 import type { Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 /**
  * Map a human nav label to its stable manifest menu id (the testid suffix

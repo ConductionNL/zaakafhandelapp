@@ -22,8 +22,9 @@
 
 import { type Page, type Locator, expect } from '@playwright/test'
 import { dismissSupportModal } from '../spec-coverage/helpers'
+import { APP } from '../app-path'
 
-export const APP = '/apps/zaakafhandelapp'
+export { APP }
 
 /** A roomy viewport so the master list isn't squeezed by the detail sidebars. */
 export async function widen(page: Page): Promise<void> {

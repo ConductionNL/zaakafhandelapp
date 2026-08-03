@@ -26,8 +26,7 @@
 
 import { test, expect, type Page } from '@playwright/test'
 import { dismissSupportModal } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 /**
  * Assert the shared index-view chrome on the page currently loaded.

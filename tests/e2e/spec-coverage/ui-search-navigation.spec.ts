@@ -8,8 +8,7 @@
 
 import { test, expect } from '@playwright/test'
 import { dismissSupportModal, navEntryByLabel } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 test.describe('ui-search-navigation — search sidebar, config nav, permissions, utilities', () => {
 

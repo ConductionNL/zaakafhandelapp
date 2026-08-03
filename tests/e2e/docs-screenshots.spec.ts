@@ -40,9 +40,9 @@
 import { test, expect, type Page } from '@playwright/test'
 import * as path from 'path'
 import * as fs from 'fs'
+import { APP } from './app-path'
 
 const SHOT_ROOT = path.resolve(__dirname, '..', '..', 'docs', 'static', 'screenshots', 'tutorials')
-const APP = '/apps/zaakafhandelapp'
 
 /**
  * Save a viewport screenshot under

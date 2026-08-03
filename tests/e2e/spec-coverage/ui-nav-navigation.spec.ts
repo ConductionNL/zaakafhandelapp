@@ -20,8 +20,7 @@
 
 import { test, expect, type Page } from '@playwright/test'
 import { dismissSupportModal } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 /**
  * The main-section nav entries and the page heading each lands on. Dashboard
