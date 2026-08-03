@@ -37,7 +37,16 @@ class ZaakAfhandelAppAdmin implements ISettings
             'mySetting' => $this->config->getSystemValue('zaakafhandelapp_setting', true),
         ];
 
-        return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, 'admin');
+        // RENDER_AS_BLANK ('') is the value a settings form needs: the settings
+        // page embeds the rendered output, so any wrapping layout would nest a
+        // second full document inside it. 'admin' is not a valid renderAs and
+        // TemplateResponse::render() silently fell back to RENDER_AS_USER.
+        return new TemplateResponse(
+            'zaakafhandelapp',
+            'settings/admin',
+            $parameters,
+            TemplateResponse::RENDER_AS_BLANK
+        );
     }//end getForm()
 
     public function getSection()

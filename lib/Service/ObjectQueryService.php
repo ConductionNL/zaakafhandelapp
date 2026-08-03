@@ -103,6 +103,12 @@ class ObjectQueryService
      * Creates or updates an object.
      *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * $updateVersion is not a responsibility switch — the same write happens
+     * either way; the flag only decides whether OpenRegister bumps the object
+     * version. It mirrors the IObjectService contract this implements.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
     {

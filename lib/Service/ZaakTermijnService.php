@@ -30,6 +30,7 @@ use DateInterval;
 use DateTimeImmutable;
 use OCA\OpenRegister\Db\ObjectEntity;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Derives the termijn fields of a zaak from its zaaktype on creation (REQ-001).
@@ -53,7 +54,7 @@ class ZaakTermijnService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZaakTermijnService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZaakTermijnService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -71,6 +72,14 @@ class ZaakTermijnService
      * @return void
      *
      * @spec openspec/specs/zaak-termijn-monitoring/spec.md#REQ-001
+     *
+     * Complexity is one guard per precondition described above (zaaktype
+     * present, each termijn present, each client value absent before deriving).
+     * The method deliberately never overrides a client-supplied value, and each
+     * of those checks is a separate branch.
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function deriveTermijnen(ObjectEntity $zaak): void
     {
@@ -187,19 +196,19 @@ class ZaakTermijnService
             return (int) $duration;
         }
 
-        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $m) !== 1) {
+        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $parts) !== 1) {
             $this->logger->warning('ZaakTermijnService: unparsable duration, skipping derivation', ['duration' => $duration]);
             return null;
         }
 
-        if (($m[1] ?? '') === '' && ($m[2] ?? '') === '' && ($m[3] ?? '') === '' && ($m[4] ?? '') === '') {
+        if (($parts[1] ?? '') === '' && ($parts[2] ?? '') === '' && ($parts[3] ?? '') === '' && ($parts[4] ?? '') === '') {
             return null;
         }
 
-        $years  = (int) ($m[1] ?? 0);
-        $months = (int) ($m[2] ?? 0);
-        $weeks  = (int) ($m[3] ?? 0);
-        $days   = (int) ($m[4] ?? 0);
+        $years  = (int) ($parts[1] ?? 0);
+        $months = (int) ($parts[2] ?? 0);
+        $weeks  = (int) ($parts[3] ?? 0);
+        $days   = (int) ($parts[4] ?? 0);
 
         return ($years * 365) + ($months * 30) + ($weeks * 7) + $days;
     }//end durationToDays()

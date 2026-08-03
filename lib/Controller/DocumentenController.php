@@ -93,7 +93,7 @@ class DocumentenController extends Controller
             $params = $this->request->getParams();
             unset($params['_route']);
             $objects = $this->objectService->getObjects(objectType: self::OBJECT_TYPE, filters: $params);
-            $results = array_map(fn (array $o): array => $this->mapDocument($o), $objects);
+            $results = array_map(fn (array $doc): array => $this->mapDocument($doc), $objects);
 
             return new JSONResponse(['results' => array_values($results)]);
         } catch (Exception $e) {

@@ -33,10 +33,18 @@ use DateInterval;
 use DateTimeImmutable;
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Exception\CustomValidationException;
+use RuntimeException;
 
 /**
  * Applies opschorting/verlenging transitions to a zaak on update, gating on the
  * zaaktype policy and recalculating the termijn fields.
+ *
+ * Exceeds PHPMD's class-complexity threshold (58 vs 50): the branches are the
+ * ZGW opschorting/verlenging rules themselves — each one a policy gate the spec
+ * requires. Splitting them across classes would separate rules that must be
+ * evaluated against the same before/after zaak snapshot.
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class ZGWZaakOpschortingVerlengingService
 {
@@ -55,7 +63,7 @@ class ZGWZaakOpschortingVerlengingService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWZaakOpschortingVerlengingService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWZaakOpschortingVerlengingService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -88,10 +96,10 @@ class ZGWZaakOpschortingVerlengingService
             $oldZaak = $this->resolveOldZaak($zaak);
         }
 
-        $changed = false;
-
-        $changed = $this->handleOpschorting($new, $oldZaak, $now) || $changed;
-        $changed = $this->handleVerlenging($new, $oldZaak) || $changed;
+        // Both handlers must run, so evaluate each before folding it in — the
+        // first fold had a provably-false right-hand side.
+        $changed = $this->handleOpschorting($new, $oldZaak, $now);
+        $changed = ($this->handleVerlenging($new, $oldZaak) || $changed);
 
         if ($changed === true) {
             $zaak->setObject($new);
@@ -168,6 +176,14 @@ class ZGWZaakOpschortingVerlengingService
      * @return boolean True when the zaak was mutated.
      *
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
+     *
+     * Complexity is one guard per ZGW verlenging precondition (policy allowed,
+     * duration present and parseable, maximum not exceeded, termijn present).
+     * Each must be checked before the next is meaningful, so they cannot be
+     * flattened or reordered.
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function handleVerlenging(array &$new, array $old): bool
     {
@@ -379,19 +395,19 @@ class ZGWZaakOpschortingVerlengingService
             return (int) $duration;
         }
 
-        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $m) !== 1) {
+        if (preg_match('/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/', $duration, $parts) !== 1) {
             return null;
         }
 
         // Reject an empty "P".
-        if (($m[1] ?? '') === '' && ($m[2] ?? '') === '' && ($m[3] ?? '') === '' && ($m[4] ?? '') === '') {
+        if (($parts[1] ?? '') === '' && ($parts[2] ?? '') === '' && ($parts[3] ?? '') === '' && ($parts[4] ?? '') === '') {
             return null;
         }
 
-        $years  = (int) ($m[1] ?? 0);
-        $months = (int) ($m[2] ?? 0);
-        $weeks  = (int) ($m[3] ?? 0);
-        $days   = (int) ($m[4] ?? 0);
+        $years  = (int) ($parts[1] ?? 0);
+        $months = (int) ($parts[2] ?? 0);
+        $weeks  = (int) ($parts[3] ?? 0);
+        $days   = (int) ($parts[4] ?? 0);
 
         return ($years * 365) + ($months * 30) + ($weeks * 7) + $days;
     }//end durationToDays()

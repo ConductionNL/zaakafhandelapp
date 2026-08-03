@@ -3,6 +3,7 @@
 namespace OCA\ZaakAfhandelApp\Service;
 
 use OCA\OpenRegister\Db\ObjectEntity;
+use RuntimeException;
 
 /**
  * Handles zaak lifecycle: reopen, delete, vertrouwelijkheidaanduiding.
@@ -26,7 +27,7 @@ class ZGWZaakLifecycleService
     ) {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWZaakLifecycleService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWZaakLifecycleService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;
@@ -137,6 +138,12 @@ class ZGWZaakLifecycleService
      * the zaaktype value (fixes #281, ZGW confidentiality lowering rule).
      *
      * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
+     *
+     * The else branch is the second half of the either/or described above
+     * (no classification yet vs. one already set); the two cases are symmetric
+     * and read better together than as an early return.
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
     {

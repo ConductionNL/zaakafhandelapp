@@ -12,11 +12,22 @@ parameters:
         - phpstan-bootstrap.php
     excludePaths:
         - vendor
+        # `(?)` marks the path optional — zaakafhandelapp does not ship either of
+        # these, and without the marker phpstan hard-errors on the missing path.
         - vendor-bin (?)
         # Apps that ship a verbatim template snapshot under lib/Resources/template/ (e.g. openbuilt).
         - lib/Resources/template (?)
     scanDirectories:
         - vendor/nextcloud/ocp
+        # NOTE: tests/Stubs is deliberately NOT scanned here yet. Adding it makes
+        # phpstan resolve OCA\OpenRegister\Service\ObjectService to the local stub,
+        # which surfaces 5 method.notFound errors. Four are stub gaps (count,
+        # getObjectUsedBy, getObjectUses, getLogs all exist in OpenRegister and are
+        # merely missing from the stub) but the fifth is a real defect:
+        # ObjectQueryService::getFacets() calls $mapper->getAggregations(), and no
+        # such method exists anywhere in OpenRegister — the real API is
+        # getFacetsForObjects(). Fixing that needs a query-shape decision, so it is
+        # tracked separately rather than guessed at here.
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         # Nextcloud server internals (\OC, OC_App, OC\) not stubbed in nextcloud/ocp
@@ -37,6 +48,10 @@ parameters:
         - '#has invalid return type OCA\\OpenRegister\\#'
         - '#has invalid type OCA\\OpenRegister\\#'
         - '#implements unknown interface OCA\\OpenRegister\\#'
+        # Companion of the entries above: with the OpenRegister classes unknown,
+        # phpstan cannot see that CustomValidationException extends \Exception, so
+        # it rejects the (correct) @throws tag. Scoped to that one OR exception.
+        - '#@throws with type OCA\\OpenRegister\\Exception\\CustomValidationException is not subtype of Throwable#'
         # GuzzleHttp is available at runtime via Nextcloud but not in composer require
         - '#unknown class GuzzleHttp\\#'
         - '#GuzzleHttp\\[a-zA-Z\\]+.*not found#'

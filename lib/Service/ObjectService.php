@@ -114,6 +114,12 @@ class ObjectService implements IObjectService
      * Creates or updates an object.
      *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
+     *
+     * $updateVersion is not a responsibility switch — the same write happens
+     * either way; the flag only decides whether OpenRegister bumps the object
+     * version. It mirrors the IObjectService contract this implements.
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function saveObject(string $objectType, array $object, bool $updateVersion=true): mixed
     {
@@ -159,6 +165,12 @@ class ObjectService implements IObjectService
      *
      * Routes through OR's ObjectService::getObjectUsedBy to avoid calling non-existent
      * methods on the OR ObjectServiceMapperAdapter (C5 fix).
+     *
+     * $objectType is part of the IObjectService contract and must stay in the
+     * signature; OpenRegister's getObjectUsedBy() resolves the type from the id itself,
+     * so this implementation has nothing to pass it to.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getRelations(string $objectType, string $id): array
     {
@@ -175,6 +187,12 @@ class ObjectService implements IObjectService
      *
      * Routes through OR's ObjectService::getObjectUses to avoid calling non-existent
      * methods on the OR ObjectServiceMapperAdapter (C5 fix).
+     *
+     * $objectType is part of the IObjectService contract and must stay in the
+     * signature; OpenRegister's getObjectUses() resolves the type from the id itself,
+     * so this implementation has nothing to pass it to.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getUses(string $objectType, string $id): array
     {
@@ -191,6 +209,12 @@ class ObjectService implements IObjectService
      *
      * Routes through OR's ObjectService::getLogs to avoid calling the non-existent
      * getAuditTrail method on the OR ObjectServiceMapperAdapter (C5 fix).
+     *
+     * $objectType is part of the IObjectService contract and must stay in the
+     * signature; OpenRegister's getLogs() resolves the type from the id itself,
+     * so this implementation has nothing to pass it to.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getAuditTrail(string $objectType, string $id): array
     {

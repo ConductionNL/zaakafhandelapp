@@ -34,6 +34,13 @@ use RuntimeException;
 /**
  * Service for searching, importing and exporting klanten against the
  * Nextcloud addressbook through OCP\Contacts\IManager.
+ *
+ * Exceeds PHPMD's class-complexity threshold (56 vs 50): the bulk is the
+ * bidirectional vCard <-> klant field mapping, whose branches are one per
+ * optional vCard property. The two directions must stay in one class so the
+ * mapping stays symmetric.
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class KlantContactSyncService
 {
@@ -296,6 +303,11 @@ class KlantContactSyncService
      * @return array<string, mixed> The klant field set.
      *
      * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
+     *
+     * The else branch is a genuine either/or: a vCard carries a structured N
+     * property or a free-text FN, never a meaningful blend of the two.
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function vCardToKlant(array $contact, ?string $type=null): array
     {
@@ -316,13 +328,15 @@ class KlantContactSyncService
         $structuredName = $this->firstValue(($contact['N'] ?? ''));
         if ($structuredName !== '') {
             $parts = explode(';', $structuredName);
-            $klant['achternaam']    = trim(($parts[0] ?? ''));
+            // explode() always yields at least one element, so index 0 needs no
+            // fallback; 1 and 3 are genuinely optional and keep theirs.
+            $klant['achternaam']    = trim($parts[0]);
             $klant['voornaam']      = trim(($parts[1] ?? ''));
             $klant['tussenvoegsel'] = trim(($parts[3] ?? ''));
         } else {
-            $fn = $this->firstValue(($contact['FN'] ?? ''));
-            if ($fn !== '') {
-                $bits = preg_split('/\s+/', trim($fn), 2);
+            $fullName = $this->firstValue(($contact['FN'] ?? ''));
+            if ($fullName !== '') {
+                $bits = preg_split('/\s+/', trim($fullName), 2);
                 $klant['voornaam']   = ($bits[0] ?? '');
                 $klant['achternaam'] = ($bits[1] ?? '');
             }
@@ -338,7 +352,9 @@ class KlantContactSyncService
             $klant['land']       = trim(($adr[6] ?? ''));
         }
 
-        return array_filter($klant, static fn ($v) => $v !== '' && $v !== null);
+        // Every value assembled above is a string (firstValue() and trim() both
+        // return string), so an additional null test would be dead code.
+        return array_filter($klant, static fn ($value) => $value !== '');
     }//end vCardToKlant()
 
     /**
@@ -353,6 +369,15 @@ class KlantContactSyncService
      * @return array<string, mixed> The vCard property key-value set.
      *
      * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
+     *
+     * Complexity is one `if` per optional vCard property (EMAIL, TEL, ORG, ADR,
+     * UID) plus the organisation/person fork. Each branch is independent and
+     * two lines long; extracting them would turn a readable field map into a
+     * chain of one-line helpers without removing a single decision.
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function klantToVCard(array $klant, ?string $uid): array
     {
@@ -400,11 +425,10 @@ class KlantContactSyncService
             $properties['ADR'] = ';;'.$street.';'.$city.';;'.$postal.';'.$country;
         }
 
-        foreach (self::NON_VCARD_FIELDS as $forbidden) {
-            unset($properties[$forbidden]);
-        }
-
-        return $properties;
+        // Privacy guard: strip every non-vCard field (bsn) whatever the branches
+        // above produced. array_diff_key rather than a per-key unset() so the
+        // guard does not depend on the analyser's view of the built array shape.
+        return array_diff_key($properties, array_flip(self::NON_VCARD_FIELDS));
     }//end klantToVCard()
 
     /**

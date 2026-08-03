@@ -19,7 +19,6 @@ namespace OCA\ZaakAfhandelApp\Tests\Unit\Controller;
 
 use OCA\ZaakAfhandelApp\Controller\ZaakBesluitenController;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
-use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
 use OCP\AppFramework\Http;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -70,7 +69,6 @@ class ZaakBesluitenControllerTest extends TestCase
             'zaakafhandelapp',
             $this->request,
             $this->objectService,
-            $this->createMock(ZGWRegistryService::class),
             $urlGenerator,
             $session
         );
@@ -197,7 +195,6 @@ class ZaakBesluitenControllerTest extends TestCase
             'zaakafhandelapp',
             $this->request,
             $this->objectService,
-            $this->createMock(ZGWRegistryService::class),
             $this->createMock(IURLGenerator::class),
             $session
         );

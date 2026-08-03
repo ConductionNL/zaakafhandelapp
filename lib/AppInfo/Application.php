@@ -23,6 +23,12 @@ use OCA\ZaakAfhandelApp\Dashboard\OrganisatiesWidget;
  *
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
+ *
+ * Exceeds PHPMD's object-coupling threshold (15 vs 13): a Nextcloud bootstrap
+ * class names every listener, service and event it wires exactly once. The
+ * coupling is the registration table itself, not a design smell.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Application extends App implements IBootstrap
 {

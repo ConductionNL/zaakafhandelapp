@@ -20,6 +20,13 @@ use OCP\IUserSession;
  *
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
+ *
+ * Exceeds PHPMD's public-method threshold (11 vs 10): the extra method is the
+ * addressbook sync endpoint, which belongs to the klanten REST resource.
+ * Splitting one resource across two controllers to satisfy a count would make
+ * the route table harder to follow, not easier.
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class KlantenController extends Controller
 {
@@ -91,12 +98,13 @@ class KlantenController extends Controller
             return $response;
         } catch (\Exception $e) {
             // Return an error template response if an exception occurs
-            return new TemplateResponse(
+            $errorResponse = new TemplateResponse(
                 $this->appName,
                 'error',
-                ['error' => $e->getMessage()],
-                '500'
-            );
+                ['error' => $e->getMessage()]
+               );
+            $errorResponse->setStatus(Http::STATUS_INTERNAL_SERVER_ERROR);
+            return $errorResponse;
         }//end try
     }//end page()
 

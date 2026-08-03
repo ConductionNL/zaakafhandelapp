@@ -48,6 +48,12 @@ class CaseDocumentService
      * @throws CaseDocumentException When decoding fails or the file cannot be written.
      *
      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
+     *
+     * The two else branches are genuine either/or forks (node exists vs. not,
+     * node is a File vs. not). Rewriting them as early returns would either
+     * duplicate the shared post-write bookkeeping or hide the symmetry.
+     *
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function writeDocument(string $zaak, string $bestandsnaam, string $base64Inhoud): array
     {

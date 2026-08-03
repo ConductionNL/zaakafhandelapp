@@ -36,6 +36,18 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Event listener for handling ZaakAfhandelApp specific events.
+ *
+ * Exceeds PHPMD's object-coupling threshold (18 vs 13): this is the single
+ * fan-out point for every OpenRegister zaak event, so it names one service per
+ * ZGW rule family. Splitting it would need the same services in each part.
+ *
+ * The two constructor properties over PHPMD's 20-character variable limit
+ * ($zaakValidationService, $opschortingVerlengingService) are named after the
+ * service classes they hold; shortening them would obscure the wiring, and the
+ * ZGW domain vocabulary is simply longer than the rule's default.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 class ZaakRegisterEventListener implements IEventListener
 {

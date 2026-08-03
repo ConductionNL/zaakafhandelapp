@@ -4,6 +4,7 @@ namespace OCA\ZaakAfhandelApp\Service;
 
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Exception\CustomValidationException;
+use RuntimeException;
 
 /**
  * Validation service for zaak-specific field validation.
@@ -23,7 +24,7 @@ class ZGWZaakValidationService
     {
         $objectService = $mapperService->getOpenRegisters();
         if ($objectService === null) {
-            throw new \RuntimeException('ZGWZaakValidationService requires the OpenRegister app to be installed and enabled.');
+            throw new RuntimeException('ZGWZaakValidationService requires the OpenRegister app to be installed and enabled.');
         }
 
         $this->objectService = $objectService;

@@ -89,12 +89,13 @@ class ZaakTypenController extends Controller
             return $response;
         } catch (\Exception $e) {
             // Return an error template response if an exception occurs
-            return new TemplateResponse(
+            $errorResponse = new TemplateResponse(
              $this->appName,
              'error',
-             ['error' => $e->getMessage()],
-             '500'
+             ['error' => $e->getMessage()]
             );
+            $errorResponse->setStatus(Http::STATUS_INTERNAL_SERVER_ERROR);
+            return $errorResponse;
         }//end try
     }//end page()
 
