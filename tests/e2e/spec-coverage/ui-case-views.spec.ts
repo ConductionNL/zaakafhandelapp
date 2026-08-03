@@ -10,7 +10,7 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel } from './helpers'
+import { dismissSupportModal, expandNav, navEntryByLabel, openIndexSidebar } from './helpers'
 import { APP } from '../app-path'
 
 test.describe('ui-case-views — case list and detail views', () => {
@@ -26,16 +26,24 @@ test.describe('ui-case-views — case list and detail views', () => {
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#selecting-a-zaak
-	test('selecting a zaak — detail sidebar opens on row click', async ({ page }) => {
+	// The old assertion here waited for a `Details` heading "even in empty
+	// state". That name comes from CnObjectSidebar's fallback title, i.e. the
+	// sidebar of a SELECTED record — it only ever appeared because the instance
+	// this suite was written on had seed rows and a sidebar left open. On a
+	// clean instance the zaken list is empty and CnIndexPage's sidebar is
+	// closed by default (nc-vue 9c0475f6), so nothing named "Details" exists.
+	// Assert the sidebar surface that the current UI actually offers on an
+	// index page: open it and confirm it carries the page's own heading.
+	test('selecting a zaak — the case list sidebar opens from the list chrome', async ({ page }) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app to mount first
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
-		// The detail sidebar is present (even in empty state — shows a Details heading)
-		await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
-		// Cards radio confirms the master-list view-mode chrome is mounted
-		// Use .first() to pick one of the two radio buttons (Cards / Table) without strict mode violation
-		await expect(page.getByRole('radio', { name: 'Cards' }).first()).toBeVisible()
+		await openIndexSidebar(page)
+		await expect(page.getByRole('heading', { name: 'Cases', exact: true }).first()).toBeVisible({ timeout: 10_000 })
+		// The view-mode chrome confirms the master list mounted. CnActionsBar
+		// renders Cards/Table as aria-pressed buttons, not radios.
+		await expect(page.getByRole('button', { name: 'Cards' }).first()).toBeVisible()
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#searching-the-list
@@ -44,8 +52,8 @@ test.describe('ui-case-views — case list and detail views', () => {
 		await dismissSupportModal(page)
 		// Wait for app nav to confirm SPA mounted
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
-		// The sidebar search tab is visible (there are two sidebars; use first)
-		await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible({ timeout: 10_000 })
+		// The search tab lives in the index sidebar, which is closed on load.
+		await openIndexSidebar(page)
 		await page.getByRole('tab', { name: 'Search' }).first().click()
 		const searchBox = page.getByRole('textbox', { name: 'Search' })
 		await expect(searchBox).toBeVisible()
@@ -73,9 +81,12 @@ test.describe('ui-case-views — case list and detail views', () => {
 	test('rendering a resource icon — navigation icons are present in the left nav', async ({ page }) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		// The navigation renders links alongside icons for all entity types
+		// The navigation renders links alongside icons for all entity types.
+		// Customers lives in the collapsible RelationsGroup, which is closed
+		// while the active route is /zaken — expand the groups first.
 		const nav = page.locator('nav').filter({ hasText: 'Cases' })
 		await expect(nav).toBeVisible({ timeout: 15_000 })
+		await expandNav(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible()
 		await expect(navEntryByLabel(page, 'Tasks')).toBeVisible()
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible()

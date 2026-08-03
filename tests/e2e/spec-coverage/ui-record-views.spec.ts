@@ -25,7 +25,7 @@
  */
 
 import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal } from './helpers'
+import { dismissSupportModal, openIndexSidebar } from './helpers'
 import { APP } from '../app-path'
 
 /**
@@ -36,17 +36,21 @@ async function assertIndexChrome(page: Page, title: string): Promise<void> {
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
 	// The index page host confirms the manifest index page mounted.
 	await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 10_000 })
-	// The page heading is the most direct proof the right page rendered.
-	await expect(page.getByRole('heading', { name: title, exact: true }).first()).toBeVisible({ timeout: 10_000 })
 	// The primary create button is the canonical list-view action. Its label
 	// is entity-specific ("Add Item", "Add Document", "Add Decision", …) —
 	// match the "Add <entity>" prefix rather than a single hardcoded label so
 	// every index page is covered regardless of its schema's singular name.
 	await expect(page.getByRole('button', { name: /^Add /i }).first()).toBeVisible({ timeout: 10_000 })
-	// The view-mode chrome (Cards radio) confirms the master list mounted.
-	await expect(page.getByRole('radio', { name: 'Cards' }).first()).toBeVisible({ timeout: 10_000 })
-	// The detail sidebar renders even in empty state.
-	await expect(page.getByRole('heading', { name: 'Details' })).toBeVisible({ timeout: 10_000 })
+	// The view-mode chrome confirms the master list mounted. CnActionsBar
+	// renders the Cards/Table segmented control as `aria-pressed` buttons
+	// inside a `role="group"` — it used to be an NcCheckboxRadioSwitch radio
+	// group, which is what this suite was written against.
+	await expect(page.getByRole('button', { name: 'Cards' }).first()).toBeVisible({ timeout: 10_000 })
+	// The index sidebar is closed on load (see openIndexSidebar). The page
+	// heading lives in its header, so open it and assert the heading there —
+	// that is where CnIndexPage puts the title while `showTitle` is false.
+	await openIndexSidebar(page)
+	await expect(page.getByRole('heading', { name: title, exact: true }).first()).toBeVisible({ timeout: 10_000 })
 }
 
 /** Server-routed index page: reachable via a hard goto. */
@@ -102,18 +106,28 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#table-view-mode
-	test('view-mode toggle — Table radio switches the medewerkers list to table mode', async ({ page }) => {
+	// The Cards/Table control is CnActionsBar's segmented toggle. It is no
+	// longer an NcCheckboxRadioSwitch radio group: it renders plain buttons
+	// carrying `aria-pressed` inside a `role="group" aria-label="View mode"`.
+	// (Worth raising in nc-vue — a mutually-exclusive segmented control is an
+	// ARIA radiogroup, not a set of independent toggle buttons — but the
+	// semantics belong there, not in this app's e2e suite.)
+	test('view-mode toggle — the Table segment switches the medewerkers list to table mode', async ({ page }) => {
 		await page.goto(`${APP}/#/medewerkers`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const tableRadio = page.getByRole('radio', { name: 'Table' }).first()
-		await expect(tableRadio).toBeVisible({ timeout: 10_000 })
-		// The radio input itself is visually hidden behind its label in the
-		// NcCheckboxRadioSwitch; click the associated label to toggle it.
-		await tableRadio.click({ force: true })
-		await expect(tableRadio).toBeChecked()
+		const viewToggle = page.getByRole('group', { name: 'View mode' }).first()
+		const cardsBtn = viewToggle.getByRole('button', { name: 'Cards' }).first()
+		const tableBtn = viewToggle.getByRole('button', { name: 'Table' }).first()
+		await expect(tableBtn).toBeVisible({ timeout: 10_000 })
+		// Switch away and back so the assertion proves the control actually
+		// drives the mode rather than merely observing the default.
+		await cardsBtn.click()
+		await expect(cardsBtn).toHaveAttribute('aria-pressed', 'true')
+		await tableBtn.click()
+		await expect(tableBtn).toHaveAttribute('aria-pressed', 'true')
 		// The list chrome survives the mode switch.
-		await expect(page.getByRole('radio', { name: 'Cards' }).first()).toBeVisible()
+		await expect(cardsBtn).toBeVisible()
 	})
 
 	// @e2e openspec/specs/ui-modals/spec.md#opening-a-create-modal

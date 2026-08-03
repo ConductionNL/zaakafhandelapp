@@ -41,11 +41,20 @@
 # provision becomes ONE loud step failure here instead of a wall of misleading
 # spec failures later.
 #
-# The payload (`ci-register.json`, next to this script) is an unmodified
-# `GET /api/registers/{id}/export` of the reference register, with only
-# instance-local bookkeeping stripped (folder id, usage counters, quota,
-# created/updated/deleted, owner/application/authorization). It is the exact
-# shape the specs were built and verified against.
+# The payload (`ci-register.json`, next to this script) is a
+# `GET /api/registers/{id}/export` of the reference register with instance-local
+# bookkeeping stripped (folder id, usage counters, quota, created/updated/deleted,
+# owner/application/authorization), plus the two schemas the manifest declares
+# that the reference register was missing:
+#
+#   `contactmoment` and `document`. src/manifest.json declares
+#   `register: "zaakafhandelapp", schema: "contactmoment"` on the Contactmomenten
+#   index/detail pages and `schema: "document"` on the Documenten pages, but the
+#   reference register only ever had ten schemas. CnIndexPage derives its Add
+#   button label from `schema.title` and falls back to "Add Item" when the schema
+#   does not resolve — which is exactly how the gap showed up: the specs expecting
+#   "Add Contactmoment" got "Add Item". Their properties are taken from the index
+#   `columns` and the detail data-widget `include` lists in the manifest.
 #
 # It is idempotent: OpenRegister's importer matches registers and schemas by
 # slug and updates in place, and re-running only re-verifies.
@@ -129,7 +138,8 @@ path, kind = sys.argv[1], sys.argv[2]
 required = {
     'registers': ['zaakafhandelapp'],
     'schemas': ['zaak', 'taak', 'klant', 'status', 'zaaktype',
-                'medewerker', 'bericht', 'besluit', 'resultaat', 'rol'],
+                'medewerker', 'bericht', 'besluit', 'resultaat', 'rol',
+                'contactmoment', 'document'],
 }[kind]
 with open(path) as fh:
     raw = fh.read()
