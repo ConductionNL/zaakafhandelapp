@@ -83,12 +83,20 @@ class ObjectQueryService
     /**
      * Gets facets for a specific object type.
      *
+     * Calls OpenRegister's `getFacetsForObjects()`. The previous call here was
+     * to `getAggregations()`, which exists nowhere in OpenRegister — and it sat
+     * behind an `instanceof ObjectService` guard that PASSES in production, so
+     * the only environment where the guard short-circuited was one without
+     * OpenRegister installed. In other words the guard hid the defect exactly
+     * where the app is not used, and every real faceted query raised an
+     * uncaught Error. Reached from getResultArrayForRequest() below.
+     *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getFacets(string $objectType, array $filters=[]): array
     {
         $mapper = $this->mapperService->getMapper($objectType);
-        return ($mapper instanceof \OCA\OpenRegister\Service\ObjectService) ? $mapper->getAggregations($filters) : [];
+        return ($mapper instanceof \OCA\OpenRegister\Service\ObjectService) ? $mapper->getFacetsForObjects($filters) : [];
     }//end getFacets()
 
     /**

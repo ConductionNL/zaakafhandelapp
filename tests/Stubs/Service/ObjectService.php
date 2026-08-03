@@ -108,4 +108,21 @@ abstract class ObjectService
      * @return mixed
      */
     abstract public function getMapper($register=null, $schema=null);
+
+    /**
+     * Get facets for objects matching a query.
+     *
+     * This is OpenRegister's real faceting entry point. It is declared here
+     * deliberately: ObjectQueryService::getFacets() used to call a
+     * `getAggregations()` method that exists nowhere in OpenRegister, and this
+     * stub declared neither name — so nothing in the suite could tell the two
+     * apart and the bad call reached production. A stub that omits the method
+     * its caller depends on cannot catch a wrong method name; mirroring the
+     * real signature here is what makes ObjectQueryServiceTest meaningful.
+     *
+     * @param array $query Filters plus optional `_facets` configuration.
+     *
+     * @return array
+     */
+    abstract public function getFacetsForObjects(array $query=[]): array;
 }//end class
