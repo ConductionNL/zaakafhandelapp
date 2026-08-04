@@ -58,11 +58,17 @@ export default {
 			auditTrail: {}, // Initialize with an empty object
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		// Assuming klantStore.auditTrailItem is a single audit trail object
 		this.auditTrail = klantStore.auditTrailItem || {}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		closeDialog() {
 			navigationStore.setModal(null)
 			klantStore.setAuditTrailItem(null)

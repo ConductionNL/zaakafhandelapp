@@ -158,6 +158,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchData(newId)
 		},
@@ -166,6 +169,9 @@ export default {
 		this.fetchData(this.id)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(id) {
 			this.loading = true
 
@@ -176,6 +182,9 @@ export default {
 
 			this.fetchAuditTrails(id)
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchAuditTrails(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/berichten/${id}/audit_trail`)
 				.then(response => response.json())

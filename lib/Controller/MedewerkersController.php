@@ -4,13 +4,18 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
 /**
  * Controller for handling employees (medewerkers) operations
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class MedewerkersController extends Controller
 {
@@ -18,6 +23,7 @@ class MedewerkersController extends Controller
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -29,9 +35,15 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
          // Retrieve all request parameters
          $requestParams = $this->request->getParams();
 
@@ -50,6 +62,11 @@ class MedewerkersController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $getParameter is an NC route param
+     *   reserved for future SPA deep-linking; the PHP layer renders a shell template only.
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -85,9 +102,15 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the employee by its ID
         $object = $this->objectService->getObject('medewerkers', $id);
 
@@ -102,9 +125,15 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -125,11 +154,23 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
+
+        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+        $data['id'] = $id;
+
+        // Strip server-managed fields that callers must not overwrite directly.
+        unset($data['created'], $data['updated']);
 
         // Save the updated employee
         $object = $this->objectService->saveObject('medewerkers', $data);
@@ -145,9 +186,15 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the employee
         $result = $this->objectService->deleteObject('medewerkers', $id);
 
@@ -162,9 +209,15 @@ class MedewerkersController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('medewerkers', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()

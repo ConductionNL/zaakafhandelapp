@@ -58,11 +58,17 @@ export default {
 			auditTrail: {}, // Initialize with an empty object
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		// Assuming taakStore.auditTrailItem is a single audit trail object
 		this.auditTrail = taakStore.auditTrailItem || {}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		closeDialog() {
 			navigationStore.setModal(null)
 			taakStore.setAuditTrailItem(null)

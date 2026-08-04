@@ -86,11 +86,17 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		filteredBerichten() {
 			return berichtStore.berichtenList.filter(bericht => zaakStore.zaakItem.berichten.includes(bericht.id))
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
 		zaakId(newVal) {
 			this.fetchData()
 		},
@@ -99,6 +105,9 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.loading = true
 
@@ -107,6 +116,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
 		toggleBericht(bericht) {
 			if (berichtStore.berichtItem?.id === bericht.id) {
 				berichtStore.setBerichtItem(null)
@@ -114,6 +126,9 @@ export default {
 				berichtStore.setBerichtItem(bericht)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

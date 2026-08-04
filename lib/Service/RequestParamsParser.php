@@ -6,6 +6,9 @@ namespace OCA\ZaakAfhandelApp\Service;
  * Utility class for parsing request parameters into structured query parameters.
  *
  * Extracted from ObjectService to reduce class complexity.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 class RequestParamsParser
 {
@@ -35,6 +38,8 @@ class RequestParamsParser
      * @param array $requestParams The raw request parameters
      *
      * @return array Parsed parameters with keys: limit, offset, order, extend, search, filters
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-004
      */
     public function parse(array $requestParams): array
     {

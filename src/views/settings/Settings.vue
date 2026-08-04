@@ -234,6 +234,9 @@ export default {
 	},
 
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		translatedObjectTypesList() {
 			return [
 				{ id: 'berichten', title: t('zaakafhandelapp', 'Messages'), description: t('zaakafhandelapp', 'Configure storage for messages'), helpLink: 'https://example.com/help/berichten' },
@@ -257,6 +260,9 @@ export default {
 	watch: {
 
 		'berichten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -267,6 +273,9 @@ export default {
 			deep: true,
 		},
 		'berichten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -278,6 +287,9 @@ export default {
 			deep: true,
 		},
 		'besluiten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -288,6 +300,9 @@ export default {
 			deep: true,
 		},
 		'besluiten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -299,6 +314,9 @@ export default {
 			deep: true,
 		},
 		'documenten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -309,6 +327,9 @@ export default {
 			deep: true,
 		},
 		'documenten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -320,6 +341,9 @@ export default {
 			deep: true,
 		},
 		'klanten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -330,6 +354,9 @@ export default {
 			deep: true,
 		},
 		'klanten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -341,6 +368,9 @@ export default {
 			deep: true,
 		},
 		'resultaten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -351,6 +381,9 @@ export default {
 			deep: true,
 		},
 		'resultaten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -362,6 +395,9 @@ export default {
 			deep: true,
 		},
 		'taken.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -372,6 +408,9 @@ export default {
 			deep: true,
 		},
 		'taken.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -383,6 +422,9 @@ export default {
 			deep: true,
 		},
 		'informatieobjecten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -393,6 +435,9 @@ export default {
 			deep: true,
 		},
 		'informatieobjecten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -404,6 +449,9 @@ export default {
 			deep: true,
 		},
 		'organisaties.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -414,6 +462,9 @@ export default {
 			deep: true,
 		},
 		'organisaties.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -425,6 +476,9 @@ export default {
 			deep: true,
 		},
 		'personen.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -435,6 +489,9 @@ export default {
 			deep: true,
 		},
 		'personen.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -446,6 +503,9 @@ export default {
 			deep: true,
 		},
 		'zaken.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -456,6 +516,9 @@ export default {
 			deep: true,
 		},
 		'zaken.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -467,6 +530,9 @@ export default {
 			deep: true,
 		},
 		'zaaktypen.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -477,6 +543,9 @@ export default {
 			deep: true,
 		},
 		'zaaktypen.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -488,6 +557,9 @@ export default {
 			deep: true,
 		},
 		'contactmomenten.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -498,6 +570,9 @@ export default {
 			deep: true,
 		},
 		'contactmomenten.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -509,6 +584,9 @@ export default {
 			deep: true,
 		},
 		'medewerkers.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 
@@ -519,6 +597,9 @@ export default {
 			deep: true,
 		},
 		'medewerkers.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 
 				if (this.initialization === true && oldValue === '') return
@@ -530,6 +611,9 @@ export default {
 			deep: true,
 		},
 		'rollen.selectedSource': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue) {
 				if (newValue?.value === 'internal') {
 					this.rollen.selectedRegister = ''
@@ -539,6 +623,9 @@ export default {
 			deep: true,
 		},
 		'rollen.selectedRegister': {
+			/**
+			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+			 */
 			handler(newValue, oldValue) {
 				if (this.initialization === true && oldValue === '') return
 				if (newValue) {
@@ -558,6 +645,9 @@ export default {
 			return this[name]
 
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		setRegisterSchemaOptions(registerId, property) {
 			const selectedRegister = this.availableRegisters.find((register) => register.id.toString() === registerId)
 
@@ -568,6 +658,9 @@ export default {
 				})),
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchAll() {
 			this.loading = true
 
@@ -615,6 +708,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		saveConfig(configId) {
 			this[configId].loading = true
 			this.saving = true
@@ -660,6 +756,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 
 		saveAll() {
 			this.saving = true
@@ -779,6 +878,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 
 		resetConfig() {
 			this.saving = true
@@ -848,6 +950,9 @@ export default {
 					return err
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
+		 */
 		openLink(url, type = '') {
 			window.open(url, type)
 		},

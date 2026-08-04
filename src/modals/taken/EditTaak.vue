@@ -349,16 +349,25 @@ export default {
 			isContactMomentFormOpen: false,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		this.fetchData()
 		this.fetchMedewerkers()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModalFromButton() {
 			setTimeout(() => {
 				this.closeModal()
 			}, 300)
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			navigationStore.setModal(null)
 
@@ -366,6 +375,9 @@ export default {
 				this.$emit('close-modal')
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		async fetchData() {
 			let taakEntity
 
@@ -405,6 +417,8 @@ export default {
 		/**
 		 * @param {string} klantId - Optional ID of the klant to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                           If none are provided the default selected klant will be `null`.
+		  *
+		  * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchKlanten(klantId = null) {
 			this.klantenLoading = true
@@ -443,6 +457,9 @@ export default {
 					this.klantenLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchContactMomentItems() {
 			this.loading = true
 
@@ -470,6 +487,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		viewContactMoment(id) {
 			this.isContactMomentFormOpen = true
@@ -477,12 +497,18 @@ export default {
 			this.viewContactMomentId = id
 			navigationStore.setViewModal('viewContactMoment')
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 
 		closeViewContactMomentModal() {
 			this.isContactMomentFormOpen = false
 			navigationStore.setViewModal(null)
 		},
 		// === ICONS ===
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -497,6 +523,8 @@ export default {
 		/**
 		 * @param {string} medewerkerId - Optional ID of the medewerker to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                                If none are provided the default selected medewerker will be `null`.
+		  *
+		  * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchMedewerkers(medewerkerId = null) {
 			fetch('/ocs/v1.php/cloud/users/details', {
@@ -536,6 +564,9 @@ export default {
 			})
 
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		async editTaak() {
 			this.loading = true
 
@@ -577,6 +608,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},

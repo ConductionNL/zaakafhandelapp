@@ -171,6 +171,9 @@ export default {
 			},
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
+	 */
 	mounted() {
 		this.setArchiefStatusOptions()
 		// this.fetchZaakType()
@@ -185,6 +188,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
+		 */
 		closeModal() {
 			this?.dashboardWidget && this.$emit('close')
 			this.success = null
@@ -208,6 +214,9 @@ export default {
 				this.$emit('close-modal')
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchKlanten() {
 			this.klantenLoading = true
 
@@ -238,6 +247,9 @@ export default {
 					this.klantenLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 */
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
@@ -265,6 +277,9 @@ export default {
 					this.zaakTypeLoading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
+		 */
 		setArchiefStatusOptions() {
 			const selectedArchiefStatusOption = this.archiefstatus.options.find((options) => options.id === this.zaak.archiefstatus)
 
@@ -275,6 +290,9 @@ export default {
 				}
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
+		 */
 		saveZaak() {
 			this.loading = true
 

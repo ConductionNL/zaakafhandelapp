@@ -74,6 +74,9 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		zaakId(newVal) {
 			this.fetchData(newVal)
 		},
@@ -82,6 +85,9 @@ export default {
 		this.fetchData(this.zaakId)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.loading = true
 
@@ -90,9 +96,15 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-002
+		 */
 		toggleZaak(zaak) {
 			// TODO: toggle zaak in local component
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

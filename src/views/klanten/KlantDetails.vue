@@ -341,11 +341,17 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		filteredContactMomenten() {
 			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === klantStore.klantItem.id)
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchKlantData(newId)
 		},
@@ -354,6 +360,9 @@ export default {
 		this.fetchData(this.id)
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData(id) {
 			this.loading = true
 
@@ -365,6 +374,9 @@ export default {
 			this.fetchContactMomenten()
 			this.fetchKlantData(id)
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		async fetchKlantData(id) {
 			// when using Promise.allSettled, it will return an array of items.
 			// these items contain a status string, which is either 'fulfilled' or 'rejected'.
@@ -404,9 +416,15 @@ export default {
 				console.error('Error fetching audit trail:', auditTrailResult.reason)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchContactMomenten() {
 			contactMomentStore.refreshContactMomentenList()
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 
 		getName(klant) {
 			if (klant.type === 'persoon') {

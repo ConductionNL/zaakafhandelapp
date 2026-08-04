@@ -1,57 +1,26 @@
 <?xml version="1.0"?>
 <ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
-    <description>Coding standard for ZaakAfhandelApp, based on the Conduction/OpenRegister standard.</description>
+    <description>Coding standard for ZaakafhandelApp, based on the Conduction/OpenRegister standard.</description>
 
     <file>lib</file>
 
     <!-- Exclude external and vendor files -->
     <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/vendor-bin/*</exclude-pattern>
     <exclude-pattern>*/node_modules/*</exclude-pattern>
     <exclude-pattern>composer-setup.php</exclude-pattern>
+    <!-- Apps that ship a verbatim template snapshot under lib/Resources/template/ (e.g. openbuilt)
+         keep it out of lint scope; no-op for apps without the directory. -->
+    <exclude-pattern>lib/Resources/template/*</exclude-pattern>
+
+    <!-- Surface phpcs warnings (e.g. SpecTagSniff) in CI logs without failing the build. -->
+    <config name="ignore_warnings_on_exit" value="1"/>
 
     <arg name="basepath" value="."/>
     <arg name="colors"/>
     <arg name="parallel" value="75"/>
     <arg name="extensions" value="php"/>
     <arg value="p"/>
-
-    <!-- Advisory warnings surface in reports but must not fail the run. -->
-    <config name="ignore_warnings_on_exit" value="1"/>
-
-    <!-- LEGACY DEBT (tracked in ConductionNL/zaakafhandelapp#201): this app pre-dates the
-         tightened Conduction PHPCS commenting / named-parameter rules. Until a dedicated
-         docblock + named-args cleanup lands, the following sniffs are demoted from errors
-         to advisory warnings so the structural rules (spacing, control structures, banned
-         functions, etc.) still gate the build. Promote these back to errors after #201. -->
-    <rule ref="PEAR.Commenting.FunctionComment">
-        <type>warning</type>
-    </rule>
-    <rule ref="PEAR.Commenting.FileComment">
-        <type>warning</type>
-    </rule>
-    <rule ref="Generic.Commenting.DocComment">
-        <type>warning</type>
-    </rule>
-    <rule ref="Squiz.Commenting.VariableComment">
-        <type>warning</type>
-    </rule>
-    <rule ref="Squiz.Commenting.FunctionComment">
-        <type>warning</type>
-    </rule>
-    <rule ref="Squiz.Commenting.InlineComment">
-        <type>warning</type>
-    </rule>
-    <rule ref="Generic.Files.LineLength">
-        <type>warning</type>
-    </rule>
-    <!-- Stylistic; the legacy code uses ternaries / implicit-truthy checks throughout.
-         Demoted under #201 — a "rewrite ternaries / explicit comparisons" pass restores them. -->
-    <rule ref="Squiz.PHP.DisallowInlineIf">
-        <type>warning</type>
-    </rule>
-    <rule ref="Squiz.Operators.ComparisonOperatorUsage">
-        <type>warning</type>
-    </rule>
 
     <!-- Don't hide tokenizer exceptions -->
     <rule ref="Internal.Tokenizer.Exception">
@@ -250,6 +219,52 @@
          LEGACY DEBT (#201): demoted to a warning for this app until the named-args
          cleanup lands; promote back to <type>error</type> afterwards. -->
     <rule ref="./phpcs-custom-sniffs/CustomSniffs/Sniffs/Functions/NamedParametersSniff.php">
+        <type>warning</type>
+    </rule>
+
+    <!-- Block calls to \OC::$server->getX() / \OC::$server->query() removed in Nextcloud 34. -->
+    <rule ref="./phpcs-custom-sniffs/CustomSniffs/Sniffs/Nextcloud/NoLegacyServerAccessorsSniff.php">
+        <type>error</type>
+    </rule>
+
+    <!-- Warn when a class or public method is missing the @spec PHPDoc tag (hydra ADR-003).
+         Emitted as warnings (not errors) so CI surfaces the gap but doesn't block merges. -->
+    <rule ref="./phpcs-custom-sniffs/CustomSniffs/Sniffs/Commenting/SpecTagSniff.php">
+        <type>warning</type>
+    </rule>
+
+    <!-- LEGACY DEBT (tracked in ConductionNL/zaakafhandelapp#201): this app pre-dates the
+         tightened Conduction PHPCS commenting / named-parameter rules. Until a dedicated
+         docblock + named-args cleanup lands, the following sniffs are demoted from errors
+         to advisory warnings so the structural rules (spacing, control structures, banned
+         functions, etc.) still gate the build. Promote these back to errors after #201. -->
+    <rule ref="PEAR.Commenting.FunctionComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="PEAR.Commenting.FileComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.Commenting.DocComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Commenting.VariableComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Commenting.InlineComment">
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <type>warning</type>
+    </rule>
+    <!-- Stylistic; the legacy code uses ternaries / implicit-truthy checks throughout.
+         Demoted under #201 — a "rewrite ternaries / explicit comparisons" pass restores them. -->
+    <rule ref="Squiz.PHP.DisallowInlineIf">
+        <type>warning</type>
+    </rule>
+    <rule ref="Squiz.Operators.ComparisonOperatorUsage">
         <type>warning</type>
     </rule>
 

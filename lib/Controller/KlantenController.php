@@ -4,17 +4,26 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
+/**
+ * Controller for handling clients (klanten) operations.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class KlantenController extends Controller
 {
     public function __construct(
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -26,9 +35,15 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Retrieve all request parameters
         $requestParams = $this->request->getParams();
 
@@ -47,6 +62,11 @@ class KlantenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $getParameter is an NC route param
+     *   reserved for future SPA deep-linking; the PHP layer renders a shell template only.
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -82,9 +102,15 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the catalog object by its ID
         $object = $this->objectService->getObject('klanten', $id);
 
@@ -93,15 +119,20 @@ class KlantenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create an object. Admin-only: klanten are master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -116,19 +147,30 @@ class KlantenController extends Controller
     }//end create()
 
     /**
-     * Update an object
+     * Update an object. Admin-only: klanten are master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
-        // Save the new catalog object
+        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+        $data['id'] = $id;
+
+        // Strip server-managed fields that callers must not overwrite directly.
+        unset($data['created'], $data['updated']);
+
+        // Save the updated object
         $object = $this->objectService->saveObject('klanten', $data);
 
         // Return the created object as a JSON response
@@ -136,15 +178,20 @@ class KlantenController extends Controller
     }//end update()
 
     /**
-     * Delate an object
+     * Delete an object. Admin-only: klanten are master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the catalog object
         $result = $this->objectService->deleteObject('klanten', $id);
 
@@ -159,9 +206,15 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getZaken(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams = ['klant' => $id];
         $zaken         = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
         return new JSONResponse($zaken);
@@ -174,9 +227,15 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getTaken(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams = ['klant' => $id];
         $taken         = $this->objectService->getResultArrayForRequest('taken', $requestParams);
         return new JSONResponse($taken);
@@ -189,11 +248,17 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getBerichten(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams = ['gebruikerID' => $id];
-        $berichten     = $this->objectService->getResultArrayForRequest('klanten', $requestParams);
+        $berichten     = $this->objectService->getResultArrayForRequest('berichten', $requestParams);
         return new JSONResponse($berichten);
     }//end getBerichten()
 
@@ -204,9 +269,15 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-003
      */
     public function getContactmomenten(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         $requestParams   = ['klant' => $id];
         $contactmomenten = $this->objectService->getResultArrayForRequest('contactmomenten', $requestParams);
         return new JSONResponse($contactmomenten);
@@ -219,9 +290,21 @@ class KlantenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
      */
     public function getAuditTrail(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
+        // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+        $object = $this->objectService->getObject('klanten', $id);
+        if ($object === null) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        }
+
         $auditTrail = $this->objectService->getAuditTrail('klanten', $id);
         return new JSONResponse($auditTrail);
     }//end getAuditTrail()

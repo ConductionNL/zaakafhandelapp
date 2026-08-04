@@ -8,6 +8,9 @@ export class Resultaat implements TResultaat {
 	public zaak: string
 	public resultaattype: string
 	public toelichting: string
+	/**
+	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 */
 
 	constructor(source: TResultaat) {
 		this.id = source.id || ''

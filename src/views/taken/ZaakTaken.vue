@@ -87,11 +87,17 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		filteredTakenList() {
 			return taakStore.takenList.filter((taak) => taak.zaak === this.zaakId)
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
 		zaakId(newVal) {
 			this.fetchData()
 		},
@@ -100,6 +106,9 @@ export default {
 		this.fetchData()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-001
+		 */
 		fetchData() {
 			this.loading = true
 
@@ -108,6 +117,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-002
+		 */
 		toggleTaak(taak) {
 			if (taakStore.taakItem?.id === taak.id) {
 				taakStore.setTaakItem(null)
@@ -115,6 +127,9 @@ export default {
 				taakStore.setTaakItem(taak)
 			}
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},

@@ -110,6 +110,9 @@ export default {
 			users: null,
 		}
 	},
+	/**
+	 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+	 */
 	mounted() {
 		Promise.all([
 			this.getUsers(),
@@ -120,9 +123,15 @@ export default {
 		})
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-003
+		 */
 		clearText() {
 			this.search = ''
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getUsers() {
 			fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
@@ -135,10 +144,16 @@ export default {
 				this.users = Object.values(data.ocs.data.users)
 			})
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-004
+		 */
 		openTaak(taak) {
 			taakStore.setTaakItem(taak)
 			this.$router.push({ params: { id: taak.id } })
 		},
+		/**
+		 * @spec openspec/specs/ui-client-views/spec.md#REQ-005
+		 */
 		getName(taak) {
 			const medewerker = this.users.find(user => user.email === taak.medewerker)
 			const klant = klantStore.klantenList.find(klant => klant.id === taak.klant)

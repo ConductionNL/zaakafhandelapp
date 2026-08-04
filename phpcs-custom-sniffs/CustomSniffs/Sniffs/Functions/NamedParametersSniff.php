@@ -134,11 +134,6 @@ class NamedParametersSniff implements Sniff
     /**
      * Determine if the function/method call at $stackPtr is to our own code.
      *
-     * Matches:
-     * - $this->method()
-     * - self::method() / static::method() / parent::method()
-     * - new OurClass() where OurClass is from the same app namespace
-     *
      * @param File $phpcsFile The file being scanned.
      * @param int  $stackPtr  Position of the T_STRING (function/method name).
      *
@@ -198,8 +193,6 @@ class NamedParametersSniff implements Sniff
     /**
      * Check if the class at $classNamePtr is from the same app namespace as the current file.
      *
-     * Compares the class's use-import path against the file's OCA\AppName\ prefix.
-     *
      * @param File $phpcsFile    The file being scanned.
      * @param int  $classNamePtr Position of the class name token.
      *
@@ -210,13 +203,11 @@ class NamedParametersSniff implements Sniff
         $tokens    = $phpcsFile->getTokens();
         $className = $tokens[$classNamePtr]['content'];
 
-        // Find the file's namespace declaration.
         $appPrefix = $this->getAppNamespacePrefix(phpcsFile: $phpcsFile);
         if ($appPrefix === null) {
             return false;
         }
 
-        // Scan use-statements for an import matching this class name from our namespace.
         for ($i = 0; $i < $phpcsFile->numTokens; $i++) {
             if ($tokens[$i]['code'] === T_USE) {
                 $usePath = $this->getUseStatementPath(phpcsFile: $phpcsFile, usePtr: $i);
@@ -224,7 +215,6 @@ class NamedParametersSniff implements Sniff
                     continue;
                 }
 
-                // Extract the imported short name (last segment).
                 $segments     = explode(separator: '\\', string: $usePath);
                 $importedName = end($segments);
 
@@ -235,7 +225,6 @@ class NamedParametersSniff implements Sniff
                 }
             }//end if
 
-            // Stop scanning after the class declaration.
             if (in_array($tokens[$i]['code'], [T_CLASS, T_INTERFACE, T_TRAIT, T_ENUM], true) === true) {
                 break;
             }
@@ -247,7 +236,7 @@ class NamedParametersSniff implements Sniff
 
 
     /**
-     * Get the app namespace prefix (e.g., "OCA\MyDash") from the file's namespace declaration.
+     * Get the app namespace prefix (e.g., "OCA\MyApp") from the file's namespace declaration.
      *
      * @param File $phpcsFile The file being scanned.
      *
@@ -268,7 +257,6 @@ class NamedParametersSniff implements Sniff
                     $j++;
                 }
 
-                // Extract first two segments: OCA\AppName.
                 $parts = explode(separator: '\\', string: $namespace);
                 if (count($parts) >= 2) {
                     return $parts[0].'\\'.$parts[1];
@@ -302,7 +290,6 @@ class NamedParametersSniff implements Sniff
                 break;
             }
 
-            // Stop at 'as' keyword (aliases) — use the path before it.
             if ($code === T_AS) {
                 break;
             }
@@ -323,9 +310,6 @@ class NamedParametersSniff implements Sniff
     /**
      * Check if the arguments between $openParen and $closeParen contain any unnamed arguments.
      *
-     * An argument is "named" if its first significant token is followed by T_COLON.
-     * Handles nested parentheses, brackets, and braces correctly.
-     *
      * @param File $phpcsFile  The file being scanned.
      * @param int  $openParen  Position of the opening parenthesis.
      * @param int  $closeParen Position of the closing parenthesis.
@@ -334,16 +318,15 @@ class NamedParametersSniff implements Sniff
      */
     private function hasUnnamedArguments(File $phpcsFile, int $openParen, int $closeParen): bool
     {
-        $tokens         = $phpcsFile->getTokens();
-        $parenDepth     = 0;
-        $bracketDepth   = 0;
-        $braceDepth     = 0;
+        $tokens          = $phpcsFile->getTokens();
+        $parenDepth      = 0;
+        $bracketDepth    = 0;
+        $braceDepth      = 0;
         $atArgumentStart = true;
 
         for ($i = ($openParen + 1); $i < $closeParen; $i++) {
             $code = $tokens[$i]['code'];
 
-            // Track nesting depth.
             if ($code === T_OPEN_PARENTHESIS) {
                 $parenDepth++;
             } elseif ($code === T_CLOSE_PARENTHESIS) {
@@ -358,18 +341,15 @@ class NamedParametersSniff implements Sniff
                 $braceDepth--;
             }
 
-            // Only examine tokens at the top level of the argument list.
             if ($parenDepth > 0 || $bracketDepth > 0 || $braceDepth > 0) {
                 continue;
             }
 
-            // Comma at top level → next argument starts.
             if ($code === T_COMMA) {
                 $atArgumentStart = true;
                 continue;
             }
 
-            // Skip whitespace and comments at argument start.
             if ($atArgumentStart === true
                 && in_array($code, [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true) === true
             ) {
@@ -379,12 +359,10 @@ class NamedParametersSniff implements Sniff
             if ($atArgumentStart === true) {
                 $atArgumentStart = false;
 
-                // Skip spread operator (...$args).
                 if ($code === T_ELLIPSIS) {
                     continue;
                 }
 
-                // Check if this argument is named: token followed by ':'.
                 $nextNonWs = $phpcsFile->findNext(
                     types: [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT],
                     start: ($i + 1),

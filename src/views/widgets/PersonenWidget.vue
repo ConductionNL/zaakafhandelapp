@@ -120,6 +120,9 @@ export default {
 	},
 
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		itemMenu() {
 			return {
 				show: {
@@ -143,6 +146,9 @@ export default {
 	},
 
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		createKlantItems(klant) {
 			this.selectedKlantId = klant.id
 
@@ -153,6 +159,9 @@ export default {
 				avatarUrl: this.getItemIcon(),
 			}]
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
+		 */
 		getItemIcon() {
 			const theme = getTheme()
 
@@ -164,17 +173,29 @@ export default {
 
 			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/account-outline.svg`
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		openSearchKlantModal() {
 			this.searchKlantModalOpen = true
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 */
 		closeSearchKlantModal() {
 			this.searchKlantModalOpen = false
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 */
 		onShow(item) {
 			klantStore.setWidgetKlantId(item.id)
 			this.isModalOpen = true
 			navigationStore.setModal('viewKlant')
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchZaakItems() {
 			this.loading = true
 			zaakStore.refreshZakenList()
@@ -182,6 +203,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchContactMomentenItems() {
 			this.loading = true
 			contactMomentStore.refreshContactMomentenList()
@@ -189,6 +213,9 @@ export default {
 					this.loading = false
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
+		 */
 		fetchTaakItems() {
 			this.loading = true
 			taakStore.refreshTakenList()

@@ -4,17 +4,26 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\IUserSession;
 
+/**
+ * Controller for zaaktypen (case types) operations.
+ *
+ * @copyright 2024 Conduction B.V. <info@conduction.nl>
+ * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 class ZaakTypenController extends Controller
 {
     public function __construct(
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
+        private readonly IUserSession $userSession,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -26,9 +35,15 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function index(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
          // Retrieve all request parameters
          $requestParams = $this->request->getParams();
 
@@ -47,6 +62,11 @@ class ZaakTypenController extends Controller
      *
      * @NoAdminRequired
      * @NoCSRFRequired
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-003
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $getParameter is an NC route param
+     *   reserved for future SPA deep-linking; the PHP layer renders a shell template only.
      */
     public function page(?string $getParameter): TemplateResponse
     {
@@ -82,9 +102,15 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Fetch the catalog object by its ID
         $object = $this->objectService->getObject('zaaktypen', $id);
 
@@ -93,15 +119,20 @@ class ZaakTypenController extends Controller
     }//end show()
 
     /**
-     * Creatue an object
+     * Create an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function create(): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -116,15 +147,23 @@ class ZaakTypenController extends Controller
     }//end create()
 
     /**
-     * Update an object
+     * Update an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
+     *   the full payload is consumed via $this->request->getParams() instead.
      */
     public function update(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Get all parameters from the request
         $data = $this->request->getParams();
 
@@ -141,15 +180,20 @@ class ZaakTypenController extends Controller
     }//end update()
 
     /**
-     * Delate an object
+     * Delete an object. Admin-only: zaaktypen are validation master data.
      *
-     * @NoAdminRequired
      * @NoCSRFRequired
      *
      * @return JSONResponse
+     *
+     * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
     {
+        if ($this->userSession->getUser() === null) {
+            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+        }
+
         // Delete the catalog object
         $result = $this->objectService->deleteObject('zaaktypen', $id);
 

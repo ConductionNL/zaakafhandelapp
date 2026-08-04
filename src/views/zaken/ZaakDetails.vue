@@ -269,20 +269,32 @@ export default {
 		}
 	},
 	computed: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		zaakType() {
 			return zaakTypeStore.zaakTypeList.find((zaakType) => zaakType.id === zaakStore.zaakItem.zaaktype || Symbol('no zaaktype id'))
 		},
 	},
 	watch: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		id(newId) {
 			this.fetchData(newId)
 		},
 	},
+	/**
+	 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+	 */
 	mounted() {
 		this.fetchData(this.id)
 		zaakTypeStore.refreshZaakTypenList()
 	},
 	methods: {
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchData(id) {
 			this.loading = true
 
@@ -293,6 +305,9 @@ export default {
 				this.loading = false
 			})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
+		 */
 		fetchAuditTrails(id) {
 
 			fetch(`/index.php/apps/zaakafhandelapp/api/zaken/${id}/audit_trail`)
@@ -305,6 +320,9 @@ export default {
 				.finally(() => {
 				})
 		},
+		/**
+		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
+		 */
 		goToZaakType(zaakType) {
 			zaakTypeStore.setZaakTypeItem(zaakType)
 			this.$router.push({ name: 'ZaaktypeDetail', params: { id: zaakType.id } })
