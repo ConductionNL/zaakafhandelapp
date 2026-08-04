@@ -32,6 +32,51 @@ jobs:
       # went fully green in #312, so this boolean is the only thing left.
       enable-phpunit: true
 
+      # ── Frontend Check legs ──────────────────────────────────────────────
+      # `frontend-checks` defaults to `[]`, and an empty list means the shared
+      # workflow emits NO "Frontend Check" job at all. The repo's own
+      # validators (`check:manifest`, `test:l10n`) therefore ran nowhere in CI
+      # while the run still looked complete. Both are self-contained `node`
+      # scripts, so each is a valid standalone leg.
+      # `check:specs` is deliberately NOT listed: in this repo it is defined as
+      # `npm run check:manifest`, so it would be the same job twice.
+      # `test` / `test:unit` are also not listed — the shared "Frontend Tests
+      # (unit)" job already auto-detects and runs them.
+      frontend-checks: '["check:manifest", "test:l10n"]'
+
+      # ── Integration tests ────────────────────────────────────────────────
+      # `enable-newman` defaults to FALSE and this caller never set it, so
+      # tests/integration/zaakafhandelapp.postman_collection.json had never
+      # executed in CI. The collection lives at the default
+      # `newman-collection-path` (tests/integration), which is both the
+      # directory the validator counts collections in and the directory the run
+      # step globs `*.postman_collection.json` in — flat, not recursively.
+      enable-newman: true
+
+      # ── Coverage ratchet ─────────────────────────────────────────────────
+      # `enable-coverage-guard` defaults to FALSE, which is why both
+      # "Coverage Baseline Protection" (PR side) and "Coverage Baseline Check"
+      # (push side) have only ever reported `skipped` here. Enabling it needs
+      # two inputs the repo did not have and that are added in this commit:
+      # `scripts/coverage-guard.php` (the recompute script both jobs invoke,
+      # byte-identical to the copy in openregister and procest) and
+      # `.coverage-baseline`. The baseline value is the measured coverage of
+      # this repo's own PHPUnit run — 759 of 2568 statements = 29.56% — read
+      # from the clover.xml in the `coverage-report` artifact of run
+      # 30911567714, i.e. from the same file coverage-guard.php parses.
+      enable-coverage-guard: true
+
+      # ── Hydra mechanical gates ───────────────────────────────────────────
+      # `enable-hydra-gates` defaults to FALSE, so this tier has never executed
+      # in this repository — the job reported `skipped`, which in the Quality
+      # Report is indistinguishable from having passed. Pinned to v1.0.1 so a
+      # change to the gate package cannot alter this repo's verdict without a
+      # commit here. `enable-axe` is deliberately NOT set: it is what produces
+      # the report gate-33 consumes, and a vanilla Nextcloud 34 already carries
+      # serious/critical violations from core's own UI.
+      enable-hydra-gates: true
+      hydra-gates-ref: v1.0.1
+
       # zaakafhandelapp is a manifest-v2 (CnAppRoot) app: every index/detail
       # page in src/manifest.json reads and writes DIRECTLY through
       # `/apps/openregister/api/objects/zaakafhandelapp/<schema>`, and
