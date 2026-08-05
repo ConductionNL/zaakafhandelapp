@@ -43,7 +43,7 @@
 		"phpcs:fix": "./vendor/bin/phpcbf --standard=phpcs.xml",
 		"psalm": "if [ -f vendor/bin/psalm ]; then ./vendor/bin/psalm --threads=1 --no-cache; else echo 'Psalm not installed, skipping...'; fi",
 		"phpstan": "if [ -f vendor/bin/phpstan ]; then ./vendor/bin/phpstan analyse --memory-limit=1G; else echo 'PHPStan not installed, skipping...'; fi",
-		"phpmd": "./vendor/bin/phpmd lib text phpmd.xml",
+		"phpmd": "E=0; ./vendor/bin/phpmd lib text phpmd.xml || E=$?; ./vendor/bin/phpmd lib text phpmd-unusedparams.xml || E=$?; exit $E",
 		"phpmetrics": "./vendor/bin/phpmetrics --report-html=phpmetrics lib/",
 		"phpmetrics:json": "./vendor/bin/phpmetrics --report-json=phpmetrics/report.json lib/",
 		"phpmetrics:csv": "./vendor/bin/phpmetrics --report-csv=phpmetrics/report.csv lib/",
