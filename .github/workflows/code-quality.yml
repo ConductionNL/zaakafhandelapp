@@ -99,11 +99,29 @@ jobs:
       #    a reason that had nothing to do with this repo — and it is what is
       #    currently blocking #325.
       #
-      # v1.3.0 is `f7eaf2a` = .github@main, tagged so the ref stays
-      # reproducible and a later gate change cannot move this repo's verdict
-      # without a commit here.
+      # NO `hydra-gates-ref` ON PURPOSE — it defaults to `main`.
+      #
+      # This repo has now been bumped twice (v1.0.1 -> v1.3.0 -> v1.5.0), each
+      # time to clear a breakage the pin itself caused, and a third was already
+      # queued: v1.5.0 ships gate-28 reporting a `structural` coverage gap
+      # whenever the diff scope is empty — i.e. on every PR that does not touch
+      # lib/**/*.php, which is most of them. With
+      # hydra-gates-require-full-coverage defaulting TRUE that is exit 98. It is
+      # fixed in ConductionNL/.github#182, on main, and a pinned repo cannot see
+      # it because the tag will not move.
+      #
+      # That is the argument in one comment: a pin is a silent expiry date on
+      # every upstream fix, and it makes each fix a 23-PR treadmill. Tracking
+      # `main` is the fleet contract as of ConductionNL/.github#177, which also
+      # added the guard that makes it safe — `main` can no longer serve an
+      # unresolvable workflow silently, because quality-resolve-probe.yml counts
+      # the jobs a caller materialises and asserts `> 0` (an unresolvable
+      # reusable workflow produces no red check at all, just zero jobs).
+      #
+      # ROLLBACK, if a gate change ever does break this repo: set
+      # `hydra-gates-ref:` here explicitly. Still supported and still honoured —
+      # an escape hatch, not a resting state.
       enable-hydra-gates: true
-      hydra-gates-ref: v1.5.0
 
       # zaakafhandelapp is a manifest-v2 (CnAppRoot) app: every index/detail
       # page in src/manifest.json reads and writes DIRECTLY through
