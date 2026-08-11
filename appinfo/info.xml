@@ -59,7 +59,19 @@ Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issue
         <database min-version="8.0">mysql</database>
 
         <owncloud max-version="0" min-version="0"/>
-		<nextcloud min-version="28" max-version="34"/>
+		<!--
+		  min-version tracks the HIGHEST floor of every app this one depends on,
+		  not the oldest server the PHP happens to parse on. src/manifest.json
+		  declares `dependencies: ["openregister"]` and every index/detail page
+		  reads and writes through /apps/openregister/api/objects, so a server
+		  OpenRegister cannot run on is a server this app cannot run on.
+		  OpenRegister raised its own floor to 32 on 2026-08-08
+		  (openregister#2384); 28 here was four majors below what the hard
+		  dependency requires, and it was that gap that let CI pick stable31 and
+		  then report a full assertion tally from an instance with no
+		  OpenRegister installed.
+		-->
+		<nextcloud min-version="32" max-version="34"/>
 	</dependencies>
 	<navigations>
 		<navigation>
