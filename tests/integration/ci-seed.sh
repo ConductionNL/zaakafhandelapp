@@ -177,7 +177,13 @@ print(f"[newman-seed] register 'zaakafhandelapp' -> id {register['id']}")
 print(f'[newman-seed] mapping {len(payload) // 3} object type(s) to openregister')
 PY
 
-SET_URL="${BASE}/index.php/apps/zaakafhandelapp/api/settings"
+# NOT /api/settings. appinfo/routes.php registers settings#create at plain
+# `/settings` (line 92) — one of the app's only two non-/api routes, which is
+# also the URL the collection itself posts to. The first version of this script
+# guessed /api/settings by analogy with every other route in this app and got a
+# flat 404. The seed caught it because it checks the status code instead of
+# assuming the write landed.
+SET_URL="${BASE}/index.php/apps/zaakafhandelapp/settings"
 SET_BODY="$(mktemp)"
 SET_CODE="$(
 	curl -sS -o "$SET_BODY" -w '%{http_code}' \
