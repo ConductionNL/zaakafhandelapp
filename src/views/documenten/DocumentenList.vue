@@ -1,3 +1,11 @@
+<!--
+ ORPHANED LEGACY VIEW — this file is mounted by nothing.
+ The manifest-v2 migration replaced it with the declarative "Documenten" page
+ (/documenten), which the library renderer draws through CnPageRenderer ->
+ CnIndexPage. Verified: no module under src/ imports it, so webpack never
+ bundles it and no browser can reach it.
+ @visual exclude Dead file: superseded by the manifest-v2 "Documenten" page (/documenten); imported by no module in src/, so it is in no bundle and no e2e can mount it. The live page is covered by tests/e2e/spec-coverage/ui-record-views.spec.ts. Correct fix is deletion.
+-->
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
 import { navigationStore, berichtStore } from '../../store/store.js'
