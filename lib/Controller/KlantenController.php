@@ -350,7 +350,12 @@ class KlantenController extends Controller
         }
 
         try {
-            // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+            // Scope guard — NOT an authorisation guard. It confirms the id resolves
+            // inside the register/schema configured for 'klanten'; it does NOT
+            // establish that this caller may read this citizen record. OpenRegister's
+            // RBAC returns true for a schema with an empty `authorization` block and
+            // this app ships none (ConductionNL/.github#372). Per-object
+            // authorisation is still missing — see zaakafhandelapp#347.
             $object = $this->objectService->getObject('klanten', $id);
             if ($object === null) {
                 return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);

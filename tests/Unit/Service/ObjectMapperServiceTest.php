@@ -280,4 +280,115 @@ class ObjectMapperServiceTest extends TestCase
 
         $this->assertNull($this->service()->getOpenRegisters());
     }//end testGetOpenRegistersReturnsNullWhenNotInstalled()
+
+
+    /**
+     * Wire the container so `getMapper('zaken')` can run: OpenRegister installed,
+     * the app configured for the openregister source, and the OR service
+     * resolvable.
+     *
+     * @param object $openRegister  The OR ObjectService double.
+     * @param string $registerValue The configured `zaken_register` value.
+     * @param string $schemaValue   The configured `zaken_schema` value.
+     *
+     * @return void
+     */
+    private function wireOpenRegisterSource(
+        object $openRegister,
+        string $registerValue='14',
+        string $schemaValue='17'
+    ): void {
+        $this->appManager->method('getInstalledApps')->willReturn(['openregister', 'zaakafhandelapp']);
+        $this->config->method('getValueString')->willReturnCallback(
+            static function (string $app, string $key, string $default='') use ($registerValue, $schemaValue): string {
+                return match ($key) {
+                    'zaken_source' => 'openregister',
+                    'zaken_register' => $registerValue,
+                    'zaken_schema' => $schemaValue,
+                    default => $default,
+                };
+            }
+        );
+        $this->container->method('get')->willReturnCallback(
+            static function (string $id) use ($openRegister): object {
+                return match ($id) {
+                    'OCA\OpenRegister\Service\ObjectService' => $openRegister,
+                    default => throw new \RuntimeException('unexpected container id: '.$id),
+                };
+            }
+        );
+    }//end wireOpenRegisterSource()
+
+
+    /**
+     * The configured numeric ids reach OpenRegister as INTEGERS.
+     *
+     * `ObjectService::getMapper()` keeps a numeric argument and drops any other,
+     * so the argument TYPE is what decides whether the returned adapter is scoped
+     * to this app's register or to nothing at all. The adapter looks identical
+     * either way, which is why this asserts on the arguments rather than on the
+     * return value.
+     *
+     * @return void
+     */
+    public function testNumericConfigurationReachesOpenRegisterAsIntegers(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->once())->method('getMapper')->with(14, 17)->willReturn(new \stdClass());
+
+        $this->wireOpenRegisterSource($openRegister, '14', '17');
+
+        $this->service()->getMapper('zaken');
+    }//end testNumericConfigurationReachesOpenRegisterAsIntegers()
+
+
+    /**
+     * A non-numeric register is REFUSED and never reaches OpenRegister.
+     *
+     * OpenRegister replaces a non-numeric register/schema with `null` and returns
+     * an adapter scoped to nothing, whose `find()` resolves any uuid in any
+     * register on the instance (openregister#2434). Verified on a live instance:
+     * configured with slugs, `GET api/objects/zaken/{uuid-of-an-object-in-another-register}`
+     * answered HTTP 200 with that other register's object.
+     *
+     * ⚠️ Refusal, deliberately, rather than a slug -> id lookup. Resolving the
+     * slug would REPAIR endpoints that are dead in a slug-configured install
+     * (create/update raise a CascadingHandler TypeError; collections return
+     * `total: 0`), and those endpoints have no per-object authorisation to fall
+     * back on — repairing them would convert dead code into a live IDOR
+     * (zaakafhandelapp#347). Fail closed instead.
+     *
+     * @return void
+     */
+    public function testANonNumericRegisterIsRefusedAndNeverReachesOpenRegister(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->never())->method('getMapper');
+
+        $this->wireOpenRegisterSource($openRegister, 'zaakafhandelapp', '17');
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches('/Misconfigured register for .zaken./');
+
+        $this->service()->getMapper('zaken');
+    }//end testANonNumericRegisterIsRefusedAndNeverReachesOpenRegister()
+
+
+    /**
+     * The same for a non-numeric schema.
+     *
+     * @return void
+     */
+    public function testANonNumericSchemaIsRefusedAndNeverReachesOpenRegister(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->never())->method('getMapper');
+
+        $this->wireOpenRegisterSource($openRegister, '14', 'zaak');
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches('/Misconfigured schema for .zaken./');
+
+        $this->service()->getMapper('zaken');
+    }//end testANonNumericSchemaIsRefusedAndNeverReachesOpenRegister()
 }//end class

@@ -92,6 +92,16 @@ class ZaakAuditTrailController extends Controller
         }
 
         try {
+            // Scope guard — NOT an authorisation guard. ObjectService::getAuditTrail()
+            // resolves rows from the uuid alone, so without this an id belonging to
+            // an entirely different register is answered here: measured live,
+            // GET api/zrc/zaken/{uuid-of-a-vocabulary-object}/audit_trail returned
+            // HTTP 200 with that object's row. It does NOT establish that the caller
+            // may read this zaak — see zaakafhandelapp#347.
+            if ($this->objectService->getObject('zaken', $zaakUuid) === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
+
             $entries = $this->objectService->getAuditTrail($zaakUuid);
             $mapped  = array_map(fn (array $entry): array => $this->mapAuditTrail($entry, $zaakUuid), $entries);
 
@@ -121,6 +131,11 @@ class ZaakAuditTrailController extends Controller
         }
 
         try {
+            // Scope guard — NOT an authorisation guard (see ::index).
+            if ($this->objectService->getObject('zaken', $zaakUuid) === null) {
+                return new JSONResponse(['error' => 'Audit trail entry not found.'], Http::STATUS_NOT_FOUND);
+            }
+
             $entries = $this->objectService->getAuditTrail($zaakUuid);
 
             foreach ($entries as $entry) {
