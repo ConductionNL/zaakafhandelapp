@@ -48,10 +48,26 @@ class ZaakAuditTrailControllerTest extends TestCase
 
     private const ZAAK = 'zaak-1';
 
+    /**
+     * What ObjectService::getObject('zaken', …) resolves to for the test at hand.
+     * `null` models an id that does not exist inside this app's register.
+     *
+     * @var array<string,mixed>|null
+     */
+    private ?array $resolvedZaak = ['id' => self::ZAAK];
+
 
     protected function setUp(): void
     {
         $this->objectService = $this->createMock(ObjectService::class);
+
+        // The zaak resolves by default. Driven through a property rather than a
+        // second willReturn() because PHPUnit keeps the FIRST matching invocation
+        // rule, so a per-test re-stub of the same method would silently be ignored
+        // and the scope-guard tests would pass for the wrong reason.
+        $this->objectService->method('getObject')->willReturnCallback(
+            fn (): ?array => $this->resolvedZaak
+        );
 
         $urlGenerator = $this->createMock(IURLGenerator::class);
         $urlGenerator->method('getAbsoluteURL')->willReturnArgument(0);
@@ -111,6 +127,45 @@ class ZaakAuditTrailControllerTest extends TestCase
 
         $this->assertSame(Http::STATUS_NOT_FOUND, $this->controller->show(self::ZAAK, 'missing')->getStatus());
     }//end testShowReturns404ForUnknownEntry()
+
+
+    /**
+     * An id that does not resolve as a zaak in this app's register answers 404
+     * and the trail is never read.
+     *
+     * Measured live before this guard existed:
+     * `GET api/zrc/zaken/{uuid-of-an-object-in-another-register}/audit_trail`
+     * returned **HTTP 200 with that object's audit row**, because
+     * ObjectService::getAuditTrail() resolves rows from the uuid alone. The
+     * sibling per-resource trails already had this check; these two did not.
+     *
+     * @return void
+     */
+    public function testIndexAnswers404ForAnIdOutsideThisAppsRegister(): void
+    {
+        $this->resolvedZaak = null;
+        $this->objectService->expects($this->never())->method('getAuditTrail');
+
+        $response = $this->controller->index('an-id-from-another-register');
+
+        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
+    }//end testIndexAnswers404ForAnIdOutsideThisAppsRegister()
+
+
+    /**
+     * The same for ::show.
+     *
+     * @return void
+     */
+    public function testShowAnswers404ForAnIdOutsideThisAppsRegister(): void
+    {
+        $this->resolvedZaak = null;
+        $this->objectService->expects($this->never())->method('getAuditTrail');
+
+        $response = $this->controller->show('an-id-from-another-register', 'e1');
+
+        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
+    }//end testShowAnswers404ForAnIdOutsideThisAppsRegister()
 
 
     public function testWriteVerbsReturn405WithAllowHeader(): void
