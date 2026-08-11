@@ -121,6 +121,17 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 		await gotoDetail(page, 'resultaten', 'Result')
 	})
 
+	// @e2e openspec/specs/domain-entities/spec.md#status
+	// StatusDetail (`/statussen/:id`) was the ONE manifest detail page with no
+	// test in this suite: the eleven above plus this one are the twelve
+	// `type: "detail"` entries in src/manifest.json, and `appinfo/routes.php`
+	// has registered `statusen#page` for `/statussen/{id}` since BUG-1. The gap
+	// was invisible because the index page (`/statussen`) IS covered by
+	// ui-record-views, so the entity looked exercised.
+	test('statussen detail — status detail page renders header chrome', async ({ page }) => {
+		await gotoDetail(page, 'statussen', 'Status')
+	})
+
 	// @e2e openspec/specs/ui-case-views/spec.md#detail-from-list
 	// Drives the real user journey: open the zaken index, click the first
 	// list row, and confirm the detail surface for that row opens. Guarded by
@@ -149,7 +160,7 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Server-routed detail pages via hard goto (all have routes now).
-		for (const plural of ['zaken', 'taken', 'klanten', 'medewerkers', 'berichten', 'contactmomenten', 'rollen', 'zaaktypen', 'besluiten', 'documenten', 'resultaten']) {
+		for (const plural of ['zaken', 'taken', 'klanten', 'medewerkers', 'berichten', 'contactmomenten', 'rollen', 'zaaktypen', 'besluiten', 'documenten', 'resultaten', 'statussen']) {
 			await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
 			await dismissSupportModal(page)
 			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 15_000 })
