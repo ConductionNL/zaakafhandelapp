@@ -120,9 +120,45 @@ jobs:
       # in this repository — the job reported `skipped`, which in the Quality
       # Report is indistinguishable from having passed. Pinned to v1.0.1 so a
       # change to the gate package cannot alter this repo's verdict without a
-      # commit here. `enable-axe` is deliberately NOT set: it is what produces
-      # the report gate-33 consumes, and a vanilla Nextcloud 34 already carries
-      # serious/critical violations from core's own UI.
+      # commit here.
+      #
+      # `enable-axe` WAS deliberately not set, on the grounds that "a vanilla
+      # Nextcloud 34 already carries serious/critical violations from core's own
+      # UI". That reason was true when written and is now out of date, so it is
+      # tested rather than inherited below.
+      #
+      # An exemption's reason is a testable claim. This one names a STATE OF THE
+      # WORLD, and the world moved twice:
+      #
+      #  1. ConductionNL/.github#161 (re-landed as #168) gave the axe runner an
+      #     AxeBuilder.include SCOPE, so core's chrome is no longer in the
+      #     measurement. It is a scope, not a mute, and the runner proves that on
+      #     every run: it injects a deliberate violation INSIDE the container and
+      #     asserts axe reports it, then injects the same violation OUTSIDE and
+      #     asserts axe does not. A selector matching nothing is a hard failure,
+      #     not an empty pass.
+      #  2. ConductionNL/.github#338 fixed an axe runner that had NEVER resolved
+      #     @playwright/test in any repo — which is why nobody could have turned
+      #     this on before tonight even if they wanted to.
+      #
+      # Measured, not assumed: docudesk runs with `enable-axe: true` today and
+      # its gate run reports `[gate-33] axe-core: PASS` (run 31461514843). So the
+      # blocker is gone and the excuse no longer holds here either.
+      enable-axe: true
+
+      # NOT the `#content-vue, #content` default. This app mounts on a dedicated
+      # host element: templates/index.php:34 renders exactly
+      # `<div id="zaakafhandelapp-app"></div>` and src/main.js:151 mounts there,
+      # for a documented reason — Vue 3's mount() renders INSIDE the match, so
+      # mounting on `#content` would nest the app inside Nextcloud's own wrapper
+      # from layout.user.php and leave two `#content` elements.
+      #
+      # Core's layout wraps that div in `#content`, so the DEFAULT selector would
+      # match and would drag core's chrome (navigation, header, app menu) back
+      # into scope — re-attributing core's violations to this app, which is the
+      # very thing the old opt-out was worried about. `#zaakafhandelapp-app` is
+      # exactly this app's own rendered DOM and nothing else.
+      axe-include-selector: '#zaakafhandelapp-app'
       #
       # v1.0.1 -> v1.3.0 (ConductionNL/.github#159). Two defects, one bump.
       #
