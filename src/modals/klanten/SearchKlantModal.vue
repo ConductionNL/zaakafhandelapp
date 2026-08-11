@@ -76,17 +76,20 @@ import { klantStore } from '../../store/store.js'
 				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
 					<NcTextField v-model="searchQuery[0]"
 						:disabled="loading"
+						:label="t('zaakafhandelapp', 'Postal code')"
 						maxlength="255"
 						class="klantSearchField" />
 
 					<NcTextField v-model="searchQuery[1]"
 						:disabled="loading"
+						:label="t('zaakafhandelapp', 'House number')"
 						maxlength="255"
 						class="klantSearchField" />
 				</div>
 				<div v-else>
 					<NcTextField v-model="searchQuery[0]"
 						:disabled="loading"
+						:label="searchLabel"
 						maxlength="255"
 						class="klantSearchField" />
 				</div>

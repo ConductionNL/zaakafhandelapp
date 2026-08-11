@@ -85,7 +85,12 @@ async function dismissOverlays(page: Page): Promise<void> {
 async function go(page: Page, route: string): Promise<void> {
 	const url = route.startsWith('/apps/') ? route : `${APP}${route}`
 	await page.goto(url).catch(() => { /* tolerate a 404 — caller decides */ })
-	await page.waitForLoadState('networkidle').catch(() => { /* idle never fires on some pages */ })
+	// ADR-074 rule 4: 'networkidle' never settles on Nextcloud — long-polling
+	// (notifications, dashboard widgets) keeps a request open, so this always
+	// burned its full timeout and then continued via .catch(). The wait below
+	// is the one that actually gates on something, and dismissOverlays() plus
+	// the settle timeout cover the rest.
+	await page.waitForLoadState('domcontentloaded').catch(() => { /* tolerate a 404 — caller decides */ })
 	await dismissOverlays(page)
 	await page.waitForTimeout(900)
 }
