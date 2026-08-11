@@ -81,6 +81,27 @@ jobs:
       # step globs `*.postman_collection.json` in — flat, not recursively.
       enable-newman: true
 
+      # The collection cannot create its own preconditions, and without a seed
+      # it was failing 17 of 55 assertions for two independent reasons — both
+      # only legible once #338 put the job on a server OpenRegister can run on:
+      #
+      #   1. NO REGISTER. `occ app:enable zaakafhandelapp` provisions nothing
+      #      (no lib/Settings/*_register.json, no IRepairStep, no import route),
+      #      so the collection's slug preflight failed and {{zaakRegister}} kept
+      #      its dev-box default of 239 — every object call 404'd.
+      #
+      #   2. NO SOURCE CONFIG. Every ZGW route then 500s with
+      #      `InvalidArgumentException: Unknown object type: zaken`
+      #      (ObjectMapperService.php:66) — getMapper() defaults `<type>_source`
+      #      to 'internal' and its match() has only a `default => throw` arm.
+      #      The collection writes one key (`zaken_register`) and no _source, so
+      #      it cannot bootstrap itself.
+      #
+      # The seed imports the register + schemas (reusing the Playwright seed's
+      # single import path and payload) and then points all twelve object types
+      # at it, verifying through the app's own endpoint rather than assuming.
+      newman-seed-command: 'bash apps/zaakafhandelapp/tests/integration/ci-seed.sh'
+
       # ── Coverage ratchet ─────────────────────────────────────────────────
       # `enable-coverage-guard` defaults to FALSE, which is why both
       # "Coverage Baseline Protection" (PR side) and "Coverage Baseline Check"
