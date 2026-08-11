@@ -4,12 +4,14 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller for handling employees (medewerkers) operations
@@ -27,6 +29,7 @@ class MedewerkersController extends Controller
         IRequest $request,
         private readonly ObjectService $objectService,
         private readonly IUserSession $userSession,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -107,6 +110,8 @@ class MedewerkersController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws DoesNotExistException Translated to 404 below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
@@ -115,11 +120,18 @@ class MedewerkersController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Fetch the employee by its ID
-        $object = $this->objectService->getObject('medewerkers', $id);
+        try {
+            // Fetch the employee by its ID
+            $object = $this->objectService->getObject('medewerkers', $id);
 
-        // Return the employee as a JSON response
-        return new JSONResponse($object);
+            // Return the employee as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read medewerker: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read medewerker'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end show()
 
     /**
@@ -130,6 +142,8 @@ class MedewerkersController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws \Throwable Translated to a JSON error below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
@@ -138,17 +152,22 @@ class MedewerkersController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new employee
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new employee
+            unset($data['id']);
 
-        // Save the new employee
-        $object = $this->objectService->saveObject('medewerkers', $data);
+            // Save the new employee
+            $object = $this->objectService->saveObject('medewerkers', $data);
 
-        // Return the created employee as a JSON response
-        return new JSONResponse($object);
+            // Return the created employee as a JSON response
+            return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to create medewerker: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not create medewerker'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end create()
 
     /**
@@ -159,6 +178,8 @@ class MedewerkersController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws DoesNotExistException Translated to 404 below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
@@ -167,20 +188,27 @@ class MedewerkersController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
-        $data['id'] = $id;
+            // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+            $data['id'] = $id;
 
-        // Strip server-managed fields that callers must not overwrite directly.
-        unset($data['created'], $data['updated']);
+            // Strip server-managed fields that callers must not overwrite directly.
+            unset($data['created'], $data['updated']);
 
-        // Save the updated employee
-        $object = $this->objectService->saveObject('medewerkers', $data);
+            // Save the updated employee
+            $object = $this->objectService->saveObject('medewerkers', $data);
 
-        // Return the updated employee as a JSON response
-        return new JSONResponse($object);
+            // Return the updated employee as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to update medewerker: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not update medewerker'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end update()
 
     /**
@@ -191,6 +219,8 @@ class MedewerkersController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws DoesNotExistException Translated to 404 below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
@@ -199,11 +229,18 @@ class MedewerkersController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Delete the employee
-        $result = $this->objectService->deleteObject('medewerkers', $id);
+        try {
+            // Delete the employee
+            $result = $this->objectService->deleteObject('medewerkers', $id);
 
-        // Return the result as a JSON response
-        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+            // Return the result as a JSON response
+            return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to delete medewerker: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not delete medewerker'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end destroy()
 
     /**

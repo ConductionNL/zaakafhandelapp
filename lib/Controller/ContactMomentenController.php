@@ -4,12 +4,14 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller for handling contact moments (contactmomenten) operations
@@ -27,6 +29,7 @@ class ContactMomentenController extends Controller
         IRequest $request,
         private readonly ObjectService $objectService,
         private readonly IUserSession $userSession,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -107,6 +110,8 @@ class ContactMomentenController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws DoesNotExistException Translated to 404 below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
@@ -115,11 +120,18 @@ class ContactMomentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Fetch the contact moment by its ID
-        $object = $this->objectService->getObject('contactmomenten', $id);
+        try {
+            // Fetch the contact moment by its ID
+            $object = $this->objectService->getObject('contactmomenten', $id);
 
-        // Return the contact moment as a JSON response
-        return new JSONResponse($object);
+            // Return the contact moment as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read contactmoment: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read contactmoment'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end show()
 
     /**
@@ -130,6 +142,8 @@ class ContactMomentenController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws \Throwable Translated to a JSON error below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function create(): JSONResponse
@@ -138,17 +152,22 @@ class ContactMomentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new contact moment
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new contact moment
+            unset($data['id']);
 
-        // Save the new contact moment
-        $object = $this->objectService->saveObject('contactmomenten', $data);
+            // Save the new contact moment
+            $object = $this->objectService->saveObject('contactmomenten', $data);
 
-        // Return the created contact moment as a JSON response
-        return new JSONResponse($object);
+            // Return the created contact moment as a JSON response
+            return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to create contactmoment: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not create contactmoment'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end create()
 
     /**
@@ -159,6 +178,8 @@ class ContactMomentenController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws DoesNotExistException Translated to 404 below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function update(string $id): JSONResponse
@@ -167,17 +188,24 @@ class ContactMomentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Ensure the URL id is authoritative to prevent IDOR (client cannot override which record is updated).
-        $data['id'] = $id;
+            // Ensure the URL id is authoritative to prevent IDOR (client cannot override which record is updated).
+            $data['id'] = $id;
 
-        // Save the updated contact moment
-        $object = $this->objectService->saveObject('contactmomenten', $data);
+            // Save the updated contact moment
+            $object = $this->objectService->saveObject('contactmomenten', $data);
 
-        // Return the updated contact moment as a JSON response
-        return new JSONResponse($object);
+            // Return the updated contact moment as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to update contactmoment: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not update contactmoment'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end update()
 
     /**
@@ -188,6 +216,8 @@ class ContactMomentenController extends Controller
      *
      * @return JSONResponse
      *
+     * @throws DoesNotExistException Translated to 404 below; never propagated.
+     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
     public function destroy(string $id): JSONResponse
@@ -196,11 +226,18 @@ class ContactMomentenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Delete the contact moment
-        $result = $this->objectService->deleteObject('contactmomenten', $id);
+        try {
+            // Delete the contact moment
+            $result = $this->objectService->deleteObject('contactmomenten', $id);
 
-        // Return the result as a JSON response
-        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+            // Return the result as a JSON response
+            return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to delete contactmoment: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not delete contactmoment'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end destroy()
 
     /**
