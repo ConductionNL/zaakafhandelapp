@@ -6,5 +6,5 @@
 	},
 	"relocations": {},
 	"removals": [],
-	"settingsSection": ["Zaaktypen", "Rollen", "AuditTrail", "SettingsMenu"]
+	"settingsSection": ["Zaaktypen", "Rollen", "AuditTrail"]
 }

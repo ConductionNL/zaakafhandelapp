@@ -78,7 +78,6 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const appNav = page.locator('nav').filter({ has: navEntryByLabel(page, 'Cases') })
 		const roadmapLink = navEntryByLabel(page, 'Features & roadmap')
 		await expect(roadmapLink).toBeVisible({ timeout: 10_000 })
 		await roadmapLink.click()
@@ -99,46 +98,32 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 		await expect(hasRows.or(hasEmpty).first()).toBeVisible({ timeout: 10_000 })
 	})
 
-	// @e2e openspec/specs/app-configuration/spec.md#settings-page
-	test('settings page — the settings form mounts (via in-app nav)', async ({ page }) => {
-		// BUG-3 (FIXED): /settings now returns 200; client-route to it as a user would.
-		await spaNavigate(page, '/settings')
-		await expect(page.locator('[data-testid="cn-settings-page"]')).toBeVisible({ timeout: 10_000 })
-		// The settings form renders its section headings.
-		await expect(page.getByText('Data storage', { exact: false }).first()).toBeVisible({ timeout: 10_000 })
-	})
-
-	// @e2e openspec/specs/app-configuration/spec.md#settings-nav
-	// The in-app Settings nav button is present in the left nav. Its
-	// destination (BUG-3, now fixed) is covered by the test below.
-	test('settings nav — the Settings button is present in the left nav', async ({ page }) => {
-		await page.goto(`${APP}/#/zaken`)
-		await dismissSupportModal(page)
-		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const appNav = page.locator('nav').filter({ has: navEntryByLabel(page, 'Cases') })
-		// `exact` so we match the app's own "Settings" footer entry and not
-		// the NC "Personal settings" entry that also lives in the footer.
-		const settingsBtn = appNav.getByRole('button', { name: 'Settings', exact: true })
-		await expect(settingsBtn).toBeVisible({ timeout: 10_000 })
-	})
-
-	// @e2e openspec/specs/app-configuration/spec.md#settings-nav-destination
-	// BUG-3 (the /settings 500) is fixed and the settings page is reachable —
-	// proven by the "settings page — the settings form mounts" test (client
-	// route) and the "settings hard-nav … returns 200" test. This separate
-	// case asserts that clicking the app's footer "Settings" entry *routes*
-	// to cn-settings-page in-app; in the current CnAppNav shell the footer
-	// (section:"settings") entry does not push that route, so the page does
-	// not mount on click. This is an in-app-nav-wiring concern independent of
-	// BUG-3 (a backend defect), so it stays fixme'd until the shell routes
-	// footer settings entries. NOT a regression from the BUG-1/2/3 fixes.
-	test.fixme('settings nav — clicking Settings opens the settings page', async ({ page }) => {
-		await page.goto(`${APP}/#/zaken`)
-		await dismissSupportModal(page)
-		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-		const appNav = page.locator('nav').filter({ has: navEntryByLabel(page, 'Cases') })
-		await appNav.getByRole('button', { name: 'Settings', exact: true }).click()
-		await expect(page.locator('[data-testid="cn-settings-page"]')).toBeVisible({ timeout: 15_000 })
+	// @e2e openspec/specs/app-configuration/spec.md#REQ-002
+	//
+	// ADR-079 D1: the app no longer ships an in-app `type:settings` page. The
+	// settings FORM still exists and is unchanged — `src/views/settings/
+	// Settings.vue` was always rendered on BOTH surfaces, and the in-app copy
+	// was the duplicate. Its one remaining home is the Nextcloud admin
+	// section (`lib/Sections/ZaakAfhandelAppAdmin.php` → id `zaakafhandelapp`,
+	// `lib/Settings/ZaakAfhandelAppAdmin.php` → `templates/settings/admin.php`,
+	// which mounts `src/settings.js` on `#zaakafhandelapp-settings`).
+	//
+	// So this case moved rather than went away: it used to assert the form
+	// mounts on the in-app route, and now asserts it mounts where it actually
+	// lives. The previous `#settings-page` / `#settings-nav` anchors named
+	// requirements that were never written — app-configuration/spec.md stops
+	// at REQ-004 and has no such headings — so they resolved to nothing.
+	// REQ-002 ("Read and persist object-type settings and available
+	// registers") is the requirement this form actually serves, and is what
+	// `SettingsController::index/create` already point at.
+	test('settings form — mounts on the Nextcloud admin settings page', async ({ page }) => {
+		await page.goto('/index.php/settings/admin/zaakafhandelapp')
+		// The template's mount point is present and the Vue app replaced it
+		// with the settings shell.
+		await expect(page.locator('#zaakafhandelapp-settings')).toBeAttached({ timeout: 15_000 })
+		// The form renders its first section heading — proof the bundle
+		// executed, not merely that the div exists.
+		await expect(page.getByText('Data storage', { exact: false }).first()).toBeVisible({ timeout: 15_000 })
 	})
 
 	// @e2e openspec/specs/app-configuration/spec.md#settings-hardnav-500

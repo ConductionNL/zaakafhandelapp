@@ -22,13 +22,6 @@
 import SearchView from './views/search/SearchIndex.vue'
 import AuditTrailView from './views/audit/AuditTrailView.vue'
 
-// --- Settings section component (referenced by settings page sections[]). ---
-// `manifest-settings-rich-sections` lets each section declare a custom
-// component that renders the entire section body. We wrap the legacy
-// settings page so the migration happens incrementally; future rounds
-// can split this into per-section widgets.
-import SettingsForm from './views/settings/Settings.vue'
-
 // --- Detail-tab custom components for ZaakDetail ---
 // Each remaining tab references a thin stub today (`<CnNoteCard>` placeholder
 // pointing at the existing modal-based UI). The besluiten tab was dissolved to
@@ -46,9 +39,6 @@ export default {
 	SearchView,
 	// --- Migration cost: placeholder navigation entry. ---
 	AuditTrailView,
-	// --- Settings wrapper (lib gap). ---
-	SettingsForm,
-
 	// --- ZaakDetail sidebar tabs (cross-schema relations). ---
 	ZaakTakenTab,
 	ZaakRollenTab,

@@ -234,6 +234,8 @@ class KlantVCardMapper
      * @param mixed $value The raw property value.
      *
      * @return string The first scalar value as a string.
+     *
+     * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
      */
     public function firstValue(mixed $value): string
     {
