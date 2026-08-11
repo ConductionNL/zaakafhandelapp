@@ -24,9 +24,9 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 						<table class="audit-trail-table">
 							<thead>
 								<tr>
-									<th>{{ t('zaakafhandelapp', 'Field') }}</th>
-									<th>{{ t('zaakafhandelapp', 'Old value') }}</th>
-									<th>{{ t('zaakafhandelapp', 'New value') }}</th>
+									<th scope="col">{{ t('zaakafhandelapp', 'Field') }}</th>
+									<th scope="col">{{ t('zaakafhandelapp', 'Old value') }}</th>
+									<th scope="col">{{ t('zaakafhandelapp', 'New value') }}</th>
 								</tr>
 							</thead>
 							<tbody>
