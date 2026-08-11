@@ -4,10 +4,14 @@
 <!--
  Placeholder for the legacy `/auditTrail` route.
 
- The original navigation entry in src/navigation/MainMenu.vue had no
+ The original navigation entry in the legacy hand-rolled menu had no
  view binding under the legacy router. This stub keeps the menu entry
  functional under the manifest dispatcher; the real audit page lands
  in a sibling change.
+
+ (That legacy menu — src/navigation/MainMenu.vue — was dead code and has
+ since been deleted; the live navigation is built by CnAppNav from
+ src/manifest.json + src/menu-layout.json.)
 
  TODO(zaakafhandelapp-manifest-v1): wire to OpenRegister's audit-trail
  endpoint once the in-app register slug is decided.

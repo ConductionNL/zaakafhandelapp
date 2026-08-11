@@ -1349,7 +1349,7 @@
 					]
 				},
 				{
-					"name": "GET /api/ztc/zaaktypen -> ERROR (QUARANTINE: 500 unconfigured object type)",
+					"name": "GET /api/ztc/zaaktypen -> 200 (catalog index)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1380,11 +1380,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// KNOWN BUG (quarantined): ObjectMapperService::getMapper('zaaktypen') has no openregister source",
-									"// configured and no internal mapper match -> throws InvalidArgumentException 'Unknown object type:",
-									"// zaaktypen' -> HTTP 500. Wiring a zaaktypen_source/register/schema (like zaken/taken/klanten)",
-									"// would make this 200. Asserting the current 500 keeps the suite honest.",
-									"pm.test('QUARANTINE: zaaktypen currently 500 (Unknown object type / unconfigured)', function () { pm.response.to.have.status(500); });"
+									"// The quarantine that used to live here asserted HTTP 500, and it named its own cure:",
+									"// 'Wiring a zaaktypen_source/register/schema (like zaken/taken/klanten) would make this 200.'",
+									"// tests/integration/ci-seed.sh now wires exactly that for all twelve object types, so the endpoint",
+									"// returns 200 — and the quarantine started FAILING because the bug was fixed. An assertion that",
+										"// passes only while the endpoint is broken is a test of the bug, not of the endpoint.",
+									"pm.test('zaaktypen index 200', function () { pm.response.to.have.status(200); });",
+										"pm.test('zaaktypen index returns a JSON collection', function () {",
+										"    var body = pm.response.json();",
+										"    var rows = Array.isArray(body) ? body : (body.results || body.data);",
+										"    pm.expect(rows, 'results/data array').to.be.an('array');",
+										"});"
 								]
 							}
 						}

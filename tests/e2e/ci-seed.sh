@@ -198,6 +198,19 @@ fi
 echo "[ci-seed] zaakafhandelapp register + schemas provisioned."
 
 # ── 3. Warm the SPA so the first spec doesn't pay the cold start ─────────────
+# Skipped when ZAA_SEED_SKIP_SPA=1. The Newman seed
+# (tests/integration/ci-seed.sh) reuses sections 1-2 of this script to provision
+# the register, but the Integration Tests job never builds the frontend — it
+# drives the HTTP API only. The bundle gate at the end of this section is
+# correct for Playwright (no bundle means every UI spec fails on a misleading
+# selector timeout) and simply wrong for Newman, where it would fail the seed
+# over an asset the job has no reason to have.
+if [ "${ZAA_SEED_SKIP_SPA:-}" = "1" ]; then
+	echo "[ci-seed] ZAA_SEED_SKIP_SPA=1 — register provisioned; skipping SPA warm-up and bundle gate."
+	echo "[ci-seed] done."
+	exit 0
+fi
+
 # The shared workflow serves Nextcloud with `php -S 0.0.0.0:8080`. The first
 # hit pays a cold opcache and the first parse of the webpack bundle, and the
 # effect lands entirely on whichever spec happens to run first — it measures

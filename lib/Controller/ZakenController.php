@@ -4,12 +4,14 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * Geeft invulling aan https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/
@@ -27,6 +29,7 @@ class ZakenController extends Controller
         IRequest $request,
         private readonly ObjectService $objectService,
         private readonly IUserSession $userSession,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -115,15 +118,22 @@ class ZakenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Fetch the catalog object by its ID
-        $object = $this->objectService->getObject('zaken', $id);
+        try {
+            // Fetch the catalog object by its ID
+            $object = $this->objectService->getObject('zaken', $id);
 
-        if ($object === null) {
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
+
+            // Return the catalog as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
             return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
-        }
-
-        // Return the catalog as a JSON response
-        return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read zaak: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read zaak'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end show()
 
     /**
@@ -142,25 +152,30 @@ class ZakenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new object
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new object
+            unset($data['id']);
 
-        // Strip system-managed ZGW fields that must be set server-side (ZGW API-principes).
-        unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
+            // Strip system-managed ZGW fields that must be set server-side (ZGW API-principes).
+            unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
 
-        // Default archiefstatus to 'nog_te_archiveren' for new zaken so that
-        // ZGWZaakValidationService::checkArchivePrerequisites passes on deployments
-        // whose schema does not define this default (C2 fix).
-        $data['archiefstatus'] = 'nog_te_archiveren';
+            // Default archiefstatus to 'nog_te_archiveren' for new zaken so that
+            // ZGWZaakValidationService::checkArchivePrerequisites passes on deployments
+            // whose schema does not define this default (C2 fix).
+            $data['archiefstatus'] = 'nog_te_archiveren';
 
-        // Save the new catalog object
-        $object = $this->objectService->saveObject('zaken', $data);
+            // Save the new catalog object
+            $object = $this->objectService->saveObject('zaken', $data);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to create zaak: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not create zaak'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end create()
 
     /**
@@ -179,20 +194,27 @@ class ZakenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
-        $data['id'] = $id;
+            // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+            $data['id'] = $id;
 
-        // Strip system-managed ZGW fields that must not be overwritten via the request body.
-        unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
+            // Strip system-managed ZGW fields that must not be overwritten via the request body.
+            unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
 
-        // Save the updated object
-        $object = $this->objectService->saveObject('zaken', $data);
+            // Save the updated object
+            $object = $this->objectService->saveObject('zaken', $data);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to update zaak: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not update zaak'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end update()
 
     /**
@@ -211,11 +233,18 @@ class ZakenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Delete the catalog object
-        $result = $this->objectService->deleteObject('zaken', $id);
+        try {
+            // Delete the catalog object
+            $result = $this->objectService->deleteObject('zaken', $id);
 
-        // Return the result as a JSON response
-        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+            // Return the result as a JSON response
+            return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to delete zaak: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not delete zaak'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end destroy()
 
     /**
@@ -234,13 +263,20 @@ class ZakenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // IDOR guard: verify the object exists and is accessible before returning its audit trail.
-        $object = $this->objectService->getObject('zaken', $id);
-        if ($object === null) {
-            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
-        }
+        try {
+            // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+            $object = $this->objectService->getObject('zaken', $id);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
 
-        $auditTrail = $this->objectService->getAuditTrail($id);
-        return new JSONResponse($auditTrail);
+            $auditTrail = $this->objectService->getAuditTrail($id);
+            return new JSONResponse($auditTrail);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read zaak audit trail: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read audit trail'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end getAuditTrail()
 }//end class

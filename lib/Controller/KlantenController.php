@@ -5,12 +5,14 @@ namespace OCA\ZaakAfhandelApp\Controller;
 use OCA\ZaakAfhandelApp\Service\KlantContactSyncService;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller for handling clients (klanten) operations.
@@ -32,6 +34,7 @@ class KlantenController extends Controller
         // KlantContactsController: create()/update() push the saved klant to its
         // linked vCard.
         private readonly KlantContactSyncService $contactSyncService,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -120,15 +123,22 @@ class KlantenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Fetch the catalog object by its ID
-        $object = $this->objectService->getObject('klanten', $id);
+        try {
+            // Fetch the catalog object by its ID
+            $object = $this->objectService->getObject('klanten', $id);
 
-        if ($object === null) {
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
+
+            // Return the catalog as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
             return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
-        }
-
-        // Return the catalog as a JSON response
-        return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read klant: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read klant'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end show()
 
     /**
@@ -146,21 +156,26 @@ class KlantenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new object
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new object
+            unset($data['id']);
 
-        // Save the new catalog object
-        $object = $this->objectService->saveObject('klanten', $data);
+            // Save the new catalog object
+            $object = $this->objectService->saveObject('klanten', $data);
 
-        // Push to the linked addressbook contact when the klant carries a
-        // contactsUid; never fatal when Contacts is unavailable (REQ-003/004).
-        $this->contactSyncService->pushKlant((array) $object);
+            // Push to the linked addressbook contact when the klant carries a
+            // contactsUid; never fatal when Contacts is unavailable (REQ-003/004).
+            $this->contactSyncService->pushKlant((array) $object);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to create klant: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not create klant'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end create()
 
     /**
@@ -178,24 +193,31 @@ class KlantenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
-        $data['id'] = $id;
+            // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+            $data['id'] = $id;
 
-        // Strip server-managed fields that callers must not overwrite directly.
-        unset($data['created'], $data['updated']);
+            // Strip server-managed fields that callers must not overwrite directly.
+            unset($data['created'], $data['updated']);
 
-        // Save the updated object
-        $object = $this->objectService->saveObject('klanten', $data);
+            // Save the updated object
+            $object = $this->objectService->saveObject('klanten', $data);
 
-        // Keep the linked addressbook contact in sync; skipped + logged (never
-        // fatal) when the klant is unlinked or Contacts is unavailable (REQ-003/004).
-        $this->contactSyncService->pushKlant((array) $object);
+            // Keep the linked addressbook contact in sync; skipped + logged (never
+            // fatal) when the klant is unlinked or Contacts is unavailable (REQ-003/004).
+            $this->contactSyncService->pushKlant((array) $object);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to update klant: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not update klant'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end update()
 
     /**
@@ -213,11 +235,18 @@ class KlantenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Delete the catalog object
-        $result = $this->objectService->deleteObject('klanten', $id);
+        try {
+            // Delete the catalog object
+            $result = $this->objectService->deleteObject('klanten', $id);
 
-        // Return the result as a JSON response
-        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+            // Return the result as a JSON response
+            return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to delete klant: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not delete klant'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end destroy()
 
     /**
@@ -320,13 +349,20 @@ class KlantenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // IDOR guard: verify the object exists and is accessible before returning its audit trail.
-        $object = $this->objectService->getObject('klanten', $id);
-        if ($object === null) {
-            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
-        }
+        try {
+            // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+            $object = $this->objectService->getObject('klanten', $id);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
 
-        $auditTrail = $this->objectService->getAuditTrail($id);
-        return new JSONResponse($auditTrail);
+            $auditTrail = $this->objectService->getAuditTrail($id);
+            return new JSONResponse($auditTrail);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read klant audit trail: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read audit trail'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end getAuditTrail()
 }//end class

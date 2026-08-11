@@ -4,12 +4,14 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller for handling messages (berichten) operations.
@@ -27,6 +29,7 @@ class BerichtenController extends Controller
         IRequest $request,
         private readonly ObjectService $objectService,
         private readonly IUserSession $userSession,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -115,11 +118,18 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Fetch the catalog object by its ID
-        $object = $this->objectService->getObject('berichten', $id);
+        try {
+            // Fetch the catalog object by its ID
+            $object = $this->objectService->getObject('berichten', $id);
 
-        // Return the catalog as a JSON response
-        return new JSONResponse($object);
+            // Return the catalog as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read bericht: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read bericht'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end show()
 
     /**
@@ -138,17 +148,22 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new object
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new object
+            unset($data['id']);
 
-        // Save the new catalog object
-        $object = $this->objectService->saveObject('berichten', $data);
+            // Save the new catalog object
+            $object = $this->objectService->saveObject('berichten', $data);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to create bericht: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not create bericht'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end create()
 
     /**
@@ -167,20 +182,27 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
-        $data['id'] = $id;
+            // Pin the ID from the URL to prevent IDOR: body-supplied id must not override path id.
+            $data['id'] = $id;
 
-        // Strip server-managed fields that callers must not overwrite directly.
-        unset($data['created'], $data['updated']);
+            // Strip server-managed fields that callers must not overwrite directly.
+            unset($data['created'], $data['updated']);
 
-        // Save the updated object
-        $object = $this->objectService->saveObject('berichten', $data);
+            // Save the updated object
+            $object = $this->objectService->saveObject('berichten', $data);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to update bericht: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not update bericht'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end update()
 
     /**
@@ -199,11 +221,18 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Delete the catalog object
-        $result = $this->objectService->deleteObject('berichten', $id);
+        try {
+            // Delete the catalog object
+            $result = $this->objectService->deleteObject('berichten', $id);
 
-        // Return the result as a JSON response
-        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+            // Return the result as a JSON response
+            return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to delete bericht: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not delete bericht'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end destroy()
 
     /**
@@ -222,13 +251,20 @@ class BerichtenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // IDOR guard: verify the object exists and is accessible before returning its audit trail.
-        $object = $this->objectService->getObject('berichten', $id);
-        if ($object === null) {
-            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
-        }
+        try {
+            // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+            $object = $this->objectService->getObject('berichten', $id);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
 
-        $auditTrail = $this->objectService->getAuditTrail($id);
-        return new JSONResponse($auditTrail);
+            $auditTrail = $this->objectService->getAuditTrail($id);
+            return new JSONResponse($auditTrail);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read bericht audit trail: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read audit trail'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end getAuditTrail()
 }//end class

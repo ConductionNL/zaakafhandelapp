@@ -4,12 +4,14 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 /**
  * Controller for zaaktypen (case types) operations.
@@ -27,6 +29,7 @@ class ZaakTypenController extends Controller
         IRequest $request,
         private readonly ObjectService $objectService,
         private readonly IUserSession $userSession,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
@@ -115,11 +118,18 @@ class ZaakTypenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Fetch the catalog object by its ID
-        $object = $this->objectService->getObject('zaaktypen', $id);
+        try {
+            // Fetch the catalog object by its ID
+            $object = $this->objectService->getObject('zaaktypen', $id);
 
-        // Return the catalog as a JSON response
-        return new JSONResponse($object);
+            // Return the catalog as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to read zaaktype: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not read zaaktype'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end show()
 
     /**
@@ -137,17 +147,22 @@ class ZaakTypenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new object
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new object
+            unset($data['id']);
 
-        // Save the new catalog object
-        $object = $this->objectService->saveObject('zaaktypen', $data);
+            // Save the new catalog object
+            $object = $this->objectService->saveObject('zaaktypen', $data);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to create zaaktype: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not create zaaktype'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end create()
 
     /**
@@ -168,19 +183,26 @@ class ZaakTypenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Get all parameters from the request
-        $data = $this->request->getParams();
+        try {
+            // Get all parameters from the request
+            $data = $this->request->getParams();
 
-        // Remove the 'id' field if it exists, as we're creating a new object
-        unset($data['id']);
+            // Remove the 'id' field if it exists, as we're creating a new object
+            unset($data['id']);
 
-        $data['id'] = $id;
+            $data['id'] = $id;
 
-        // Save the new catalog object
-        $object = $this->objectService->saveObject('zaaktypen', $data);
+            // Save the new catalog object
+            $object = $this->objectService->saveObject('zaaktypen', $data);
 
-        // Return the created object as a JSON response
-        return new JSONResponse($object);
+            // Return the created object as a JSON response
+            return new JSONResponse($object);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to update zaaktype: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not update zaaktype'], Http::STATUS_BAD_REQUEST);
+        }//end try
     }//end update()
 
     /**
@@ -198,10 +220,17 @@ class ZaakTypenController extends Controller
             return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
         }
 
-        // Delete the catalog object
-        $result = $this->objectService->deleteObject('zaaktypen', $id);
+        try {
+            // Delete the catalog object
+            $result = $this->objectService->deleteObject('zaaktypen', $id);
 
-        // Return the result as a JSON response
-        return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+            // Return the result as a JSON response
+            return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+        } catch (DoesNotExistException $e) {
+            return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to delete zaaktype: '.$e->getMessage(), ['exception' => $e, 'app' => $this->appName]);
+            return new JSONResponse(['error' => 'Could not delete zaaktype'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        }//end try
     }//end destroy()
 }//end class
