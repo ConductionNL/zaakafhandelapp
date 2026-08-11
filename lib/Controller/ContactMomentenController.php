@@ -110,8 +110,6 @@ class ContactMomentenController extends Controller
      *
      * @return JSONResponse
      *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
-     *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
@@ -141,8 +139,6 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws \Throwable Translated to a JSON error below; never propagated.
      *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
@@ -177,8 +173,6 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
      *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */
@@ -215,8 +209,6 @@ class ContactMomentenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
      *
      * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
      */

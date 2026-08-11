@@ -110,8 +110,6 @@ class ZakenController extends Controller
      *
      * @return JSONResponse
      *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
-     *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-002
      */
     public function show(string $id): JSONResponse
@@ -145,8 +143,6 @@ class ZakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws \Throwable Translated to a JSON error below; never propagated.
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
      */
@@ -190,8 +186,6 @@ class ZakenController extends Controller
      *
      * @return JSONResponse
      *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
-     *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
      */
     public function update(string $id): JSONResponse
@@ -231,8 +225,6 @@ class ZakenController extends Controller
      *
      * @return JSONResponse
      *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
-     *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
      */
     public function destroy(string $id): JSONResponse
@@ -262,8 +254,6 @@ class ZakenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
      *
      * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-004
      */

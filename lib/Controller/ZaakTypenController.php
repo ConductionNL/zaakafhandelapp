@@ -110,8 +110,6 @@ class ZaakTypenController extends Controller
      *
      * @return JSONResponse
      *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
-     *
      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-001
      */
     public function show(string $id): JSONResponse
@@ -140,8 +138,6 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws \Throwable Translated to a JSON error below; never propagated.
      *
      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
@@ -215,8 +211,6 @@ class ZaakTypenController extends Controller
      * @NoCSRFRequired
      *
      * @return JSONResponse
-     *
-     * @throws DoesNotExistException Translated to 404 below; never propagated.
      *
      * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
      */
