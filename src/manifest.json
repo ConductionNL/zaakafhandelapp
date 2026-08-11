@@ -1119,6 +1119,22 @@
 				"schema": "zaak"
 			},
 			"_note": "ZGW-API audittrail endpoint integration deferred; uses the OR audit-trail surface for now"
+		},
+		{
+			"id": "Settings",
+			"route": "/settings",
+			"type": "settings",
+			"title": "Settings",
+			"config": {
+				"saveEndpoint": "/index.php/apps/zaakafhandelapp/api/settings",
+				"sections": [
+					{
+						"title": "Settings",
+						"component": "SettingsForm"
+					}
+				]
+			},
+			"widgets": []
 		}
 	]
 }
