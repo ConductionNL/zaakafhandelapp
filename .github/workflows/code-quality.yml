@@ -24,13 +24,41 @@ jobs:
       # expanding the matrix, so the placeholders stay literal and a disabled
       # job looks exactly like a repo with no PHP tests.
       #
-      # No matrix input is required: `php-test-versions` and `nextcloud-test-refs`
-      # both default to non-empty arrays in the callee.
-      #
       # Note the callee ALSO skips this job when `php-quality` fails, which is
       # what kept it dark in the sibling repos. zaakafhandelapp's php-quality
       # went fully green in #312, so this boolean is the only thing left.
       enable-phpunit: true
+
+      # ── Which Nextcloud server CI installs ───────────────────────────────
+      # This input is NOT only the PHPUnit matrix. `quality.yml` also uses
+      # `fromJSON(nextcloud-test-refs)[0]` as the server checked out for the
+      # Newman job (:1946) and the Playwright job (:2317, :3423). Leaving it
+      # unset took the callee default `'["stable31", "stable32"]'`, so both
+      # browser/API jobs installed **stable31**.
+      #
+      # OpenRegister — declared below in `additional-apps`, and a HARD
+      # dependency of this app — raised its floor to `min-version="32"` on
+      # 2026-08-08 (openregister#2384). On stable31 `occ app:enable
+      # openregister` therefore fails with:
+      #
+      #   App "Open Register" cannot be installed because it is not compatible
+      #   with this version of the server.
+      #
+      # The callee downgrades that to `::warning::Failed to enable
+      # openregister, continuing...`, so both jobs ran on to completion against
+      # a server that cannot host the app: Newman produced a full, credible
+      # 54-assertion tally in which every OpenRegister route 404'd, and the
+      # Playwright seed aborted with "Refusing to run Playwright against a
+      # half-seeded instance".
+      #
+      # stable31 is not a version this app can function on at ALL —
+      # src/manifest.json declares `dependencies: ["openregister"]` and every
+      # index/detail page reads through it. Testing on it was measuring a
+      # configuration that cannot exist. stable32/stable33 are both inside the
+      # `min-version="32" max-version="34"` window this app now declares in
+      # appinfo/info.xml (raised in the same commit), so the matrix keeps two
+      # refs and every one of them is a version the app supports.
+      nextcloud-test-refs: '["stable32", "stable33"]'
 
       # ── Frontend Check legs ──────────────────────────────────────────────
       # `frontend-checks` defaults to `[]`, and an empty list means the shared
