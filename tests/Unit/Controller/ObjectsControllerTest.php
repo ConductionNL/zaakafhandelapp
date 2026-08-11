@@ -24,6 +24,7 @@ use OCA\ZaakAfhandelApp\Controller\ObjectsController;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IGroupManager;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -45,11 +46,22 @@ use PHPUnit\Framework\TestCase;
  * is therefore a security contract, not a validation nicety — so it is asserted
  * per endpoint rather than once for the class.
  *
- * The audit endpoint carries the same IDOR guard as the per-resource trails:
- * ObjectService::getAuditTrail() takes only a uuid, so the getObject() call
- * above it (which goes through OpenRegister's RBAC) is the whole access check.
- * A 404 that still read the trail would defeat it, so "never read" is asserted
- * explicitly.
+ * All three graph endpoints resolve the object through the type's own mapper
+ * before touching the graph. That is a SCOPE guard, not an authorisation guard:
+ * OpenRegister resolves relations, uses and audit rows from the uuid alone, so
+ * without it an id belonging to an entirely different register can be walked
+ * through a route for a type it has nothing to do with (measured live: HTTP 200
+ * returning another register's object). It does NOT establish that the caller
+ * may see the object — OR's RBAC returns true for a schema with an empty
+ * `authorization` block and this app ships none (see zaakafhandelapp#347).
+ * An earlier version of this docblock said the resolve "goes through
+ * OpenRegister's RBAC"; it does not, and that sentence is the kind of false
+ * assurance a reviewer marks as done.
+ *
+ * The write verbs additionally re-apply the app's OWN admin-only decision for
+ * master data (klanten, zaaktypen), which KlantenController and
+ * ZaakTypenController enforce by omitting @NoAdminRequired and which this
+ * generic route otherwise bypasses.
  */
 class ObjectsControllerTest extends TestCase
 {
@@ -91,19 +103,27 @@ class ObjectsControllerTest extends TestCase
     /**
      * Build the controller under test.
      *
-     * @param bool $authenticated Whether IUserSession returns a user.
+     * @param bool                $authenticated Whether IUserSession returns a user.
+     * @param bool                $isAdmin       Whether that user is an administrator.
+     * @param array<string,mixed> $params        The request parameters to serve.
      *
      * @return ObjectsController The controller under test.
      */
-    private function makeController(bool $authenticated=true): ObjectsController
+    private function makeController(bool $authenticated=true, bool $isAdmin=false, array $params=[]): ObjectsController
     {
         $request = $this->createMock(IRequest::class);
-        $request->method('getParams')->willReturn([]);
+        $request->method('getParams')->willReturn($params);
+
+        $user = $this->createMock(IUser::class);
+        $user->method('getUID')->willReturn('caseworker-1');
 
         $session = $this->createMock(IUserSession::class);
-        $session->method('getUser')->willReturn($authenticated === true ? $this->createMock(IUser::class) : null);
+        $session->method('getUser')->willReturn($authenticated === true ? $user : null);
 
-        return new ObjectsController('zaakafhandelapp', $request, $this->objectService, $session);
+        $groupManager = $this->createMock(IGroupManager::class);
+        $groupManager->method('isAdmin')->willReturn($isAdmin);
+
+        return new ObjectsController('zaakafhandelapp', $request, $this->objectService, $session, $groupManager);
 
     }//end makeController()
 
@@ -195,7 +215,7 @@ class ObjectsControllerTest extends TestCase
 
 
     /**
-     * getAuditTrail() resolves the object through the register (RBAC) before
+     * getAuditTrail() resolves the object through the type's own mapper before
      * reading the trail, and returns it verbatim with 200.
      *
      * @return void
@@ -247,6 +267,7 @@ class ObjectsControllerTest extends TestCase
     {
         $relations = [['id' => 'zaak-1'], ['id' => 'zaak-2']];
 
+        $this->objectService->method('getObject')->willReturn(['id' => self::OBJECT_ID]);
         $this->objectService->expects($this->once())
             ->method('getRelations')
             ->with(self::OBJECT_ID)
@@ -267,6 +288,7 @@ class ObjectsControllerTest extends TestCase
      */
     public function testGetRelationsTranslatesARegisterFailureInto400(): void
     {
+        $this->objectService->method('getObject')->willReturn(['id' => self::OBJECT_ID]);
         $this->objectService->method('getRelations')->willThrowException(new \RuntimeException('register down'));
 
         $response = $this->makeController()->getRelations(self::ALLOWED_TYPE, self::OBJECT_ID);
@@ -289,6 +311,7 @@ class ObjectsControllerTest extends TestCase
     {
         $uses = [['id' => 'zaaktype-1']];
 
+        $this->objectService->method('getObject')->willReturn(['id' => self::OBJECT_ID]);
         $this->objectService->expects($this->exactly(2))
             ->method('getUses')
             ->with(self::OBJECT_ID)
@@ -304,4 +327,172 @@ class ObjectsControllerTest extends TestCase
         $this->assertSame(Http::STATUS_OK, $empty->getStatus());
         $this->assertSame([], $empty->getData());
     }//end testGetUsesReturnsTheOutgoingReferences()
+
+
+    /**
+     * An id that does not resolve inside the requested type answers 404 and the
+     * graph is never walked.
+     *
+     * This is the cross-register read closed by scoping the mapper: OpenRegister
+     * resolves relations, uses and audit rows from the uuid alone, so an id from
+     * another register would otherwise be answered here. Asserting "never
+     * called" rather than only the status is deliberate — a 404 that had already
+     * read the graph would still have leaked it into the log and the timing.
+     *
+     * @param string $method The controller method under test.
+     *
+     * @return void
+     */
+    #[DataProvider('graphEndpointProvider')]
+    public function testGraphEndpointsAnswer404ForAnIdOutsideTheType(string $method): void
+    {
+        $this->objectService->method('getObject')->willReturn(null);
+        $this->objectService->expects($this->never())->method('getAuditTrail');
+        $this->objectService->expects($this->never())->method('getRelations');
+        $this->objectService->expects($this->never())->method('getUses');
+
+        $response = $this->invoke($this->makeController(), $method, self::ALLOWED_TYPE);
+
+        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus(), $method.' status');
+    }//end testGraphEndpointsAnswer404ForAnIdOutsideTheType()
+
+
+    /**
+     * ::show() answers 404 — not 200 with a null body — for an id that does not
+     * resolve inside the requested type.
+     *
+     * @return void
+     */
+    public function testShowAnswers404ForAnIdOutsideTheType(): void
+    {
+        $this->objectService->method('getObject')->willReturn(null);
+
+        $response = $this->makeController()->show(self::ALLOWED_TYPE, self::OBJECT_ID);
+
+        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
+        $this->assertArrayHasKey('error', $response->getData());
+    }//end testShowAnswers404ForAnIdOutsideTheType()
+
+
+    /**
+     * The object types whose writes this app has already declared admin-only,
+     * paired with the write verb under test.
+     *
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function masterDataWriteProvider(): array
+    {
+        return [
+            'create klanten'    => ['create', 'klanten'],
+            'update klanten'    => ['update', 'klanten'],
+            'destroy klanten'   => ['destroy', 'klanten'],
+            'create zaaktypen'  => ['create', 'zaaktypen'],
+            'update zaaktypen'  => ['update', 'zaaktypen'],
+            'destroy zaaktypen' => ['destroy', 'zaaktypen'],
+        ];
+    }//end masterDataWriteProvider()
+
+
+    /**
+     * Call a write verb on the controller.
+     *
+     * @param ObjectsController $controller The controller under test.
+     * @param string            $verb       create|update|destroy.
+     * @param string            $objectType The object type to pass.
+     *
+     * @return JSONResponse The response returned.
+     */
+    private function invokeWrite(ObjectsController $controller, string $verb, string $objectType): JSONResponse
+    {
+        return match ($verb) {
+            'create' => $controller->create($objectType),
+            'update' => $controller->update($objectType, self::OBJECT_ID),
+            'destroy' => $controller->destroy($objectType, self::OBJECT_ID),
+        };
+    }//end invokeWrite()
+
+
+    /**
+     * A non-admin writing master data through the generic route gets 403 and the
+     * register is never written.
+     *
+     * Measured live before this guard existed, one non-admin account, same
+     * operation, two routes:
+     *   DELETE api/klanten/{id}           -> HTTP 403
+     *   DELETE api/objects/klanten/{id}   -> HTTP 200 {"success":true}, deleted
+     *
+     * @param string $verb       The write verb under test.
+     * @param string $objectType The master-data type under test.
+     *
+     * @return void
+     */
+    #[DataProvider('masterDataWriteProvider')]
+    public function testMasterDataWritesAreRefusedForNonAdmins(string $verb, string $objectType): void
+    {
+        $this->objectService->expects($this->never())->method('saveObject');
+        $this->objectService->expects($this->never())->method('deleteObject');
+
+        $response = $this->invokeWrite($this->makeController(true, false), $verb, $objectType);
+
+        $this->assertSame(Http::STATUS_FORBIDDEN, $response->getStatus(), $verb.' '.$objectType.' status');
+        $this->assertStringContainsString(
+            $objectType,
+            (string) $response->getData()['error'],
+            $verb.' '.$objectType.' must name the refused type'
+        );
+    }//end testMasterDataWritesAreRefusedForNonAdmins()
+
+
+    /**
+     * The same writes still succeed for an administrator — the guard is a
+     * restriction, not a blanket refusal that would read as "fixed" while
+     * breaking the feature.
+     *
+     * @param string $verb       The write verb under test.
+     * @param string $objectType The master-data type under test.
+     *
+     * @return void
+     */
+    #[DataProvider('masterDataWriteProvider')]
+    public function testMasterDataWritesStillSucceedForAdmins(string $verb, string $objectType): void
+    {
+        $this->objectService->method('saveObject')->willReturn(['id' => self::OBJECT_ID]);
+        $this->objectService->method('deleteObject')->willReturn(true);
+
+        $response = $this->invokeWrite($this->makeController(true, true), $verb, $objectType);
+
+        $this->assertNotSame(Http::STATUS_FORBIDDEN, $response->getStatus(), $verb.' '.$objectType.' status');
+    }//end testMasterDataWritesStillSucceedForAdmins()
+
+
+    /**
+     * A type the app has NOT declared admin-only is still writable by an
+     * ordinary caseworker — the guard must not quietly widen to the whole
+     * allow-list.
+     *
+     * @return void
+     */
+    public function testNonMasterDataWritesAreStillAllowedForNonAdmins(): void
+    {
+        $this->objectService->method('saveObject')->willReturn(['id' => self::OBJECT_ID]);
+        $this->objectService->method('deleteObject')->willReturn(true);
+
+        $controller = $this->makeController(true, false);
+
+        $this->assertNotSame(
+            Http::STATUS_FORBIDDEN,
+            $controller->create(self::ALLOWED_TYPE)->getStatus(),
+            'create zaken'
+        );
+        $this->assertNotSame(
+            Http::STATUS_FORBIDDEN,
+            $controller->update(self::ALLOWED_TYPE, self::OBJECT_ID)->getStatus(),
+            'update zaken'
+        );
+        $this->assertNotSame(
+            Http::STATUS_FORBIDDEN,
+            $controller->destroy(self::ALLOWED_TYPE, self::OBJECT_ID)->getStatus(),
+            'destroy zaken'
+        );
+    }//end testNonMasterDataWritesAreStillAllowedForNonAdmins()
 }//end class

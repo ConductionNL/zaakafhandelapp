@@ -212,14 +212,28 @@ class ObjectService implements IObjectService
      * Routes through OR's ObjectService::getLogs to avoid calling the non-existent
      * getAuditTrail method on the OR ObjectServiceMapperAdapter (C5 fix).
      *
-     * Takes no $objectType: OR keys its logs by object uuid, and the callers that
-     * must not leak another type's trail already gate on the object itself (see
-     * ObjectsController::getAuditTrail, which resolves the object through OR's RBAC
-     * before reaching this method).
+     * ⚠️ `getLogs()` DOES NOT scope its result to the object you asked for.
+     * `GetObject::findLogs()` filters on `$filters['object'] = $object->getId()` —
+     * the NUMERIC row id. Objects live in `oc_openregister_table_<register>_<schema>`
+     * shards, so that id is unique only within a shard, while
+     * `oc_openregister_audit_trail` is instance-global. Measured live on a rig:
+     * one uuid asked for, **5 rows returned covering 3 objects in 3 different
+     * registers, every row `object = 3`** — i.e. another app's audit trail.
+     *
+     * So filter the returned rows down to the uuid that was actually requested.
+     * This is a defence-in-depth filter in front of an OpenRegister defect, not a
+     * fix for it; the platform-side fix is to filter on the object uuid.
+     *
+     * This method performs NO authorisation. Callers must decide for themselves
+     * whether the caller may see this object's history — see the accurate note on
+     * ObjectsController::getAuditTrail. An earlier version of this docblock
+     * claimed the callers "resolve the object through OR's RBAC"; they do not,
+     * and that sentence is exactly the kind of false assurance a reviewer marks
+     * as done (ConductionNL/zaakafhandelapp#347).
      *
      * @param string $id The object uuid.
      *
-     * @return array<int, mixed> The serialized audit trail entries.
+     * @return array<int, mixed> The serialized audit trail entries for THIS object.
      *
      * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
@@ -233,7 +247,7 @@ class ObjectService implements IObjectService
         $logs = $orService->getLogs($id);
 
         // getLogs returns AuditTrail entities; serialize them for JSON responses.
-        return array_map(
+        $serialized = array_map(
             function ($log) {
                 if (is_object($log) === true && method_exists($log, 'jsonSerialize') === true) {
                     return $log->jsonSerialize();
@@ -242,6 +256,27 @@ class ObjectService implements IObjectService
                 return (array) $log;
             },
             $logs
+        );
+
+        return array_values(
+            array_filter(
+                $serialized,
+                static function ($entry) use ($id): bool {
+                    if (is_array($entry) === false) {
+                        return false;
+                    }
+
+                    $uuid = $entry['objectUuid'] ?? null;
+
+                    // An entry that does not say which object it belongs to
+                    // cannot be shown to be this object's, so it is dropped.
+                    if (is_string($uuid) === false) {
+                        return false;
+                    }
+
+                    return strcasecmp($uuid, $id) === 0;
+                }
+            )
         );
     }//end getAuditTrail()
 }//end class

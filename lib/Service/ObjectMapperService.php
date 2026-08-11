@@ -29,6 +29,20 @@ class ObjectMapperService
     private string $appName;
 
     /**
+     * Request-scoped slug -> numeric id cache for registers.
+     *
+     * @var array<string,int>
+     */
+    private array $registerIdCache = [];
+
+    /**
+     * Request-scoped slug -> numeric id cache for schemas.
+     *
+     * @var array<string,int>
+     */
+    private array $schemaIdCache = [];
+
+    /**
      * Constructor for ObjectMapperService.
      *
      * @param ContainerInterface $container  The DI container
@@ -70,10 +84,32 @@ class ObjectMapperService
     /**
      * Get an OpenRegister mapper for the given object type.
      *
+     * The configured register/schema are SLUGS (`zaakafhandelapp` / `zaak`), and
+     * OpenRegister's `ObjectService::getMapper()` discards any non-numeric
+     * argument:
+     *
+     *     // openregister lib/Service/ObjectService.php:4654-4659
+     *     if (is_string($register) === true && is_numeric($register) === false) {
+     *         $register = null; $schema = null;
+     *     }
+     *
+     * Passing the slugs straight through therefore returned an UNCONSTRAINED
+     * adapter, and `find()` resolved any uuid in ANY register on the instance —
+     * measured live: `GET api/objects/zaken/{uuid-of-a-vocabulary-object}`
+     * returned HTTP 200 with that other register's object. The same nulling is
+     * why every collection endpoint answered `{"results":[],"total":0}`
+     * (`[MagicMapper] findAll() called without register/schema context`) and why
+     * create/update raised `CascadingHandler … Argument #2 ($schema) … null given`.
+     *
+     * So resolve the slugs to their numeric ids here and pass those. An
+     * unresolvable slug is a hard error: falling back to the slug would silently
+     * restore the unconstrained adapter, which is the defect itself.
+     *
      * @param string $objectTypeLower The lowercase object type
      *
-     * @return mixed The OpenRegister mapper
-     * @throws Exception
+     * @return mixed The OpenRegister mapper, bound to this app's register/schema
+     * @throws Exception When OpenRegister is unavailable, the type is not
+     *                   configured, or a configured slug does not resolve.
      */
     private function getOpenRegisterMapper(string $objectTypeLower): mixed
     {
@@ -92,8 +128,79 @@ class ObjectMapperService
             throw new Exception("Schema not configured for $objectTypeLower");
         }
 
-        return $openRegister->getMapper(register: $register, schema: $schema);
+        return $openRegister->getMapper(
+            register: $this->resolveRegisterId($register),
+            schema: $this->resolveSchemaId($schema)
+        );
     }//end getOpenRegisterMapper()
+
+    /**
+     * Resolve a configured register slug (or uuid) to its numeric id.
+     *
+     * @param string $register The configured register identifier.
+     *
+     * @return integer The numeric register id.
+     * @throws Exception When the register cannot be resolved.
+     */
+    private function resolveRegisterId(string $register): int
+    {
+        if (is_numeric($register) === true) {
+            return (int) $register;
+        }
+
+        if (isset($this->registerIdCache[$register]) === true) {
+            return $this->registerIdCache[$register];
+        }
+
+        try {
+            $registerMapper = $this->container->get('OCA\OpenRegister\Db\RegisterMapper');
+            $id = (int) $registerMapper->find($register)->getId();
+        } catch (\Throwable $e) {
+            throw new Exception("Could not resolve register '$register': ".$e->getMessage());
+        }
+
+        if ($id === 0) {
+            throw new Exception("Could not resolve register '$register'");
+        }
+
+        $this->registerIdCache[$register] = $id;
+
+        return $id;
+    }//end resolveRegisterId()
+
+    /**
+     * Resolve a configured schema slug (or uuid) to its numeric id.
+     *
+     * @param string $schema The configured schema identifier.
+     *
+     * @return integer The numeric schema id.
+     * @throws Exception When the schema cannot be resolved.
+     */
+    private function resolveSchemaId(string $schema): int
+    {
+        if (is_numeric($schema) === true) {
+            return (int) $schema;
+        }
+
+        if (isset($this->schemaIdCache[$schema]) === true) {
+            return $this->schemaIdCache[$schema];
+        }
+
+        try {
+            $schemaMapper = $this->container->get('OCA\OpenRegister\Db\SchemaMapper');
+            $id           = (int) $schemaMapper->find($schema)->getId();
+        } catch (\Throwable $e) {
+            throw new Exception("Could not resolve schema '$schema': ".$e->getMessage());
+        }
+
+        if ($id === 0) {
+            throw new Exception("Could not resolve schema '$schema'");
+        }
+
+        $this->schemaIdCache[$schema] = $id;
+
+        return $id;
+    }//end resolveSchemaId()
 
     /**
      * Attempts to retrieve the OpenRegister service.

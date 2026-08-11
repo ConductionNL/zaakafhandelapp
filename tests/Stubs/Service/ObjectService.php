@@ -125,4 +125,29 @@ abstract class ObjectService
      * @return array
      */
     abstract public function getFacetsForObjects(array $query=[]): array;
+
+    /**
+     * Read the audit trail for an object uuid.
+     *
+     * Signature mirrors OpenRegister's real
+     * `ObjectService::getLogs(string $uuid, array $filters = [], bool $_rbac = true, bool $_multitenancy = true): array`,
+     * whose declared return type is `\OCA\OpenRegister\Db\AuditTrail[]` — i.e.
+     * ENTITIES, not arrays. Doubles for this method must therefore return
+     * objects exposing `jsonSerialize()`; a double returning plain arrays would
+     * be a contract `getLogs()` does not have (the exact shape that kept
+     * openregister's MapsOverviewServiceTest green for its whole life).
+     *
+     * ⚠️ It does NOT scope its result to the object asked for: it filters on the
+     * NUMERIC row id, which is unique only within a register/schema shard, so it
+     * returns other objects' rows. That is why ObjectService::getAuditTrail()
+     * filters afterwards.
+     *
+     * @param string $uuid          The object uuid.
+     * @param array  $filters       Optional filters.
+     * @param bool   $_rbac         Whether to apply RBAC checks.
+     * @param bool   $_multitenancy Whether to apply multitenancy filtering.
+     *
+     * @return array
+     */
+    abstract public function getLogs(string $uuid, array $filters=[], bool $_rbac=true, bool $_multitenancy=true): array;
 }//end class

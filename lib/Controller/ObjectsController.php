@@ -6,6 +6,7 @@ use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IGroupManager;
 use OCP\IRequest;
 use OCP\IUserSession;
 use Exception;
@@ -65,14 +66,69 @@ class ObjectsController extends Controller
         'producten',
     ];
 
+    /**
+     * Object types whose WRITE operations this app has already decided are
+     * admin-only, and enforces on their own controllers by omitting
+     * `@NoAdminRequired`:
+     *
+     *   - `klanten`   — KlantenController::create/update/destroy,
+     *                   "Admin-only: klanten are master data."
+     *   - `zaaktypen` — ZaakTypenController::create/update/destroy,
+     *                   "Admin-only: zaaktypen are validation master data."
+     *
+     * This generic route is a SECOND path to the same writes, and it is
+     * `@NoAdminRequired`. Measured on a live instance with one non-admin
+     * account, same operation, two routes:
+     *
+     *   DELETE api/klanten/{id}          -> HTTP 403
+     *   DELETE api/objects/klanten/{id}  -> HTTP 200 {"success":true}   (deleted)
+     *   PUT    api/ztc/zaaktypen/{id}    -> HTTP 403
+     *   PUT    api/objects/zaaktypen/{id}-> HTTP 200                    (tamper persisted)
+     *
+     * So the decision was already taken and merely bypassed here. Keep this list
+     * in sync with the controllers named above.
+     *
+     * @var string[]
+     */
+    private const ADMIN_ONLY_WRITE_TYPES = [
+        'klanten',
+        'zaaktypen',
+    ];
+
     public function __construct(
         $appName,
         IRequest $request,
         private readonly ObjectService $objectService,
         private readonly IUserSession $userSession,
+        private readonly IGroupManager $groupManager,
     ) {
         parent::__construct($appName, $request);
     }//end __construct()
+
+    /**
+     * Enforce the app's existing admin-only posture on master-data writes.
+     *
+     * @param string $objectType The object type being written.
+     *
+     * @return JSONResponse|null A 403 response when the caller may not write this
+     *                           type, null when the write may proceed.
+     */
+    private function guardMasterDataWrite(string $objectType): ?JSONResponse
+    {
+        if (in_array($objectType, self::ADMIN_ONLY_WRITE_TYPES, true) === false) {
+            return null;
+        }
+
+        $user = $this->userSession->getUser();
+        if ($user !== null && $this->groupManager->isAdmin($user->getUID()) === true) {
+            return null;
+        }
+
+        return new JSONResponse(
+            ['error' => "Writing '$objectType' is restricted to administrators"],
+            Http::STATUS_FORBIDDEN
+        );
+    }//end guardMasterDataWrite()
 
     /**
      * Validate that the requested objectType is in the known allow-list.
@@ -182,8 +238,14 @@ class ObjectsController extends Controller
                 $extend = array_map('trim', explode(',', $extend));
             }
 
-            // Fetch the object by its ID
+            // Fetch the object by its ID. The mapper is bound to the register and
+            // schema configured for $objectType (ObjectMapperService resolves the
+            // configured slugs to numeric ids), so an id belonging to another
+            // register does not resolve here and must not be answered with a body.
             $object = $this->objectService->getObject($objectType, $id, $extend);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
 
             // Return the object as a JSON response
             return new JSONResponse($object);
@@ -214,6 +276,11 @@ class ObjectsController extends Controller
         $typeError = $this->validateObjectType($objectType);
         if ($typeError !== null) {
             return $typeError;
+        }
+
+        $adminError = $this->guardMasterDataWrite($objectType);
+        if ($adminError !== null) {
+            return $adminError;
         }
 
         try {
@@ -260,6 +327,11 @@ class ObjectsController extends Controller
             return $typeError;
         }
 
+        $adminError = $this->guardMasterDataWrite($objectType);
+        if ($adminError !== null) {
+            return $adminError;
+        }
+
         try {
             // Get all parameters from the request
             $data = $this->request->getParams();
@@ -304,6 +376,11 @@ class ObjectsController extends Controller
             return $typeError;
         }
 
+        $adminError = $this->guardMasterDataWrite($objectType);
+        if ($adminError !== null) {
+            return $adminError;
+        }
+
         try {
             // Delete the object
             $result = $this->objectService->deleteObject($objectType, $id);
@@ -340,9 +417,19 @@ class ObjectsController extends Controller
         }
 
         try {
-            // IDOR guard: verify the object exists (and that the current user has read access
-            // via OR's RBAC) before returning its audit trail. A null return means the object
-            // does not exist or is not accessible to the caller.
+            // Scope guard — NOT an authorisation guard.
+            //
+            // This confirms the id resolves inside the register/schema configured
+            // for $objectType, so an id from another register cannot be used to
+            // pull a trail through this route. It does NOT establish that the
+            // caller may see this object: OpenRegister's RBAC returns true for a
+            // schema with an empty `authorization` block and this app ships none
+            // (ConductionNL/.github#372). Per-object authorisation is still
+            // missing here — see zaakafhandelapp#347.
+            //
+            // The previous comment on these lines claimed the resolve happened
+            // "via OR's RBAC". It does not; getObject() bottoms out in
+            // $mapper->find($id) with no caller identity of any kind.
             $object = $this->objectService->getObject($objectType, $id);
             if ($object === null) {
                 return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
@@ -355,7 +442,7 @@ class ObjectsController extends Controller
              ['error' => $e->getMessage()],
              400
             );
-        }
+        }//end try
     }//end getAuditTrail()
 
     /**
@@ -380,7 +467,15 @@ class ObjectsController extends Controller
         }
 
         try {
-            // Fetch the object by its ID
+            // Scope guard — NOT an authorisation guard (see ::getAuditTrail).
+            // OR resolves the relation graph from the uuid alone, so without this
+            // an arbitrary uuid from ANY register could be walked through the
+            // route for a type it has nothing to do with.
+            $object = $this->objectService->getObject($objectType, $id);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
+
             $relations = $this->objectService->getRelations($id);
 
             // Return the object as a JSON response
@@ -412,6 +507,16 @@ class ObjectsController extends Controller
         $typeError = $this->validateObjectType($objectType);
         if ($typeError !== null) {
             return $typeError;
+        }
+
+        try {
+            // Scope guard — NOT an authorisation guard (see ::getAuditTrail).
+            $object = $this->objectService->getObject($objectType, $id);
+            if ($object === null) {
+                return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
+            }
+        } catch (Exception $e) {
+            return new JSONResponse(['error' => $e->getMessage()], 400);
         }
 
         $uses = $this->objectService->getUses($id);

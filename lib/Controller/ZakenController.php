@@ -264,7 +264,13 @@ class ZakenController extends Controller
         }
 
         try {
-            // IDOR guard: verify the object exists and is accessible before returning its audit trail.
+            // Scope guard — NOT an authorisation guard. It confirms the id resolves
+            // inside the register/schema configured for 'zaken'; it does NOT
+            // establish that this caller may read this zaak. OpenRegister's RBAC
+            // returns true for a schema with an empty `authorization` block and this
+            // app ships none (ConductionNL/.github#372), so getObject() bottoms out
+            // in $mapper->find($id) with no caller identity. Per-object
+            // authorisation is still missing — see zaakafhandelapp#347.
             $object = $this->objectService->getObject('zaken', $id);
             if ($object === null) {
                 return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);

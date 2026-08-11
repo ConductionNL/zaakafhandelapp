@@ -280,4 +280,197 @@ class ObjectMapperServiceTest extends TestCase
 
         $this->assertNull($this->service()->getOpenRegisters());
     }//end testGetOpenRegistersReturnsNullWhenNotInstalled()
+
+
+    /**
+     * Wire the container so `getMapper('zaken')` can run: OpenRegister installed,
+     * the app configured for the openregister source, and the three collaborators
+     * resolvable.
+     *
+     * @param object $openRegister   The OR ObjectService double.
+     * @param object $registerMapper The RegisterMapper double.
+     * @param object $schemaMapper   The SchemaMapper double.
+     * @param string $registerValue  The configured `zaken_register` value.
+     * @param string $schemaValue    The configured `zaken_schema` value.
+     *
+     * @return void
+     */
+    private function wireOpenRegisterSource(
+        object $openRegister,
+        object $registerMapper,
+        object $schemaMapper,
+        string $registerValue='zaakafhandelapp',
+        string $schemaValue='zaak'
+    ): void {
+        $this->appManager->method('getInstalledApps')->willReturn(['openregister', 'zaakafhandelapp']);
+        $this->config->method('getValueString')->willReturnCallback(
+            static function (string $app, string $key, string $default='') use ($registerValue, $schemaValue): string {
+                return match ($key) {
+                    'zaken_source' => 'openregister',
+                    'zaken_register' => $registerValue,
+                    'zaken_schema' => $schemaValue,
+                    default => $default,
+                };
+            }
+        );
+        $this->container->method('get')->willReturnCallback(
+            static function (string $id) use ($openRegister, $registerMapper, $schemaMapper): object {
+                return match ($id) {
+                    'OCA\OpenRegister\Service\ObjectService' => $openRegister,
+                    'OCA\OpenRegister\Db\RegisterMapper' => $registerMapper,
+                    'OCA\OpenRegister\Db\SchemaMapper' => $schemaMapper,
+                    default => throw new \RuntimeException('unexpected container id: '.$id),
+                };
+            }
+        );
+    }//end wireOpenRegisterSource()
+
+
+    /**
+     * Build a mapper double whose find() returns an entity with the given id.
+     *
+     * @param class-string $class The mapper class to double.
+     * @param int          $id    The numeric id its find() resolves to.
+     *
+     * @return object
+     */
+    private function idResolvingMapper(string $class, int $id): object
+    {
+        $entity = new class($id) {
+            /**
+             * @param int $id The numeric id.
+             */
+            public function __construct(private int $id)
+            {
+            }//end __construct()
+
+            /**
+             * @return int
+             */
+            public function getId(): int
+            {
+                return $this->id;
+            }//end getId()
+        };
+
+        $mapper = $this->createMock($class);
+        $mapper->method('find')->willReturn($entity);
+
+        return $mapper;
+    }//end idResolvingMapper()
+
+
+    /**
+     * The configured register/schema SLUGS are resolved to numeric ids before
+     * they reach OpenRegister's getMapper().
+     *
+     * This is the whole fix. `ObjectService::getMapper()` discards any
+     * non-numeric argument —
+     *
+     *     if (is_string($register) === true && is_numeric($register) === false) {
+     *         $register = null; $schema = null;
+     *     }
+     *
+     * — and returns an UNCONSTRAINED adapter, so passing the slugs through made
+     * `find()` resolve any uuid in any register on the instance. Measured live:
+     * `GET api/objects/zaken/{uuid-of-a-vocabulary-object}` returned HTTP 200
+     * with that other register's object; after this change, 404.
+     *
+     * Asserting on the ARGUMENTS rather than on the returned adapter is
+     * deliberate: the adapter looks identical either way, and it is the argument
+     * type that decides whether it is scoped.
+     *
+     * @return void
+     */
+    public function testConfiguredSlugsAreResolvedToNumericIdsBeforeReachingOpenRegister(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->once())
+            ->method('getMapper')
+            ->with(14, 17)
+            ->willReturn(new \stdClass());
+
+        $this->wireOpenRegisterSource(
+            $openRegister,
+            $this->idResolvingMapper(RegisterMapper::class, 14),
+            $this->idResolvingMapper(SchemaMapper::class, 17)
+        );
+
+        $this->service()->getMapper('zaken');
+    }//end testConfiguredSlugsAreResolvedToNumericIdsBeforeReachingOpenRegister()
+
+
+    /**
+     * A numerically-configured register/schema is passed through as an int and
+     * no mapper lookup is performed.
+     *
+     * @return void
+     */
+    public function testNumericConfigurationIsPassedThroughWithoutALookup(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->once())->method('getMapper')->with(9, 4)->willReturn(new \stdClass());
+
+        $registerMapper = $this->createMock(RegisterMapper::class);
+        $registerMapper->expects($this->never())->method('find');
+        $schemaMapper = $this->createMock(SchemaMapper::class);
+        $schemaMapper->expects($this->never())->method('find');
+
+        $this->wireOpenRegisterSource($openRegister, $registerMapper, $schemaMapper, '9', '4');
+
+        $this->service()->getMapper('zaken');
+    }//end testNumericConfigurationIsPassedThroughWithoutALookup()
+
+
+    /**
+     * An unresolvable slug is a hard error — it must NOT fall back to passing the
+     * slug on, because that is exactly what produced the unconstrained adapter.
+     *
+     * @return void
+     */
+    public function testAnUnresolvableRegisterSlugThrowsInsteadOfFallingBack(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->never())->method('getMapper');
+
+        $registerMapper = $this->createMock(RegisterMapper::class);
+        $registerMapper->method('find')->willThrowException(new \RuntimeException('no such register'));
+
+        $this->wireOpenRegisterSource(
+            $openRegister,
+            $registerMapper,
+            $this->idResolvingMapper(SchemaMapper::class, 17)
+        );
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches('/Could not resolve register/');
+
+        $this->service()->getMapper('zaken');
+    }//end testAnUnresolvableRegisterSlugThrowsInsteadOfFallingBack()
+
+
+    /**
+     * The same for an unresolvable schema slug.
+     *
+     * @return void
+     */
+    public function testAnUnresolvableSchemaSlugThrowsInsteadOfFallingBack(): void
+    {
+        $openRegister = $this->createMock(\OCA\OpenRegister\Service\ObjectService::class);
+        $openRegister->expects($this->never())->method('getMapper');
+
+        $schemaMapper = $this->createMock(SchemaMapper::class);
+        $schemaMapper->method('find')->willThrowException(new \RuntimeException('no such schema'));
+
+        $this->wireOpenRegisterSource(
+            $openRegister,
+            $this->idResolvingMapper(RegisterMapper::class, 14),
+            $schemaMapper
+        );
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches('/Could not resolve schema/');
+
+        $this->service()->getMapper('zaken');
+    }//end testAnUnresolvableSchemaSlugThrowsInsteadOfFallingBack()
 }//end class
