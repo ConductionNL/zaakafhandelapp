@@ -44,15 +44,22 @@ const MAIN_NAV: Array<{ id: string, heading: string }> = [
 
 /**
  * Footer-section nav entries that are directly visible in the left nav body.
- * (The settings-section entries — Zaaktypen, Audit trail, Settings — live in
+ * (The settings-section entries — Zaaktypen, Roles, Audit trail — live in
  * the collapsed NcAppNavigation settings slot and are present in the DOM but
  * not visible until expanded; their index pages are covered as hard-goto
  * surfaces by ui-record-views / ui-utility-pages.)
  */
 const FOOTER_NAV_IDS = ['Documentation', 'FeaturesRoadmapMenu'] as const
 
-/** Settings-slot nav entries: present in the DOM but collapsed by default. */
-const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail', 'SettingsMenu'] as const
+/**
+ * Settings-slot nav entries: present in the DOM but collapsed by default.
+ *
+ * `SettingsMenu` was removed under ADR-079 D1: it was an in-app duplicate of
+ * the Nextcloud admin settings page, and because the NcAppNavigation settings
+ * foldout is itself labelled "Settings" it rendered as Settings > Settings.
+ * The surviving entries are the app's own domain-configuration indexes.
+ */
+const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail'] as const
 
 /** Open the app on a stable entry page and confirm the nav rendered. */
 async function bootNav(page: Page): Promise<void> {

@@ -42,11 +42,6 @@ import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
 // CnDetailPage resolves manifest `type: "audit-trail"` widgets against the lib
 // built-in, which self-fetches from the detail object-context merge.
 
-// ── kind: "widget" ─────────────────────────────────────────────────────────
-// Settings section body component (type:"settings" sections[].component)
-
-import SettingsForm from './views/settings/Settings.vue'
-
 // ── kind: "widget" (sidebar tabs) ─────────────────────────────────────────
 // ZaakDetail sidebar tabs for ZGW-API related objects.
 // These tabs fetch data via ZGW-API controllers (not OR) and have no
@@ -85,13 +80,6 @@ export default {
 		maxSize: { w: 12, h: 8 },
 		allowedSlots: ['body'],
 		propsSchema: {},
-	},
-
-	// ── kind: "widget" (settings section) ──────────────────────────────────
-	SettingsForm: {
-		kind: 'widget',
-		component: SettingsForm,
-		_note: 'Bespoke admin configuration form (src/views/settings/Settings.vue): a per-object-type source/register/schema mapping over 13 object types, with OpenRegister-installed detection and a reset path. No built-in widget models "write app config keys": object-table/card-grid/stats-block/chart read objects, and form-renderer writes an OBJECT against a schema, not app config. It is the same component the Nextcloud admin settings framework already mounts at /settings/admin/zaakafhandelapp via lib/Settings/ZaakAfhandelAppAdmin.php + src/settings.js — this registry entry exists ONLY to serve the second, in-app copy at the manifest page id=Settings. That duplicate surface is what gate-63 flags under ADR-079 D1 ("delete the in-app page"); resolving it removes this entry with it. Left in place pending that product decision — see the gate-63 report.',
 	},
 
 	// ── kind: "widget" (ZaakDetail sidebar tabs — ZGW-API relations) ────────

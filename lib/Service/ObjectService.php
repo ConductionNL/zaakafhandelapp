@@ -168,6 +168,8 @@ class ObjectService implements IObjectService
      * @param string $id The object uuid.
      *
      * @return array<int, mixed> The objects referencing this one.
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getRelations(string $id): array
     {
@@ -191,6 +193,8 @@ class ObjectService implements IObjectService
      * @param string $id The object uuid.
      *
      * @return array<int, mixed> The objects this one points to.
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getUses(string $id): array
     {
@@ -216,6 +220,8 @@ class ObjectService implements IObjectService
      * @param string $id The object uuid.
      *
      * @return array<int, mixed> The serialized audit trail entries.
+     *
+     * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
      */
     public function getAuditTrail(string $id): array
     {

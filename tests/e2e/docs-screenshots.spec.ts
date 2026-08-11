@@ -289,9 +289,13 @@ test.describe('docs: admin track', () => {
 
 	test('AN admin-settings', async ({ page }) => {
 		// docs/tutorials/admin/03-admin-settings.md — Zaakafhandelapp's
-		// settings live in-app at /apps/zaakafhandelapp/settings and at
-		// the Nextcloud admin section under Settings → Administration.
-		await go(page, '/settings')
+		// settings live at the Nextcloud admin section under
+		// Settings → Administration → Zaak Afhandelapp. The in-app copy at
+		// /apps/zaakafhandelapp/settings was removed under ADR-079 D1 (app
+		// configuration has one home), so every shot below is taken on the
+		// admin surface — which renders the same src/views/settings/
+		// Settings.vue the in-app page used to.
+		await go(page, '/apps/settings/admin/zaakafhandelapp')
 		await shoot(page, 'admin', '03-admin-settings-01.png')
 		await page.evaluate(() => window.scrollTo(0, 0))
 		await page.waitForTimeout(300)
