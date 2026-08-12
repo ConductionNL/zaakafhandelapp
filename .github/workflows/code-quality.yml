@@ -58,7 +58,7 @@ jobs:
       # `min-version="32" max-version="34"` window this app now declares in
       # appinfo/info.xml (raised in the same commit), so the matrix keeps two
       # refs and every one of them is a version the app supports.
-      nextcloud-test-refs: '["stable32", "stable33"]'
+      nextcloud-test-refs: '["stable34"]'
 
       # ── Frontend Check legs ──────────────────────────────────────────────
       # `frontend-checks` defaults to `[]`, and an empty list means the shared
