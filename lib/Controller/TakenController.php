@@ -172,9 +172,8 @@ class TakenController extends Controller {
 			// Save the new catalog object.
 			$object = $this->objectService->saveObject('taken', $data);
 
-			if (is_array($object) === true) {
-				$newTaskData = $object;
-			} else {
+			$newTaskData = $object;
+			if (is_array($object) === false) {
 				$newTaskData = $object->jsonSerialize();
 			}
 
@@ -225,15 +224,13 @@ class TakenController extends Controller {
 			// Save the new catalog object.
 			$object = $this->objectService->saveObject('taken', $data);
 
-			if (is_array($oldObject) === true) {
-				$oldTaskData = $oldObject;
-			} else {
+			$oldTaskData = $oldObject;
+			if (is_array($oldObject) === false) {
 				$oldTaskData = $oldObject->jsonSerialize();
 			}
 
-			if (is_array($object) === true) {
-				$newTaskData = $object;
-			} else {
+			$newTaskData = $object;
+			if (is_array($object) === false) {
 				$newTaskData = $object->jsonSerialize();
 			}
 
@@ -270,10 +267,9 @@ class TakenController extends Controller {
 			// Delete the catalog object.
 			$result = $this->objectService->deleteObject('taken', $id);
 
+			$status = Http::STATUS_NOT_FOUND;
 			if ($result === true) {
 				$status = Http::STATUS_OK;
-			} else {
-				$status = Http::STATUS_NOT_FOUND;
 			}
 
 			// Return the result as a JSON response.

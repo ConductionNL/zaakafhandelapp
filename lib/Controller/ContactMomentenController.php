@@ -230,10 +230,9 @@ class ContactMomentenController extends Controller {
 			// Delete the contact moment
 			$result = $this->objectService->deleteObject('contactmomenten', $id);
 
+			$status = Http::STATUS_NOT_FOUND;
 			if ($result === true) {
 				$status = Http::STATUS_OK;
-			} else {
-				$status = Http::STATUS_NOT_FOUND;
 			}
 
 			// Return the result as a JSON response

@@ -232,10 +232,9 @@ class ZaakTypenController extends Controller {
 			// Delete the catalog object
 			$result = $this->objectService->deleteObject('zaaktypen', $id);
 
+			$status = Http::STATUS_NOT_FOUND;
 			if ($result === true) {
 				$status = Http::STATUS_OK;
-			} else {
-				$status = Http::STATUS_NOT_FOUND;
 			}
 
 			// Return the result as a JSON response

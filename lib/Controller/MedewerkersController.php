@@ -233,10 +233,9 @@ class MedewerkersController extends Controller {
 			// Delete the employee
 			$result = $this->objectService->deleteObject('medewerkers', $id);
 
+			$status = Http::STATUS_NOT_FOUND;
 			if ($result === true) {
 				$status = Http::STATUS_OK;
-			} else {
-				$status = Http::STATUS_NOT_FOUND;
 			}
 
 			// Return the result as a JSON response

@@ -248,10 +248,9 @@ class KlantenController extends Controller {
 			// Delete the catalog object
 			$result = $this->objectService->deleteObject('klanten', $id);
 
+			$statusCode = Http::STATUS_NOT_FOUND;
 			if ($result === true) {
 				$statusCode = Http::STATUS_OK;
-			} else {
-				$statusCode = Http::STATUS_NOT_FOUND;
 			}
 
 			// Return the result as a JSON response

@@ -42,10 +42,9 @@ class KlantVCardMapper {
 		// An explicit type always wins; otherwise a company name means the
 		// contact describes an organisation rather than a person.
 		if ($type === null) {
+			$type = 'persoon';
 			if ($org !== '') {
 				$type = 'organisatie';
-			} else {
-				$type = 'persoon';
 			}
 		}
 

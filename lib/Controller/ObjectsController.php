@@ -391,10 +391,9 @@ class ObjectsController extends Controller {
 			// Delete the object
 			$result = $this->objectService->deleteObject($objectType, $id);
 
+			$status = 404;
 			if ($result === true) {
 				$status = 200;
-			} else {
-				$status = 404;
 			}
 
 			// Return the result as a JSON response

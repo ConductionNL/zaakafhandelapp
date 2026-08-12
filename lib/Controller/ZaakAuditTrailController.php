@@ -252,10 +252,9 @@ class ZaakAuditTrailController extends Controller {
 	 */
 	private function mapAuditTrail(array $entry, string $zaakUuid): array {
 		$action = strtolower((string)($entry['action'] ?? $entry['actie'] ?? ''));
+		$unmappedActie = null;
 		if ($action !== '') {
 			$unmappedActie = $action;
-		} else {
-			$unmappedActie = null;
 		}
 
 		$actie = (self::ACTIE_MAP[$action] ?? $unmappedActie);

@@ -118,10 +118,9 @@ class ConfigurationController extends Controller {
 				continue;
 			}
 
+			$data[$key] = '';
 			if ($value !== '') {
 				$data[$key] = '***';
-			} else {
-				$data[$key] = '';
 			}
 		}
 
@@ -159,9 +158,10 @@ class ConfigurationController extends Controller {
 			$this->config->setValueString('zaakafhandelapp', $key, (string)$requestData[$key]);
 			if (in_array($key, self::CREDENTIAL_KEYS, true) === true) {
 				$data[$key] = '***';
-			} else {
-				$data[$key] = $this->config->getValueString('zaakafhandelapp', $key);
+				continue;
 			}
+
+			$data[$key] = $this->config->getValueString('zaakafhandelapp', $key);
 		}
 
 		return new JSONResponse($data);

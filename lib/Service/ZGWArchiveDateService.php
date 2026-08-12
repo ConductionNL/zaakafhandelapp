@@ -254,10 +254,9 @@ class ZGWArchiveDateService {
 
 		$dates = [];
 		foreach ($relevanteAndereZaken as $relatie) {
+			$zaakUrl = $relatie;
 			if (is_array($relatie) === true) {
 				$zaakUrl = $relatie['url'] ?? $relatie;
-			} else {
-				$zaakUrl = $relatie;
 			}
 
 			$zaakId = explode('/', rtrim((string)$zaakUrl, '/'));

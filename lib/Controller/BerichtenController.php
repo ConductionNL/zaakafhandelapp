@@ -233,10 +233,9 @@ class BerichtenController extends Controller {
 			// Delete the catalog object
 			$result = $this->objectService->deleteObject('berichten', $id);
 
+			$status = Http::STATUS_NOT_FOUND;
 			if ($result === true) {
 				$status = Http::STATUS_OK;
-			} else {
-				$status = Http::STATUS_NOT_FOUND;
 			}
 
 			// Return the result as a JSON response
