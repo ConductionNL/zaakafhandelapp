@@ -3,7 +3,7 @@
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>zaakafhandelapp</id>
 	<name>Zaak Afhandel App</name>
-	<summary>Dutch municipal case handling (zaakgericht werken) for Nextcloud — cases, tasks, customer contacts and a ZGW API, built on OpenRegister.</summary>
+	<summary>Dutch municipal case handling (zaakgericht werken) — cases, tasks, customer contacts and a ZGW API, built on OpenRegister.</summary>
 	<summary lang="nl">Zaakgericht werken voor Nextcloud — zaken, taken, klantcontacten en een ZGW-API, gebouwd op OpenRegister.</summary>
 	<description><![CDATA[Zaak Afhandel App (ZAA) brings Dutch municipal case handling (*zaakgericht werken*, VNG GEMMA/ZGW) into Nextcloud. Case workers manage zaken from intake through formal closure: zaaktypen, statussen, rollen, besluiten and resultaten; taken (tasks); klanten, personen and organisaties with contactmoment logging; in-case berichten with a message audit trail; a personal werkvoorraad dashboard; and a ZGW (ZRC/ZTC/DRC/BRC) REST API surface. Data, search, RBAC and audit are provided by OpenRegister.
 
@@ -73,6 +73,12 @@ Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issue
 		-->
 		<nextcloud min-version="32" max-version="34"/>
 	</dependencies>
+
+	<settings>
+		<admin>OCA\ZaakAfhandelApp\Settings\ZaakAfhandelAppAdmin</admin>
+		<admin-section>OCA\ZaakAfhandelApp\Sections\ZaakAfhandelAppAdmin</admin-section>
+	</settings>
+
 	<navigations>
 		<navigation>
 			<id>zaakafhandelapp</id>
@@ -80,9 +86,4 @@ Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issue
 			<route>zaakafhandelapp.dashboard.page</route>
 		</navigation>
 	</navigations>
-
-	<settings>
-		<admin>OCA\ZaakAfhandelApp\Settings\ZaakAfhandelAppAdmin</admin>
-		<admin-section>OCA\ZaakAfhandelApp\Sections\ZaakAfhandelAppAdmin</admin-section>
-	</settings>
 </info>
