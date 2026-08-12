@@ -56,9 +56,15 @@ jobs:
       # index/detail page reads through it. Testing on it was measuring a
       # configuration that cannot exist. stable32/stable33 are both inside the
       # `min-version="32" max-version="34"` window this app now declares in
-      # appinfo/info.xml (raised in the same commit), so the matrix keeps two
-      # refs and every one of them is a version the app supports.
-      nextcloud-test-refs: '["stable34"]'
+      # appinfo/info.xml (raised in the same commit), so every ref below is a
+      # version the app actually supports.
+      #
+      # THE LIST IS THE WHOLE DECLARED RANGE. appinfo/info.xml declares
+      # <nextcloud min-version="32" max-version="34"/>, so 32, 33 and 34 each get
+      # a leg. Adopting NC 34 by REPLACING the list left 32 and 33 advertised to
+      # the App Store with no job touching them — the declared floor became the
+      # untested end, which is the same drift as never testing 34, reversed.
+      nextcloud-test-refs: '["stable34", "stable32", "stable33"]'
 
       # ── Frontend Check legs ──────────────────────────────────────────────
       # `frontend-checks` defaults to `[]`, and an empty list means the shared
