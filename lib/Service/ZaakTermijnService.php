@@ -37,11 +37,6 @@ use RuntimeException;
  */
 class ZaakTermijnService {
 
-	/**
-	 * The OpenRegister object service used to resolve the linked zaaktype.
-	 *
-	 * @var \OCA\OpenRegister\Service\ObjectService
-	 */
 	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
 	/**
@@ -88,12 +83,12 @@ class ZaakTermijnService {
 			return;
 		}
 
-		$zaaktype = $this->resolveZaaktype(arr: $arr);
+		$zaaktype = $this->resolveZaaktype($arr);
 		if ($zaaktype === []) {
 			return;
 		}
 
-		$base = $this->resolveBaseDate(arr: $arr);
+		$base = $this->resolveBaseDate($arr);
 		if ($base === null) {
 			return;
 		}
@@ -112,7 +107,7 @@ class ZaakTermijnService {
 				continue;
 			}
 
-			$date = $this->termijnDate(duration: (string)($zaaktype[$term] ?? ''), base: $base);
+			$date = $this->termijnDate((string)($zaaktype[$term] ?? ''), $base);
 			if ($date === null) {
 				continue;
 			}
@@ -136,7 +131,7 @@ class ZaakTermijnService {
 	 *                 or unparsable.
 	 */
 	private function termijnDate(string $duration, DateTimeImmutable $base): ?string {
-		$days = $this->durationToDays(duration: $duration);
+		$days = $this->durationToDays($duration);
 		if ($days === null || $days <= 0) {
 			return null;
 		}

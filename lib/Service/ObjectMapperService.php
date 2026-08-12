@@ -57,7 +57,7 @@ class ObjectMapperService {
 		$source = $this->config->getValueString($this->appName, $objectTypeLower . '_source', 'internal');
 
 		if ($source === 'openregister') {
-			return $this->getOpenRegisterMapper(objectTypeLower: $objectTypeLower);
+			return $this->getOpenRegisterMapper($objectTypeLower);
 		}
 
 		return match ($objectType) {
@@ -110,18 +110,18 @@ class ObjectMapperService {
 		}
 
 		$register = $this->config->getValueString($this->appName, $objectTypeLower . '_register', '');
-		if (empty($register) === true) {
+		if (empty($register)) {
 			throw new Exception("Register not configured for $objectTypeLower");
 		}
 
 		$schema = $this->config->getValueString($this->appName, $objectTypeLower . '_schema', '');
-		if (empty($schema) === true) {
+		if (empty($schema)) {
 			throw new Exception("Schema not configured for $objectTypeLower");
 		}
 
 		return $openRegister->getMapper(
-			register: $this->requireNumericId(value: $register, kind: 'register', objectType: $objectTypeLower),
-			schema: $this->requireNumericId(value: $schema, kind: 'schema', objectType: $objectTypeLower)
+			register: $this->requireNumericId($register, 'register', $objectTypeLower),
+			schema: $this->requireNumericId($schema, 'schema', $objectTypeLower)
 		);
 	}//end getOpenRegisterMapper()
 
@@ -157,7 +157,7 @@ class ObjectMapperService {
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-001
 	 */
 	public function getOpenRegisters(): ?\OCA\OpenRegister\Service\ObjectService {
-		if (in_array(needle: 'openregister', haystack: $this->appManager->getInstalledApps()) === true) {
+		if (in_array(needle: 'openregister', haystack: $this->appManager->getInstalledApps())) {
 			try {
 				return $this->container->get('OCA\OpenRegister\Service\ObjectService');
 			} catch (Exception $e) {

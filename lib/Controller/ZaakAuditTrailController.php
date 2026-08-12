@@ -43,15 +43,6 @@ class ZaakAuditTrailController extends Controller {
 		'destroy' => 'destroy',
 	];
 
-	/**
-	 * ZaakAuditTrailController constructor.
-	 *
-	 * @param string $appName The application name
-	 * @param IRequest $request The request object
-	 * @param ObjectService $objectService Open Register access to the zaak object and its audit trail
-	 * @param IURLGenerator $urlGenerator Builds the absolute zaak URLs used as hoofdObject/resourceUrl
-	 * @param IUserSession $userSession The user session used to reject anonymous callers
-	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -59,7 +50,7 @@ class ZaakAuditTrailController extends Controller {
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**
@@ -109,7 +100,7 @@ class ZaakAuditTrailController extends Controller {
 			}
 
 			$entries = $this->objectService->getAuditTrail($zaakUuid);
-			$mapped = array_map(fn (array $entry): array => $this->mapAuditTrail(entry: $entry, zaakUuid: $zaakUuid), $entries);
+			$mapped = array_map(fn (array $entry): array => $this->mapAuditTrail($entry, $zaakUuid), $entries);
 
 			return new JSONResponse(['results' => array_values($mapped)]);
 		} catch (Exception $e) {
@@ -144,7 +135,7 @@ class ZaakAuditTrailController extends Controller {
 			$entries = $this->objectService->getAuditTrail($zaakUuid);
 
 			foreach ($entries as $entry) {
-				$mapped = $this->mapAuditTrail(entry: (array)$entry, zaakUuid: $zaakUuid);
+				$mapped = $this->mapAuditTrail((array)$entry, $zaakUuid);
 				if (($mapped['uuid'] ?? null) === $id) {
 					return new JSONResponse($mapped);
 				}
@@ -168,8 +159,7 @@ class ZaakAuditTrailController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
 	 *
-	 * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object
-	 *   action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+	 * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid is part of the NC route signature.
 	 */
@@ -190,8 +180,7 @@ class ZaakAuditTrailController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
 	 *
-	 * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object
-	 *   action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+	 * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid/$id are part of the NC route signature.
 	 */
@@ -212,8 +201,7 @@ class ZaakAuditTrailController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
 	 *
-	 * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object
-	 *   action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
+	 * @no-admin-idor-exempt Read-only audit trail: this verb takes no caller-supplied object action and always returns 405 Method Not Allowed (Allow: GET) without touching any object.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $zaakUuid/$id are part of the NC route signature.
 	 */
@@ -252,12 +240,7 @@ class ZaakAuditTrailController extends Controller {
 	 */
 	private function mapAuditTrail(array $entry, string $zaakUuid): array {
 		$action = strtolower((string)($entry['action'] ?? $entry['actie'] ?? ''));
-		$unmappedActie = null;
-		if ($action !== '') {
-			$unmappedActie = $action;
-		}
-
-		$actie = (self::ACTIE_MAP[$action] ?? $unmappedActie);
+		$actie = (self::ACTIE_MAP[$action] ?? ($action !== '' ? $action : null));
 
 		$changes = ($entry['changed'] ?? $entry['changes'] ?? $entry['wijzigingen'] ?? null);
 
@@ -279,7 +262,7 @@ class ZaakAuditTrailController extends Controller {
 			'resourceUrl' => $zaakUrl,
 			'resourceWeergave' => ($entry['resourceLabel'] ?? $entry['resourceWeergave'] ?? null),
 			'aanmaakdatum' => ($entry['created'] ?? $entry['aanmaakdatum'] ?? ($entry['timestamp'] ?? null)),
-			'wijzigingen' => $this->mapChanges(changes: $changes),
+			'wijzigingen' => $this->mapChanges($changes),
 		];
 	}//end mapAuditTrail()
 

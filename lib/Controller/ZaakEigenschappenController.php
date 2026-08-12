@@ -21,21 +21,13 @@ use OCP\IUserSession;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class ZaakEigenschappenController extends Controller {
-	/**
-	 * Build the zaak eigenschappen controller.
-	 *
-	 * @param string $appName The application name.
-	 * @param IRequest $request The current HTTP request.
-	 * @param IAppConfig $config The app configuration store.
-	 * @param IUserSession $userSession Session used to resolve the acting user.
-	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**
@@ -57,9 +49,7 @@ class ZaakEigenschappenController extends Controller {
 		);
 	}//end page()
 
-	/**
-	 * UUID v4 pattern used to validate path segments before interpolation into URLs.
-	 */
+	/** UUID v4 pattern used to validate path segments before interpolation into URLs. */
 	private const UUID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
 
 	/**
@@ -86,8 +76,6 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * @param CallService $callService Service used to call the ZRC source.
-	 * @param string $zaakId The UUID of the zaak whose eigenschappen are listed.
 	 *
 	 * @return JSONResponse
 	 *
@@ -98,7 +86,7 @@ class ZaakEigenschappenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid(value: $zaakId, field: 'zaakId');
+		$uuidError = $this->assertUuid($zaakId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
@@ -112,9 +100,6 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * @param string $id The identifier of the zaakeigenschap to read.
-	 * @param CallService $callService Service used to call the ZRC source.
-	 * @param string $zaakId The UUID of the zaak the eigenschap belongs to.
 	 *
 	 * @return JSONResponse
 	 *
@@ -125,7 +110,7 @@ class ZaakEigenschappenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid(value: $zaakId, field: 'zaakId');
+		$uuidError = $this->assertUuid($zaakId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
@@ -139,8 +124,6 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * @param CallService $callService Service used to call the ZRC source.
-	 * @param string $zaakId The UUID of the zaak to add the eigenschap to.
 	 *
 	 * @return JSONResponse
 	 *
@@ -151,12 +134,12 @@ class ZaakEigenschappenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid(value: $zaakId, field: 'zaakId');
+		$uuidError = $this->assertUuid($zaakId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
 
-		// Get post from requests
+		// get post from requests
 		$body = $this->request->getParams();
 		$results = $callService->create(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body);
 		return new JSONResponse($results);
@@ -167,9 +150,6 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * @param string $id The identifier of the zaakeigenschap to update.
-	 * @param CallService $callService Service used to call the ZRC source.
-	 * @param string $zaakId The UUID of the zaak the eigenschap belongs to.
 	 *
 	 * @return JSONResponse
 	 *
@@ -180,7 +160,7 @@ class ZaakEigenschappenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid(value: $zaakId, field: 'zaakId');
+		$uuidError = $this->assertUuid($zaakId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
@@ -195,9 +175,6 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * @param string $id The identifier of the zaakeigenschap to delete.
-	 * @param CallService $callService Service used to call the ZRC source.
-	 * @param string $zaakId The UUID of the zaak the eigenschap belongs to.
 	 *
 	 * @return JSONResponse
 	 *
@@ -208,7 +185,7 @@ class ZaakEigenschappenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid(value: $zaakId, field: 'zaakId');
+		$uuidError = $this->assertUuid($zaakId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}

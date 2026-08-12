@@ -37,15 +37,6 @@ class ZaakBesluitenController extends Controller {
 	 */
 	private const OBJECT_TYPE = 'zaakbesluit';
 
-	/**
-	 * Constructor for ZaakBesluitenController.
-	 *
-	 * @param string $appName The name of the app
-	 * @param IRequest $request The request object
-	 * @param ObjectService $objectService Service for reading and writing zaakbesluit objects
-	 * @param IURLGenerator $urlGenerator Generator for the absolute ZaakBesluit resource URL
-	 * @param IUserSession $userSession The current user session
-	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -53,7 +44,7 @@ class ZaakBesluitenController extends Controller {
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**
@@ -97,7 +88,7 @@ class ZaakBesluitenController extends Controller {
 				filters: ['zaak' => $zaakUuid]
 			);
 
-			$results = array_map(fn (array $object): array => $this->mapZaakBesluit(object: $object), $objects);
+			$results = array_map(fn (array $object): array => $this->mapZaakBesluit($object), $objects);
 
 			return new JSONResponse(['results' => array_values($results)]);
 		} catch (Exception $e) {
@@ -126,7 +117,7 @@ class ZaakBesluitenController extends Controller {
 		try {
 			$object = $this->requireZaakBesluitOnZaak(id: $id, zaakUuid: $zaakUuid);
 
-			return new JSONResponse($this->mapZaakBesluit(object: $object));
+			return new JSONResponse($this->mapZaakBesluit($object));
 		} catch (ZaakBesluitNotFoundException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
@@ -170,7 +161,7 @@ class ZaakBesluitenController extends Controller {
 		try {
 			$object = (array)$this->objectService->saveObject(self::OBJECT_TYPE, $data);
 
-			return new JSONResponse($this->mapZaakBesluit(object: $object), Http::STATUS_CREATED);
+			return new JSONResponse($this->mapZaakBesluit($object), Http::STATUS_CREATED);
 		} catch (Exception $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
@@ -213,7 +204,7 @@ class ZaakBesluitenController extends Controller {
 
 			$object = (array)$this->objectService->saveObject(self::OBJECT_TYPE, $data);
 
-			return new JSONResponse($this->mapZaakBesluit(object: $object));
+			return new JSONResponse($this->mapZaakBesluit($object));
 		} catch (ZaakBesluitNotFoundException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
@@ -265,7 +256,7 @@ class ZaakBesluitenController extends Controller {
 		return [
 			'url' => $this->urlGenerator->getAbsoluteURL(
 				'/index.php/apps/zaakafhandelapp/api/zrc/zaken/'
-				. ($this->resolveReference(reference: ($object['zaak'] ?? ''))) . '/besluiten/' . (string)$uuid
+				. ($this->resolveReference($object['zaak'] ?? '')) . '/besluiten/' . (string)$uuid
 			),
 			'uuid' => $uuid,
 			'zaak' => ($object['zaak'] ?? null),
@@ -289,7 +280,7 @@ class ZaakBesluitenController extends Controller {
 	private function requireZaakBesluitOnZaak(string $id, string $zaakUuid): array {
 		$object = (array)$this->objectService->getObject(self::OBJECT_TYPE, $id);
 
-		if ($this->resolveReference(reference: ($object['zaak'] ?? '')) !== $this->resolveReference(reference: $zaakUuid)) {
+		if ($this->resolveReference($object['zaak'] ?? '') !== $this->resolveReference($zaakUuid)) {
 			throw new ZaakBesluitNotFoundException('Zaakbesluit not found for this zaak.');
 		}
 

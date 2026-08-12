@@ -30,18 +30,6 @@ use OCA\OpenRegister\Db\SchemaMapper;
  * ZGW rules that schema triggers.
  */
 class ZGWZaakEventHandler {
-	/**
-	 * Constructor.
-	 *
-	 * @param ZGWLogicService $logicService The ZGW relation/cascade logic service.
-	 * @param ZGWZaakLifecycleService $lifecycleService The zaak lifecycle service.
-	 * @param ZGWValidationService $validationService The generic ZGW validation service.
-	 * @param ZGWZaakValidationService $zaakValidator The zaak-specific validation service.
-	 * @param ZaakTermijnService $termijnService The behandeltermijn derivation service.
-	 * @param ZGWZaakOpschortingVerlengingService $opschortingService The opschorting/verlenging transition service.
-	 * @param ZGWRegistryService $registry The schema/endpoint registry.
-	 * @param SchemaMapper $schemaMapper The OpenRegister schema mapper.
-	 */
 	public function __construct(
 		private readonly ZGWLogicService $logicService,
 		private readonly ZGWZaakLifecycleService $lifecycleService,
@@ -64,7 +52,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	public function onObjectCreated(ObjectEntity $obj): void {
-		$slug = $this->slugOf(obj: $obj);
+		$slug = $this->slugOf($obj);
 
 		if ($slug === $this->registry->getStatusSchema()) {
 			// Re-open or close the zaak now that the status record is confirmed persisted.
@@ -106,7 +94,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	public function onObjectUpdated(ObjectEntity $obj): void {
-		if ($this->slugOf(obj: $obj) === $this->registry->getZaakSchema()) {
+		if ($this->slugOf($obj) === $this->registry->getZaakSchema()) {
 			$this->lifecycleService->setVertrouwelijkheidaanduiding($obj);
 		}
 	}//end onObjectUpdated()
@@ -151,7 +139,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	public function onObjectCreating(ObjectEntity $obj): void {
-		$slug = $this->slugOf(obj: $obj);
+		$slug = $this->slugOf($obj);
 
 		// Validate close prerequisites (resultaat, gebruiksrechten, date) before the status is
 		// persisted. If any check fails, a CustomValidationException is thrown here and the status
@@ -163,7 +151,7 @@ class ZGWZaakEventHandler {
 		}
 
 		if ($slug === $this->registry->getZaakSchema()) {
-			$this->assertZaakWritable(obj: $obj);
+			$this->assertZaakWritable($obj);
 			// Derive the behandeltermijn fields from the zaaktype before the zaak is
 			// persisted (uiterlijkeEinddatumAfdoening from doorlooptijd, einddatumGepland
 			// from servicenorm). Client-supplied dates are never overridden.
@@ -190,11 +178,11 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
 	 */
 	public function onObjectUpdating(ObjectEntity $obj): void {
-		if ($this->slugOf(obj: $obj) !== $this->registry->getZaakSchema()) {
+		if ($this->slugOf($obj) !== $this->registry->getZaakSchema()) {
 			return;
 		}
 
-		$this->assertZaakWritable(obj: $obj);
+		$this->assertZaakWritable($obj);
 
 		// Apply opschorting/verlenging transitions: gate on the zaaktype policy,
 		// shift the termijn fields, and abort (via CustomValidationException) when

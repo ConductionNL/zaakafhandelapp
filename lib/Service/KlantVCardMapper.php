@@ -37,26 +37,21 @@ class KlantVCardMapper {
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
 	 */
 	public function vCardToKlant(array $contact, ?string $type = null): array {
-		$org = $this->firstValue(value: ($contact['ORG'] ?? ''));
+		$org = $this->firstValue(($contact['ORG'] ?? ''));
 
 		// An explicit type always wins; otherwise a company name means the
 		// contact describes an organisation rather than a person.
-		if ($type === null) {
-			$type = 'persoon';
-			if ($org !== '') {
-				$type = 'organisatie';
-			}
-		}
+		$type = ($type ?? (($org !== '') ? 'organisatie' : 'persoon'));
 
 		$klant = [
 			'type' => $type,
-			'emailadres' => $this->firstValue(value: ($contact['EMAIL'] ?? '')),
-			'telefoonnummer' => $this->firstValue(value: ($contact['TEL'] ?? '')),
+			'emailadres' => $this->firstValue(($contact['EMAIL'] ?? '')),
+			'telefoonnummer' => $this->firstValue(($contact['TEL'] ?? '')),
 			'bedrijfsnaam' => $org,
 		];
 
-		$klant = array_merge($klant, $this->nameFieldsFromVCard(contact: $contact));
-		$klant = array_merge($klant, $this->addressFieldsFromVCard(contact: $contact));
+		$klant = array_merge($klant, $this->nameFieldsFromVCard($contact));
+		$klant = array_merge($klant, $this->addressFieldsFromVCard($contact));
 
 		// Every $klant value is produced by firstValue()/trim(), both of which
 		// return string, so dropping the empty ones is the whole filter.
@@ -74,7 +69,7 @@ class KlantVCardMapper {
 	 */
 	private function nameFieldsFromVCard(array $contact): array {
 		// N = Family;Given;Additional;Prefix;Suffix
-		$structuredName = $this->firstValue(value: ($contact['N'] ?? ''));
+		$structuredName = $this->firstValue(($contact['N'] ?? ''));
 		if ($structuredName !== '') {
 			$parts = explode(';', $structuredName);
 
@@ -85,7 +80,7 @@ class KlantVCardMapper {
 			];
 		}
 
-		$formattedName = $this->firstValue(value: ($contact['FN'] ?? ''));
+		$formattedName = $this->firstValue(($contact['FN'] ?? ''));
 		if ($formattedName === '') {
 			return [];
 		}
@@ -107,7 +102,7 @@ class KlantVCardMapper {
 	 */
 	private function addressFieldsFromVCard(array $contact): array {
 		// ADR = PObox;Extended;Street;City;Region;PostalCode;Country
-		$address = $this->firstValue(value: ($contact['ADR'] ?? ''));
+		$address = $this->firstValue(($contact['ADR'] ?? ''));
 		if ($address === '') {
 			return [];
 		}
@@ -142,7 +137,7 @@ class KlantVCardMapper {
 			$properties['UID'] = $uid;
 		}
 
-		$properties = array_merge($properties, $this->nameProperties(klant: $klant));
+		$properties = array_merge($properties, $this->nameProperties($klant));
 
 		$email = (string)($klant['emailadres'] ?? '');
 		if ($email !== '') {
@@ -154,7 +149,7 @@ class KlantVCardMapper {
 			$properties['TEL'] = $phone;
 		}
 
-		$properties = array_merge($properties, $this->addressProperties(klant: $klant));
+		$properties = array_merge($properties, $this->addressProperties($klant));
 
 		// Defence in depth (REQ-003): the property set is assembled above from
 		// an explicit vCard-key allowlist, so a privacy-sensitive klant field

@@ -41,11 +41,6 @@ use RuntimeException;
  */
 class ZGWZaakOpschortingVerlengingService {
 
-	/**
-	 * The OpenRegister object service used to resolve the zaaktype and old zaak state.
-	 *
-	 * @var \OCA\OpenRegister\Service\ObjectService
-	 */
 	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
 	/**
@@ -89,13 +84,13 @@ class ZGWZaakOpschortingVerlengingService {
 		$new = $zaak->jsonSerialize();
 
 		if ($oldZaak === null) {
-			$oldZaak = $this->resolveOldZaak(zaak: $zaak);
+			$oldZaak = $this->resolveOldZaak($zaak);
 		}
 
 		// Both handlers must run, so each call sits on the LEFT of the || and is
 		// never short-circuited away.
-		$changed = $this->handleOpschorting(new: $new, old: $oldZaak, now: $now);
-		$changed = $this->handleVerlenging(new: $new, old: $oldZaak) || $changed;
+		$changed = $this->handleOpschorting($new, $oldZaak, $now);
+		$changed = $this->handleVerlenging($new, $oldZaak) || $changed;
 
 		if ($changed === true) {
 			$zaak->setObject($new);
@@ -114,8 +109,8 @@ class ZGWZaakOpschortingVerlengingService {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
 	 */
 	private function handleOpschorting(array &$new, array $old, DateTimeImmutable $now): bool {
-		$newIndicatie = $this->isIndicatie(opschorting: $new['opschorting'] ?? null);
-		$oldIndicatie = $this->isIndicatie(opschorting: $old['opschorting'] ?? null);
+		$newIndicatie = $this->isIndicatie($new['opschorting'] ?? null);
+		$oldIndicatie = $this->isIndicatie($old['opschorting'] ?? null);
 
 		// No transition.
 		if ($newIndicatie === $oldIndicatie) {
@@ -124,22 +119,14 @@ class ZGWZaakOpschortingVerlengingService {
 
 		if ($newIndicatie === true) {
 			// Suspend.
-			$this->assertOpen(zaak: $old, group: 'opschorting');
-			if ($this->zaaktypeAllows(zaak: $new, property: 'opschortingEnAanhoudingMogelijk') === false) {
-				$this->fail(
-					name: 'opschorting',
-					code: 'opschorting-not-allowed',
-					reason: 'Het zaaktype staat opschorting niet toe'
-				);
+			$this->assertOpen($old, 'opschorting');
+			if ($this->zaaktypeAllows($new, 'opschortingEnAanhoudingMogelijk') === false) {
+				$this->fail('opschorting', 'opschorting-not-allowed', 'Het zaaktype staat opschorting niet toe');
 			}
 
 			$reden = (string)($new['opschorting']['reden'] ?? '');
 			if (trim($reden) === '') {
-				$this->fail(
-					name: 'opschorting.reden',
-					code: 'required',
-					reason: 'Een reden voor opschorting is verplicht'
-				);
+				$this->fail('opschorting.reden', 'required', 'Een reden voor opschorting is verplicht');
 			}
 
 			$opschorting = (array)$new['opschorting'];
@@ -157,7 +144,7 @@ class ZGWZaakOpschortingVerlengingService {
 			$start = new DateTimeImmutable($startRaw);
 			$elapsedDays = (int)$start->diff($now)->days;
 			if ($elapsedDays > 0) {
-				$this->shiftDeadlines(zaak: $new, days: $elapsedDays);
+				$this->shiftDeadlines($new, $elapsedDays);
 			}
 		}
 
@@ -187,9 +174,9 @@ class ZGWZaakOpschortingVerlengingService {
 			return false;
 		}
 
-		$duurDays = $this->assertVerlengingAllowed(new: $new, old: $old, verlenging: $newVerlenging);
+		$duurDays = $this->assertVerlengingAllowed($new, $old, $newVerlenging);
 
-		$this->shiftDeadlines(zaak: $new, days: $duurDays);
+		$this->shiftDeadlines($new, $duurDays);
 
 		return true;
 	}//end handleVerlenging()
@@ -220,57 +207,33 @@ class ZGWZaakOpschortingVerlengingService {
 		}
 
 		if ($oldDuur !== '') {
-			$this->fail(
-				name: 'verlenging',
-				code: 'verlenging-already-applied',
-				reason: 'De zaak is al verlengd (verdaging is eenmalig)'
-			);
+			$this->fail('verlenging', 'verlenging-already-applied', 'De zaak is al verlengd (verdaging is eenmalig)');
 		}
 
-		$this->assertOpen(zaak: $old, group: 'verlenging');
+		$this->assertOpen($old, 'verlenging');
 
 		if (($new['opschorting']['indicatie'] ?? false) === true) {
-			$this->fail(
-				name: 'verlenging',
-				code: 'zaak-suspended',
-				reason: 'Een opgeschorte zaak kan niet worden verlengd'
-			);
+			$this->fail('verlenging', 'zaak-suspended', 'Een opgeschorte zaak kan niet worden verlengd');
 		}
 
-		if ($this->zaaktypeAllows(zaak: $new, property: 'verlengingMogelijk') === false) {
-			$this->fail(
-				name: 'verlenging',
-				code: 'verlenging-not-allowed',
-				reason: 'Het zaaktype staat verlenging niet toe'
-			);
+		if ($this->zaaktypeAllows($new, 'verlengingMogelijk') === false) {
+			$this->fail('verlenging', 'verlenging-not-allowed', 'Het zaaktype staat verlenging niet toe');
 		}
 
 		$reden = (string)($verlenging['reden'] ?? '');
 		if (trim($reden) === '') {
-			$this->fail(
-				name: 'verlenging.reden',
-				code: 'required',
-				reason: 'Een reden voor verlenging is verplicht'
-			);
+			$this->fail('verlenging.reden', 'required', 'Een reden voor verlenging is verplicht');
 		}
 
-		$duurDays = (int)$this->durationToDays(duration: (string)$verlenging['duur']);
+		$duurDays = (int)$this->durationToDays((string)$verlenging['duur']);
 		if ($duurDays <= 0) {
-			$this->fail(
-				name: 'verlenging.duur',
-				code: 'invalid-duration',
-				reason: 'De duur is geen geldige ISO 8601 duur'
-			);
+			$this->fail('verlenging.duur', 'invalid-duration', 'De duur is geen geldige ISO 8601 duur');
 		}
 
 		// Cap against the zaaktype's verlengingstermijn when configured.
-		$maxDays = $this->zaaktypeMaxVerlengingDays(zaak: $new);
+		$maxDays = $this->zaaktypeMaxVerlengingDays($new);
 		if ($maxDays !== null && $duurDays > $maxDays) {
-			$this->fail(
-				name: 'verlenging.duur',
-				code: 'duration-exceeds-termijn',
-				reason: 'De duur overschrijdt de verlengingstermijn van het zaaktype'
-			);
+			$this->fail('verlenging.duur', 'duration-exceeds-termijn', 'De duur overschrijdt de verlengingstermijn van het zaaktype');
 		}
 
 		return $duurDays;
@@ -349,7 +312,7 @@ class ZGWZaakOpschortingVerlengingService {
 	private function assertOpen(array $zaak, string $group): void {
 		$einddatum = (string)($zaak['einddatum'] ?? '');
 		if ($einddatum !== '') {
-			$this->fail(name: $group, code: 'zaak-closed', reason: 'De zaak is gesloten');
+			$this->fail($group, 'zaak-closed', 'De zaak is gesloten');
 		}
 	}//end assertOpen()
 
@@ -364,7 +327,7 @@ class ZGWZaakOpschortingVerlengingService {
 	 * @return boolean True when the policy is enabled.
 	 */
 	private function zaaktypeAllows(array $zaak, string $property): bool {
-		$zaaktype = $this->resolveZaaktype(zaak: $zaak);
+		$zaaktype = $this->resolveZaaktype($zaak);
 		$value = ($zaaktype[$property] ?? null);
 
 		// The switch is stored as a bool on some entities and as a string on
@@ -380,13 +343,13 @@ class ZGWZaakOpschortingVerlengingService {
 	 * @return ?integer The max verlenging in days, or null.
 	 */
 	private function zaaktypeMaxVerlengingDays(array $zaak): ?int {
-		$zaaktype = $this->resolveZaaktype(zaak: $zaak);
+		$zaaktype = $this->resolveZaaktype($zaak);
 		$termijn = (string)($zaaktype['verlengingstermijn'] ?? '');
 		if ($termijn === '') {
 			return null;
 		}
 
-		return $this->durationToDays(duration: $termijn);
+		return $this->durationToDays($termijn);
 	}//end zaaktypeMaxVerlengingDays()
 
 	/**

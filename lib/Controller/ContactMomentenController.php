@@ -23,15 +23,6 @@ use Psr\Log\LoggerInterface;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class ContactMomentenController extends Controller {
-	/**
-	 * ContactMomentenController constructor.
-	 *
-	 * @param string $appName The application name
-	 * @param IRequest $request The request object
-	 * @param ObjectService $objectService Open Register object access for the contactmomenten schema
-	 * @param IUserSession $userSession The user session used to reject anonymous callers
-	 * @param LoggerInterface $logger Logger for failed read/write operations
-	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -39,7 +30,7 @@ class ContactMomentenController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly LoggerInterface $logger,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**
@@ -111,8 +102,6 @@ class ContactMomentenController extends Controller {
 	/**
 	 * Read a single contact moment
 	 *
-	 * @param string $id The contact moment ID
-	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -175,8 +164,6 @@ class ContactMomentenController extends Controller {
 	/**
 	 * Update a contact moment
 	 *
-	 * @param string $id The contact moment ID
-	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -212,8 +199,6 @@ class ContactMomentenController extends Controller {
 	/**
 	 * Delete a contact moment
 	 *
-	 * @param string $id The contact moment ID
-	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -230,13 +215,8 @@ class ContactMomentenController extends Controller {
 			// Delete the contact moment
 			$result = $this->objectService->deleteObject('contactmomenten', $id);
 
-			$status = Http::STATUS_NOT_FOUND;
-			if ($result === true) {
-				$status = Http::STATUS_OK;
-			}
-
 			// Return the result as a JSON response
-			return new JSONResponse(['success' => $result], $status);
+			return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
 		} catch (DoesNotExistException $e) {
 			return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
 		} catch (\Throwable $e) {
@@ -247,8 +227,6 @@ class ContactMomentenController extends Controller {
 
 	/**
 	 * Get audit trail for a specific contact moment
-	 *
-	 * @param string $id The contact moment ID
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

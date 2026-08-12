@@ -18,12 +18,6 @@ use OCP\Util;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class OpenZakenWidget implements IWidget {
-	/**
-	 * Constructor.
-	 *
-	 * @param IL10N $l10n Translation service used for the widget title.
-	 * @param IURLGenerator $url URL generator for building links to app routes.
-	 */
 	public function __construct(
 		private IL10N $l10n,
 		private IURLGenerator $url,
@@ -32,8 +26,6 @@ class OpenZakenWidget implements IWidget {
 
 	/**
 	 * @inheritDoc
-	 *
-	 * @return string The unique dashboard widget identifier.
 	 */
 	public function getId(): string {
 		return 'zaakAfhandelApp_openzaak_widget';
@@ -41,8 +33,6 @@ class OpenZakenWidget implements IWidget {
 
 	/**
 	 * @inheritDoc
-	 *
-	 * @return string The translated widget title shown on the dashboard.
 	 */
 	public function getTitle(): string {
 		return $this->l10n->t('Open zaken');
@@ -50,8 +40,6 @@ class OpenZakenWidget implements IWidget {
 
 	/**
 	 * @inheritDoc
-	 *
-	 * @return int The sort order of this widget on the dashboard.
 	 */
 	public function getOrder(): int {
 		return 10;
@@ -59,8 +47,6 @@ class OpenZakenWidget implements IWidget {
 
 	/**
 	 * @inheritDoc
-	 *
-	 * @return string The CSS class rendering the widget icon.
 	 */
 	public function getIconClass(): string {
 		return 'icon-zaken-widget';
@@ -68,8 +54,6 @@ class OpenZakenWidget implements IWidget {
 
 	/**
 	 * @inheritDoc
-	 *
-	 * @return string|null The "more" link target, or null when the widget has none.
 	 */
 	public function getUrl(): ?string {
 		return null;
@@ -80,8 +64,6 @@ class OpenZakenWidget implements IWidget {
 	 *
 	 * @SuppressWarnings(PHPMD.StaticAccess) — OCP\Util::addScript/addStyle is the
 	 *   Nextcloud-prescribed static API for enqueuing assets in Dashboard widgets.
-	 *
-	 * @return void
 	 */
 	public function load(): void {
 		// Shared chunks emitted by webpack splitChunks + runtimeChunk (see webpack.config.js).

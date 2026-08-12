@@ -17,22 +17,8 @@ use RuntimeException;
  */
 class ZGWZaakLifecycleService {
 
-	/**
-	 * The OpenRegister object service used to load, save and delete zaak objects.
-	 *
-	 * @var \OCA\OpenRegister\Service\ObjectService
-	 */
 	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param ObjectMapperService $mapperService The OpenRegister mapper service.
-	 * @param ZGWZaakCloseService $closeService The service that handles closing a zaak.
-	 * @param ZGWRegistryService $registry The schema/endpoint registry.
-	 *
-	 * @throws RuntimeException When the OpenRegister app is not available.
-	 */
 	public function __construct(
 		ObjectMapperService $mapperService,
 		private ZGWZaakCloseService $closeService,
@@ -54,8 +40,6 @@ class ZGWZaakLifecycleService {
 	 *
 	 * @param ObjectEntity $status The status entity about to be created.
 	 *
-	 * @return void
-	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
 	 */
 	public function validateClosePrerequisites(ObjectEntity $status): void {
@@ -64,10 +48,6 @@ class ZGWZaakLifecycleService {
 
 	/**
 	 * Close a zaak. Delegates to ZGWZaakCloseService.
-	 *
-	 * @param ObjectEntity $status The eindstatus that was just persisted.
-	 *
-	 * @return void
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
 	 */
@@ -78,19 +58,15 @@ class ZGWZaakLifecycleService {
 	/**
 	 * Reopen a zaak when non-eindstatus is set. ZRC-008.
 	 *
-	 * @param ObjectEntity $status The status that was just set on the zaak.
-	 *
-	 * @return void
-	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
 	 */
 	public function reopenZaak(ObjectEntity $status): void {
 		$statusArray = $status->jsonSerialize();
-		if ($this->closeService->isEindStatus($statusArray) === true) {
+		if ($this->closeService->isEindStatus($statusArray)) {
 			return;
 		}
 
-		$zaak = $this->find(url: $statusArray['zaak']);
+		$zaak = $this->find($statusArray['zaak']);
 		$zaakArray = $zaak->jsonSerialize();
 		$zaakArray['einddatum'] = $zaakArray['archiefactiedatum'] = $zaakArray['archiefnominatie'] = null;
 		$zaak->setObject($zaakArray);
@@ -99,10 +75,6 @@ class ZGWZaakLifecycleService {
 
 	/**
 	 * Delete dependent objects. ZRC-023.
-	 *
-	 * @param ObjectEntity $zaak The zaak that is being deleted.
-	 *
-	 * @return void
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
 	 */
@@ -121,21 +93,7 @@ class ZGWZaakLifecycleService {
 			$arr['zaakobjecten'] ?? []
 		);
 
-		$ids = array_filter(
-			array_map(
-				function (?string $url) {
-					// Cast rather than a null check: the original guard skipped every
-					// falsy reference (null and the empty string alike), and widening
-					// it would push those into getObjectIdByEndpointUrl().
-					if ((bool)$url === false) {
-						return null;
-					}
-
-					return $this->registry->getObjectIdByEndpointUrl($url);
-				},
-				$urls
-			)
-		);
+		$ids = array_filter(array_map(fn (?string $url) => $url ? $this->registry->getObjectIdByEndpointUrl($url) : null, $urls));
 		$this->objectService->deleteObjects($ids);
 
 		foreach ($arr['zaakinformatieobjecten'] ?? [] as $zioUrl) {
@@ -174,10 +132,6 @@ class ZGWZaakLifecycleService {
 	 * restrictive as the zaaktype minimum — a lower classification is replaced with
 	 * the zaaktype value (fixes #281, ZGW confidentiality lowering rule).
 	 *
-	 * @param ObjectEntity $zaak The zaak whose classification is being derived.
-	 *
-	 * @return void
-	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
 	 */
 	public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void {
@@ -189,7 +143,7 @@ class ZGWZaakLifecycleService {
 			return;
 		}
 
-		$zaaktype = $this->find(url: $zaaktypeUrl);
+		$zaaktype = $this->find($zaaktypeUrl);
 		$ztMinimum = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
 
 		if ($ztMinimum === null) {
@@ -224,14 +178,6 @@ class ZGWZaakLifecycleService {
 		$this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
 	}//end setVertrouwelijkheidaanduiding()
 
-	/**
-	 * Load an object by its ZGW endpoint URL.
-	 *
-	 * @param string $url The ZGW endpoint URL of the object.
-	 * @param array $extend The OpenRegister _extend specification.
-	 *
-	 * @return ObjectEntity The resolved object.
-	 */
 	private function find(string $url, array $extend = []): ObjectEntity {
 		$this->objectService->clearCurrents();
 		return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), _extend: $extend);

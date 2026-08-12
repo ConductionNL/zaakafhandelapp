@@ -19,23 +19,8 @@ use RuntimeException;
  */
 class ZGWZaakCloseService {
 
-	/**
-	 * The OpenRegister object service used to load and persist zaak objects.
-	 *
-	 * @var \OCA\OpenRegister\Service\ObjectService
-	 */
 	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param ObjectMapperService $mapperService The OpenRegister mapper service.
-	 * @param ZGWArchiveDateService $archiveService The archive date calculation service.
-	 * @param ZGWRegistryService $registry The schema/endpoint registry.
-	 * @param LoggerInterface $logger The logger.
-	 *
-	 * @throws RuntimeException When the OpenRegister app is not available.
-	 */
 	public function __construct(
 		ObjectMapperService $mapperService,
 		private ZGWArchiveDateService $archiveService,
@@ -75,16 +60,13 @@ class ZGWZaakCloseService {
 	public function validateClosePrerequisites(ObjectEntity $status): void {
 		$statusArray = $status->jsonSerialize();
 
-		if ($this->isEindStatus(statusArray: $statusArray) === false) {
+		if ($this->isEindStatus($statusArray) === false) {
 			// Not an eindstatus — no prerequisites to check.
 			return;
 		}
 
 		// Load the zaak with its informatieobjecten so gebruiksrechten can be inspected.
-		$zaakArray = $this->find(
-			url: $statusArray['zaak'],
-			extend: ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']
-		)->jsonSerialize();
+		$zaakArray = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject'])->jsonSerialize();
 
 		// Guard: zaak must have a resultaat.
 		if (empty($zaakArray['resultaat']) === true) {
@@ -95,7 +77,7 @@ class ZGWZaakCloseService {
 		}
 
 		// Guard: all informatieobjecten must have gebruiksrechten configured.
-		$this->assertGebruiksrechten(zaakArray: $zaakArray);
+		$this->assertGebruiksrechten($zaakArray);
 
 		// Guard: datumStatusGezet must be a valid ISO 8601 date.
 		try {
@@ -116,36 +98,29 @@ class ZGWZaakCloseService {
 	 * persist) and only performs the zaak mutations — it does NOT re-validate prerequisites
 	 * to avoid double-loading the zaak and its informatieobjecten.
 	 *
-	 * @param ObjectEntity $status The eindstatus that was just persisted.
-	 *
-	 * @return void
-	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
 	 */
 	public function closeZaak(ObjectEntity $status): void {
 		$statusArray = $status->jsonSerialize();
 
-		if ($this->isEindStatus(statusArray: $statusArray) === false) {
+		if ($this->isEindStatus($statusArray) === false) {
 			return;
 		}
 
-		$zaak = $this->find(
-			url: $statusArray['zaak'],
-			extend: ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']
-		);
+		$zaak = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']);
 		$zaakArray = $zaak->jsonSerialize();
 
 		try {
 			$zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format('Y-m-d');
 		} catch (\Exception $e) {
-			// Field datumStatusGezet was already validated in validateClosePrerequisites; log and skip.
+			// datumStatusGezet was already validated in validateClosePrerequisites; log and skip.
 			$this->logger->error('ZaakAfhandelApp: closeZaak unexpected date error', ['exception' => $e->getMessage()]);
 			return;
 		}
 
 		try {
-			$resultaatRecord = $this->find(url: $zaakArray['resultaat']);
-			$resultaattype = $this->find(url: $resultaatRecord->jsonSerialize()['resultaattype'])->jsonSerialize();
+			$resultaatRecord = $this->find($zaakArray['resultaat']);
+			$resultaattype = $this->find($resultaatRecord->jsonSerialize()['resultaattype'])->jsonSerialize();
 		} catch (\Exception $e) {
 			$this->logger->error('ZaakAfhandelApp: closeZaak cannot resolve resultaattype', ['exception' => $e->getMessage()]);
 			throw new CustomValidationException(
@@ -171,34 +146,17 @@ class ZGWZaakCloseService {
 	/**
 	 * Check if status is eindstatus for its zaaktype.
 	 *
-	 * The eindstatus is the statustype with the highest volgnummer of the zaaktype.
-	 *
-	 * @param array $statusArray The serialised status object.
-	 *
-	 * @return boolean True when the status is the eindstatus of its zaaktype.
-	 *
-	 * @throws CustomValidationException When the zaaktype has no statustypen.
-	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-002
 	 */
 	public function isEindStatus(array $statusArray): bool {
-		$statustype = $this->find(
-			url: $statusArray['statustype'],
-			extend: ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' => 'zaaktype.statustypen']
-		);
+		$statustype = $this->find($statusArray['statustype'], ['_extend.zaaktype' => 'zaaktype', '_extend.statustypen' => 'zaaktype.statustypen']);
 		$statusData = $statustype->jsonSerialize();
 		$statustypen = $statusData['_extend']['zaaktype']['_extend']['statustypen'] ?? [];
 
 		if (empty($statustypen) === true) {
 			throw new CustomValidationException(
 				'Zaaktype heeft geen statustypen',
-				[
-					[
-						'name' => 'statustype',
-						'code' => 'no-statustypen',
-						'reason' => 'Het zaaktype heeft geen statustypen; kan niet bepalen of dit een eindstatus is.',
-					],
-				]
+				[['name' => 'statustype', 'code' => 'no-statustypen', 'reason' => 'Het zaaktype heeft geen statustypen; kan niet bepalen of dit een eindstatus is.']]
 			);
 		}
 
@@ -206,46 +164,13 @@ class ZGWZaakCloseService {
 		return $statusData['volgnummer'] === $max;
 	}//end isEindStatus()
 
-	/**
-	 * Assert every informatieobject linked to the zaak has a gebruiksrecht.
-	 *
-	 * An informatieobject qualifies when it either carries gebruiksrechten or
-	 * has indicatieGebruiksrecht explicitly set (true or false).
-	 *
-	 * @param array $zaakArray The serialised zaak, extended with its zaakinformatieobjecten.
-	 *
-	 * @return void
-	 *
-	 * @throws CustomValidationException When an informatieobject has no gebruiksrecht.
-	 */
 	private function assertGebruiksrechten(array $zaakArray): void {
-		$bad = array_filter(
-			$zaakArray['zaakinformatieobjecten'],
-			fn (array $zio) => count($zio['informatieobject']['gebruiksrechten']) === 0
-				&& $zio['informatieobject']['indicatieGebruiksrecht'] === null
-		);
+		$bad = array_filter($zaakArray['zaakinformatieobjecten'], fn (array $zio) => count($zio['informatieobject']['gebruiksrechten']) === 0 && $zio['informatieobject']['indicatieGebruiksrecht'] === null);
 		if (count($bad) > 0) {
-			throw new CustomValidationException(
-				'Indicatiegebruiksrecht niet geset',
-				[
-					[
-						'name' => 'nonFieldErrors',
-						'code' => 'indicatiegebruiksrecht-unset',
-						'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben.',
-					],
-				]
-			);
+			throw new CustomValidationException('Indicatiegebruiksrecht niet geset', [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben.']]);
 		}
 	}//end assertGebruiksrechten()
 
-	/**
-	 * Load an object by its ZGW endpoint URL.
-	 *
-	 * @param string $url The ZGW endpoint URL of the object.
-	 * @param array $extend The OpenRegister _extend specification.
-	 *
-	 * @return ObjectEntity The resolved object.
-	 */
 	private function find(string $url, array $extend = []): ObjectEntity {
 		$this->objectService->clearCurrents();
 		return $this->objectService->find(id: $this->registry->getObjectIdByEndpointUrl($url), _extend: $extend);

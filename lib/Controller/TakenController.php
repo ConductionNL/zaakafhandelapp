@@ -24,16 +24,6 @@ use Psr\Log\LoggerInterface;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class TakenController extends Controller {
-	/**
-	 * TakenController constructor.
-	 *
-	 * @param string $appName The application name
-	 * @param IRequest $request The request object
-	 * @param MailService $mailService Sends task notification mail on create and update
-	 * @param ObjectService $objectService Open Register object access for the taken schema
-	 * @param IUserSession $userSession The user session used to reject anonymous callers
-	 * @param LoggerInterface $logger Logger for failed read/write operations
-	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -42,7 +32,7 @@ class TakenController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly LoggerInterface $logger,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**
@@ -172,12 +162,7 @@ class TakenController extends Controller {
 			// Save the new catalog object.
 			$object = $this->objectService->saveObject('taken', $data);
 
-			$newTaskData = $object;
-			if (is_array($object) === false) {
-				$newTaskData = $object->jsonSerialize();
-			}
-
-			$this->mailService->sendMail([], $newTaskData);
+			$this->mailService->sendMail([], is_array($object) === true ? $object : $object->jsonSerialize());
 
 			// Return the created object as a JSON response.
 			return new JSONResponse($object);
@@ -224,17 +209,10 @@ class TakenController extends Controller {
 			// Save the new catalog object.
 			$object = $this->objectService->saveObject('taken', $data);
 
-			$oldTaskData = $oldObject;
-			if (is_array($oldObject) === false) {
-				$oldTaskData = $oldObject->jsonSerialize();
-			}
-
-			$newTaskData = $object;
-			if (is_array($object) === false) {
-				$newTaskData = $object->jsonSerialize();
-			}
-
-			$this->mailService->sendMail($oldTaskData, $newTaskData);
+			$this->mailService->sendMail(
+				is_array($oldObject) === true ? $oldObject : $oldObject->jsonSerialize(),
+				is_array($object) === true ? $object : $object->jsonSerialize()
+			);
 
 			// Return the created object as a JSON response.
 			return new JSONResponse($object);
@@ -267,13 +245,8 @@ class TakenController extends Controller {
 			// Delete the catalog object.
 			$result = $this->objectService->deleteObject('taken', $id);
 
-			$status = Http::STATUS_NOT_FOUND;
-			if ($result === true) {
-				$status = Http::STATUS_OK;
-			}
-
 			// Return the result as a JSON response.
-			return new JSONResponse(['success' => $result], $status);
+			return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
 		} catch (DoesNotExistException $e) {
 			return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
 		} catch (\Throwable $e) {

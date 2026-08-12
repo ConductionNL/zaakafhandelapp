@@ -120,7 +120,7 @@ class SettingsController extends Controller {
 		private readonly IAppConfig $config,
 		private readonly ObjectMapperService $mapperService,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**

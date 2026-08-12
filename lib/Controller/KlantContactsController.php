@@ -26,21 +26,13 @@ use RuntimeException;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class KlantContactsController extends Controller {
-	/**
-	 * Build the klant-contacts controller.
-	 *
-	 * @param string $appName The application name.
-	 * @param IRequest $request The current HTTP request.
-	 * @param IUserSession $userSession Session used to resolve the acting user.
-	 * @param KlantContactSyncService $contactSyncService Service that syncs klanten with the Nextcloud addressbooks.
-	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IUserSession $userSession,
 		private readonly KlantContactSyncService $contactSyncService,
 	) {
-		parent::__construct(appName: $appName, request: $request);
+		parent::__construct($appName, $request);
 	}//end __construct()
 
 	/**
@@ -137,6 +129,7 @@ class KlantContactsController extends Controller {
 	 * data. The klant id is pinned from the route — no IDOR.
 	 *
 	 * @NoCSRFRequired
+	 *
 	 * @param string $id The klant id to export.
 	 *
 	 * @return JSONResponse

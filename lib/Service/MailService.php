@@ -19,9 +19,6 @@ use OCP\Mail\IMailer;
 class MailService {
 	/**
 	 * Constructor for MailService.
-	 *
-	 * @param IMailer $mailer The Nextcloud mailer used to build and send the message.
-	 * @param IURLGenerator $urlGenerator Generates the base URL used to link back to the task.
 	 */
 	public function __construct(
 		private readonly IMailer $mailer,

@@ -44,16 +44,16 @@ class RequestParamsParser {
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-004
 	 */
 	public function parse(array $requestParams): array {
-		$limit = $this->getParam(params: $requestParams, name: 'limit');
-		$offset = $this->getParam(params: $requestParams, name: 'offset');
-		$order = $this->getParam(params: $requestParams, name: 'order') ?? [];
-		$extend = $this->getParam(params: $requestParams, name: 'extend');
-		$page = $this->getParam(params: $requestParams, name: 'page');
-		$search = $this->getParam(params: $requestParams, name: 'search');
+		$limit = $this->getParam($requestParams, 'limit');
+		$offset = $this->getParam($requestParams, 'offset');
+		$order = $this->getParam($requestParams, 'order') ?? [];
+		$extend = $this->getParam($requestParams, 'extend');
+		$page = $this->getParam($requestParams, 'page');
+		$search = $this->getParam($requestParams, 'search');
 
-		$offset = $this->calculateOffset(page: $page, limit: $limit, offset: $offset);
-		$order = $this->ensureArray(value: $order);
-		$extend = $this->ensureArray(value: $extend);
+		$offset = $this->calculateOffset($page, $limit, $offset);
+		$order = $this->ensureArray($order);
+		$extend = $this->ensureArray($extend);
 
 		return [
 			'limit' => $limit,
@@ -61,7 +61,7 @@ class RequestParamsParser {
 			'order' => $order,
 			'extend' => $extend,
 			'search' => $search,
-			'filters' => $this->extractFilters(requestParams: $requestParams),
+			'filters' => $this->extractFilters($requestParams),
 		];
 	}//end parse()
 
@@ -102,7 +102,7 @@ class RequestParamsParser {
 	 * @return mixed The value as an array, or original value if already null/array
 	 */
 	private function ensureArray(mixed $value): mixed {
-		if (is_string($value) === true) {
+		if (is_string($value)) {
 			return array_map('trim', explode(',', $value));
 		}
 

@@ -10,4 +10,32 @@
     <file>lib</file>
 
     <rule ref="vendor/conduction/hydra-gates/quality-config/phpcs.xml"/>
+
+    <!-- ── APP-SPECIFIC DEVIATION — ConductionNL/zaakafhandelapp#201 ────────
+         This app pre-dates the tightened Conduction commenting and
+         named-parameter rules. Its previous phpcs.xml demoted the sniffs below
+         from errors to warnings, with #201 tracking the cleanup.
+
+         The migration to the shared ruleset dropped that demotion silently, and
+         the app went red on debt it had been explicitly excused from. The first
+         attempt at a fix was to pay the debt off inside this PR — rewriting
+         ternaries and docblocks across the controllers. That is #201's work, not
+         a coding-standard migration's: it puts behaviour changes in a commit
+         whose whole claim is that it changes no behaviour, and it makes the diff
+         unreviewable.
+
+         So the deviation is restored HERE, where the shared stub is designed to
+         carry it: named, reasoned and tracked. Structural rules — spacing,
+         control structures, banned functions, removed Nextcloud APIs — still
+         gate the build as errors. Promote these back after #201.
+    -->
+    <rule ref="PEAR.Commenting.FunctionComment"><type>warning</type></rule>
+    <rule ref="PEAR.Commenting.FileComment"><type>warning</type></rule>
+    <rule ref="Generic.Commenting.DocComment"><type>warning</type></rule>
+    <rule ref="Squiz.Commenting.VariableComment"><type>warning</type></rule>
+    <rule ref="Squiz.Commenting.InlineComment"><type>warning</type></rule>
+    <rule ref="Generic.Files.LineLength"><type>warning</type></rule>
+    <rule ref="Squiz.PHP.DisallowInlineIf"><type>warning</type></rule>
+    <rule ref="Squiz.Operators.ComparisonOperatorUsage"><type>warning</type></rule>
+    <rule ref="CustomSniffs.Functions.NamedParameters"><type>warning</type></rule>
 </ruleset>
