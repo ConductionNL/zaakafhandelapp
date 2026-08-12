@@ -10,25 +10,20 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    # ── TEMPORARY DEVIATION — remove once the base marks its optional paths ──
+    # The excludePaths override that stood here is GONE, and deliberately so.
+    #
     # This app is the only one in the fleet on PHPStan 2.x (2.2.8; the other 17 are
     # on 1.12.x). PHPStan 2 VALIDATES excludePaths and aborts the whole run when an
-    # entry does not exist:
-    #   Path "/app/vendor-bin" is neither a directory, nor a file path, nor a
-    #   fnmatch pattern. If the excluded path can sometimes exist, append (?)
-    # Neither `vendor-bin` nor `lib/Resources/template` exists here, and the base
-    # declares both without the `(?)` optional marker — so inheriting the base list
-    # unchanged makes phpstan exit before analysing anything. The `!` re-declares
-    # the list rather than appending to it. Drop this block and the `!` as soon as
-    # the base marks those two paths optional.
-    excludePaths!:
-        analyseAndScan:
-            - vendor
-            - vendor-bin (?)
-            - lib/Resources/template (?)
-        analyse: []
-
-    # App-specific only. The base already sets level, paths, bootstrapFiles,
+    # entry does not exist, where 1.x accepts it silently — so the base declaring
+    # `vendor-bin` and `lib/Resources/template` without the `(?)` optional marker
+    # made phpstan exit here before analysing a single file, while every other app
+    # stayed green. The failure was in the shared base, and it is fixed there:
+    # conduction/hydra-gates v1.7.2 marks both paths optional (.github#408), and
+    # this app's lock now resolves it. Re-declaring the list locally would have
+    # frozen this app's copy of a fleet-wide value — the drift this whole
+    # centralisation exists to remove.
+    #
+    # App-specific only below. The base already sets level, paths, bootstrapFiles,
     # scanDirectories and every fleet-wide ignore.
     ignoreErrors:
         # @SuppressWarnings(PHPMD.*) is a PHPMD-specific PHPDoc annotation; PHPStan cannot
