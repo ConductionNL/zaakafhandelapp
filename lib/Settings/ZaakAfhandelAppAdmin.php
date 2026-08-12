@@ -1,4 +1,5 @@
 <?php
+
 namespace OCA\ZaakAfhandelApp\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
@@ -15,48 +16,43 @@ use OCP\Settings\ISettings;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
-class ZaakAfhandelAppAdmin implements ISettings
-{
+class ZaakAfhandelAppAdmin implements ISettings {
 
-    private IL10N $l;
+	private IL10N $l;
 
-    private IConfig $config;
+	private IConfig $config;
 
-    public function __construct(IConfig $config, IL10N $l)
-    {
-        $this->config = $config;
-        $this->l      = $l;
-    }//end __construct()
+	public function __construct(IConfig $config, IL10N $l) {
+		$this->config = $config;
+		$this->l = $l;
+	}//end __construct()
 
-    /**
-     * @return TemplateResponse
-     */
-    public function getForm()
-    {
-        $parameters = [
-            'mySetting' => $this->config->getSystemValue('zaakafhandelapp_setting', true),
-        ];
+	/**
+	 * @return TemplateResponse
+	 */
+	public function getForm() {
+		$parameters = [
+			'mySetting' => $this->config->getSystemValue('zaakafhandelapp_setting', true),
+		];
 
-        // RENDER_AS_BLANK: the Settings framework embeds this template inside the
-        // admin settings page, so the response must not add page chrome of its own.
-        return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, TemplateResponse::RENDER_AS_BLANK);
-    }//end getForm()
+		// RENDER_AS_BLANK: the Settings framework embeds this template inside the
+		// admin settings page, so the response must not add page chrome of its own.
+		return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, TemplateResponse::RENDER_AS_BLANK);
+	}//end getForm()
 
-    public function getSection()
-    {
-        return 'zaakafhandelapp';
-        // Name of the previously created section.
-    }//end getSection()
+	public function getSection() {
+		return 'zaakafhandelapp';
+		// Name of the previously created section.
+	}//end getSection()
 
-    /**
-     * @return integer whether the form should be rather on the top or bottom of
-     * the admin section. The forms are arranged in ascending order of the
-     * priority values. It is required to return a value between 0 and 100.
-     *
-     * E.g.: 70
-     */
-    public function getPriority()
-    {
-        return 10;
-    }//end getPriority()
+	/**
+	 * @return integer whether the form should be rather on the top or bottom of
+	 *                 the admin section. The forms are arranged in ascending order of the
+	 *                 priority values. It is required to return a value between 0 and 100.
+	 *
+	 * E.g.: 70
+	 */
+	public function getPriority() {
+		return 10;
+	}//end getPriority()
 }//end class

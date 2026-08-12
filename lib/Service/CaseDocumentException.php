@@ -16,6 +16,5 @@ use Exception;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
-class CaseDocumentException extends Exception
-{
+class CaseDocumentException extends Exception {
 }//end class

@@ -31,124 +31,114 @@ use JsonSerializable;
 /**
  * Concrete stub for ObjectEntity supporting the accessors the tests use.
  */
-class ObjectEntity implements JsonSerializable
-{
+class ObjectEntity implements JsonSerializable {
 
-    /**
-     * @var array<string,mixed> The object payload.
-     */
-    private array $object = [];
+	/**
+	 * @var array<string,mixed> The object payload.
+	 */
+	private array $object = [];
 
-    /**
-     * @var string|null The register id/slug.
-     */
-    private ?string $register = null;
+	/**
+	 * @var string|null The register id/slug.
+	 */
+	private ?string $register = null;
 
-    /**
-     * @var string|null The schema id/slug.
-     */
-    private ?string $schema = null;
+	/**
+	 * @var string|null The schema id/slug.
+	 */
+	private ?string $schema = null;
 
-    /**
-     * @var string|null The object uuid.
-     */
-    private ?string $uuid = null;
+	/**
+	 * @var string|null The object uuid.
+	 */
+	private ?string $uuid = null;
 
-    /**
-     * Replace the object payload.
-     *
-     * @param array<string,mixed> $object The new payload.
-     *
-     * @return void
-     */
-    public function setObject(array $object): void
-    {
-        $this->object = $object;
-    }//end setObject()
+	/**
+	 * Replace the object payload.
+	 *
+	 * @param array<string,mixed> $object The new payload.
+	 *
+	 * @return void
+	 */
+	public function setObject(array $object): void {
+		$this->object = $object;
+	}//end setObject()
 
-    /**
-     * Return the raw object payload.
-     *
-     * @return array<string,mixed>
-     */
-    public function getObject(): array
-    {
-        return $this->object;
-    }//end getObject()
+	/**
+	 * Return the raw object payload.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function getObject(): array {
+		return $this->object;
+	}//end getObject()
 
-    /**
-     * Set the register scope.
-     *
-     * @param string|null $register The register id/slug.
-     *
-     * @return void
-     */
-    public function setRegister(?string $register): void
-    {
-        $this->register = $register;
-    }//end setRegister()
+	/**
+	 * Set the register scope.
+	 *
+	 * @param string|null $register The register id/slug.
+	 *
+	 * @return void
+	 */
+	public function setRegister(?string $register): void {
+		$this->register = $register;
+	}//end setRegister()
 
-    /**
-     * Get the register scope.
-     *
-     * @return string|null
-     */
-    public function getRegister(): ?string
-    {
-        return $this->register;
-    }//end getRegister()
+	/**
+	 * Get the register scope.
+	 *
+	 * @return string|null
+	 */
+	public function getRegister(): ?string {
+		return $this->register;
+	}//end getRegister()
 
-    /**
-     * Set the schema scope.
-     *
-     * @param string|null $schema The schema id/slug.
-     *
-     * @return void
-     */
-    public function setSchema(?string $schema): void
-    {
-        $this->schema = $schema;
-    }//end setSchema()
+	/**
+	 * Set the schema scope.
+	 *
+	 * @param string|null $schema The schema id/slug.
+	 *
+	 * @return void
+	 */
+	public function setSchema(?string $schema): void {
+		$this->schema = $schema;
+	}//end setSchema()
 
-    /**
-     * Get the schema scope.
-     *
-     * @return string|null
-     */
-    public function getSchema(): ?string
-    {
-        return $this->schema;
-    }//end getSchema()
+	/**
+	 * Get the schema scope.
+	 *
+	 * @return string|null
+	 */
+	public function getSchema(): ?string {
+		return $this->schema;
+	}//end getSchema()
 
-    /**
-     * Set the object uuid.
-     *
-     * @param string|null $uuid The uuid.
-     *
-     * @return void
-     */
-    public function setUuid(?string $uuid): void
-    {
-        $this->uuid = $uuid;
-    }//end setUuid()
+	/**
+	 * Set the object uuid.
+	 *
+	 * @param string|null $uuid The uuid.
+	 *
+	 * @return void
+	 */
+	public function setUuid(?string $uuid): void {
+		$this->uuid = $uuid;
+	}//end setUuid()
 
-    /**
-     * Get the object uuid.
-     *
-     * @return string|null
-     */
-    public function getUuid(): ?string
-    {
-        return $this->uuid;
-    }//end getUuid()
+	/**
+	 * Get the object uuid.
+	 *
+	 * @return string|null
+	 */
+	public function getUuid(): ?string {
+		return $this->uuid;
+	}//end getUuid()
 
-    /**
-     * Serialize the entity to the object payload.
-     *
-     * @return array<string,mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->object;
-    }//end jsonSerialize()
+	/**
+	 * Serialize the entity to the object payload.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function jsonSerialize(): array {
+		return $this->object;
+	}//end jsonSerialize()
 }//end class

@@ -40,87 +40,82 @@ use ReflectionMethod;
  * renamed or invented method is caught by name rather than by waiting for a
  * runtime fatal.
  */
-class ObjectQueryServiceTest extends TestCase
-{
-    /**
-     * The method getFacets() calls must exist on the OpenRegister service.
-     *
-     * This resolves against the real OpenRegister class when the app is loaded
-     * and against tests/Stubs/Service/ObjectService.php otherwise. Asserting
-     * the negative too keeps the stub honest: if someone re-adds the phantom
-     * getAggregations() to the stub to make a mock pass, this fails.
-     *
-     * @return void
-     */
-    public function testOpenRegisterDeclaresTheFacetingMethodWeCall(): void
-    {
-        $this->assertTrue(
-            method_exists(OpenRegisterObjectService::class, 'getFacetsForObjects'),
-            'OpenRegister ObjectService must declare getFacetsForObjects() — ObjectQueryService::getFacets() calls it.'
-        );
+class ObjectQueryServiceTest extends TestCase {
+	/**
+	 * The method getFacets() calls must exist on the OpenRegister service.
+	 *
+	 * This resolves against the real OpenRegister class when the app is loaded
+	 * and against tests/Stubs/Service/ObjectService.php otherwise. Asserting
+	 * the negative too keeps the stub honest: if someone re-adds the phantom
+	 * getAggregations() to the stub to make a mock pass, this fails.
+	 *
+	 * @return void
+	 */
+	public function testOpenRegisterDeclaresTheFacetingMethodWeCall(): void {
+		$this->assertTrue(
+			method_exists(OpenRegisterObjectService::class, 'getFacetsForObjects'),
+			'OpenRegister ObjectService must declare getFacetsForObjects() — ObjectQueryService::getFacets() calls it.'
+		);
 
-        $this->assertFalse(
-            method_exists(OpenRegisterObjectService::class, 'getAggregations'),
-            'getAggregations() does not exist in OpenRegister. If this ever passes, the stub has drifted away from the real API and is hiding a live fatal.'
-        );
-    }
+		$this->assertFalse(
+			method_exists(OpenRegisterObjectService::class, 'getAggregations'),
+			'getAggregations() does not exist in OpenRegister. If this ever passes, the stub has drifted away from the real API and is hiding a live fatal.'
+		);
+	}
 
-    /**
-     * getFacets() delegates to getFacetsForObjects() and returns its result.
-     *
-     * @return void
-     */
-    public function testGetFacetsDelegatesToOpenRegister(): void
-    {
-        $filters = ['zaaktype' => 'abc'];
-        $facets  = ['status' => ['open' => 3]];
+	/**
+	 * getFacets() delegates to getFacetsForObjects() and returns its result.
+	 *
+	 * @return void
+	 */
+	public function testGetFacetsDelegatesToOpenRegister(): void {
+		$filters = ['zaaktype' => 'abc'];
+		$facets = ['status' => ['open' => 3]];
 
-        $mapper = $this->getMockBuilder(OpenRegisterObjectService::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getFacetsForObjects'])
-            ->getMockForAbstractClass();
+		$mapper = $this->getMockBuilder(OpenRegisterObjectService::class)
+			->disableOriginalConstructor()
+			->onlyMethods(['getFacetsForObjects'])
+			->getMockForAbstractClass();
 
-        $mapper->expects($this->once())
-            ->method('getFacetsForObjects')
-            ->with($filters)
-            ->willReturn($facets);
+		$mapper->expects($this->once())
+			->method('getFacetsForObjects')
+			->with($filters)
+			->willReturn($facets);
 
-        $mapperService = $this->createMock(ObjectMapperService::class);
-        $mapperService->method('getMapper')->willReturn($mapper);
+		$mapperService = $this->createMock(ObjectMapperService::class);
+		$mapperService->method('getMapper')->willReturn($mapper);
 
-        $service = new ObjectQueryService($mapperService, $this->createMock(RequestParamsParser::class));
+		$service = new ObjectQueryService($mapperService, $this->createMock(RequestParamsParser::class));
 
-        $this->assertSame($facets, $service->getFacets('zaak', $filters));
-    }
+		$this->assertSame($facets, $service->getFacets('zaak', $filters));
+	}
 
-    /**
-     * A mapper that is not an OpenRegister service yields no facets.
-     *
-     * Negative control for the test above: without this, the delegation test
-     * would still pass if getFacets() were changed to always return [].
-     *
-     * @return void
-     */
-    public function testGetFacetsReturnsEmptyForNonOpenRegisterMapper(): void
-    {
-        $mapperService = $this->createMock(ObjectMapperService::class);
-        $mapperService->method('getMapper')->willReturn(new \stdClass());
+	/**
+	 * A mapper that is not an OpenRegister service yields no facets.
+	 *
+	 * Negative control for the test above: without this, the delegation test
+	 * would still pass if getFacets() were changed to always return [].
+	 *
+	 * @return void
+	 */
+	public function testGetFacetsReturnsEmptyForNonOpenRegisterMapper(): void {
+		$mapperService = $this->createMock(ObjectMapperService::class);
+		$mapperService->method('getMapper')->willReturn(new \stdClass());
 
-        $service = new ObjectQueryService($mapperService, $this->createMock(RequestParamsParser::class));
+		$service = new ObjectQueryService($mapperService, $this->createMock(RequestParamsParser::class));
 
-        $this->assertSame([], $service->getFacets('zaak', ['a' => 'b']));
-    }
+		$this->assertSame([], $service->getFacets('zaak', ['a' => 'b']));
+	}
 
-    /**
-     * getFacets() must keep the signature getResultArrayForRequest() calls it with.
-     *
-     * @return void
-     */
-    public function testGetFacetsSignatureIsStable(): void
-    {
-        $method = new ReflectionMethod(ObjectQueryService::class, 'getFacets');
+	/**
+	 * getFacets() must keep the signature getResultArrayForRequest() calls it with.
+	 *
+	 * @return void
+	 */
+	public function testGetFacetsSignatureIsStable(): void {
+		$method = new ReflectionMethod(ObjectQueryService::class, 'getFacets');
 
-        $this->assertSame('array', (string) $method->getReturnType());
-        $this->assertSame(2, $method->getNumberOfParameters());
-    }
+		$this->assertSame('array', (string)$method->getReturnType());
+		$this->assertSame(2, $method->getNumberOfParameters());
+	}
 }

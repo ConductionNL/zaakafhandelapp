@@ -60,158 +60,144 @@ use Psr\Log\LoggerInterface;
  * ControllerExceptionTranslationTest covers what these do when the service
  * throws; this file covers what they do when it does not.
  */
-class AuditTrailEndpointsTest extends TestCase
-{
+class AuditTrailEndpointsTest extends TestCase {
 
-    /**
-     * The object id used as the route parameter throughout.
-     *
-     * @var string
-     */
-    private const OBJECT_ID = 'object-7';
+	/**
+	 * The object id used as the route parameter throughout.
+	 *
+	 * @var string
+	 */
+	private const OBJECT_ID = 'object-7';
 
-    /**
-     * @var ObjectService&MockObject
-     */
-    private $objectService;
+	/**
+	 * @var ObjectService&MockObject
+	 */
+	private $objectService;
 
+	protected function setUp(): void {
+		$this->objectService = $this->createMock(ObjectService::class);
 
-    protected function setUp(): void
-    {
-        $this->objectService = $this->createMock(ObjectService::class);
+	}//end setUp()
 
-    }//end setUp()
+	/**
+	 * Build the named controller with the shared ObjectService mock.
+	 *
+	 * @param class-string $class Controller class to build.
+	 * @param bool $authenticated Whether IUserSession returns a user.
+	 *
+	 * @return object The controller under test.
+	 */
+	private function makeController(string $class, bool $authenticated = true): object {
+		$request = $this->createMock(IRequest::class);
+		$request->method('getParams')->willReturn([]);
 
+		$session = $this->createMock(IUserSession::class);
+		$session->method('getUser')->willReturn($authenticated === true ? $this->createMock(IUser::class) : null);
 
-    /**
-     * Build the named controller with the shared ObjectService mock.
-     *
-     * @param class-string $class         Controller class to build.
-     * @param bool         $authenticated Whether IUserSession returns a user.
-     *
-     * @return object The controller under test.
-     */
-    private function makeController(string $class, bool $authenticated=true): object
-    {
-        $request = $this->createMock(IRequest::class);
-        $request->method('getParams')->willReturn([]);
+		$logger = $this->createMock(LoggerInterface::class);
 
-        $session = $this->createMock(IUserSession::class);
-        $session->method('getUser')->willReturn($authenticated === true ? $this->createMock(IUser::class) : null);
+		if ($class === TakenController::class) {
+			return new TakenController(
+				'zaakafhandelapp',
+				$request,
+				$this->createMock(MailService::class),
+				$this->objectService,
+				$session,
+				$logger
+			);
+		}
 
-        $logger = $this->createMock(LoggerInterface::class);
+		if ($class === KlantenController::class) {
+			return new KlantenController(
+				'zaakafhandelapp',
+				$request,
+				$this->objectService,
+				$session,
+				$this->createMock(KlantContactSyncService::class),
+				$logger
+			);
+		}
 
-        if ($class === TakenController::class) {
-            return new TakenController(
-                'zaakafhandelapp',
-                $request,
-                $this->createMock(MailService::class),
-                $this->objectService,
-                $session,
-                $logger
-            );
-        }
+		return new $class('zaakafhandelapp', $request, $this->objectService, $session, $logger);
+	}//end makeController()
 
-        if ($class === KlantenController::class) {
-            return new KlantenController(
-                'zaakafhandelapp',
-                $request,
-                $this->objectService,
-                $session,
-                $this->createMock(KlantContactSyncService::class),
-                $logger
-            );
-        }
+	/**
+	 * The four controllers and the object type each must resolve the id against.
+	 *
+	 * @return array<string, array{0: class-string, 1: string}>
+	 */
+	public static function auditTrailProvider(): array {
+		return [
+			'berichten' => [BerichtenController::class, 'berichten'],
+			'klanten' => [KlantenController::class, 'klanten'],
+			'taken' => [TakenController::class, 'taken'],
+			'zaken' => [ZakenController::class, 'zaken'],
+		];
+	}//end auditTrailProvider()
 
-        return new $class('zaakafhandelapp', $request, $this->objectService, $session, $logger);
+	/**
+	 * The happy path: 200, the trail verbatim, and the guard resolved against
+	 * the controller's own object type.
+	 *
+	 * @param class-string $class Controller under test.
+	 * @param string $objectType The object type the guard must use.
+	 *
+	 * @return void
+	 */
+	#[DataProvider('auditTrailProvider')]
+	public function testReturnsTheTrailAfterResolvingItsOwnObjectType(string $class, string $objectType): void {
+		$trail = [
+			['id' => 'log-1', 'action' => 'create', 'created' => '2026-06-14T10:00:00Z'],
+			['id' => 'log-2', 'action' => 'update', 'created' => '2026-06-15T11:00:00Z'],
+		];
 
-    }//end makeController()
+		$this->objectService->expects($this->once())
+			->method('getObject')
+			->with($objectType, self::OBJECT_ID)
+			->willReturn(['id' => self::OBJECT_ID]);
+		$this->objectService->expects($this->once())
+			->method('getAuditTrail')
+			->with(self::OBJECT_ID)
+			->willReturn($trail);
 
+		$response = $this->makeController($class)->getAuditTrail(self::OBJECT_ID);
 
-    /**
-     * The four controllers and the object type each must resolve the id against.
-     *
-     * @return array<string, array{0: class-string, 1: string}>
-     */
-    public static function auditTrailProvider(): array
-    {
-        return [
-            'berichten' => [BerichtenController::class, 'berichten'],
-            'klanten'   => [KlantenController::class, 'klanten'],
-            'taken'     => [TakenController::class, 'taken'],
-            'zaken'     => [ZakenController::class, 'zaken'],
-        ];
-    }//end auditTrailProvider()
+		$this->assertSame(Http::STATUS_OK, $response->getStatus(), $class . ' status');
+		$this->assertSame($trail, $response->getData(), $class . ' body');
+	}//end testReturnsTheTrailAfterResolvingItsOwnObjectType()
 
+	/**
+	 * An id the caller cannot resolve answers 404 and the trail is never read.
+	 *
+	 * @param class-string $class Controller under test.
+	 *
+	 * @return void
+	 */
+	#[DataProvider('auditTrailProvider')]
+	public function testUnresolvableIdAnswers404AndNeverReadsTheTrail(string $class): void {
+		$this->objectService->method('getObject')->willReturn(null);
+		$this->objectService->expects($this->never())->method('getAuditTrail');
 
-    /**
-     * The happy path: 200, the trail verbatim, and the guard resolved against
-     * the controller's own object type.
-     *
-     * @param class-string $class      Controller under test.
-     * @param string       $objectType The object type the guard must use.
-     *
-     * @return void
-     */
-    #[DataProvider('auditTrailProvider')]
-    public function testReturnsTheTrailAfterResolvingItsOwnObjectType(string $class, string $objectType): void
-    {
-        $trail = [
-            ['id' => 'log-1', 'action' => 'create', 'created' => '2026-06-14T10:00:00Z'],
-            ['id' => 'log-2', 'action' => 'update', 'created' => '2026-06-15T11:00:00Z'],
-        ];
+		$response = $this->makeController($class)->getAuditTrail(self::OBJECT_ID);
 
-        $this->objectService->expects($this->once())
-            ->method('getObject')
-            ->with($objectType, self::OBJECT_ID)
-            ->willReturn(['id' => self::OBJECT_ID]);
-        $this->objectService->expects($this->once())
-            ->method('getAuditTrail')
-            ->with(self::OBJECT_ID)
-            ->willReturn($trail);
+		$this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus(), $class . ' status');
+		$this->assertArrayHasKey('error', $response->getData(), $class . ' body');
+	}//end testUnresolvableIdAnswers404AndNeverReadsTheTrail()
 
-        $response = $this->makeController($class)->getAuditTrail(self::OBJECT_ID);
+	/**
+	 * An unauthenticated caller gets 401 before the object is even resolved.
+	 *
+	 * @param class-string $class Controller under test.
+	 *
+	 * @return void
+	 */
+	#[DataProvider('auditTrailProvider')]
+	public function testUnauthenticatedGets401BeforeResolvingAnything(string $class): void {
+		$this->objectService->expects($this->never())->method('getObject');
+		$this->objectService->expects($this->never())->method('getAuditTrail');
 
-        $this->assertSame(Http::STATUS_OK, $response->getStatus(), $class.' status');
-        $this->assertSame($trail, $response->getData(), $class.' body');
-    }//end testReturnsTheTrailAfterResolvingItsOwnObjectType()
+		$response = $this->makeController($class, false)->getAuditTrail(self::OBJECT_ID);
 
-
-    /**
-     * An id the caller cannot resolve answers 404 and the trail is never read.
-     *
-     * @param class-string $class Controller under test.
-     *
-     * @return void
-     */
-    #[DataProvider('auditTrailProvider')]
-    public function testUnresolvableIdAnswers404AndNeverReadsTheTrail(string $class): void
-    {
-        $this->objectService->method('getObject')->willReturn(null);
-        $this->objectService->expects($this->never())->method('getAuditTrail');
-
-        $response = $this->makeController($class)->getAuditTrail(self::OBJECT_ID);
-
-        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus(), $class.' status');
-        $this->assertArrayHasKey('error', $response->getData(), $class.' body');
-    }//end testUnresolvableIdAnswers404AndNeverReadsTheTrail()
-
-
-    /**
-     * An unauthenticated caller gets 401 before the object is even resolved.
-     *
-     * @param class-string $class Controller under test.
-     *
-     * @return void
-     */
-    #[DataProvider('auditTrailProvider')]
-    public function testUnauthenticatedGets401BeforeResolvingAnything(string $class): void
-    {
-        $this->objectService->expects($this->never())->method('getObject');
-        $this->objectService->expects($this->never())->method('getAuditTrail');
-
-        $response = $this->makeController($class, false)->getAuditTrail(self::OBJECT_ID);
-
-        $this->assertSame(Http::STATUS_UNAUTHORIZED, $response->getStatus(), $class.' status');
-    }//end testUnauthenticatedGets401BeforeResolvingAnything()
+		$this->assertSame(Http::STATUS_UNAUTHORIZED, $response->getStatus(), $class . ' status');
+	}//end testUnauthenticatedGets401BeforeResolvingAnything()
 }//end class

@@ -33,167 +33,150 @@ use PHPUnit\Framework\TestCase;
  * lookup by uuid, the read-only 405 (Allow: GET) on write verbs, and the 401
  * unauthenticated guard on all verbs.
  */
-class ZaakAuditTrailControllerTest extends TestCase
-{
+class ZaakAuditTrailControllerTest extends TestCase {
 
-    /**
-     * @var ObjectService&MockObject
-     */
-    private $objectService;
+	/**
+	 * @var ObjectService&MockObject
+	 */
+	private $objectService;
 
-    /**
-     * @var ZaakAuditTrailController
-     */
-    private $controller;
+	/**
+	 * @var ZaakAuditTrailController
+	 */
+	private $controller;
 
-    private const ZAAK = 'zaak-1';
+	private const ZAAK = 'zaak-1';
 
-    /**
-     * What ObjectService::getObject('zaken', …) resolves to for the test at hand.
-     * `null` models an id that does not exist inside this app's register.
-     *
-     * @var array<string,mixed>|null
-     */
-    private ?array $resolvedZaak = ['id' => self::ZAAK];
+	/**
+	 * What ObjectService::getObject('zaken', …) resolves to for the test at hand.
+	 * `null` models an id that does not exist inside this app's register.
+	 *
+	 * @var array<string,mixed>|null
+	 */
+	private ?array $resolvedZaak = ['id' => self::ZAAK];
 
+	protected function setUp(): void {
+		$this->objectService = $this->createMock(ObjectService::class);
 
-    protected function setUp(): void
-    {
-        $this->objectService = $this->createMock(ObjectService::class);
+		// The zaak resolves by default. Driven through a property rather than a
+		// second willReturn() because PHPUnit keeps the FIRST matching invocation
+		// rule, so a per-test re-stub of the same method would silently be ignored
+		// and the scope-guard tests would pass for the wrong reason.
+		$this->objectService->method('getObject')->willReturnCallback(
+			fn (): ?array => $this->resolvedZaak
+		);
 
-        // The zaak resolves by default. Driven through a property rather than a
-        // second willReturn() because PHPUnit keeps the FIRST matching invocation
-        // rule, so a per-test re-stub of the same method would silently be ignored
-        // and the scope-guard tests would pass for the wrong reason.
-        $this->objectService->method('getObject')->willReturnCallback(
-            fn (): ?array => $this->resolvedZaak
-        );
+		$urlGenerator = $this->createMock(IURLGenerator::class);
+		$urlGenerator->method('getAbsoluteURL')->willReturnArgument(0);
 
-        $urlGenerator = $this->createMock(IURLGenerator::class);
-        $urlGenerator->method('getAbsoluteURL')->willReturnArgument(0);
+		$session = $this->createMock(IUserSession::class);
+		$session->method('getUser')->willReturn($this->createMock(IUser::class));
 
-        $session = $this->createMock(IUserSession::class);
-        $session->method('getUser')->willReturn($this->createMock(IUser::class));
+		$this->controller = new ZaakAuditTrailController(
+			'zaakafhandelapp',
+			$this->createMock(IRequest::class),
+			$this->objectService,
+			$urlGenerator,
+			$session
+		);
+	}//end setUp()
 
-        $this->controller = new ZaakAuditTrailController(
-            'zaakafhandelapp',
-            $this->createMock(IRequest::class),
-            $this->objectService,
-            $urlGenerator,
-            $session
-        );
-    }//end setUp()
+	public function testIndexMapsOrEntriesToZgwAudittrailShape(): void {
+		$this->objectService->method('getAuditTrail')
+			->with(self::ZAAK)
+			->willReturn(
+				[
+					['uuid' => 'e1', 'action' => 'create', 'created' => '2026-06-14T10:00:00Z'],
+					['uuid' => 'e2', 'action' => 'update', 'changed' => ['old' => ['a' => 1], 'new' => ['a' => 2]]],
+				]
+			);
 
+		$data = $this->controller->index(self::ZAAK)->getData();
 
-    public function testIndexMapsOrEntriesToZgwAudittrailShape(): void
-    {
-        $this->objectService->method('getAuditTrail')
-            ->with(self::ZAAK)
-            ->willReturn(
-                [
-                    ['uuid' => 'e1', 'action' => 'create', 'created' => '2026-06-14T10:00:00Z'],
-                    ['uuid' => 'e2', 'action' => 'update', 'changed' => ['old' => ['a' => 1], 'new' => ['a' => 2]]],
-                ]
-            );
+		$this->assertCount(2, $data['results']);
+		$this->assertSame('create', $data['results'][0]['actie']);
+		$this->assertSame('ZRC', $data['results'][0]['bron']);
+		$this->assertStringContainsString(self::ZAAK, (string)$data['results'][0]['hoofdObject']);
+		$this->assertSame('update', $data['results'][1]['actie']);
+		$this->assertSame(['a' => 1], $data['results'][1]['wijzigingen']['oud']);
+		$this->assertSame(['a' => 2], $data['results'][1]['wijzigingen']['nieuw']);
+	}//end testIndexMapsOrEntriesToZgwAudittrailShape()
 
-        $data = $this->controller->index(self::ZAAK)->getData();
+	public function testShowReturnsSingleEntryByUuid(): void {
+		$this->objectService->method('getAuditTrail')->willReturn(
+			[['uuid' => 'e1', 'action' => 'create'], ['uuid' => 'e2', 'action' => 'update']]
+		);
 
-        $this->assertCount(2, $data['results']);
-        $this->assertSame('create', $data['results'][0]['actie']);
-        $this->assertSame('ZRC', $data['results'][0]['bron']);
-        $this->assertStringContainsString(self::ZAAK, (string) $data['results'][0]['hoofdObject']);
-        $this->assertSame('update', $data['results'][1]['actie']);
-        $this->assertSame(['a' => 1], $data['results'][1]['wijzigingen']['oud']);
-        $this->assertSame(['a' => 2], $data['results'][1]['wijzigingen']['nieuw']);
-    }//end testIndexMapsOrEntriesToZgwAudittrailShape()
+		$response = $this->controller->show(self::ZAAK, 'e2');
 
+		$this->assertSame(Http::STATUS_OK, $response->getStatus());
+		$this->assertSame('e2', $response->getData()['uuid']);
+	}//end testShowReturnsSingleEntryByUuid()
 
-    public function testShowReturnsSingleEntryByUuid(): void
-    {
-        $this->objectService->method('getAuditTrail')->willReturn(
-            [['uuid' => 'e1', 'action' => 'create'], ['uuid' => 'e2', 'action' => 'update']]
-        );
+	public function testShowReturns404ForUnknownEntry(): void {
+		$this->objectService->method('getAuditTrail')->willReturn([['uuid' => 'e1', 'action' => 'create']]);
 
-        $response = $this->controller->show(self::ZAAK, 'e2');
+		$this->assertSame(Http::STATUS_NOT_FOUND, $this->controller->show(self::ZAAK, 'missing')->getStatus());
+	}//end testShowReturns404ForUnknownEntry()
 
-        $this->assertSame(Http::STATUS_OK, $response->getStatus());
-        $this->assertSame('e2', $response->getData()['uuid']);
-    }//end testShowReturnsSingleEntryByUuid()
+	/**
+	 * An id that does not resolve as a zaak in this app's register answers 404
+	 * and the trail is never read.
+	 *
+	 * Measured live before this guard existed:
+	 * `GET api/zrc/zaken/{uuid-of-an-object-in-another-register}/audit_trail`
+	 * returned **HTTP 200 with that object's audit row**, because
+	 * ObjectService::getAuditTrail() resolves rows from the uuid alone. The
+	 * sibling per-resource trails already had this check; these two did not.
+	 *
+	 * @return void
+	 */
+	public function testIndexAnswers404ForAnIdOutsideThisAppsRegister(): void {
+		$this->resolvedZaak = null;
+		$this->objectService->expects($this->never())->method('getAuditTrail');
 
+		$response = $this->controller->index('an-id-from-another-register');
 
-    public function testShowReturns404ForUnknownEntry(): void
-    {
-        $this->objectService->method('getAuditTrail')->willReturn([['uuid' => 'e1', 'action' => 'create']]);
+		$this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
+	}//end testIndexAnswers404ForAnIdOutsideThisAppsRegister()
 
-        $this->assertSame(Http::STATUS_NOT_FOUND, $this->controller->show(self::ZAAK, 'missing')->getStatus());
-    }//end testShowReturns404ForUnknownEntry()
+	/**
+	 * The same for ::show.
+	 *
+	 * @return void
+	 */
+	public function testShowAnswers404ForAnIdOutsideThisAppsRegister(): void {
+		$this->resolvedZaak = null;
+		$this->objectService->expects($this->never())->method('getAuditTrail');
 
+		$response = $this->controller->show('an-id-from-another-register', 'e1');
 
-    /**
-     * An id that does not resolve as a zaak in this app's register answers 404
-     * and the trail is never read.
-     *
-     * Measured live before this guard existed:
-     * `GET api/zrc/zaken/{uuid-of-an-object-in-another-register}/audit_trail`
-     * returned **HTTP 200 with that object's audit row**, because
-     * ObjectService::getAuditTrail() resolves rows from the uuid alone. The
-     * sibling per-resource trails already had this check; these two did not.
-     *
-     * @return void
-     */
-    public function testIndexAnswers404ForAnIdOutsideThisAppsRegister(): void
-    {
-        $this->resolvedZaak = null;
-        $this->objectService->expects($this->never())->method('getAuditTrail');
+		$this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
+	}//end testShowAnswers404ForAnIdOutsideThisAppsRegister()
 
-        $response = $this->controller->index('an-id-from-another-register');
+	public function testWriteVerbsReturn405WithAllowHeader(): void {
+		foreach (
+			[
+				$this->controller->create(self::ZAAK),
+				$this->controller->update(self::ZAAK, 'e1'),
+				$this->controller->destroy(self::ZAAK, 'e1'),
+			] as $response
+		) {
+			$this->assertSame(Http::STATUS_METHOD_NOT_ALLOWED, $response->getStatus());
+		}
+	}//end testWriteVerbsReturn405WithAllowHeader()
 
-        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
-    }//end testIndexAnswers404ForAnIdOutsideThisAppsRegister()
+	public function testUnauthenticatedReadReturns401(): void {
+		$session = $this->createMock(IUserSession::class);
+		$session->method('getUser')->willReturn(null);
+		$controller = new ZaakAuditTrailController(
+			'zaakafhandelapp',
+			$this->createMock(IRequest::class),
+			$this->objectService,
+			$this->createMock(IURLGenerator::class),
+			$session
+		);
 
-
-    /**
-     * The same for ::show.
-     *
-     * @return void
-     */
-    public function testShowAnswers404ForAnIdOutsideThisAppsRegister(): void
-    {
-        $this->resolvedZaak = null;
-        $this->objectService->expects($this->never())->method('getAuditTrail');
-
-        $response = $this->controller->show('an-id-from-another-register', 'e1');
-
-        $this->assertSame(Http::STATUS_NOT_FOUND, $response->getStatus());
-    }//end testShowAnswers404ForAnIdOutsideThisAppsRegister()
-
-
-    public function testWriteVerbsReturn405WithAllowHeader(): void
-    {
-        foreach (
-            [
-                $this->controller->create(self::ZAAK),
-                $this->controller->update(self::ZAAK, 'e1'),
-                $this->controller->destroy(self::ZAAK, 'e1'),
-            ] as $response
-        ) {
-            $this->assertSame(Http::STATUS_METHOD_NOT_ALLOWED, $response->getStatus());
-        }
-    }//end testWriteVerbsReturn405WithAllowHeader()
-
-
-    public function testUnauthenticatedReadReturns401(): void
-    {
-        $session = $this->createMock(IUserSession::class);
-        $session->method('getUser')->willReturn(null);
-        $controller = new ZaakAuditTrailController(
-            'zaakafhandelapp',
-            $this->createMock(IRequest::class),
-            $this->objectService,
-            $this->createMock(IURLGenerator::class),
-            $session
-        );
-
-        $this->assertSame(Http::STATUS_UNAUTHORIZED, $controller->index(self::ZAAK)->getStatus());
-    }//end testUnauthenticatedReadReturns401()
+		$this->assertSame(Http::STATUS_UNAUTHORIZED, $controller->index(self::ZAAK)->getStatus());
+	}//end testUnauthenticatedReadReturns401()
 }//end class

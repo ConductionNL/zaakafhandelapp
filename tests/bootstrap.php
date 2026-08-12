@@ -27,26 +27,26 @@ declare(strict_types=1);
 
 define('PHPUNIT_RUN', 1);
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // Recover the Composer ClassLoader instance from the registered autoload
 // functions. require'ing vendor/autoload.php returns `true` (not the loader)
 // when PHPUnit has already booted it, so fetch it from spl_autoload_functions.
 $autoloader = null;
 foreach (spl_autoload_functions() as $loader) {
-    if (is_array($loader) === true && $loader[0] instanceof \Composer\Autoload\ClassLoader) {
-        $autoloader = $loader[0];
-        break;
-    }
+	if (is_array($loader) === true && $loader[0] instanceof \Composer\Autoload\ClassLoader) {
+		$autoloader = $loader[0];
+		break;
+	}
 }
 
 // Register the OCP and NCU namespaces from the nextcloud/ocp stub package so
 // PHPUnit can mock OCP interfaces without a full Nextcloud installation. These
 // self-skip (class_exists guards inside the stubs) when the real Nextcloud
 // runtime is loaded below.
-if ($autoloader !== null && is_dir(__DIR__.'/../vendor/nextcloud/ocp/OCP') === true) {
-    $autoloader->addPsr4('OCP\\', __DIR__.'/../vendor/nextcloud/ocp/OCP/');
-    $autoloader->addPsr4('NCU\\', __DIR__.'/../vendor/nextcloud/ocp/NCU/');
+if ($autoloader !== null && is_dir(__DIR__ . '/../vendor/nextcloud/ocp/OCP') === true) {
+	$autoloader->addPsr4('OCP\\', __DIR__ . '/../vendor/nextcloud/ocp/OCP/');
+	$autoloader->addPsr4('NCU\\', __DIR__ . '/../vendor/nextcloud/ocp/NCU/');
 }
 
 // These are pure unit tests: collaborators are mocked and no live Nextcloud
@@ -69,5 +69,5 @@ if ($autoloader !== null && is_dir(__DIR__.'/../vendor/nextcloud/ocp/OCP') === t
 // probe against another registered autoloader (e.g. phpstan's PharAutoloader)
 // poisons resolution so a subsequent addPsr4() no longer takes effect.
 if ($autoloader !== null) {
-    $autoloader->addPsr4('OCA\\OpenRegister\\', __DIR__.'/Stubs/');
+	$autoloader->addPsr4('OCA\\OpenRegister\\', __DIR__ . '/Stubs/');
 }

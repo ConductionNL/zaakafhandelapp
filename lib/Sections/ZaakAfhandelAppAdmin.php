@@ -1,4 +1,5 @@
 <?php
+
 namespace OCA\ZaakAfhandelApp\Sections;
 
 use OCP\IL10N;
@@ -14,36 +15,30 @@ use OCP\Settings\IIconSection;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
-class ZaakAfhandelAppAdmin implements IIconSection
-{
+class ZaakAfhandelAppAdmin implements IIconSection {
 
-    private IL10N $l;
+	private IL10N $l;
 
-    private IURLGenerator $urlGenerator;
+	private IURLGenerator $urlGenerator;
 
-    public function __construct(IL10N $l, IURLGenerator $urlGenerator)
-    {
-        $this->l            = $l;
-        $this->urlGenerator = $urlGenerator;
-    }//end __construct()
+	public function __construct(IL10N $l, IURLGenerator $urlGenerator) {
+		$this->l = $l;
+		$this->urlGenerator = $urlGenerator;
+	}//end __construct()
 
-    public function getIcon(): string
-    {
-        return $this->urlGenerator->imagePath('core', 'actions/settings-dark.svg');
-    }//end getIcon()
+	public function getIcon(): string {
+		return $this->urlGenerator->imagePath('core', 'actions/settings-dark.svg');
+	}//end getIcon()
 
-    public function getID(): string
-    {
-        return 'zaakafhandelapp';
-    }//end getID()
+	public function getID(): string {
+		return 'zaakafhandelapp';
+	}//end getID()
 
-    public function getName(): string
-    {
-        return $this->l->t('Zaak Afhandelapp');
-    }//end getName()
+	public function getName(): string {
+		return $this->l->t('Zaak Afhandelapp');
+	}//end getName()
 
-    public function getPriority(): int
-    {
-        return 97;
-    }//end getPriority()
+	public function getPriority(): int {
+		return 97;
+	}//end getPriority()
 }//end class

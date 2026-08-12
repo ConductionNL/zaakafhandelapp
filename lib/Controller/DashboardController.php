@@ -4,9 +4,8 @@ namespace OCA\ZaakAfhandelApp\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
-use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
 use OCP\IUserSession;
@@ -20,159 +19,152 @@ use OCP\IUserSession;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
-class DashboardController extends Controller
-{
-    const TEST_ARRAY = [
-        "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f" => [
-            "id"      => "5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f",
-            "name"    => "Github",
-            "summary" => "summary for one",
-        ],
-        "4c3edd34-a90d-4d2a-8894-adb5836ecde8" => [
-            "id"      => "4c3edd34-a90d-4d2a-8894-adb5836ecde8",
-            "name"    => "Gitlab",
-            "summary" => "summary for two",
-        ],
-        "15551d6f-44e3-43f3-a9d2-59e583c91eb0" => [
-            "id"      => "15551d6f-44e3-43f3-a9d2-59e583c91eb0",
-            "name"    => "Woo",
-            "summary" => "summary for two",
-        ],
-        "0a3a0ffb-dc03-4aae-b207-0ed1502e60da" => [
-            "id"      => "0a3a0ffb-dc03-4aae-b207-0ed1502e60da",
-            "name"    => "Decat",
-            "summary" => "summary for two",
-        ],
-    ];
+class DashboardController extends Controller {
+	public const TEST_ARRAY = [
+		'5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f' => [
+			'id' => '5137a1e5-b54d-43ad-abd1-4b5bff5fcd3f',
+			'name' => 'Github',
+			'summary' => 'summary for one',
+		],
+		'4c3edd34-a90d-4d2a-8894-adb5836ecde8' => [
+			'id' => '4c3edd34-a90d-4d2a-8894-adb5836ecde8',
+			'name' => 'Gitlab',
+			'summary' => 'summary for two',
+		],
+		'15551d6f-44e3-43f3-a9d2-59e583c91eb0' => [
+			'id' => '15551d6f-44e3-43f3-a9d2-59e583c91eb0',
+			'name' => 'Woo',
+			'summary' => 'summary for two',
+		],
+		'0a3a0ffb-dc03-4aae-b207-0ed1502e60da' => [
+			'id' => '0a3a0ffb-dc03-4aae-b207-0ed1502e60da',
+			'name' => 'Decat',
+			'summary' => 'summary for two',
+		],
+	];
 
-    public function __construct(
-        $appName,
-        IRequest $request,
-        private readonly IAppConfig $config,
-        private readonly IUserSession $userSession,
-    ) {
-        parent::__construct($appName, $request);
-    }//end __construct()
+	public function __construct(
+		$appName,
+		IRequest $request,
+		private readonly IAppConfig $config,
+		private readonly IUserSession $userSession,
+	) {
+		parent::__construct($appName, $request);
+	}//end __construct()
 
-    /**
-     * This returns the template of the main app's page
-     * It adds some data to the template (app version)
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return TemplateResponse
-     *
-     * @spec openspec/specs/app-configuration/spec.md#REQ-003
-     */
-    public function page(): TemplateResponse
-    {
-        return new TemplateResponse(
-            'zaakafhandelapp',
-            'index',
-            []
-        );
-    }//end page()
+	/**
+	 * This returns the template of the main app's page
+	 * It adds some data to the template (app version)
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return TemplateResponse
+	 *
+	 * @spec openspec/specs/app-configuration/spec.md#REQ-003
+	 */
+	public function page(): TemplateResponse {
+		return new TemplateResponse(
+			'zaakafhandelapp',
+			'index',
+			[]
+		);
+	}//end page()
 
-    /**
-     * Return (and serach) all objects
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     *
-     * @spec openspec/specs/app-configuration/spec.md#REQ-003
-     */
-    public function index(): JSONResponse
-    {
-        if ($this->userSession->getUser() === null) {
-            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
-        }
+	/**
+	 * Return (and serach) all objects
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 *
+	 * @spec openspec/specs/app-configuration/spec.md#REQ-003
+	 */
+	public function index(): JSONResponse {
+		if ($this->userSession->getUser() === null) {
+			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+		}
 
-        $results = ["results" => self::TEST_ARRAY];
-        return new JSONResponse($results);
-    }//end index()
+		$results = ['results' => self::TEST_ARRAY];
+		return new JSONResponse($results);
+	}//end index()
 
-    /**
-     * Read a single object
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     *
-     * @spec openspec/specs/app-configuration/spec.md#REQ-003
-     */
-    public function show(string $id): JSONResponse
-    {
-        if ($this->userSession->getUser() === null) {
-            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
-        }
+	/**
+	 * Read a single object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 *
+	 * @spec openspec/specs/app-configuration/spec.md#REQ-003
+	 */
+	public function show(string $id): JSONResponse {
+		if ($this->userSession->getUser() === null) {
+			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+		}
 
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }//end show()
+		$result = self::TEST_ARRAY[$id];
+		return new JSONResponse($result);
+	}//end show()
 
-    /**
-     * Creatue an object
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     *
-     * @spec openspec/specs/app-configuration/spec.md#REQ-003
-     */
-    public function create(): JSONResponse
-    {
-        if ($this->userSession->getUser() === null) {
-            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
-        }
+	/**
+	 * Creatue an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 *
+	 * @spec openspec/specs/app-configuration/spec.md#REQ-003
+	 */
+	public function create(): JSONResponse {
+		if ($this->userSession->getUser() === null) {
+			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+		}
 
-        // get post from requests
-        return new JSONResponse([]);
-    }//end create()
+		// get post from requests
+		return new JSONResponse([]);
+	}//end create()
 
-    /**
-     * Update an object
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     *
-     * @spec openspec/specs/app-configuration/spec.md#REQ-003
-     */
-    public function update(string $id): JSONResponse
-    {
-        if ($this->userSession->getUser() === null) {
-            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
-        }
+	/**
+	 * Update an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 *
+	 * @spec openspec/specs/app-configuration/spec.md#REQ-003
+	 */
+	public function update(string $id): JSONResponse {
+		if ($this->userSession->getUser() === null) {
+			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+		}
 
-        $result = self::TEST_ARRAY[$id];
-        return new JSONResponse($result);
-    }//end update()
+		$result = self::TEST_ARRAY[$id];
+		return new JSONResponse($result);
+	}//end update()
 
-    /**
-     * Delate an object
-     *
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-     * @return JSONResponse
-     *
-     * @spec openspec/specs/app-configuration/spec.md#REQ-003
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
-     *   stub implementation returns empty response (resource management handled client-side).
-     */
-    public function destroy(string $id): JSONResponse
-    {
-        if ($this->userSession->getUser() === null) {
-            return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
-        }
+	/**
+	 * Delate an object
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse
+	 *
+	 * @spec openspec/specs/app-configuration/spec.md#REQ-003
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter) — $id is part of the NC route signature;
+	 *   stub implementation returns empty response (resource management handled client-side).
+	 */
+	public function destroy(string $id): JSONResponse {
+		if ($this->userSession->getUser() === null) {
+			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
+		}
 
-        return new JSONResponse([]);
-    }//end destroy()
+		return new JSONResponse([]);
+	}//end destroy()
 }//end class
