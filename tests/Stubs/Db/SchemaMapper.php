@@ -24,18 +24,17 @@ namespace OCA\OpenRegister\Db;
 /**
  * Stub for SchemaMapper.
  */
-abstract class SchemaMapper
-{
-    /**
-     * Find a schema by id.
-     *
-     * @param string|integer $id            The schema id.
-     * @param array|null     $_extend       Properties to extend.
-     * @param boolean|null   $published     Published flag.
-     * @param boolean        $_rbac         RBAC flag.
-     * @param boolean        $_multitenancy Multitenancy flag.
-     *
-     * @return mixed
-     */
-    abstract public function find(string|int $id, ?array $_extend=[], ?bool $published=null, bool $_rbac=true, bool $_multitenancy=true);
+abstract class SchemaMapper {
+	/**
+	 * Find a schema by id.
+	 *
+	 * @param string|integer $id The schema id.
+	 * @param array|null $_extend Properties to extend.
+	 * @param boolean|null $published Published flag.
+	 * @param boolean $_rbac RBAC flag.
+	 * @param boolean $_multitenancy Multitenancy flag.
+	 *
+	 * @return mixed
+	 */
+	abstract public function find(string|int $id, ?array $_extend = [], ?bool $published = null, bool $_rbac = true, bool $_multitenancy = true);
 }//end class

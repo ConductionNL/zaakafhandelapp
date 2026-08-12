@@ -19,87 +19,82 @@ use RuntimeException;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
-class ZGWValidationService
-{
+class ZGWValidationService {
 
-    private \OCA\OpenRegister\Service\ObjectService $objectService;
+	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
-    /**
-     * @param ObjectMapperService $mapperService The mapper service
-     */
-    public function __construct(ObjectMapperService $mapperService)
-    {
-        $objectService = $mapperService->getOpenRegisters();
-        if ($objectService === null) {
-            throw new RuntimeException('ZGWValidationService requires the OpenRegister app to be installed and enabled.');
-        }
+	/**
+	 * @param ObjectMapperService $mapperService The mapper service
+	 */
+	public function __construct(ObjectMapperService $mapperService) {
+		$objectService = $mapperService->getOpenRegisters();
+		if ($objectService === null) {
+			throw new RuntimeException('ZGWValidationService requires the OpenRegister app to be installed and enabled.');
+		}
 
-        $this->objectService = $objectService;
-    }//end __construct()
+		$this->objectService = $objectService;
+	}//end __construct()
 
-    /**
-     * ZRC-010: Validate relevanteAndereZaken references.
-     *
-     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
-     */
-    public function checkRelevanteAndereZaken(ObjectEntity $zaak): void
-    {
-        $zaakArray = $zaak->jsonSerialize();
+	/**
+	 * ZRC-010: Validate relevanteAndereZaken references.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+	 */
+	public function checkRelevanteAndereZaken(ObjectEntity $zaak): void {
+		$zaakArray = $zaak->jsonSerialize();
 
-        if (is_array($zaakArray['relevanteAndereZaken']) === false) {
-            return;
-        }
+		if (is_array($zaakArray['relevanteAndereZaken']) === false) {
+			return;
+		}
 
-        $index = 0;
-        foreach ($zaakArray['relevanteAndereZaken'] as $relevanteZaak) {
-            $this->objectService->clearCurrents();
-            if (isset($relevanteZaak['url']) === false) {
-                $index++;
-                continue;
-            }
+		$index = 0;
+		foreach ($zaakArray['relevanteAndereZaken'] as $relevanteZaak) {
+			$this->objectService->clearCurrents();
+			if (isset($relevanteZaak['url']) === false) {
+				$index++;
+				continue;
+			}
 
-            try {
-                $id = explode('/', $relevanteZaak['url']);
-                $this->objectService->clearCurrents();
-                $this->objectService->find(end($id));
-                $this->objectService->clearCurrents();
-            } catch (DoesNotExistException $exception) {
-                throw new CustomValidationException(
-                    "Relevante zaak bestaat niet",
-                    [['name' => "relevanteAndereZaken.$index.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]
-                );
-            }
+			try {
+				$id = explode('/', $relevanteZaak['url']);
+				$this->objectService->clearCurrents();
+				$this->objectService->find(end($id));
+				$this->objectService->clearCurrents();
+			} catch (DoesNotExistException $exception) {
+				throw new CustomValidationException(
+					'Relevante zaak bestaat niet',
+					[['name' => "relevanteAndereZaken.$index.url", 'code' => 'bad-url', 'reason' => 'De relevante zaak bestaat niet of is niet benaderbaar']]
+				);
+			}
 
-            $index++;
-        }//end foreach
-    }//end checkRelevanteAndereZaken()
+			$index++;
+		}//end foreach
+	}//end checkRelevanteAndereZaken()
 
-    /**
-     * Validate a BesluitInformatieObject's type against besluittype.
-     *
-     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
-     */
-    public function validateBesluitInformatieObject(ObjectEntity $bio): void
-    {
-        $arr = $bio->jsonSerialize();
+	/**
+	 * Validate a BesluitInformatieObject's type against besluittype.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
+	 */
+	public function validateBesluitInformatieObject(ObjectEntity $bio): void {
+		$arr = $bio->jsonSerialize();
 
-        $eio     = $this->findByUrl($arr['informatieobject'], ['informatieobjecttype']);
-        $besluit = $this->findByUrl($arr['besluit'], ['besluittype']);
+		$eio = $this->findByUrl($arr['informatieobject'], ['informatieobjecttype']);
+		$besluit = $this->findByUrl($arr['besluit'], ['besluittype']);
 
-        $iot = $eio->jsonSerialize()['informatieobjecttype']['omschrijving'];
+		$iot = $eio->jsonSerialize()['informatieobjecttype']['omschrijving'];
 
-        if (in_array(needle: $iot, haystack: $besluit->jsonSerialize()['besluittype']['informatieobjecttypen']) === false) {
-            throw new CustomValidationException(
-                'Informatieobjecttype niet in besluittype',
-                [['name' => 'nonFieldErrors', 'code' => 'invalid-informatieobjecttype', 'reason' => 'informatieobjecttype niet aanwezig op besluittype']]
-            );
-        }
-    }//end validateBesluitInformatieObject()
+		if (in_array(needle: $iot, haystack: $besluit->jsonSerialize()['besluittype']['informatieobjecttypen']) === false) {
+			throw new CustomValidationException(
+				'Informatieobjecttype niet in besluittype',
+				[['name' => 'nonFieldErrors', 'code' => 'invalid-informatieobjecttype', 'reason' => 'informatieobjecttype niet aanwezig op besluittype']]
+			);
+		}
+	}//end validateBesluitInformatieObject()
 
-    private function findByUrl(string $url, array $extend=[]): ObjectEntity
-    {
-        $parts = explode('/', $url);
-        $this->objectService->clearCurrents();
-        return $this->objectService->find(id: end($parts), _extend: $extend);
-    }//end findByUrl()
+	private function findByUrl(string $url, array $extend = []): ObjectEntity {
+		$parts = explode('/', $url);
+		$this->objectService->clearCurrents();
+		return $this->objectService->find(id: end($parts), _extend: $extend);
+	}//end findByUrl()
 }//end class

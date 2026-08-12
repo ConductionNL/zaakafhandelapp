@@ -62,129 +62,118 @@ use Psr\Log\LoggerInterface;
  * SPA's calls to the configured ZGW endpoints are blocked by CSP on exactly the
  * pages that need them.
  */
-class PageShellContractTest extends TestCase
-{
+class PageShellContractTest extends TestCase {
 
-    /**
-     * Every controller whose page() renders the SPA shell.
-     *
-     * @return array<string, array{0: class-string}>
-     */
-    public static function pageProvider(): array
-    {
-        return [
-            'berichten#page'              => [BerichtenController::class],
-            'contactMomenten#page'        => [ContactMomentenController::class],
-            'medewerkers#page'            => [MedewerkersController::class],
-            'dashboard#page'              => [DashboardController::class],
-            'zaakInformatieObjecten#page' => [ZaakInformatieObjectenController::class],
-        ];
-    }//end pageProvider()
+	/**
+	 * Every controller whose page() renders the SPA shell.
+	 *
+	 * @return array<string, array{0: class-string}>
+	 */
+	public static function pageProvider(): array {
+		return [
+			'berichten#page' => [BerichtenController::class],
+			'contactMomenten#page' => [ContactMomentenController::class],
+			'medewerkers#page' => [MedewerkersController::class],
+			'dashboard#page' => [DashboardController::class],
+			'zaakInformatieObjecten#page' => [ZaakInformatieObjectenController::class],
+		];
+	}//end pageProvider()
 
+	/**
+	 * The subset of page routes that additionally relax connect-src — the
+	 * deep-linkable detail pages, from which the SPA calls out to the
+	 * configured ZGW endpoints.
+	 *
+	 * @return array<string, array{0: class-string}>
+	 */
+	public static function cspPageProvider(): array {
+		return [
+			'berichten#page' => [BerichtenController::class],
+			'contactMomenten#page' => [ContactMomentenController::class],
+			'medewerkers#page' => [MedewerkersController::class],
+		];
+	}//end cspPageProvider()
 
-    /**
-     * The subset of page routes that additionally relax connect-src — the
-     * deep-linkable detail pages, from which the SPA calls out to the
-     * configured ZGW endpoints.
-     *
-     * @return array<string, array{0: class-string}>
-     */
-    public static function cspPageProvider(): array
-    {
-        return [
-            'berichten#page'       => [BerichtenController::class],
-            'contactMomenten#page' => [ContactMomentenController::class],
-            'medewerkers#page'     => [MedewerkersController::class],
-        ];
-    }//end cspPageProvider()
+	/**
+	 * Build the named controller and call its page() with the arity it declares.
+	 *
+	 * The three deep-link controllers take the optional route parameter; the
+	 * two flat ones take none.
+	 *
+	 * @param class-string $class Controller class to build.
+	 *
+	 * @return TemplateResponse The rendered shell response.
+	 */
+	private function renderPage(string $class): TemplateResponse {
+		$request = $this->createMock(IRequest::class);
+		$session = $this->createMock(IUserSession::class);
 
+		if ($class === DashboardController::class) {
+			$controller = new DashboardController(
+				'zaakafhandelapp',
+				$request,
+				$this->createMock(IAppConfig::class),
+				$session
+			);
+			return $controller->page();
+		}
 
-    /**
-     * Build the named controller and call its page() with the arity it declares.
-     *
-     * The three deep-link controllers take the optional route parameter; the
-     * two flat ones take none.
-     *
-     * @param class-string $class Controller class to build.
-     *
-     * @return TemplateResponse The rendered shell response.
-     */
-    private function renderPage(string $class): TemplateResponse
-    {
-        $request = $this->createMock(IRequest::class);
-        $session = $this->createMock(IUserSession::class);
+		if ($class === ZaakInformatieObjectenController::class) {
+			$controller = new ZaakInformatieObjectenController(
+				'zaakafhandelapp',
+				$request,
+				$this->createMock(IAppConfig::class),
+				$session
+			);
+			return $controller->page();
+		}
 
-        if ($class === DashboardController::class) {
-            $controller = new DashboardController(
-                'zaakafhandelapp',
-                $request,
-                $this->createMock(IAppConfig::class),
-                $session
-            );
-            return $controller->page();
-        }
+		$controller = new $class(
+			'zaakafhandelapp',
+			$request,
+			$this->createMock(ObjectService::class),
+			$session,
+			$this->createMock(LoggerInterface::class)
+		);
 
-        if ($class === ZaakInformatieObjectenController::class) {
-            $controller = new ZaakInformatieObjectenController(
-                'zaakafhandelapp',
-                $request,
-                $this->createMock(IAppConfig::class),
-                $session
-            );
-            return $controller->page();
-        }
+		return $controller->page('some-id');
+	}//end renderPage()
 
-        $controller = new $class(
-            'zaakafhandelapp',
-            $request,
-            $this->createMock(ObjectService::class),
-            $session,
-            $this->createMock(LoggerInterface::class)
-        );
+	/**
+	 * Every page route serves this app's `index` shell as a 200, rendered for a
+	 * logged-in user, carrying no server-side state.
+	 *
+	 * @param class-string $class Controller under test.
+	 *
+	 * @return void
+	 */
+	#[DataProvider('pageProvider')]
+	public function testPageServesTheAppShell(string $class): void {
+		$response = $this->renderPage($class);
 
-        return $controller->page('some-id');
+		$this->assertSame(Http::STATUS_OK, $response->getStatus(), $class . ' status');
+		$this->assertSame('zaakafhandelapp', $response->getApp(), $class . ' app');
+		$this->assertSame('index', $response->getTemplateName(), $class . ' template');
+		$this->assertSame(TemplateResponse::RENDER_AS_USER, $response->getRenderAs(), $class . ' renderAs');
+		$this->assertSame([], $response->getParams(), $class . ' params');
+	}//end testPageServesTheAppShell()
 
-    }//end renderPage()
+	/**
+	 * The deep-link page routes relax connect-src so the SPA can reach the
+	 * configured ZGW endpoints from them.
+	 *
+	 * @param class-string $class Controller under test.
+	 *
+	 * @return void
+	 */
+	#[DataProvider('cspPageProvider')]
+	public function testDeepLinkPagesWidenConnectSrc(string $class): void {
+		$policy = $this->renderPage($class)->getContentSecurityPolicy()->buildPolicy();
 
-
-    /**
-     * Every page route serves this app's `index` shell as a 200, rendered for a
-     * logged-in user, carrying no server-side state.
-     *
-     * @param class-string $class Controller under test.
-     *
-     * @return void
-     */
-    #[DataProvider('pageProvider')]
-    public function testPageServesTheAppShell(string $class): void
-    {
-        $response = $this->renderPage($class);
-
-        $this->assertSame(Http::STATUS_OK, $response->getStatus(), $class.' status');
-        $this->assertSame('zaakafhandelapp', $response->getApp(), $class.' app');
-        $this->assertSame('index', $response->getTemplateName(), $class.' template');
-        $this->assertSame(TemplateResponse::RENDER_AS_USER, $response->getRenderAs(), $class.' renderAs');
-        $this->assertSame([], $response->getParams(), $class.' params');
-    }//end testPageServesTheAppShell()
-
-
-    /**
-     * The deep-link page routes relax connect-src so the SPA can reach the
-     * configured ZGW endpoints from them.
-     *
-     * @param class-string $class Controller under test.
-     *
-     * @return void
-     */
-    #[DataProvider('cspPageProvider')]
-    public function testDeepLinkPagesWidenConnectSrc(string $class): void
-    {
-        $policy = $this->renderPage($class)->getContentSecurityPolicy()->buildPolicy();
-
-        $this->assertMatchesRegularExpression(
-            '/connect-src[^;]*\*/',
-            $policy,
-            $class.' must allow the SPA to connect out'
-        );
-    }//end testDeepLinkPagesWidenConnectSrc()
+		$this->assertMatchesRegularExpression(
+			'/connect-src[^;]*\*/',
+			$policy,
+			$class . ' must allow the SPA to connect out'
+		);
+	}//end testDeepLinkPagesWidenConnectSrc()
 }//end class

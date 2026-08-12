@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ZaakAfhandelApp Event Listener
  *
@@ -36,58 +37,55 @@ use Psr\Log\LoggerInterface;
  * ZGWZaakEventHandler. Holding both halves here meant this class had to depend
  * on every ZGW service and every event class at once.
  */
-class ZaakRegisterEventListener implements IEventListener
-{
-    public function __construct(
-        private readonly ZGWZaakEventHandler $handler,
-        private readonly LoggerInterface $logger,
-    ) {
-    }//end __construct()
+class ZaakRegisterEventListener implements IEventListener {
+	public function __construct(
+		private readonly ZGWZaakEventHandler $handler,
+		private readonly LoggerInterface $logger,
+	) {
+	}//end __construct()
 
-    public function handle(Event $event): void
-    {
-        try {
-            if ($event instanceof ObjectCreatedEvent) {
-                $this->handler->onObjectCreated($event->getObject());
-            } else if ($event instanceof ObjectUpdatedEvent) {
-                $this->handler->onObjectUpdated($event->getNewObject());
-            } else if ($event instanceof ObjectDeletedEvent) {
-                $this->handler->onObjectDeleted($event->getObject());
-            } else if ($event instanceof ObjectCreatingEvent) {
-                $this->handler->onObjectCreating($event->getObject());
-            } else if ($event instanceof ObjectUpdatingEvent) {
-                $this->handler->onObjectUpdating($event->getNewObject());
-            }
-        } catch (CustomValidationException $e) {
-            // A ZGW rule rejected the write; let it abort the OpenRegister save.
-            throw $e;
-        } catch (Exception $e) {
-            $this->logError($event, $e);
-        }
-    }//end handle()
+	public function handle(Event $event): void {
+		try {
+			if ($event instanceof ObjectCreatedEvent) {
+				$this->handler->onObjectCreated($event->getObject());
+			} elseif ($event instanceof ObjectUpdatedEvent) {
+				$this->handler->onObjectUpdated($event->getNewObject());
+			} elseif ($event instanceof ObjectDeletedEvent) {
+				$this->handler->onObjectDeleted($event->getObject());
+			} elseif ($event instanceof ObjectCreatingEvent) {
+				$this->handler->onObjectCreating($event->getObject());
+			} elseif ($event instanceof ObjectUpdatingEvent) {
+				$this->handler->onObjectUpdating($event->getNewObject());
+			}
+		} catch (CustomValidationException $e) {
+			// A ZGW rule rejected the write; let it abort the OpenRegister save.
+			throw $e;
+		} catch (Exception $e) {
+			$this->logError($event, $e);
+		}
+	}//end handle()
 
-    /**
-     * Log an error that occurred during event handling.
-     *
-     * @param Event     $event The event being handled.
-     * @param Exception $e     The exception raised by a handler.
-     *
-     * @return void
-     */
-    private function logError(Event $event, Exception $e): void
-    {
-        try {
-            $this->logger->error(
-                'ZaakAfhandelApp: Error in event handler',
-                [
-                    'eventType' => get_class($event),
-                    'exception' => $e->getMessage(),
-                ]
-            );
-        } catch (Exception $logException) {
-            // Logging must never turn a handled error into a failed write, so a
-            // broken log sink is swallowed here on purpose.
-            unset($logException);
-        }
-    }//end logError()
+	/**
+	 * Log an error that occurred during event handling.
+	 *
+	 * @param Event $event The event being handled.
+	 * @param Exception $e The exception raised by a handler.
+	 *
+	 * @return void
+	 */
+	private function logError(Event $event, Exception $e): void {
+		try {
+			$this->logger->error(
+				'ZaakAfhandelApp: Error in event handler',
+				[
+					'eventType' => get_class($event),
+					'exception' => $e->getMessage(),
+				]
+			);
+		} catch (Exception $logException) {
+			// Logging must never turn a handled error into a failed write, so a
+			// broken log sink is swallowed here on purpose.
+			unset($logException);
+		}
+	}//end logError()
 }//end class

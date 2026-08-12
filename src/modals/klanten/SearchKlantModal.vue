@@ -430,8 +430,6 @@ export default {
 }
 </script>
 
-<style></style>
-
 <style scoped>
 .listContainer {
 	margin-bottom: 10px;
