@@ -43,13 +43,21 @@ class DashboardController extends Controller {
 		],
 	];
 
+	/**
+	 * DashboardController constructor.
+	 *
+	 * @param string $appName The application name
+	 * @param IRequest $request The request object
+	 * @param IAppConfig $config The app configuration
+	 * @param IUserSession $userSession The user session used to reject anonymous callers
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -93,6 +101,8 @@ class DashboardController extends Controller {
 	/**
 	 * Read a single object
 	 *
+	 * @param string $id The object ID
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -124,12 +134,14 @@ class DashboardController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		// get post from requests
+		// Get post from requests
 		return new JSONResponse([]);
 	}//end create()
 
 	/**
 	 * Update an object
+	 *
+	 * @param string $id The object ID
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -149,6 +161,8 @@ class DashboardController extends Controller {
 
 	/**
 	 * Delate an object
+	 *
+	 * @param string $id The object ID
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

@@ -29,6 +29,12 @@ class CaseDocumentService {
 	 */
 	private const ROOT_FOLDER = 'Zaakdocumenten';
 
+	/**
+	 * Constructor for CaseDocumentService.
+	 *
+	 * @param IRootFolder $rootFolder Provides access to the acting user's files.
+	 * @param IUserSession $userSession Resolves the user whose files the documents are stored in.
+	 */
 	public function __construct(
 		private readonly IRootFolder $rootFolder,
 		private readonly IUserSession $userSession,
@@ -49,12 +55,12 @@ class CaseDocumentService {
 	 * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
 	 */
 	public function writeDocument(string $zaak, string $bestandsnaam, string $base64Inhoud): array {
-		$content = $this->decode($base64Inhoud);
-		$folder = $this->resolveZaakFolder($zaak);
-		$name = $this->sanitiseName($bestandsnaam);
+		$content = $this->decode(base64: $base64Inhoud);
+		$folder = $this->resolveZaakFolder(zaak: $zaak);
+		$name = $this->sanitiseName(name: $bestandsnaam);
 
 		try {
-			$file = $this->putFile($folder, $name, $content);
+			$file = $this->putFile(folder: $folder, name: $name, content: $content);
 		} catch (NotFoundException $e) {
 			throw new CaseDocumentException('Could not write the document file: ' . $e->getMessage());
 		}
@@ -106,8 +112,8 @@ class CaseDocumentService {
 	 * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
 	 */
 	public function replaceContent(int $fileId, string $base64Inhoud): int {
-		$content = $this->decode($base64Inhoud);
-		$file = $this->requireFile($fileId);
+		$content = $this->decode(base64: $base64Inhoud);
+		$file = $this->requireFile(fileId: $fileId);
 		$file->putContent($content);
 
 		return $file->getSize();
@@ -125,7 +131,7 @@ class CaseDocumentService {
 	 * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
 	 */
 	public function readStream(int $fileId): array {
-		$file = $this->requireFile($fileId);
+		$file = $this->requireFile(fileId: $fileId);
 		$stream = $file->fopen('r');
 
 		if (is_resource($stream) === false) {
@@ -150,7 +156,7 @@ class CaseDocumentService {
 	 */
 	public function deleteDocument(int $fileId): bool {
 		try {
-			$this->requireFile($fileId)->delete();
+			$this->requireFile(fileId: $fileId)->delete();
 
 			return true;
 		} catch (CaseDocumentException $e) {
@@ -174,7 +180,7 @@ class CaseDocumentService {
 		}
 
 		$userFolder = $this->rootFolder->getUserFolder($user->getUID());
-		$path = self::ROOT_FOLDER . '/' . $this->sanitiseName($zaak);
+		$path = self::ROOT_FOLDER . '/' . $this->sanitiseName(name: $zaak);
 
 		if ($userFolder->nodeExists($path) === true) {
 			$node = $userFolder->get($path);

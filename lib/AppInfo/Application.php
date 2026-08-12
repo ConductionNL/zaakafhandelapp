@@ -66,12 +66,19 @@ class Application extends App implements IBootstrap {
 	/**
 	 * Constructor
 	 *
-	 * @param array $urlParams
+	 * @param array $urlParams URL parameters handed to the Nextcloud App base class.
 	 */
 	public function __construct(array $urlParams = []) {
 		parent::__construct(appName: self::APP_ID, urlParams: $urlParams);
 	}//end __construct()
 
+	/**
+	 * Register the app's dashboard widgets with the Nextcloud container.
+	 *
+	 * @param IRegistrationContext $context The registration context.
+	 *
+	 * @return void
+	 */
 	public function register(IRegistrationContext $context): void {
 		$context->registerDashboardWidget(ZakenWidget::class);
 		$context->registerDashboardWidget(TakenWidget::class);
@@ -143,6 +150,8 @@ class Application extends App implements IBootstrap {
 	 * Boot the application.
 	 *
 	 * @param IBootContext $context The boot context.
+	 *
+	 * @return void
 	 */
 	public function boot(IBootContext $context): void {
 		$dispatcher = $context->getServerContainer()->get(IEventDispatcher::class);

@@ -23,6 +23,15 @@ use Psr\Log\LoggerInterface;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class ZakenController extends Controller {
+	/**
+	 * Constructor for ZakenController.
+	 *
+	 * @param string $appName The name of the app
+	 * @param IRequest $request The request object
+	 * @param ObjectService $objectService Service for reading and writing zaak objects
+	 * @param IUserSession $userSession The current user session
+	 * @param LoggerInterface $logger Logger for failed zaak operations
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -30,7 +39,7 @@ class ZakenController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly LoggerInterface $logger,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -102,6 +111,8 @@ class ZakenController extends Controller {
 	/**
 	 * Read a single object
 	 *
+	 * @param string $id The identifier of the zaak to read
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -155,7 +166,14 @@ class ZakenController extends Controller {
 			unset($data['id']);
 
 			// Strip system-managed ZGW fields that must be set server-side (ZGW API-principes).
-			unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
+			unset(
+				$data['bronorganisatie'],
+				$data['verantwoordelijkeOrganisatie'],
+				$data['identificatie'],
+				$data['archiefstatus'],
+				$data['created'],
+				$data['updated']
+			);
 
 			// Default archiefstatus to 'nog_te_archiveren' for new zaken so that
 			// ZGWZaakValidationService::checkArchivePrerequisites passes on deployments
@@ -175,6 +193,8 @@ class ZakenController extends Controller {
 
 	/**
 	 * Update an object
+	 *
+	 * @param string $id The identifier of the zaak to update
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -196,7 +216,14 @@ class ZakenController extends Controller {
 			$data['id'] = $id;
 
 			// Strip system-managed ZGW fields that must not be overwritten via the request body.
-			unset($data['bronorganisatie'], $data['verantwoordelijkeOrganisatie'], $data['identificatie'], $data['archiefstatus'], $data['created'], $data['updated']);
+			unset(
+				$data['bronorganisatie'],
+				$data['verantwoordelijkeOrganisatie'],
+				$data['identificatie'],
+				$data['archiefstatus'],
+				$data['created'],
+				$data['updated']
+			);
 
 			// Save the updated object
 			$object = $this->objectService->saveObject('zaken', $data);
@@ -214,6 +241,8 @@ class ZakenController extends Controller {
 	/**
 	 * Delate an object
 	 *
+	 * @param string $id The identifier of the zaak to delete
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -230,8 +259,14 @@ class ZakenController extends Controller {
 			// Delete the catalog object
 			$result = $this->objectService->deleteObject('zaken', $id);
 
+			if ($result === true) {
+				$statusCode = Http::STATUS_OK;
+			} else {
+				$statusCode = Http::STATUS_NOT_FOUND;
+			}
+
 			// Return the result as a JSON response
-			return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+			return new JSONResponse(['success' => $result], $statusCode);
 		} catch (DoesNotExistException $e) {
 			return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
 		} catch (\Throwable $e) {
@@ -242,6 +277,8 @@ class ZakenController extends Controller {
 
 	/**
 	 * Get audit trail for a specific zaak
+	 *
+	 * @param string $id The identifier of the zaak whose audit trail is returned
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

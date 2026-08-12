@@ -23,6 +23,11 @@ use RuntimeException;
  */
 class ZGWArchiveDateService {
 
+	/**
+	 * The OpenRegister object service used to look up related objects.
+	 *
+	 * @var \OCA\OpenRegister\Service\ObjectService
+	 */
 	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
 	/**
@@ -75,15 +80,25 @@ class ZGWArchiveDateService {
 		// the brondatum and must still add archiefactietermijn. (C3/C4 fix)
 		$brondatum = match ($afleidingswijze) {
 			'afgehandeld' => $zaakArray['einddatum'],
-			'hoofdzaak' => $this->calculateFromHoofdzaak($zaakArray),
-			'eigenschap' => $this->calculateFromEigenschap($zaakArray, $resultaattypeArray),
+			'hoofdzaak' => $this->calculateFromHoofdzaak(zaakArray: $zaakArray),
+			'eigenschap' => $this->calculateFromEigenschap(zaakArray: $zaakArray, resultaattypeArray: $resultaattypeArray),
 			'ander_datumkenmerk' => null,
-			'termijn' => $this->calculateFromTermijn($zaakArray, $resultaattypeArray),
-			'ingangsdatum_besluit' => $this->calculateFromBesluit($zaakArray, 'ingangsdatum', $brcRegister, $besluitSchema),
-			'vervaldatum_besluit' => $this->calculateFromBesluit($zaakArray, 'vervaldatum', $brcRegister, $besluitSchema),
-			'gerelateerde_zaak' => $this->calculateFromGerelateerdeZaak($zaakArray),
-			'zaakobject' => $this->calculateFromZaakobject($zaakArray, $resultaattypeArray),
-			default => $this->handleUnknownAfleidingswijze($afleidingswijze),
+			'termijn' => $this->calculateFromTermijn(zaakArray: $zaakArray, resultaattypeArray: $resultaattypeArray),
+			'ingangsdatum_besluit' => $this->calculateFromBesluit(
+				zaakArray: $zaakArray,
+				dateField: 'ingangsdatum',
+				brcRegister: $brcRegister,
+				besluitSchema: $besluitSchema
+			),
+			'vervaldatum_besluit' => $this->calculateFromBesluit(
+				zaakArray: $zaakArray,
+				dateField: 'vervaldatum',
+				brcRegister: $brcRegister,
+				besluitSchema: $besluitSchema
+			),
+			'gerelateerde_zaak' => $this->calculateFromGerelateerdeZaak(zaakArray: $zaakArray),
+			'zaakobject' => $this->calculateFromZaakobject(zaakArray: $zaakArray, resultaattypeArray: $resultaattypeArray),
+			default => $this->handleUnknownAfleidingswijze(afleidingswijze: $afleidingswijze),
 		};
 
 		// 'termijn' already adds procestermijn inside calculateFromTermijn; for all other afleidingswijze
@@ -92,7 +107,7 @@ class ZGWArchiveDateService {
 			return $brondatum;
 		}
 
-		return $this->applyArchiefactietermijn($brondatum, $resultaattypeArray);
+		return $this->applyArchiefactietermijn(brondatum: $brondatum, resultaattypeArray: $resultaattypeArray);
 	}//end calculateArchiveDate()
 
 	/**
@@ -213,8 +228,12 @@ class ZGWArchiveDateService {
 		);
 		$data = array_filter($mapped);
 
-		// max([]) returns false; return null when there are no dated besluiten.
-		return empty($data) === false ? max($data) : null;
+		// The max() of an empty array is false, so return null when there are no dated besluiten.
+		if (empty($data) === true) {
+			return null;
+		}
+
+		return max($data);
 	}//end calculateFromBesluit()
 
 	/**
@@ -235,7 +254,12 @@ class ZGWArchiveDateService {
 
 		$dates = [];
 		foreach ($relevanteAndereZaken as $relatie) {
-			$zaakUrl = is_array($relatie) ? ($relatie['url'] ?? $relatie) : $relatie;
+			if (is_array($relatie) === true) {
+				$zaakUrl = $relatie['url'] ?? $relatie;
+			} else {
+				$zaakUrl = $relatie;
+			}
+
 			$zaakId = explode('/', rtrim((string)$zaakUrl, '/'));
 			$zaakId = end($zaakId);
 			if (empty($zaakId) === true) {
@@ -254,7 +278,11 @@ class ZGWArchiveDateService {
 			}
 		}//end foreach
 
-		return empty($dates) === false ? max($dates) : null;
+		if (empty($dates) === true) {
+			return null;
+		}
+
+		return max($dates);
 	}//end calculateFromGerelateerdeZaak()
 
 	/**

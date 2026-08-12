@@ -37,7 +37,7 @@ class RollenController extends Controller {
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -57,10 +57,10 @@ class RollenController extends Controller {
 	/**
 	 * Return (and search) all rollen.
 	 *
+	 * @param CallService $callService The call service
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 *
-	 * @param CallService $callService The call service
 	 *
 	 * @return JSONResponse
 	 *
@@ -78,11 +78,11 @@ class RollenController extends Controller {
 	/**
 	 * Read a single rol.
 	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
 	 * @param string $id The rol ID
 	 * @param CallService $callService The call service
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *
@@ -116,10 +116,10 @@ class RollenController extends Controller {
 	 * - roltoelichting is mandatory as the AVG legal basis for processing personal data
 	 *   (BSN stored in betrokkeneIdentificatie.inpBsn) — fixes #279.
 	 *
+	 * @param CallService $callService The call service
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 *
-	 * @param CallService $callService The call service
 	 *
 	 * @return JSONResponse
 	 *
@@ -133,7 +133,7 @@ class RollenController extends Controller {
 		$body = $this->request->getParams();
 
 		// Validate betrokkeneType enum.
-		if (isset($body['betrokkeneType']) && in_array($body['betrokkeneType'], self::BETROKKENE_TYPES, true) === false) {
+		if (isset($body['betrokkeneType']) === true && in_array($body['betrokkeneType'], self::BETROKKENE_TYPES, true) === false) {
 			return new JSONResponse(
 				['betrokkeneType' => ['Waarde \'' . $body['betrokkeneType'] . '\' is geen geldige betrokkeneType.']],
 				Http::STATUS_BAD_REQUEST
@@ -156,11 +156,11 @@ class RollenController extends Controller {
 	/**
 	 * Update a rol.
 	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
 	 * @param string $id The rol ID
 	 * @param CallService $callService The call service
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *
@@ -179,11 +179,11 @@ class RollenController extends Controller {
 	/**
 	 * Delete a rol.
 	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
 	 * @param string $id The rol ID
 	 * @param CallService $callService The call service
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *

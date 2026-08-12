@@ -74,13 +74,21 @@ class ConfigurationController extends Controller {
 		'organisationKVK',
 	];
 
+	/**
+	 * Build the configuration controller.
+	 *
+	 * @param string $appName The application name.
+	 * @param IAppConfig $config The app configuration store the values are read from and written to.
+	 * @param IRequest $request The current HTTP request.
+	 * @param IUserSession $userSession Session used to resolve the acting user.
+	 */
 	public function __construct(
 		$appName,
 		private readonly IAppConfig $config,
 		IRequest $request,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -90,6 +98,8 @@ class ConfigurationController extends Controller {
 	 * never transmitted to the browser. Admin-only: @NoAdminRequired omitted.
 	 *
 	 * @NoCSRFRequired
+	 *
+	 * @return JSONResponse The configuration keys with credential values redacted.
 	 *
 	 * @spec openspec/specs/app-configuration/spec.md#REQ-001
 	 */
@@ -103,7 +113,16 @@ class ConfigurationController extends Controller {
 		$data = [];
 		foreach ($defaults as $key => $default) {
 			$value = $this->config->getValueString('zaakafhandelapp', $key, $default);
-			$data[$key] = in_array($key, self::CREDENTIAL_KEYS, true) ? ($value !== '' ? '***' : '') : $value;
+			if (in_array($key, self::CREDENTIAL_KEYS, true) === false) {
+				$data[$key] = $value;
+				continue;
+			}
+
+			if ($value !== '') {
+				$data[$key] = '***';
+			} else {
+				$data[$key] = '';
+			}
 		}
 
 		return new JSONResponse($data);
@@ -120,6 +139,8 @@ class ConfigurationController extends Controller {
 	 *
 	 * @NoCSRFRequired
 	 *
+	 * @return JSONResponse The persisted keys with credential values redacted.
+	 *
 	 * @spec openspec/specs/app-configuration/spec.md#REQ-001
 	 */
 	public function save(): JSONResponse {
@@ -131,12 +152,16 @@ class ConfigurationController extends Controller {
 
 		$data = [];
 		foreach (self::WRITABLE_KEYS as $key) {
-			if (!array_key_exists($key, $requestData)) {
+			if (array_key_exists($key, $requestData) === false) {
 				continue;
 			}
 
 			$this->config->setValueString('zaakafhandelapp', $key, (string)$requestData[$key]);
-			$data[$key] = in_array($key, self::CREDENTIAL_KEYS, true) ? '***' : $this->config->getValueString('zaakafhandelapp', $key);
+			if (in_array($key, self::CREDENTIAL_KEYS, true) === true) {
+				$data[$key] = '***';
+			} else {
+				$data[$key] = $this->config->getValueString('zaakafhandelapp', $key);
+			}
 		}
 
 		return new JSONResponse($data);

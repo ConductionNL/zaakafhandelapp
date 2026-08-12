@@ -25,8 +25,8 @@ class UsersController extends Controller {
 	 * UsersController constructor.
 	 *
 	 * @param string $appName The name of the app
-	 * @param IAppConfig $config The app configuration
 	 * @param IRequest $request The request object
+	 * @param IAppConfig $config The app configuration
 	 * @param IUserSession $userSession The user session
 	 */
 	public function __construct(
@@ -35,7 +35,7 @@ class UsersController extends Controller {
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**

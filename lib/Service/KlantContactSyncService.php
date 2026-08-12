@@ -139,10 +139,10 @@ class KlantContactSyncService {
 
 			$contacts[] = [
 				'uid' => $uid,
-				'name' => $this->firstValue(($result['FN'] ?? '')),
-				'email' => $this->firstValue(($result['EMAIL'] ?? '')),
-				'phone' => $this->firstValue(($result['TEL'] ?? '')),
-				'org' => $this->firstValue(($result['ORG'] ?? '')),
+				'name' => $this->firstValue(value: ($result['FN'] ?? '')),
+				'email' => $this->firstValue(value: ($result['EMAIL'] ?? '')),
+				'phone' => $this->firstValue(value: ($result['TEL'] ?? '')),
+				'org' => $this->firstValue(value: ($result['ORG'] ?? '')),
 				'addressBookKey' => ($result['addressbook-key'] ?? ''),
 				'alreadyLinked' => in_array($uid, $linkedUids, true),
 			];
@@ -172,14 +172,14 @@ class KlantContactSyncService {
 			throw new RuntimeException('Nextcloud Contacts is not available');
 		}
 
-		$contact = $this->findContactByUid($uid);
+		$contact = $this->findContactByUid(uid: $uid);
 		if ($contact === null) {
 			throw new RuntimeException('Contact not found in any accessible addressbook');
 		}
 
-		$klantFields = $this->vCardToKlant($contact, $type);
+		$klantFields = $this->vCardToKlant(contact: $contact, type: $type);
 
-		$existing = $this->findKlantByContactsUid($uid);
+		$existing = $this->findKlantByContactsUid(uid: $uid);
 		if ($existing !== null) {
 			$merged = array_merge($existing, $klantFields);
 			$merged['id'] = $existing['id'];
@@ -219,13 +219,13 @@ class KlantContactSyncService {
 			return false;
 		}
 
-		$contact = $this->findContactByUid($uid);
+		$contact = $this->findContactByUid(uid: $uid);
 		if ($contact === null) {
 			$this->logger->info('Skipping addressbook push; linked contact no longer exists', ['uid' => $uid]);
 			return false;
 		}
 
-		$properties = $this->klantToVCard($klant, $uid);
+		$properties = $this->klantToVCard(klant: $klant, uid: $uid);
 		$this->contactsManager->createOrUpdate($properties, ($contact['addressbook-key'] ?? ''));
 
 		return true;
@@ -269,7 +269,7 @@ class KlantContactSyncService {
 
 		$klant = (array)$klant;
 
-		$properties = $this->klantToVCard($klant, null);
+		$properties = $this->klantToVCard(klant: $klant, uid: null);
 		$created = $this->contactsManager->createOrUpdate($properties, $addressBookKey);
 
 		$newUid = ($created['UID'] ?? ($properties['UID'] ?? ''));

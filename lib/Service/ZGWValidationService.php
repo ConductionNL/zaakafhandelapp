@@ -21,6 +21,11 @@ use RuntimeException;
  */
 class ZGWValidationService {
 
+	/**
+	 * The OpenRegister object service used to resolve referenced objects.
+	 *
+	 * @var \OCA\OpenRegister\Service\ObjectService
+	 */
 	private \OCA\OpenRegister\Service\ObjectService $objectService;
 
 	/**
@@ -37,6 +42,12 @@ class ZGWValidationService {
 
 	/**
 	 * ZRC-010: Validate relevanteAndereZaken references.
+	 *
+	 * @param ObjectEntity $zaak The zaak whose related-case references are checked
+	 *
+	 * @return void
+	 *
+	 * @throws CustomValidationException When a referenced zaak cannot be resolved
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
 	 */
@@ -74,13 +85,19 @@ class ZGWValidationService {
 	/**
 	 * Validate a BesluitInformatieObject's type against besluittype.
 	 *
+	 * @param ObjectEntity $bio The besluitinformatieobject to validate
+	 *
+	 * @return void
+	 *
+	 * @throws CustomValidationException When the informatieobjecttype is not allowed on the besluittype
+	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
 	 */
 	public function validateBesluitInformatieObject(ObjectEntity $bio): void {
 		$arr = $bio->jsonSerialize();
 
-		$eio = $this->findByUrl($arr['informatieobject'], ['informatieobjecttype']);
-		$besluit = $this->findByUrl($arr['besluit'], ['besluittype']);
+		$eio = $this->findByUrl(url: $arr['informatieobject'], extend: ['informatieobjecttype']);
+		$besluit = $this->findByUrl(url: $arr['besluit'], extend: ['besluittype']);
 
 		$iot = $eio->jsonSerialize()['informatieobjecttype']['omschrijving'];
 
@@ -92,6 +109,14 @@ class ZGWValidationService {
 		}
 	}//end validateBesluitInformatieObject()
 
+	/**
+	 * Resolve an object by its endpoint URL, using the trailing path segment as the ID.
+	 *
+	 * @param string $url The endpoint URL of the object
+	 * @param array $extend Property names to extend on the resolved object
+	 *
+	 * @return ObjectEntity The resolved object
+	 */
 	private function findByUrl(string $url, array $extend = []): ObjectEntity {
 		$parts = explode('/', $url);
 		$this->objectService->clearCurrents();

@@ -23,6 +23,15 @@ use Psr\Log\LoggerInterface;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class MedewerkersController extends Controller {
+	/**
+	 * MedewerkersController constructor.
+	 *
+	 * @param string $appName The application name
+	 * @param IRequest $request The request object
+	 * @param ObjectService $objectService Open Register object access for the medewerkers schema
+	 * @param IUserSession $userSession The user session used to reject anonymous callers
+	 * @param LoggerInterface $logger Logger for failed read/write operations
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -30,7 +39,7 @@ class MedewerkersController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly LoggerInterface $logger,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -102,6 +111,8 @@ class MedewerkersController extends Controller {
 	/**
 	 * Read a single employee
 	 *
+	 * @param string $id The employee ID
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -164,6 +175,8 @@ class MedewerkersController extends Controller {
 	/**
 	 * Update an employee
 	 *
+	 * @param string $id The employee ID
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -202,6 +215,8 @@ class MedewerkersController extends Controller {
 	/**
 	 * Delete an employee
 	 *
+	 * @param string $id The employee ID
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -218,8 +233,14 @@ class MedewerkersController extends Controller {
 			// Delete the employee
 			$result = $this->objectService->deleteObject('medewerkers', $id);
 
+			if ($result === true) {
+				$status = Http::STATUS_OK;
+			} else {
+				$status = Http::STATUS_NOT_FOUND;
+			}
+
 			// Return the result as a JSON response
-			return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+			return new JSONResponse(['success' => $result], $status);
 		} catch (DoesNotExistException $e) {
 			return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
 		} catch (\Throwable $e) {
@@ -230,6 +251,8 @@ class MedewerkersController extends Controller {
 
 	/**
 	 * Get audit trail for a specific employee
+	 *
+	 * @param string $id The employee ID
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

@@ -24,6 +24,16 @@ use Psr\Log\LoggerInterface;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class KlantenController extends Controller {
+	/**
+	 * Constructor for KlantenController.
+	 *
+	 * @param string $appName The name of the app
+	 * @param IRequest $request The request object
+	 * @param ObjectService $objectService Service for reading and writing klant objects
+	 * @param IUserSession $userSession The current user session
+	 * @param KlantContactSyncService $contactSyncService Service that pushes a saved klant to its linked vCard
+	 * @param LoggerInterface $logger Logger for failed klant operations
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -35,7 +45,7 @@ class KlantenController extends Controller {
 		private readonly KlantContactSyncService $contactSyncService,
 		private readonly LoggerInterface $logger,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -107,6 +117,8 @@ class KlantenController extends Controller {
 	/**
 	 * Read a single object
 	 *
+	 * @param string $id The identifier of the klant to read
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -176,6 +188,8 @@ class KlantenController extends Controller {
 	/**
 	 * Update an object. Admin-only: klanten are master data.
 	 *
+	 * @param string $id The identifier of the klant to update
+	 *
 	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
@@ -217,6 +231,8 @@ class KlantenController extends Controller {
 	/**
 	 * Delete an object. Admin-only: klanten are master data.
 	 *
+	 * @param string $id The identifier of the klant to delete
+	 *
 	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
@@ -232,8 +248,14 @@ class KlantenController extends Controller {
 			// Delete the catalog object
 			$result = $this->objectService->deleteObject('klanten', $id);
 
+			if ($result === true) {
+				$statusCode = Http::STATUS_OK;
+			} else {
+				$statusCode = Http::STATUS_NOT_FOUND;
+			}
+
 			// Return the result as a JSON response
-			return new JSONResponse(['success' => $result], $result === true ? Http::STATUS_OK : Http::STATUS_NOT_FOUND);
+			return new JSONResponse(['success' => $result], $statusCode);
 		} catch (DoesNotExistException $e) {
 			return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
 		} catch (\Throwable $e) {
@@ -244,6 +266,8 @@ class KlantenController extends Controller {
 
 	/**
 	 * Get zaken for a specific klant
+	 *
+	 * @param string $id The identifier of the klant whose zaken are returned
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -265,6 +289,8 @@ class KlantenController extends Controller {
 	/**
 	 * Get taken for a specific klant
 	 *
+	 * @param string $id The identifier of the klant whose taken are returned
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -284,6 +310,8 @@ class KlantenController extends Controller {
 
 	/**
 	 * Get berichten for a specific klant
+	 *
+	 * @param string $id The identifier of the klant, matched against the berichten gebruikerID
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -305,6 +333,8 @@ class KlantenController extends Controller {
 	/**
 	 * Get contactmomenten for a specific klant
 	 *
+	 * @param string $id The identifier of the klant whose contactmomenten are returned
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -324,6 +354,8 @@ class KlantenController extends Controller {
 
 	/**
 	 * Get audit trail for a specific klant
+	 *
+	 * @param string $id The identifier of the klant whose audit trail is returned
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

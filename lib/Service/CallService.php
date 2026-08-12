@@ -15,23 +15,38 @@ use OCP\IAppConfig;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class CallService {
+	/**
+	 * Constructor for CallService.
+	 *
+	 * @param IAppConfig $config App config used to read the per-source location and credentials.
+	 */
 	public function __construct(
 		private readonly IAppConfig $config,
 	) {
 	}//end __construct()
 
-	// private function getOAuth (string $source): string
-	// {
-	// $this->config->getValueString(app: 'zaakafhandelapp', key: )
-	// }
+	/**
+	 * Builds the Guzzle authentication options for a configured source.
+	 *
+	 * The auth type is read from the "{source}AuthType" app-config key. Only 'basic'
+	 * and 'apiKey' are supported; an 'OAuth 2.0' type is not implemented yet and falls
+	 * through to the default, which sends no credentials at all.
+	 *
+	 * @param string $source The configured source name, used as the app-config key prefix.
+	 *
+	 * @return array The Guzzle request options carrying the credentials, empty when unauthenticated.
+	 */
 	private function getAuthorization(string $source): array {
 		$authType = $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}AuthType");
 
 		switch ($authType) {
-			// case 'OAuth 2.0':
-			// return ['headers' => ['authorization' => $this->getOAuth(source: $source)]];
 			case 'basic':
-				return ['auth' => [ $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}ClientId"),  $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}Secret")]];
+				return [
+					'auth' => [
+						$this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}ClientId"),
+						$this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}Secret"),
+					],
+				];
 			case 'apiKey':
 				return ['headers' => ['authorization' => $this->config->getValueString(app: 'zaakafhandelapp', key: "{$source}Key")]];
 			default:
@@ -42,7 +57,10 @@ class CallService {
 	/**
 	 * Gets the guzzle config as an array
 	 *
-	 * @return array
+	 * @param string|null $source The configured source name to build the config for.
+	 * @param array $query Query parameters to send with every request made by the client.
+	 *
+	 * @return array The Guzzle client configuration for the given source.
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
 	 */
@@ -57,14 +75,16 @@ class CallService {
 			'http_errors' => false,
 		];
 
-		return array_merge_recursive($result, $this->getAuthorization($source));
+		return array_merge_recursive($result, $this->getAuthorization(source: $source));
 	}//end getConfig()
 
 	/**
 	 * Gets a guzzle client based upon given config.
 	 *
-	 * @param array $config The config to be used for the client.
-	 * @return Client
+	 * @param string $source The configured source name the client should talk to.
+	 * @param array $config Extra client config, merged on top of the source config.
+	 *
+	 * @return Client The configured Guzzle client.
 	 */
 	private function getClient(string $source, array $config = []): Client {
 		// Add any config to the call
@@ -98,9 +118,11 @@ class CallService {
 	/**
 	 * Finds objects based upon a set of filters.
 	 *
+	 * @param string $source The configured source name to call.
+	 * @param string $endpoint The collection endpoint, relative to the source location.
 	 * @param array $query The filters to compare the object to.
 	 *
-	 * @return array The objects found for given filters.
+	 * @return array|null The objects found for given filters, or null on an empty or malformed body.
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 *
@@ -114,23 +136,25 @@ class CallService {
 		// Setuo the client & make the call
 		$returnData = $this->getClient(source: $source, config: $config)->get("$endpoint");
 
-		return $this->decodeJson($returnData->getBody()->getContents());
+		return $this->decodeJson(body: $returnData->getBody()->getContents());
 	}//end index()
 
 	/**
-	 * Finds objects based upon a set of filters.
+	 * Finds a single object by its id.
 	 *
-	 * @param array $query The filters to compare the object to.
+	 * @param string $source The configured source name to call.
+	 * @param string $endpoint The collection endpoint, relative to the source location.
 	 * @param string $id The id of the object to get
+	 * @param array $query The filters to compare the object to.
 	 *
-	 * @return array The objects found for given filters.
+	 * @return array|null The object found for the given id, or null on an empty or malformed body.
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-005
 	 */
 	public function show(string $source, string $endpoint, string $id, array $query = []): ?array {
-		// let add the query
+		// Add the query to the client config
 		$config = [
 			'query' => $query,
 		];
@@ -140,15 +164,17 @@ class CallService {
 		// getClient() already sets — causing double-prefixing on the request (M2).
 		$returnData = $this->getClient(source: $source, config: $config)->get("$endpoint/$id");
 
-		return $this->decodeJson($returnData->getBody()->getContents());
+		return $this->decodeJson(body: $returnData->getBody()->getContents());
 	}//end show()
 
 	/**
 	 * Create an object
 	 *
+	 * @param string $source The configured source name to call.
+	 * @param string $endpoint The collection endpoint, relative to the source location.
 	 * @param array $data The data to post.
 	 *
-	 * @return array The objects found for given filters.
+	 * @return array|null The created object, or null on an empty or malformed body.
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 *
@@ -158,16 +184,18 @@ class CallService {
 		// Setuo the client & make the call
 		$returnData = $this->getClient(source: $source)->post(uri: "$endpoint", options: ['json' => $data]);
 
-		return $this->decodeJson($returnData->getBody()->getContents());
+		return $this->decodeJson(body: $returnData->getBody()->getContents());
 	}//end create()
 
 	/**
 	 * Update an object
 	 *
+	 * @param string $source The configured source name to call.
+	 * @param string $endpoint The collection endpoint, relative to the source location.
 	 * @param array $data The data to updata.
 	 * @param string $id The id of the object to updata
 	 *
-	 * @return array The objects found for given filters.
+	 * @return array|null The updated object, or null on an empty or malformed body.
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 *
@@ -177,15 +205,17 @@ class CallService {
 		// Setuo the client & make the call
 		$returnData = $this->getClient(source: $source)->put("$endpoint/$id", options: ['json' => $data]);
 
-		return $this->decodeJson($returnData->getBody()->getContents());
+		return $this->decodeJson(body: $returnData->getBody()->getContents());
 	}//end update()
 
 	/**
 	 * Deletes an object
 	 *
+	 * @param string $source The configured source name to call.
+	 * @param string $endpoint The collection endpoint, relative to the source location.
 	 * @param string $id The id of the object to delete
 	 *
-	 * @return array The objects found for given filters.
+	 * @return array|null The response body of the delete call, or null when it is empty or malformed.
 	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 *
@@ -195,6 +225,6 @@ class CallService {
 		// Setuo the client & make the call
 		$returnData = $this->getClient(source: $source)->delete("$endpoint/$id");
 
-		return $this->decodeJson($returnData->getBody()->getContents());
+		return $this->decodeJson(body: $returnData->getBody()->getContents());
 	}//end destroy()
 }//end class

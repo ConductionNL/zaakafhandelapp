@@ -38,12 +38,30 @@ use Psr\Log\LoggerInterface;
  * on every ZGW service and every event class at once.
  */
 class ZaakRegisterEventListener implements IEventListener {
+	/**
+	 * Constructor.
+	 *
+	 * @param ZGWZaakEventHandler $handler Handler that owns every ZGW domain decision.
+	 * @param LoggerInterface $logger Logger used to surface non-validation handler failures.
+	 */
 	public function __construct(
 		private readonly ZGWZaakEventHandler $handler,
 		private readonly LoggerInterface $logger,
 	) {
 	}//end __construct()
 
+	/**
+	 * Dispatch an OpenRegister lifecycle event to the matching handler method.
+	 *
+	 * A CustomValidationException is rethrown so a rejected ZGW rule aborts the
+	 * OpenRegister save; any other exception is logged and swallowed.
+	 *
+	 * @param Event $event The dispatched OpenRegister lifecycle event.
+	 *
+	 * @return void
+	 *
+	 * @throws CustomValidationException When a ZGW rule rejects the write.
+	 */
 	public function handle(Event $event): void {
 		try {
 			if ($event instanceof ObjectCreatedEvent) {
@@ -61,7 +79,7 @@ class ZaakRegisterEventListener implements IEventListener {
 			// A ZGW rule rejected the write; let it abort the OpenRegister save.
 			throw $e;
 		} catch (Exception $e) {
-			$this->logError($event, $e);
+			$this->logError(event: $event, e: $e);
 		}
 	}//end handle()
 

@@ -44,13 +44,21 @@ class BesluitenController extends Controller {
 		],
 	];
 
+	/**
+	 * Constructor for BesluitenController.
+	 *
+	 * @param string $appName The name of the app
+	 * @param IRequest $request The request object
+	 * @param IAppConfig $config The app configuration
+	 * @param IUserSession $userSession The current user session
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -75,6 +83,8 @@ class BesluitenController extends Controller {
 	/**
 	 * Return (and serach) all objects
 	 *
+	 * @param CallService $callService Service used to call the BRC source
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -93,6 +103,9 @@ class BesluitenController extends Controller {
 
 	/**
 	 * Read a single object
+	 *
+	 * @param string $id The identifier of the besluit to read
+	 * @param CallService $callService Service used to call the BRC source
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -113,6 +126,8 @@ class BesluitenController extends Controller {
 	/**
 	 * Creatue an object
 	 *
+	 * @param CallService $callService Service used to call the BRC source
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -125,7 +140,7 @@ class BesluitenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		// get post from requests
+		// Get post from requests
 		$body = $this->request->getParams();
 		$results = $callService->create(source: 'brc', endpoint: 'besluiten', data: $body);
 		return new JSONResponse($results);
@@ -133,6 +148,9 @@ class BesluitenController extends Controller {
 
 	/**
 	 * Update an object
+	 *
+	 * @param string $id The identifier of the besluit to update
+	 * @param CallService $callService Service used to call the BRC source
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -153,6 +171,9 @@ class BesluitenController extends Controller {
 
 	/**
 	 * Delate an object
+	 *
+	 * @param string $id The identifier of the besluit to delete
+	 * @param CallService $callService Service used to call the BRC source
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

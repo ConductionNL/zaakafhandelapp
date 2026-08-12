@@ -21,13 +21,21 @@ use OCP\IUserSession;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class StatusenController extends Controller {
+	/**
+	 * Constructor for StatusenController.
+	 *
+	 * @param string $appName The name of the app
+	 * @param IRequest $request The request object
+	 * @param IAppConfig $config The app configuration
+	 * @param IUserSession $userSession The current user session
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -52,6 +60,8 @@ class StatusenController extends Controller {
 	/**
 	 * Return (and serach) all objects
 	 *
+	 * @param CallService $callService Service used to call the ZRC source
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -70,6 +80,9 @@ class StatusenController extends Controller {
 
 	/**
 	 * Read a single object
+	 *
+	 * @param string $id The identifier of the status to read
+	 * @param CallService $callService Service used to call the ZRC source
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -90,6 +103,8 @@ class StatusenController extends Controller {
 	/**
 	 * Creatue an object
 	 *
+	 * @param CallService $callService Service used to call the ZRC source
+	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -102,7 +117,7 @@ class StatusenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		// get post from requests
+		// Get post from requests
 		$body = $this->request->getParams();
 		$results = $callService->create(source: 'zrc', endpoint: 'statussen', data: $body);
 		return new JSONResponse($results);
@@ -110,6 +125,9 @@ class StatusenController extends Controller {
 
 	/**
 	 * Update an object
+	 *
+	 * @param string $id The identifier of the status to update
+	 * @param CallService $callService Service used to call the ZRC source
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -130,6 +148,9 @@ class StatusenController extends Controller {
 
 	/**
 	 * Delate an object
+	 *
+	 * @param string $id The identifier of the status to delete
+	 * @param CallService $callService Service used to call the ZRC source
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

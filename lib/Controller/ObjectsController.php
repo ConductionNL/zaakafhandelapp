@@ -94,6 +94,15 @@ class ObjectsController extends Controller {
 		'zaaktypen',
 	];
 
+	/**
+	 * Build the generic objects controller.
+	 *
+	 * @param string $appName The application name.
+	 * @param IRequest $request The current HTTP request.
+	 * @param ObjectService $objectService Service used to read and write objects in OpenRegister.
+	 * @param IUserSession $userSession Session used to resolve the acting user.
+	 * @param IGroupManager $groupManager Group manager used for the admin check on master-data writes.
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
@@ -101,7 +110,7 @@ class ObjectsController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly IGroupManager $groupManager,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -172,8 +181,7 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 *
-	 * @param string $objectType The type of object to return
+	 * @param string $objectType The type of object to return.
 	 *
 	 * @return JSONResponse
 	 *
@@ -184,7 +192,7 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
@@ -207,6 +215,8 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of object to read.
+	 * @param string $id The identifier of the object to read.
 	 *
 	 * @return JSONResponse
 	 *
@@ -217,7 +227,7 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
@@ -228,7 +238,7 @@ class ObjectsController extends Controller {
 
 			// Get extend parameter if present
 			$extend = $requestParams['extend'] ?? $requestParams['_extend'] ?? [];
-			if (is_string($extend)) {
+			if (is_string($extend) === true) {
 				$extend = array_map('trim', explode(',', $extend));
 			}
 
@@ -256,6 +266,7 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of object to create.
 	 *
 	 * @return JSONResponse
 	 *
@@ -266,12 +277,12 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
 
-		$adminError = $this->guardMasterDataWrite($objectType);
+		$adminError = $this->guardMasterDataWrite(objectType: $objectType);
 		if ($adminError !== null) {
 			return $adminError;
 		}
@@ -284,7 +295,7 @@ class ObjectsController extends Controller {
 			unset($data['id']);
 
 			// Strip system-managed fields to prevent mass-assignment of platform-controlled values.
-			$data = $this->stripSystemManagedFields($objectType, $data);
+			$data = $this->stripSystemManagedFields(objectType: $objectType, data: $data);
 
 			// Save the new object
 			$object = $this->objectService->saveObject($objectType, $data);
@@ -304,6 +315,8 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of object to update.
+	 * @param string $id The identifier of the object to update.
 	 *
 	 * @return JSONResponse
 	 *
@@ -314,12 +327,12 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
 
-		$adminError = $this->guardMasterDataWrite($objectType);
+		$adminError = $this->guardMasterDataWrite(objectType: $objectType);
 		if ($adminError !== null) {
 			return $adminError;
 		}
@@ -332,7 +345,7 @@ class ObjectsController extends Controller {
 			$data['id'] = $id;
 
 			// Strip system-managed fields to prevent mass-assignment of platform-controlled values.
-			$data = $this->stripSystemManagedFields($objectType, $data);
+			$data = $this->stripSystemManagedFields(objectType: $objectType, data: $data);
 
 			// Save the updated object
 			$object = $this->objectService->saveObject($objectType, $data);
@@ -352,6 +365,8 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of object to delete.
+	 * @param string $id The identifier of the object to delete.
 	 *
 	 * @return JSONResponse
 	 *
@@ -362,12 +377,12 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
 
-		$adminError = $this->guardMasterDataWrite($objectType);
+		$adminError = $this->guardMasterDataWrite(objectType: $objectType);
 		if ($adminError !== null) {
 			return $adminError;
 		}
@@ -376,8 +391,14 @@ class ObjectsController extends Controller {
 			// Delete the object
 			$result = $this->objectService->deleteObject($objectType, $id);
 
+			if ($result === true) {
+				$status = 200;
+			} else {
+				$status = 404;
+			}
+
 			// Return the result as a JSON response
-			return new JSONResponse(['success' => $result], $result === true ? 200 : 404);
+			return new JSONResponse(['success' => $result], $status);
 		} catch (Exception $e) {
 			return new JSONResponse(
 				['error' => $e->getMessage()],
@@ -391,6 +412,8 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of the object whose audit trail is requested.
+	 * @param string $id The identifier of the object whose audit trail is requested.
 	 *
 	 * @return JSONResponse
 	 *
@@ -401,7 +424,7 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
@@ -440,6 +463,8 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of the object whose relations are requested.
+	 * @param string $id The identifier of the object whose relations are requested.
 	 *
 	 * @return JSONResponse
 	 *
@@ -450,7 +475,7 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}
@@ -482,6 +507,8 @@ class ObjectsController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $objectType The type of the object whose uses are requested.
+	 * @param string $id The identifier of the object whose uses are requested.
 	 *
 	 * @return JSONResponse
 	 *
@@ -492,7 +519,7 @@ class ObjectsController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$typeError = $this->validateObjectType($objectType);
+		$typeError = $this->validateObjectType(objectType: $objectType);
 		if ($typeError !== null) {
 			return $typeError;
 		}

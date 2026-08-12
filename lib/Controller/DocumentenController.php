@@ -41,6 +41,17 @@ class DocumentenController extends Controller {
 	 */
 	private const OBJECT_TYPE = 'documenten';
 
+	/**
+	 * DocumentenController constructor.
+	 *
+	 * @param string $appName The application name
+	 * @param IRequest $request The request object
+	 * @param ObjectService $objectService Open Register access to the documenten metadata objects
+	 * @param CaseDocumentService $caseDocumentService Reads and writes the backing files in Nextcloud Files
+	 * @param IURLGenerator $urlGenerator Builds the absolute download URLs exposed as ZGW inhoud
+	 * @param IUserSession $userSession The user session used to reject anonymous callers
+	 * @param LoggerInterface $logger Logger for orphaned-file and cleanup warnings
+	 */
 	public function __construct(
 		string $appName,
 		IRequest $request,
@@ -50,7 +61,7 @@ class DocumentenController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly LoggerInterface $logger,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -90,7 +101,7 @@ class DocumentenController extends Controller {
 			$params = $this->request->getParams();
 			unset($params['_route']);
 			$objects = $this->objectService->getObjects(objectType: self::OBJECT_TYPE, filters: $params);
-			$results = array_map(fn (array $object): array => $this->mapDocument($object), $objects);
+			$results = array_map(fn (array $object): array => $this->mapDocument(object: $object), $objects);
 
 			return new JSONResponse(['results' => array_values($results)]);
 		} catch (Exception $e) {
@@ -118,7 +129,7 @@ class DocumentenController extends Controller {
 		try {
 			$object = (array)$this->objectService->getObject(self::OBJECT_TYPE, $id);
 
-			return new JSONResponse($this->mapDocument($object));
+			return new JSONResponse($this->mapDocument(object: $object));
 		} catch (Exception $e) {
 			return new JSONResponse(['error' => 'Document not found.'], Http::STATUS_NOT_FOUND);
 		}
@@ -171,7 +182,7 @@ class DocumentenController extends Controller {
 		try {
 			$object = (array)$this->objectService->saveObject(self::OBJECT_TYPE, $data);
 
-			return new JSONResponse($this->mapDocument($object), Http::STATUS_CREATED);
+			return new JSONResponse($this->mapDocument(object: $object), Http::STATUS_CREATED);
 		} catch (Exception $e) {
 			// Roll back the orphaned file so storage does not leak.
 			$this->caseDocumentService->deleteDocument($written['fileId']);
@@ -228,7 +239,7 @@ class DocumentenController extends Controller {
 		try {
 			$object = (array)$this->objectService->saveObject(self::OBJECT_TYPE, $data);
 
-			return new JSONResponse($this->mapDocument($object));
+			return new JSONResponse($this->mapDocument(object: $object));
 		} catch (Exception $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
@@ -334,8 +345,13 @@ class DocumentenController extends Controller {
 			);
 		}
 
+		$selfUrl = null;
+		if ($inhoudUrl !== null) {
+			$selfUrl = str_replace('/download', '', $inhoudUrl);
+		}
+
 		return [
-			'url' => $inhoudUrl === null ? null : str_replace('/download', '', $inhoudUrl),
+			'url' => $selfUrl,
 			'uuid' => $uuid,
 			'identificatie' => ($object['identificatie'] ?? null),
 			'bronorganisatie' => ($object['bronorganisatie'] ?? null),

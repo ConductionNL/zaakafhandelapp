@@ -89,6 +89,11 @@ class ObjectService implements IObjectService {
 
 	/**
 	 * Gets facets for a specific object type.
+	 *
+	 * @param string $objectType The type of object
+	 * @param array $filters Filters to narrow the facetted set
+	 *
+	 * @return array The facets, keyed by field; empty when the mapper is not OpenRegister
 	 */
 	public function getFacets(string $objectType, array $filters = []): array {
 		return $this->queryService->getFacets($objectType, $filters);
@@ -96,6 +101,12 @@ class ObjectService implements IObjectService {
 
 	/**
 	 * Gets all objects of a specific type.
+	 *
+	 * @param string $objectType The type of object
+	 * @param integer|null $limit Maximum number of objects to return, or null for no limit
+	 * @param integer|null $offset Number of objects to skip, or null for none
+	 *
+	 * @return array The retrieved objects
 	 */
 	public function getAllObjects(string $objectType, ?int $limit = null, ?int $offset = null): array {
 		return $this->queryService->getAllObjects($objectType, $limit, $offset);
@@ -103,6 +114,11 @@ class ObjectService implements IObjectService {
 
 	/**
 	 * Creates or updates an object.
+	 *
+	 * @param string $objectType The type of object
+	 * @param array $object The object data; an `id` key makes this an update
+	 *
+	 * @return mixed The saved object as returned by the mapper
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
 	 */
@@ -113,6 +129,11 @@ class ObjectService implements IObjectService {
 	/**
 	 * Deletes an object.
 	 *
+	 * @param string $objectType The type of object
+	 * @param string|integer $id The object id, or a URL ending in the id
+	 *
+	 * @return boolean True when the object was deleted, false on any failure
+	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-003
 	 */
 	public function deleteObject(string $objectType, string|int $id): bool {
@@ -121,6 +142,11 @@ class ObjectService implements IObjectService {
 
 	/**
 	 * Get the count of objects for a given type.
+	 *
+	 * @param string $objectType The type of object
+	 * @param array $filters Filters to narrow the counted set
+	 *
+	 * @return integer The number of matching objects; 0 when the mapper is not OpenRegister
 	 */
 	public function getCount(string $objectType, array $filters = []): int {
 		return $this->queryService->getCount($objectType, $filters);
@@ -128,6 +154,11 @@ class ObjectService implements IObjectService {
 
 	/**
 	 * Get a result array for a request.
+	 *
+	 * @param string $objectType The type of object
+	 * @param array $requestParams The raw request parameters to parse into a query
+	 *
+	 * @return array The response body with keys: results, facets, total
 	 */
 	public function getResultArrayForRequest(string $objectType, array $requestParams): array {
 		return $this->queryService->getResultArrayForRequest($objectType, $requestParams);
@@ -135,6 +166,11 @@ class ObjectService implements IObjectService {
 
 	/**
 	 * Gets multiple objects by ids.
+	 *
+	 * @param string $objectType The type of object
+	 * @param array $ids The ids to fetch; each may be an id, a URL, an entity or an array with an `id` key
+	 *
+	 * @return array The retrieved objects
 	 */
 	public function getMultipleObjects(string $objectType, array $ids): array {
 		return $this->queryService->getMultipleObjects($objectType, $ids);
@@ -229,7 +265,7 @@ class ObjectService implements IObjectService {
 
 		$logs = $orService->getLogs($id);
 
-		// getLogs returns AuditTrail entities; serialize them for JSON responses.
+		// The getLogs call returns AuditTrail entities; serialize them for JSON responses.
 		$serialized = array_map(
 			function ($log) {
 				if (is_object($log) === true && method_exists($log, 'jsonSerialize') === true) {

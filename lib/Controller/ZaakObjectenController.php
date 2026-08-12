@@ -21,13 +21,21 @@ use OCP\IUserSession;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class ZaakObjectenController extends Controller {
+	/**
+	 * Build the zaakobjecten controller.
+	 *
+	 * @param string $appName The application name.
+	 * @param IRequest $request The current HTTP request.
+	 * @param IAppConfig $config The app configuration store.
+	 * @param IUserSession $userSession Session used to resolve the acting user.
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -54,6 +62,7 @@ class ZaakObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -73,6 +82,8 @@ class ZaakObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $id The identifier of the zaakobject to read.
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -92,6 +103,7 @@ class ZaakObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -102,7 +114,7 @@ class ZaakObjectenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		// get post from requests
+		// Get post from requests
 		$body = $this->request->getParams();
 		$results = $callService->create(source: 'zrc', endpoint: 'zaakobjecten', data: $body);
 		return new JSONResponse($results);
@@ -113,6 +125,8 @@ class ZaakObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $id The identifier of the zaakobject to update.
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -133,6 +147,8 @@ class ZaakObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $id The identifier of the zaakobject to delete.
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *

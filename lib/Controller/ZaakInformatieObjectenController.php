@@ -21,13 +21,21 @@ use OCP\IUserSession;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class ZaakInformatieObjectenController extends Controller {
+	/**
+	 * Build the zaakinformatieobjecten controller.
+	 *
+	 * @param string $appName The application name.
+	 * @param IRequest $request The current HTTP request.
+	 * @param IAppConfig $config The app configuration store.
+	 * @param IUserSession $userSession Session used to resolve the acting user.
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,
 		private readonly IAppConfig $config,
 		private readonly IUserSession $userSession,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct(appName: $appName, request: $request);
 	}//end __construct()
 
 	/**
@@ -54,6 +62,7 @@ class ZaakInformatieObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -73,6 +82,8 @@ class ZaakInformatieObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $id The identifier of the zaakinformatieobject to read.
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -131,6 +142,7 @@ class ZaakInformatieObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -141,11 +153,11 @@ class ZaakInformatieObjectenController extends Controller {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		// get post from requests
+		// Get post from requests
 		$body = $this->request->getParams();
 
 		// Validate that required URL fields are present and syntactically valid (#280).
-		$urlError = $this->validateZioUrls($body);
+		$urlError = $this->validateZioUrls(body: $body);
 		if ($urlError !== null) {
 			return $urlError;
 		}
@@ -163,6 +175,8 @@ class ZaakInformatieObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $id The identifier of the zaakinformatieobject to update.
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *
@@ -176,7 +190,7 @@ class ZaakInformatieObjectenController extends Controller {
 		$body = $this->request->getParams();
 
 		// Validate URL fields on update as well as create (#289).
-		$urlError = $this->validateZioUrls($body);
+		$urlError = $this->validateZioUrls(body: $body);
 		if ($urlError !== null) {
 			return $urlError;
 		}
@@ -190,6 +204,8 @@ class ZaakInformatieObjectenController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 * @param string $id The identifier of the zaakinformatieobject to delete.
+	 * @param CallService $callService Service used to call the ZRC source.
 	 *
 	 * @return JSONResponse
 	 *

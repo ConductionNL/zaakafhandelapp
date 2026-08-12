@@ -18,10 +18,26 @@ use OCP\Settings\ISettings;
  */
 class ZaakAfhandelAppAdmin implements ISettings {
 
+	/**
+	 * Translation service available to the settings form.
+	 *
+	 * @var IL10N
+	 */
 	private IL10N $l;
 
+	/**
+	 * System configuration reader used to populate the form values.
+	 *
+	 * @var IConfig
+	 */
 	private IConfig $config;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param IConfig $config System configuration reader used to populate the form values.
+	 * @param IL10N $l Translation service available to the settings form.
+	 */
 	public function __construct(IConfig $config, IL10N $l) {
 		$this->config = $config;
 		$this->l = $l;
@@ -40,6 +56,11 @@ class ZaakAfhandelAppAdmin implements ISettings {
 		return new TemplateResponse('zaakafhandelapp', 'settings/admin', $parameters, TemplateResponse::RENDER_AS_BLANK);
 	}//end getForm()
 
+	/**
+	 * Returns the admin settings section this form belongs to.
+	 *
+	 * @return string The ID of the previously created settings section.
+	 */
 	public function getSection() {
 		return 'zaakafhandelapp';
 		// Name of the previously created section.
