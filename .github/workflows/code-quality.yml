@@ -76,7 +76,20 @@ jobs:
       # `npm run check:manifest`, so it would be the same job twice.
       # `test` / `test:unit` are also not listed — the shared "Frontend Tests
       # (unit)" job already auto-detects and runs them.
-      frontend-checks: '["check:manifest", "test:l10n"]'
+      #
+      # `format` (prettier --check) is listed because the shared workflow has NO
+      # prettier job of its own — `quality.yml` runs eslint and stylelint and
+      # mentions prettier ZERO times. This repo already carries
+      # `@nextcloud/prettier-config` and a `format` script, so without this leg
+      # `npm run format` never runs outside a developer's editor and the tree
+      # drifts straight back out of format between merges — the same inert-
+      # formatter failure mode that made the old `.prettierrc` worth deleting.
+      # Centralising the config never stopped drift; the gate does.
+      # Measured on this tree before enabling: PASSES, 203 of 224 tracked
+      # frontend files in scope. phpmetrics/ is the one exclusion that has to be
+      # explicit in .prettierignore: 15 of its generated report files are
+      # TRACKED, so .gitignore alone would not keep them out of `--check`.
+      frontend-checks: '["check:manifest", "test:l10n", "format"]'
 
       # ── Integration tests ────────────────────────────────────────────────
       # `enable-newman` defaults to FALSE and this caller never set it, so
