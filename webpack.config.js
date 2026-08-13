@@ -69,8 +69,11 @@ function resolveUseLocalLib() {
 	if (process.env.USE_LOCAL_LIB === 'false' || !fs.existsSync(localLib)) {
 		return false
 	}
-	const wanted = require('./package.json').dependencies['@conduction/nextcloud-vue']
-	const wantedMajor = String(wanted).replace(/^[^0-9]*/, '').split('.')[0]
+	const wanted =
+		require('./package.json').dependencies['@conduction/nextcloud-vue']
+	const wantedMajor = String(wanted)
+		.replace(/^[^0-9]*/, '')
+		.split('.')[0]
 	let localVersion = null
 	try {
 		localVersion = require(path.resolve(localLib, '..', 'package.json')).version
@@ -81,10 +84,10 @@ function resolveUseLocalLib() {
 	if (localMajor !== null && localMajor !== wantedMajor) {
 		throw new Error(
 			`[${appId}] Refusing to build against ../nextcloud-vue@${localVersion}: this app `
-			+ `depends on @conduction/nextcloud-vue@${wanted} (major ${wantedMajor}). Aliasing a `
-			+ `major-${localMajor} checkout in would silently build Vue 2 library sources into a `
-			+ 'Vue 3 app. Check out the matching nc-vue branch, or set USE_LOCAL_LIB=false to '
-			+ 'build against the pinned npm package.',
+				+ `depends on @conduction/nextcloud-vue@${wanted} (major ${wantedMajor}). Aliasing a `
+				+ `major-${localMajor} checkout in would silently build Vue 2 library sources into a `
+				+ 'Vue 3 app. Check out the matching nc-vue branch, or set USE_LOCAL_LIB=false to '
+				+ 'build against the pinned npm package.',
 		)
 	}
 	return true
@@ -93,7 +96,10 @@ function resolveUseLocalLib() {
 const useLocalLib = resolveUseLocalLib()
 
 webpackConfig.resolve = webpackConfig.resolve || {}
-webpackConfig.resolve.modules = [path.resolve(__dirname, 'node_modules'), 'node_modules']
+webpackConfig.resolve.modules = [
+	path.resolve(__dirname, 'node_modules'),
+	'node_modules',
+]
 webpackConfig.resolve.alias = {
 	...(webpackConfig.resolve.alias || {}),
 	'@': path.resolve(__dirname, 'src/'),
@@ -112,7 +118,10 @@ webpackConfig.resolve.alias = {
 	// the 5.x copy — a DIFFERENT injection key, so those components see no
 	// router at all and `<NcAppNavigationItem :to="…">` renders inert with
 	// nothing logged.
-	'vue-router$': path.resolve(__dirname, 'node_modules/vue-router/dist/vue-router.mjs'),
+	'vue-router$': path.resolve(
+		__dirname,
+		'node_modules/vue-router/dist/vue-router.mjs',
+	),
 	// These MUST point at the entry FILE, not the package directory.
 	// @nextcloud/vue@9 and @nextcloud/dialogs@7 declare no `main` and no
 	// `module` — only an `exports` map, which webpack applies to *package
@@ -124,12 +133,21 @@ webpackConfig.resolve.alias = {
 	// The `$` exact-match suffix matters just as much: without it the alias
 	// would also rewrite subpaths such as `@nextcloud/dialogs/style.css`,
 	// which must keep going through the exports map.
-	'@nextcloud/vue$': path.resolve(__dirname, 'node_modules/@nextcloud/vue/dist/index.mjs'),
-	'@nextcloud/dialogs$': path.resolve(__dirname, 'node_modules/@nextcloud/dialogs/dist/index.mjs'),
+	'@nextcloud/vue$': path.resolve(
+		__dirname,
+		'node_modules/@nextcloud/vue/dist/index.mjs',
+	),
+	'@nextcloud/dialogs$': path.resolve(
+		__dirname,
+		'node_modules/@nextcloud/dialogs/dist/index.mjs',
+	),
 	// Bypass @nextcloud/axios's `exports` field which only declares the
 	// `import` condition, so the library's transitive CJS `require()` resolves
 	// to this app's installed copy and shares interceptors / CSRF tokens.
-	'@nextcloud/axios$': path.resolve(__dirname, 'node_modules/@nextcloud/axios/dist/index.cjs'),
+	'@nextcloud/axios$': path.resolve(
+		__dirname,
+		'node_modules/@nextcloud/axios/dist/index.cjs',
+	),
 }
 
 // Allow `.js` import requests to resolve to `.cjs` files. @nextcloud/vue ships
@@ -171,13 +189,16 @@ webpackConfig.output = {
 // using @babel/preset-typescript via .babelrc, so .ts files go through the
 // SAME babel-loader as the .js files. One module-ID space, splitChunks
 // survives, type-checking moves to `npx tsc --noEmit` (opt-in).
-webpackConfig.module.rules = webpackConfig.module.rules.filter(rule =>
-	!(rule && rule.use && (
-		(typeof rule.use === 'string' && rule.use === 'ts-loader')
-		|| (Array.isArray(rule.use) && rule.use.some(u => (u?.loader || u) === 'ts-loader'))
-		|| (typeof rule.use === 'object' && rule.use.loader === 'ts-loader')
-	))
-	&& !(rule && rule.loader === 'ts-loader'),
+webpackConfig.module.rules = webpackConfig.module.rules.filter(
+	(rule) =>
+		!(
+			rule
+			&& rule.use
+			&& ((typeof rule.use === 'string' && rule.use === 'ts-loader')
+				|| (Array.isArray(rule.use)
+					&& rule.use.some((u) => (u?.loader || u) === 'ts-loader'))
+				|| (typeof rule.use === 'object' && rule.use.loader === 'ts-loader'))
+		) && !(rule && rule.loader === 'ts-loader'),
 )
 webpackConfig.module.rules.push({
 	test: /\.ts$/,

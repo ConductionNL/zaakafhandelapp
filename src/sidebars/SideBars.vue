@@ -17,9 +17,7 @@ export default {
 		DashboardSideBar,
 	},
 	data() {
-		return {
-
-		}
+		return {}
 	},
 }
 </script>

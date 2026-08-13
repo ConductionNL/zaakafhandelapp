@@ -42,7 +42,15 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { APP } from './app-path'
 
-const SHOT_ROOT = path.resolve(__dirname, '..', '..', 'docs', 'static', 'screenshots', 'tutorials')
+const SHOT_ROOT = path.resolve(
+	__dirname,
+	'..',
+	'..',
+	'docs',
+	'static',
+	'screenshots',
+	'tutorials',
+)
 
 /**
  * Save a viewport screenshot under
@@ -50,12 +58,20 @@ const SHOT_ROOT = path.resolve(__dirname, '..', '..', 'docs', 'static', 'screens
  * Lives under `static/` so Docusaurus copies the PNG into the build
  * root — markdown image refs use `/screenshots/...` (root-absolute).
  */
-async function shoot(page: Page, track: 'user' | 'admin', file: string): Promise<void> {
+async function shoot(
+	page: Page,
+	track: 'user' | 'admin',
+	file: string,
+): Promise<void> {
 	const dir = path.join(SHOT_ROOT, track)
 	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir, { recursive: true })
 	}
-	await page.screenshot({ path: path.join(dir, file), fullPage: false, type: 'png' })
+	await page.screenshot({
+		path: path.join(dir, file),
+		fullPage: false,
+		type: 'png',
+	})
 }
 
 /**
@@ -66,7 +82,9 @@ async function shoot(page: Page, track: 'user' | 'admin', file: string): Promise
 async function dismissOverlays(page: Page): Promise<void> {
 	const wizard = page.locator('#firstrunwizard')
 	if (await wizard.isVisible().catch(() => false)) {
-		const close = wizard.getByRole('button', { name: /close|got it|finish|skip/i }).first()
+		const close = wizard
+			.getByRole('button', { name: /close|got it|finish|skip/i })
+			.first()
 		if (await close.isVisible().catch(() => false)) {
 			await close.click().catch(() => {})
 		} else {
@@ -75,7 +93,12 @@ async function dismissOverlays(page: Page): Promise<void> {
 		await wizard.waitFor({ state: 'hidden', timeout: 4000 }).catch(() => {})
 	}
 	const stray = page.locator('[role="dialog"]:not(#firstrunwizard)')
-	if (await stray.first().isVisible().catch(() => false)) {
+	if (
+		await stray
+			.first()
+			.isVisible()
+			.catch(() => false)
+	) {
 		await page.keyboard.press('Escape').catch(() => {})
 		await page.waitForTimeout(300)
 	}
@@ -84,13 +107,17 @@ async function dismissOverlays(page: Page): Promise<void> {
 /** Navigate to a Zaakafhandelapp (or absolute) route and settle. */
 async function go(page: Page, route: string): Promise<void> {
 	const url = route.startsWith('/apps/') ? route : `${APP}${route}`
-	await page.goto(url).catch(() => { /* tolerate a 404 — caller decides */ })
+	await page.goto(url).catch(() => {
+		/* tolerate a 404 — caller decides */
+	})
 	// ADR-074 rule 4: 'networkidle' never settles on Nextcloud — long-polling
 	// (notifications, dashboard widgets) keeps a request open, so this always
 	// burned its full timeout and then continued via .catch(). The wait below
 	// is the one that actually gates on something, and dismissOverlays() plus
 	// the settle timeout cover the rest.
-	await page.waitForLoadState('domcontentloaded').catch(() => { /* tolerate a 404 — caller decides */ })
+	await page.waitForLoadState('domcontentloaded').catch(() => {
+		/* tolerate a 404 — caller decides */
+	})
 	await dismissOverlays(page)
 	await page.waitForTimeout(900)
 }
@@ -101,14 +128,22 @@ async function go(page: Page, route: string): Promise<void> {
  * whether the dialog appeared. The dialog body may be empty on a fresh
  * instance — the relevant schema is mapped via OpenRegister.
  */
-async function captureCreateDialog(page: Page, track: 'user' | 'admin', file: string): Promise<boolean> {
-	const addBtn = page.getByRole('button', { name: /Add Item|Toevoegen|\+ ?Toevoegen|Nieuwe?/i }).first()
+async function captureCreateDialog(
+	page: Page,
+	track: 'user' | 'admin',
+	file: string,
+): Promise<boolean> {
+	const addBtn = page
+		.getByRole('button', { name: /Add Item|Toevoegen|\+ ?Toevoegen|Nieuwe?/i })
+		.first()
 	if (!(await addBtn.isVisible().catch(() => false))) {
 		return false
 	}
 	await addBtn.click().catch(() => {})
 	const dialog = page.locator('[role="dialog"]:not(#firstrunwizard)').first()
-	await dialog.waitFor({ state: 'visible', timeout: 5000 }).catch(() => { /* no dialog */ })
+	await dialog.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {
+		/* no dialog */
+	})
 	await page.waitForTimeout(400)
 	await shoot(page, track, file)
 	const cancel = dialog.getByRole('button', { name: /Cancel|Annuleren/i }).first()
@@ -161,7 +196,11 @@ test.describe('docs: user track', () => {
 		// docs/tutorials/user/03-manage-rollen.md
 		await go(page, '/rollen')
 		await shoot(page, 'user', '03-manage-rollen-01.png')
-		const had = await captureCreateDialog(page, 'user', '03-manage-rollen-02.png')
+		const had = await captureCreateDialog(
+			page,
+			'user',
+			'03-manage-rollen-02.png',
+		)
 		if (!had) {
 			await shoot(page, 'user', '03-manage-rollen-02.png')
 		}
@@ -205,7 +244,11 @@ test.describe('docs: user track', () => {
 		// docs/tutorials/user/06-record-contactmoment.md
 		await go(page, '/contactmomenten')
 		await shoot(page, 'user', '06-record-contactmoment-01.png')
-		const had = await captureCreateDialog(page, 'user', '06-record-contactmoment-02.png')
+		const had = await captureCreateDialog(
+			page,
+			'user',
+			'06-record-contactmoment-02.png',
+		)
 		if (!had) {
 			await shoot(page, 'user', '06-record-contactmoment-02.png')
 		}
@@ -223,7 +266,11 @@ test.describe('docs: user track', () => {
 		// is the primary surface.
 		await go(page, '/documenten')
 		await shoot(page, 'user', '07-attach-document-01.png')
-		const had = await captureCreateDialog(page, 'user', '07-attach-document-02.png')
+		const had = await captureCreateDialog(
+			page,
+			'user',
+			'07-attach-document-02.png',
+		)
 		if (!had) {
 			await shoot(page, 'user', '07-attach-document-02.png')
 		}
@@ -261,7 +308,11 @@ test.describe('docs: admin track', () => {
 		// docs/tutorials/admin/01-configure-zaaktypen.md
 		await go(page, '/zaaktypen')
 		await shoot(page, 'admin', '01-configure-zaaktypen-01.png')
-		const had = await captureCreateDialog(page, 'admin', '01-configure-zaaktypen-02.png')
+		const had = await captureCreateDialog(
+			page,
+			'admin',
+			'01-configure-zaaktypen-02.png',
+		)
 		if (!had) {
 			await shoot(page, 'admin', '01-configure-zaaktypen-02.png')
 		}
@@ -275,7 +326,11 @@ test.describe('docs: admin track', () => {
 		// docs/tutorials/admin/02-manage-medewerkers.md
 		await go(page, '/medewerkers')
 		await shoot(page, 'admin', '02-manage-medewerkers-01.png')
-		const had = await captureCreateDialog(page, 'admin', '02-manage-medewerkers-02.png')
+		const had = await captureCreateDialog(
+			page,
+			'admin',
+			'02-manage-medewerkers-02.png',
+		)
 		if (!had) {
 			await shoot(page, 'admin', '02-manage-medewerkers-02.png')
 		}

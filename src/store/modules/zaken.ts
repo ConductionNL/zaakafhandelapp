@@ -29,9 +29,7 @@ export const useZaakStore = defineStore('zaken', {
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZakenList(zakenList: Zaak[] | TZaak[]) {
-			this.zakenList = zakenList.map(
-			    (zaakItem) => new Zaak(zaakItem),
-			)
+			this.zakenList = zakenList.map((zaakItem) => new Zaak(zaakItem))
 			console.info('Zaken list set to ' + zakenList.length + ' items')
 		},
 		setAuditTrailItem(auditTrailItem: Record<string, unknown>) {
@@ -44,7 +42,9 @@ export const useZaakStore = defineStore('zaken', {
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TZaak[], entities: Zaak[] }>} The response, raw data, and entities.
 		 */
-		async refreshZakenList(search: string = null): Promise<{ response: Response, data: TZaak[], entities: Zaak[] }> {
+		async refreshZakenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TZaak[]; entities: Zaak[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -80,7 +80,7 @@ export const useZaakStore = defineStore('zaken', {
 		async getZaak(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TZaak, entity: Zaak }> {
+		): Promise<{ response: Response; data: TZaak; entity: Zaak }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching zaak item with id: ' + id)
@@ -147,7 +147,7 @@ export const useZaakStore = defineStore('zaken', {
 		async saveZaak(
 			zaakItem: Zaak | TZaak,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TZaak, entity: Zaak }> {
+		): Promise<{ response: Response; data: TZaak; entity: Zaak }> {
 			if (!zaakItem) {
 				throw new Error('No zaak item to save')
 			}
@@ -160,23 +160,20 @@ export const useZaakStore = defineStore('zaken', {
 
 			console.info('Saving zaak item with id: ' + zaakItem.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(zaakItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(zaakItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TZaak
+			const data = (await response.json()) as TZaak
 			const entity = new Zaak(data)
 
 			options.setItem && this.setZaakItem(data)

@@ -6,11 +6,21 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 <template>
 	<NcModal ref="modalRef" label-id="addBerichtToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ t('zaakafhandelapp', 'Add message') }}: {{ zaakStore.zaakItem.title }}</h2>
+			<h2>
+				{{ t('zaakafhandelapp', 'Add message') }}:
+				{{ zaakStore.zaakItem.title }}
+			</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ t('zaakafhandelapp', 'Message successfully added to case') }}</p>
+					<p>
+						{{
+							t(
+								'zaakafhandelapp',
+								'Message successfully added to case',
+							)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -18,7 +28,8 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcSelect v-bind="berichten"
+				<NcSelect
+					v-bind="berichten"
 					v-model="berichten.value"
 					:input-label="t('zaakafhandelapp', 'Message')"
 					:loading="berichtenLoading"
@@ -26,7 +37,8 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 					required />
 			</div>
 
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="!berichten?.value || loading"
 				variant="primary"
 				@click="addBerichtToZaak">
@@ -41,7 +53,13 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcLoadingIcon, NcNoteCard, NcSelect } from '@nextcloud/vue'
+import {
+	NcButton,
+	NcModal,
+	NcLoadingIcon,
+	NcNoteCard,
+	NcSelect,
+} from '@nextcloud/vue'
 import { Zaak } from '../../entities/index.js'
 
 import _ from 'lodash'
@@ -89,11 +107,17 @@ export default {
 		fetchBerichtenData() {
 			this.berichtenLoading = true
 
-			berichtStore.refreshBerichtenList()
+			berichtStore
+				.refreshBerichtenList()
 				.then(({ data }) => {
 					this.berichten = {
 						options: data
-							.filter((bericht) => !zaakStore.zaakItem.berichten.includes(bericht.id))
+							.filter(
+								(bericht) =>
+									!zaakStore.zaakItem.berichten.includes(
+										bericht.id,
+									),
+							)
 							.map((bericht) => ({
 								id: bericht.id,
 								label: bericht.title,
@@ -124,7 +148,8 @@ export default {
 
 			const newZaakItem = new Zaak(zaakItemCopy)
 
-			zaakStore.saveZaak(newZaakItem)
+			zaakStore
+				.saveZaak(newZaakItem)
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -133,7 +158,7 @@ export default {
 					/**
 					 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 					 */
-					setTimeout(function() {
+					setTimeout(function () {
 						self.success = null
 						self.closeModal()
 					}, 2000)

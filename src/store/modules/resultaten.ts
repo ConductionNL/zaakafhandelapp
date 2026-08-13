@@ -32,9 +32,11 @@ export const useResultaatStore = defineStore('resultaten', {
 		 */
 		setResultatenList(resultatenList: Resultaat[] | TResultaat[]) {
 			this.resultatenList = resultatenList.map(
-			    (resultaatItem) => new Resultaat(resultaatItem),
+				(resultaatItem) => new Resultaat(resultaatItem),
 			)
-			console.info('Resultaten list set to ' + resultatenList.length + ' items')
+			console.info(
+				'Resultaten list set to ' + resultatenList.length + ' items',
+			)
 		},
 		/**
 		 * Refresh the list of resultaten items.
@@ -43,7 +45,11 @@ export const useResultaatStore = defineStore('resultaten', {
 		 * @throws If the HTTP request fails.
 		 * @return { Promise<{ response: Response, data: TResultaat[], entities: Resultaat[] }> } The response, raw data, and entities.
 		 */
-		async refreshResultatenList(search: string = null): Promise<{ response: Response, data: TResultaat[], entities: Resultaat[] }> {
+		async refreshResultatenList(search: string = null): Promise<{
+			response: Response
+			data: TResultaat[]
+			entities: Resultaat[]
+		}> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -62,7 +68,9 @@ export const useResultaatStore = defineStore('resultaten', {
 			}
 
 			const data = (await response.json()).results as TResultaat[]
-			const entities = data.map((resultaatItem: TResultaat) => new Resultaat(resultaatItem))
+			const entities = data.map(
+				(resultaatItem: TResultaat) => new Resultaat(resultaatItem),
+			)
 
 			this.setResultatenList(data)
 
@@ -79,7 +87,7 @@ export const useResultaatStore = defineStore('resultaten', {
 		async getResultaat(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TResultaat, entity: Resultaat }> {
+		): Promise<{ response: Response; data: TResultaat; entity: Resultaat }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching resultaat item with id: ' + id)
@@ -107,7 +115,9 @@ export const useResultaatStore = defineStore('resultaten', {
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response }>} The response from the delete request.
 		 */
-		async deleteResultaat(resultaatItem: Resultaat | TResultaat): Promise<{ response: Response }> {
+		async deleteResultaat(
+			resultaatItem: Resultaat | TResultaat,
+		): Promise<{ response: Response }> {
 			if (!resultaatItem) {
 				throw new Error('No resultaat item to delete')
 			}
@@ -139,7 +149,7 @@ export const useResultaatStore = defineStore('resultaten', {
 		async saveResultaat(
 			resultaatItem: Resultaat | TResultaat,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TResultaat, entity: Resultaat }> {
+		): Promise<{ response: Response; data: TResultaat; entity: Resultaat }> {
 			if (!resultaatItem) {
 				throw new Error('No resultaat item to save')
 			}
@@ -152,23 +162,20 @@ export const useResultaatStore = defineStore('resultaten', {
 
 			console.info('Saving resultaat item with id: ' + resultaatItem?.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(resultaatItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(resultaatItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(response.statusText || 'Failed to save resultaat')
 			}
 
-			const data = await response.json() as TResultaat
+			const data = (await response.json()) as TResultaat
 			const entity = new Resultaat(data)
 
 			options.setItem && this.setResultaatItem(data)

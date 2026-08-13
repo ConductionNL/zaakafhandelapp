@@ -12,5 +12,6 @@ export const mockMedewerkerData = (): TMedewerker[] => [
 	},
 ]
 
-export const mockMedewerker = (data: TMedewerker[] = mockMedewerkerData()): TMedewerker[] =>
-	data.map((item) => new Medewerker(item))
+export const mockMedewerker = (
+	data: TMedewerker[] = mockMedewerkerData(),
+): TMedewerker[] => data.map((item) => new Medewerker(item))

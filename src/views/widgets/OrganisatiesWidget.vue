@@ -5,7 +5,8 @@ import { klantStore, navigationStore } from '../../store/store.js'
 
 <template>
 	<div class="openZakenContainer">
-		<CnDataTable :rows="items"
+		<CnDataTable
+			:rows="items"
 			:columns="columns"
 			:loading="loading"
 			hide-header
@@ -14,7 +15,8 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			:empty-text="t('zaakafhandelapp', 'No organisations found')"
 			@row-click="onShow">
 			<template #empty>
-				<NcEmptyContent :name="t('zaakafhandelapp', 'No organisations found')">
+				<NcEmptyContent
+					:name="t('zaakafhandelapp', 'No organisations found')">
 					<template #icon>
 						<OfficeBuildingOutline />
 					</template>
@@ -22,7 +24,8 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			</template>
 			<template #row-actions="{ row }">
 				<NcActions>
-					<NcActionButton icon="icon-toggle"
+					<NcActionButton
+						icon="icon-toggle"
 						close-after-click
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
@@ -31,13 +34,15 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			</template>
 			<template #footer>
 				<div class="searchContainer">
-					<NcTextField v-model="searchOrganisatie"
+					<NcTextField
+						v-model="searchOrganisatie"
 						:disabled="loading"
 						:label="t('zaakafhandelapp', 'Search by company name')"
 						maxlength="255"
 						class="OrgSearchField" />
 
-					<NcButton variant="primary"
+					<NcButton
+						variant="primary"
 						:disabled="loading"
 						class="searchButton"
 						@click="search">
@@ -50,7 +55,8 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			</template>
 		</CnDataTable>
 
-		<ViewKlant v-if="isModalOpen"
+		<ViewKlant
+			v-if="isModalOpen"
 			:dashboard-widget="true"
 			:klant-id="klantStore.widgetKlantId"
 			@save-success="fetchOrganisatieItems"
@@ -61,7 +67,13 @@ import { klantStore, navigationStore } from '../../store/store.js'
 <script>
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
-import { NcEmptyContent, NcButton, NcTextField, NcActions, NcActionButton } from '@nextcloud/vue'
+import {
+	NcEmptyContent,
+	NcButton,
+	NcTextField,
+	NcActions,
+	NcActionButton,
+} from '@nextcloud/vue'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
@@ -112,29 +124,33 @@ export default {
 		 */
 		fetchOrganisatieItems() {
 			this.loading = true
-			klantStore.searchOrganisations()
-				.then(() => {
-					this.organisatieItems = klantStore.klantenList.map(organisatie => ({
+			klantStore.searchOrganisations().then(() => {
+				this.organisatieItems = klantStore.klantenList.map(
+					(organisatie) => ({
 						id: organisatie.id,
 						mainText: organisatie.bedrijfsnaam,
 						subText: organisatie.websiteUrl,
-					}))
+					}),
+				)
 
-					this.loading = false
-				})
+				this.loading = false
+			})
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
 		 */
 		search() {
 			this.loading = true
-			klantStore.searchOrganisations(this.searchOrganisatie)
+			klantStore
+				.searchOrganisations(this.searchOrganisatie)
 				.then(() => {
-					this.organisatieItems = klantStore.klantenList.map(organisatie => ({
-						id: organisatie.id,
-						mainText: organisatie.bedrijfsnaam,
-						subText: organisatie.websiteUrl,
-					}))
+					this.organisatieItems = klantStore.klantenList.map(
+						(organisatie) => ({
+							id: organisatie.id,
+							mainText: organisatie.bedrijfsnaam,
+							subText: organisatie.websiteUrl,
+						}),
+					)
 					this.loading = false
 				})
 				.finally(() => {
@@ -148,22 +164,19 @@ export default {
 			klantStore.setWidgetKlantId(item.id)
 			this.isModalOpen = true
 			navigationStore.setModal('viewKlant')
-
 		},
-
 	},
-
 }
 </script>
 <style scoped>
-.openZakenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.openZakenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
 .openZakenContainer > .cn-table-container {
-   overflow: auto;
+	overflow: auto;
 }
 .searchContainer {
 	display: flex;

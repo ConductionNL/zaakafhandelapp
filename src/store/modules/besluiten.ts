@@ -34,7 +34,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		async getBesluit(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TBesluit, entity: Besluit }> {
+		): Promise<{ response: Response; data: TBesluit; entity: Besluit }> {
 			if (!id) {
 				throw new Error('No besluit item to fetch')
 			}
@@ -66,7 +66,9 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * @throws If the HTTP request fails.
 		 * @return { Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> } The response, raw data array, and entity array.
 		 */
-		async getBesluiten(zaakId: string = null): Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> {
+		async getBesluiten(
+			zaakId: string = null,
+		): Promise<{ response: Response; data: TBesluit[]; entities: Besluit[] }> {
 			const params = new URLSearchParams()
 			if (zaakId) {
 				params.append('zaak', zaakId)
@@ -127,7 +129,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		async saveBesluit(
 			besluitItem: Besluit | TBesluit,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TBesluit, entity: Besluit }> {
+		): Promise<{ response: Response; data: TBesluit; entity: Besluit }> {
 			if (!besluitItem) {
 				throw new Error('No besluit item to save')
 			}
@@ -140,23 +142,20 @@ export const useBesluitStore = defineStore('besluiten', {
 
 			console.info('Saving besluit item with id: ' + besluitItem?.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(besluitItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(besluitItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(response.statusText || 'Failed to save besluit')
 			}
 
-			const data = await response.json() as TBesluit
+			const data = (await response.json()) as TBesluit
 			const entity = new Besluit(data)
 
 			options.setItem && this.setBesluitItem(data)

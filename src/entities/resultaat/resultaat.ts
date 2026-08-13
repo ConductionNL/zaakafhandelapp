@@ -2,7 +2,6 @@ import { SafeParseReturnType, z } from 'zod'
 import { TResultaat } from './resultaat.types'
 
 export class Resultaat implements TResultaat {
-
 	public id: string
 	public url: string
 	public zaak: string
@@ -31,5 +30,4 @@ export class Resultaat implements TResultaat {
 
 		return schema.safeParse(this)
 	}
-
 }

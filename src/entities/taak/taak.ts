@@ -3,7 +3,6 @@ import { TTaak, ZaakID } from './taak.types'
 import getValidISOstring from '../../services/getValidISOstring'
 
 export class Taak implements TTaak {
-
 	public id: string
 	public title: string
 	public zaak: ZaakID
@@ -52,5 +51,4 @@ export class Taak implements TTaak {
 
 		return schema.safeParse(this)
 	}
-
 }

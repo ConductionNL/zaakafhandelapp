@@ -5,7 +5,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 
 <template>
 	<div class="zakenContainer">
-		<CnDataTable :rows="items"
+		<CnDataTable
+			:rows="items"
 			:columns="columns"
 			:loading="loading"
 			hide-header
@@ -29,7 +30,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			</template>
 		</CnDataTable>
 
-		<ZaakForm v-if="isModalOpen"
+		<ZaakForm
+			v-if="isModalOpen"
 			:dashboard-widget="true"
 			@save-success="fetchZaakItems"
 			@close="closeModal" />
@@ -80,16 +82,15 @@ export default {
 		 */
 		fetchZaakItems() {
 			this.loading = true
-			zaakStore.refreshZakenList()
-				.then(() => {
-					this.zaakItems = zaakStore.zakenList.map(zaak => ({
-						id: zaak.id,
-						mainText: zaak.identificatie,
-						subText: zaak.zaaktype,
-					}))
+			zaakStore.refreshZakenList().then(() => {
+				this.zaakItems = zaakStore.zakenList.map((zaak) => ({
+					id: zaak.id,
+					mainText: zaak.identificatie,
+					subText: zaak.zaaktype,
+				}))
 
-					this.loading = false
-				})
+				this.loading = false
+			})
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
@@ -111,11 +112,11 @@ export default {
 </script>
 
 <style scoped>
-.zakenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.zakenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
 .zakenContainer > .cn-table-container {
 	overflow: auto;
@@ -126,5 +127,5 @@ export default {
 	--zaa-margin-10: 10px;
 	--zaa-margin-20: 20px;
 	--zaa-margin-50: 50px;
-  }
+}
 </style>

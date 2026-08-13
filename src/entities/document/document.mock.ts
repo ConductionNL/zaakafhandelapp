@@ -62,8 +62,10 @@ export const mockDocumentData = (): TDocument[] => [
 				informatieobjectcategorie: 'example',
 				trefwoorden: ['example'],
 				omschrijvingGeneriek: {
-					informatieobjecttypeOmschrijvingGeneriek: 'Example Generic Description',
-					definitieInformatieobjecttypeOmschrijvingGeneriek: 'An example document type',
+					informatieobjecttypeOmschrijvingGeneriek:
+						'Example Generic Description',
+					definitieInformatieobjecttypeOmschrijvingGeneriek:
+						'An example document type',
 					herkomstInformatieobjecttypeOmschrijvingGeneriek: 'KING',
 					hierarchieInformatieobjecttypeOmschrijvingGeneriek: 'parent',
 					opmerkingInformatieobjecttypeOmschrijvingGeneriek: null,
@@ -73,4 +75,5 @@ export const mockDocumentData = (): TDocument[] => [
 	},
 ]
 
-export const mockDocument = (data: TDocument[] = mockDocumentData()): TDocument[] => data.map(item => new Document(item))
+export const mockDocument = (data: TDocument[] = mockDocumentData()): TDocument[] =>
+	data.map((item) => new Document(item))

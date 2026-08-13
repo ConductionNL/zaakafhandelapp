@@ -47,9 +47,7 @@ export const useRolStore = defineStore('rollen', {
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setRollenList(rollenList: Rol[] | TRol[]) {
-			this.rollenList = rollenList.map(
-			    (rolItem) => new Rol(rolItem),
-			)
+			this.rollenList = rollenList.map((rolItem) => new Rol(rolItem))
 			console.info('Rollen list set to ' + rollenList.length + ' items')
 		},
 		setZaakId(zaakId: string) {
@@ -62,7 +60,9 @@ export const useRolStore = defineStore('rollen', {
 		 * @throws If the HTTP request fails.
 		 * @return {Promise<{ response: Response, data: TRol[], entities: Rol[] }>} The response, raw data, and entities.
 		 */
-		async refreshRollenList(search: string = null): Promise<{ response: Response, data: TRol[], entities: Rol[] }> {
+		async refreshRollenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TRol[]; entities: Rol[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -98,7 +98,7 @@ export const useRolStore = defineStore('rollen', {
 		async getRol(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TRol, entity: Rol }> {
+		): Promise<{ response: Response; data: TRol; entity: Rol }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching rol item with id: ' + id)
@@ -162,7 +162,7 @@ export const useRolStore = defineStore('rollen', {
 		async saveRol(
 			rolItem: Rol | TRol,
 			options: TOptions = { setItem: true, redirect: true },
-		): Promise<{ response: Response, data: TRol, entity: Rol }> {
+		): Promise<{ response: Response; data: TRol; entity: Rol }> {
 			if (!rolItem) {
 				throw new Error('No rol item to save')
 			}
@@ -178,28 +178,26 @@ export const useRolStore = defineStore('rollen', {
 
 			console.info('Saving rol item with id: ' + rolItem.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(rolItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(rolItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TRol
+			const data = (await response.json()) as TRol
 			const entity = new Rol(data)
 
 			options.setItem && this.setRolItem(data)
 			this.refreshRollenList()
-			if (options.redirect) router.push({ name: 'RolDetail', params: { id: entity.id } })
+			if (options.redirect)
+				router.push({ name: 'RolDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

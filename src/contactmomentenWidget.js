@@ -14,14 +14,17 @@ import '@conduction/nextcloud-vue/css/index.css'
 // attributes; an unregistered directive is only a dev-mode warning, so the
 // tooltip would otherwise have disappeared silently in production.
 
-OCA.Dashboard.register('zaakAfhandelApp_contactmomenten_widget', (el, { widget }) => {
-	// Vue 3: one app instance per widget mount. `mount(el)` renders INSIDE the
-	// element Nextcloud hands us, where Vue 2's `$mount(el)` REPLACED it.
-	const app = createApp(ContactMomentenWidget, { title: widget.title })
+OCA.Dashboard.register(
+	'zaakAfhandelApp_contactmomenten_widget',
+	(el, { widget }) => {
+		// Vue 3: one app instance per widget mount. `mount(el)` renders INSIDE the
+		// element Nextcloud hands us, where Vue 2's `$mount(el)` REPLACED it.
+		const app = createApp(ContactMomentenWidget, { title: widget.title })
 
-	// `t` / `n` were previously referenced here without being imported, so they
-	// resolved to Nextcloud's window globals. Import them explicitly.
-	app.mixin({ methods: { t, n } })
+		// `t` / `n` were previously referenced here without being imported, so they
+		// resolved to Nextcloud's window globals. Import them explicitly.
+		app.mixin({ methods: { t, n } })
 
-	app.mount(el)
-})
+		app.mount(el)
+	},
+)

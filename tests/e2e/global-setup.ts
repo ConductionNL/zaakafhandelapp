@@ -63,23 +63,27 @@ function ensureBundleBuilt(): void {
 	if (process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') {
 		throw new Error(
 			`[playwright globalSetup] bundle missing at ${BUNDLE_PATH} on CI. `
-			+ 'The workflow\'s "Build app frontend" step should already have produced it — '
-			+ 'check that step rather than rebuilding here, because a rebuild would hide it.',
+				+ 'The workflow\'s "Build app frontend" step should already have produced it — '
+				+ 'check that step rather than rebuilding here, because a rebuild would hide it.',
 		)
 	}
 	// eslint-disable-next-line no-console
-	console.log(`[playwright globalSetup] bundle missing at ${BUNDLE_PATH}; running 'npm run build' once…`)
+	console.log(
+		`[playwright globalSetup] bundle missing at ${BUNDLE_PATH}; running 'npm run build' once…`,
+	)
 	execSync('npm run build', { cwd: APP_ROOT, stdio: 'inherit' })
 }
 
 async function ensureNextcloudReachable(baseURL: string): Promise<void> {
 	const ctx = await request.newContext()
 	try {
-		const res = await ctx.get(`${baseURL}/status.php`, { failOnStatusCode: false })
+		const res = await ctx.get(`${baseURL}/status.php`, {
+			failOnStatusCode: false,
+		})
 		if (!res.ok()) {
 			throw new Error(
 				`Nextcloud status.php returned ${res.status()} at ${baseURL}. `
-				+ `Make sure the docker container is running and reachable.`,
+					+ `Make sure the docker container is running and reachable.`,
 			)
 		}
 		const body = await res.json().catch(() => ({}))
@@ -96,8 +100,8 @@ async function ensureNextcloudReachable(baseURL: string): Promise<void> {
 export default async function globalSetup(config: FullConfig): Promise<void> {
 	// No `?? 'http://localhost:8080'` fallback: that is the SHARED dev
 	// container, which bind-mounts real host checkouts. See tests/e2e/base-url.ts.
-	const baseURL = (config.projects[0]?.use?.baseURL as string | undefined)
-		?? resolveBaseUrl()
+	const baseURL =
+		(config.projects[0]?.use?.baseURL as string | undefined) ?? resolveBaseUrl()
 	const username = process.env.NC_ADMIN_USER ?? 'admin'
 	const password = process.env.NC_ADMIN_PASS ?? 'admin'
 
@@ -121,10 +125,13 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 		await page.locator('input[name="password"]').fill(password)
 		// Wait for navigation that follows the submit click; navigationPromise
 		// must be set up BEFORE the click to avoid a race condition.
-		const navPromise = page.waitForURL(url => !url.pathname.includes('/login'), {
-			timeout: 25_000,
-			waitUntil: 'commit',
-		})
+		const navPromise = page.waitForURL(
+			(url) => !url.pathname.includes('/login'),
+			{
+				timeout: 25_000,
+				waitUntil: 'commit',
+			},
+		)
 		await page.locator('button[type="submit"]').first().click()
 		await navPromise
 	}
@@ -134,7 +141,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 	if (/\/login(\?|$|\/)/.test(currentUrl)) {
 		throw new Error(
 			`Login appears to have failed — still on ${currentUrl}. `
-			+ `Check NC_ADMIN_USER / NC_ADMIN_PASS (defaults admin/admin).`,
+				+ `Check NC_ADMIN_USER / NC_ADMIN_PASS (defaults admin/admin).`,
 		)
 	}
 	// No additional wait needed: waitForURL above confirmed we left the

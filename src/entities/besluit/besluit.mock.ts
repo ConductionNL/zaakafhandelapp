@@ -10,4 +10,5 @@ export const mockBesluitData = (): TBesluit[] => [
 	},
 ]
 
-export const mockBesluit = (data: TBesluit[] = mockBesluitData()): TBesluit[] => data.map(item => new Besluit(item))
+export const mockBesluit = (data: TBesluit[] = mockBesluitData()): TBesluit[] =>
+	data.map((item) => new Besluit(item))

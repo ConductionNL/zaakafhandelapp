@@ -14,37 +14,57 @@ const TODAY = new Date('2026-06-15T12:00:00Z')
 
 describe('deriveZaakUrgency', () => {
 	it('returns verlopen for an open zaak past its statutory deadline', () => {
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-14' }, TODAY)).toBe('verlopen')
+		expect(
+			deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-14' }, TODAY),
+		).toBe('verlopen')
 	})
 
 	it('returns bijna-verlopen within the default 7-day lead window', () => {
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-18' }, TODAY)).toBe('bijna-verlopen')
+		expect(
+			deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-18' }, TODAY),
+		).toBe('bijna-verlopen')
 	})
 
 	it('treats the deadline today as approaching', () => {
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-15' }, TODAY)).toBe('bijna-verlopen')
+		expect(
+			deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-15' }, TODAY),
+		).toBe('bijna-verlopen')
 	})
 
 	it('treats exactly +7 days as approaching (boundary)', () => {
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-22' }, TODAY)).toBe('bijna-verlopen')
+		expect(
+			deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-22' }, TODAY),
+		).toBe('bijna-verlopen')
 	})
 
 	it('returns op-tijd for a deadline beyond the lead window', () => {
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-07-30' }, TODAY)).toBe('op-tijd')
+		expect(
+			deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-07-30' }, TODAY),
+		).toBe('op-tijd')
 	})
 
 	it('flags bijna-verlopen when past the planned (service) deadline only', () => {
-		expect(deriveZaakUrgency(
-			{ uiterlijkeEinddatumAfdoening: '2026-07-30', einddatumGepland: '2026-06-10' },
-			TODAY,
-		)).toBe('bijna-verlopen')
+		expect(
+			deriveZaakUrgency(
+				{
+					uiterlijkeEinddatumAfdoening: '2026-07-30',
+					einddatumGepland: '2026-06-10',
+				},
+				TODAY,
+			),
+		).toBe('bijna-verlopen')
 	})
 
 	it('returns null for a closed zaak even when overdue', () => {
-		expect(deriveZaakUrgency(
-			{ einddatum: '2026-06-10', uiterlijkeEinddatumAfdoening: '2026-06-01' },
-			TODAY,
-		)).toBeNull()
+		expect(
+			deriveZaakUrgency(
+				{
+					einddatum: '2026-06-10',
+					uiterlijkeEinddatumAfdoening: '2026-06-01',
+				},
+				TODAY,
+			),
+		).toBeNull()
 	})
 
 	it('returns null for a zaak without termijn fields', () => {
@@ -52,8 +72,20 @@ describe('deriveZaakUrgency', () => {
 	})
 
 	it('honours a custom lead window', () => {
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-25' }, TODAY, 14)).toBe('bijna-verlopen')
-		expect(deriveZaakUrgency({ uiterlijkeEinddatumAfdoening: '2026-06-25' }, TODAY, 3)).toBe('op-tijd')
+		expect(
+			deriveZaakUrgency(
+				{ uiterlijkeEinddatumAfdoening: '2026-06-25' },
+				TODAY,
+				14,
+			),
+		).toBe('bijna-verlopen')
+		expect(
+			deriveZaakUrgency(
+				{ uiterlijkeEinddatumAfdoening: '2026-06-25' },
+				TODAY,
+				3,
+			),
+		).toBe('op-tijd')
 	})
 })
 

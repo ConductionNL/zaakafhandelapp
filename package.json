@@ -26,7 +26,9 @@
     "test:e2e": "playwright test",
     "test:e2e:docs": "playwright test --project docs-capture",
     "test:e2e:install": "playwright install chromium",
-    "stylelint": "stylelint \"src/**/*.{vue,scss,css}\""
+    "stylelint": "stylelint \"src/**/*.{vue,scss,css}\"",
+    "format": "prettier --check \"**/*.{js,ts,vue,css,scss}\"",
+    "format:fix": "prettier --write \"**/*.{js,ts,vue,css,scss}\""
   },
   "browserslist": [
     "extends @nextcloud/browserslist-config"
@@ -67,6 +69,7 @@
     "@nextcloud/browserslist-config": "^3.0.1",
     "@nextcloud/eslint-config": "^8.4.1",
     "@nextcloud/eslint-plugin": "^2.2.1",
+    "@nextcloud/prettier-config": "^1.2.0",
     "@nextcloud/stylelint-config": "^2.4.0",
     "@nextcloud/webpack-vue-config": "^7.0.2",
     "@pinia/testing": "^0.1.3",
@@ -83,6 +86,7 @@
     "babel-loader": "^10.1.1",
     "css-loader": "^7.1.4",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-config-standard": "^17.1.0",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-import-resolver-exports": "^1.0.0-beta.5",
@@ -98,6 +102,7 @@
     "jest-transform-stub": "^2.0.0",
     "node-polyfill-webpack-plugin": "^3.0.0",
     "postcss-html": "^1.8.1",
+    "prettier": "^3.9.6",
     "sass": "^1.99.0",
     "sass-loader": "^16.0.8",
     "style-loader": "^4.0.0",
@@ -116,5 +121,6 @@
   },
   "overrides": {
     "minimatch": "^3.1.2"
-  }
+  },
+  "prettier": "@nextcloud/prettier-config"
 }

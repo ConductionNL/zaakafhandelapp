@@ -1,10 +1,17 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore } from '../../store/store.js'
+import {
+	taakStore,
+	navigationStore,
+	zaakStore,
+	klantStore,
+	contactMomentStore,
+} from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Customer')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Customer')"
 		size="normal"
 		@closing="closeModalFromButton()">
 		<h1 class="h1">
@@ -26,7 +33,12 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 			</div>
 			<div class="gridContent">
 				<b>{{ t('zaakafhandelapp', 'Address:') }}</b>
-				<p>{{ `${klant.straatnaam} ${klant.huisnummer} ${klant.postcode} ${klant.plaats}` || '-' }}</p>
+				<p>
+					{{
+						`${klant.straatnaam} ${klant.huisnummer} ${klant.postcode} ${klant.plaats}`
+						|| '-'
+					}}
+				</p>
 			</div>
 			<div class="gridContent">
 				<b>{{ t('zaakafhandelapp', 'Function:') }}</b>
@@ -66,10 +78,14 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 			</div>
 		</div>
 		<div class="tabContainer">
-			<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Customer details')">
+			<CnTabs
+				content-class="mt-3"
+				justified
+				:aria-label="t('zaakafhandelapp', 'Customer details')">
 				<CnTab :title="t('zaakafhandelapp', 'Cases')">
 					<div v-if="zaken?.length">
-						<NcListItem v-for="(zaak, key) in zaken"
+						<NcListItem
+							v-for="(zaak, key) in zaken"
 							:key="key"
 							:name="zaak.identificatie"
 							:bold="false"
@@ -80,15 +96,24 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
+					<NcEmptyContent
+						v-else
+						icon="icon-folder"
+						:title="t('zaakafhandelapp', 'No cases found')">
 						<template #description>
-							{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
+							{{
+								t(
+									'zaakafhandelapp',
+									'No cases were found for this customer.',
+								)
+							}}
 						</template>
 					</NcEmptyContent>
 				</CnTab>
 				<CnTab :title="t('zaakafhandelapp', 'Tasks')">
 					<div v-if="taken?.length">
-						<NcListItem v-for="(taak, key) in taken"
+						<NcListItem
+							v-for="(taak, key) in taken"
 							:key="key"
 							:name="taak.title"
 							:bold="false"
@@ -99,15 +124,24 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
+					<NcEmptyContent
+						v-else
+						icon="icon-tasks"
+						:title="t('zaakafhandelapp', 'No tasks found')">
 						<template #description>
-							{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
+							{{
+								t(
+									'zaakafhandelapp',
+									'No tasks were found for this customer.',
+								)
+							}}
 						</template>
 					</NcEmptyContent>
 				</CnTab>
 				<CnTab :title="t('zaakafhandelapp', 'Messages')">
 					<div v-if="berichten?.length">
-						<NcListItem v-for="(bericht, key) in berichten"
+						<NcListItem
+							v-for="(bericht, key) in berichten"
 							:key="key"
 							:name="bericht.title"
 							:bold="false"
@@ -118,7 +152,12 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 							<template #actions>
 								<NcActionButton
-									@click="berichtStore.setBerichtItem(bericht); navigationStore.setModal('viewBericht')">
+									@click="
+										() => {
+											berichtStore.setBerichtItem(bericht)
+											navigationStore.setModal('viewBericht')
+										}
+									">
 									<template #icon>
 										<Eye :size="20" />
 									</template>
@@ -127,15 +166,24 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-mail" :title="t('zaakafhandelapp', 'No messages found')">
+					<NcEmptyContent
+						v-else
+						icon="icon-mail"
+						:title="t('zaakafhandelapp', 'No messages found')">
 						<template #description>
-							{{ t('zaakafhandelapp', 'No messages found for this customer.') }}
+							{{
+								t(
+									'zaakafhandelapp',
+									'No messages found for this customer.',
+								)
+							}}
 						</template>
 					</NcEmptyContent>
 				</CnTab>
 				<CnTab :title="t('zaakafhandelapp', 'Contact moments')">
 					<div v-if="filteredContactMomenten?.length">
-						<NcListItem v-for="(contactMoment, key) in filteredContactMomenten"
+						<NcListItem
+							v-for="(contactMoment, key) in filteredContactMomenten"
 							:key="key"
 							:name="getName(klant)"
 							:bold="false"
@@ -144,13 +192,25 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 								<CardAccountPhoneOutline :size="44" />
 							</template>
 							<template #subname>
-								{{ new Date(contactMoment.startDate).toLocaleString() }}
+								{{
+									new Date(
+										contactMoment.startDate,
+									).toLocaleString()
+								}}
 							</template>
 						</NcListItem>
 					</div>
-					<NcEmptyContent v-else icon="icon-contacts" :title="t('zaakafhandelapp', 'No contact moments found')">
+					<NcEmptyContent
+						v-else
+						icon="icon-contacts"
+						:title="t('zaakafhandelapp', 'No contact moments found')">
 						<template #description>
-							{{ t('zaakafhandelapp', 'No contact moments found for this customer.') }}
+							{{
+								t(
+									'zaakafhandelapp',
+									'No contact moments found for this customer.',
+								)
+							}}
 						</template>
 					</NcEmptyContent>
 				</CnTab>
@@ -162,21 +222,40 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 					<DotsHorizontal :size="20" />
 				</template>
 
-				<NcActionButton @click="zaakStore.setZaakItem(); zaakModalOpen = true">
+				<NcActionButton
+					@click="
+						() => {
+							zaakStore.setZaakItem()
+							zaakModalOpen = true
+						}
+					">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
 					{{ t('zaakafhandelapp', 'Create case') }}
 				</NcActionButton>
 
-				<NcActionButton @click="taakStore.setTaakItem(); taakModalOpen = true">
+				<NcActionButton
+					@click="
+						() => {
+							taakStore.setTaakItem()
+							taakModalOpen = true
+						}
+					">
 					<template #icon>
 						<CalendarMonthOutline :size="20" />
 					</template>
 					{{ t('zaakafhandelapp', 'Create task') }}
 				</NcActionButton>
 
-				<NcActionButton :disabled="true" @click="berichtStore.setBerichtItem(); berichtModalOpen = true">
+				<NcActionButton
+					:disabled="true"
+					@click="
+						() => {
+							berichtStore.setBerichtItem()
+							berichtModalOpen = true
+						}
+					">
 					<template #icon>
 						<ChatOutline :size="20" />
 					</template>
@@ -192,12 +271,14 @@ import { taakStore, navigationStore, zaakStore, klantStore, contactMomentStore }
 			</NcButton>
 		</template>
 
-		<WidgetZaakForm v-if="zaakModalOpen"
+		<WidgetZaakForm
+			v-if="zaakModalOpen"
 			:dashboard-widget="true"
 			:selected-klant-from-widget="klant"
 			@save-success="fetchZaakItems" />
 
-		<EditTaakForm v-if="taakModalOpen"
+		<EditTaakForm
+			v-if="taakModalOpen"
 			:dashboard-widget="true"
 			:selected-klant-from-widget="klant"
 			@save-success="fetchTaakItems"
@@ -276,7 +357,9 @@ export default {
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		filteredContactMomenten() {
-			return contactMomentStore.contactMomentenList.filter(contactMoment => contactMoment.klant === this.klant?.id)
+			return contactMomentStore.contactMomentenList.filter(
+				(contactMoment) => contactMoment.klant === this.klant?.id,
+			)
 		},
 	},
 	/**
@@ -294,7 +377,10 @@ export default {
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 	 */
 	updated() {
-		if (klantStore.widgetKlantId && this.currentActiveKlant !== klantStore.widgetKlantId) {
+		if (
+			klantStore.widgetKlantId
+			&& this.currentActiveKlant !== klantStore.widgetKlantId
+		) {
 			this.currentActiveKlant = klantStore.widgetKlantId
 			this.fetchKlantData(klantStore.widgetKlantId)
 		}
@@ -306,41 +392,41 @@ export default {
 
 		fetchKlantData(id) {
 			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}`)
-				.then(response => response.json())
-				.then(data => {
+				.then((response) => response.json())
+				.then((data) => {
 					this.klant = data
 				})
 
 			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/zaken`)
-				.then(response => response.json())
-				.then(data => {
+				.then((response) => response.json())
+				.then((data) => {
 					if (Array.isArray(data.results)) {
 						this.zaken = data.results
 					}
 				})
-				.catch(error => {
+				.catch((error) => {
 					console.error('Error fetching zaken:', error)
 				})
 
 			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/taken`)
-				.then(response => response.json())
-				.then(data => {
+				.then((response) => response.json())
+				.then((data) => {
 					if (Array.isArray(data.results)) {
 						this.taken = data.results
 					}
 				})
-				.catch(error => {
+				.catch((error) => {
 					console.error('Error fetching taken:', error)
 				})
 
 			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${id}/berichten`)
-				.then(response => response.json())
-				.then(data => {
+				.then((response) => response.json())
+				.then((data) => {
 					if (Array.isArray(data.results)) {
 						this.berichten = data.results
 					}
 				})
-				.catch(error => {
+				.catch((error) => {
 					console.error('Error fetching berichten:', error)
 				})
 		},
@@ -351,9 +437,11 @@ export default {
 		fetchTaakItems() {
 			this.taakModalOpen = false
 			this.loading = true
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${this.klantId}/taken`)
-				.then(response => response.json())
-				.then(data => {
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/${this.klantId}/taken`,
+			)
+				.then((response) => response.json())
+				.then((data) => {
 					this.taken = data.results
 				})
 		},
@@ -363,9 +451,11 @@ export default {
 		fetchZaakItems() {
 			this.zaakModalOpen = false
 			this.loading = true
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${this.klantId}/zaken`)
-				.then(response => response.json())
-				.then(data => {
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/${this.klantId}/zaken`,
+			)
+				.then((response) => response.json())
+				.then((data) => {
 					this.zaken = data.results
 				})
 		},
@@ -378,8 +468,11 @@ export default {
 				// A template literal is NEVER nullish, so `?? 'onbekend'` was dead
 				// code and a missing part rendered the word "undefined". Join
 				// only the parts that are present.
-				return [klant.voornaam, klant.tussenvoegsel, klant.achternaam]
-					.filter(Boolean).join(' ') || 'onbekend'
+				return (
+					[klant.voornaam, klant.tussenvoegsel, klant.achternaam]
+						.filter(Boolean)
+						.join(' ') || 'onbekend'
+				)
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'
@@ -409,7 +502,9 @@ export default {
 			window.open(url, target)
 		},
 		getKlantName(klant) {
-			return klant?.type === 'persoon' ? `${klant?.voornaam} ${klant?.tussenvoegsel} ${klant?.achternaam}` : klant?.bedrijfsnaam
+			return klant?.type === 'persoon'
+				? `${klant?.voornaam} ${klant?.tussenvoegsel} ${klant?.achternaam}`
+				: klant?.bedrijfsnaam
 		},
 	},
 }
@@ -421,41 +516,41 @@ export default {
 	margin-inline-end: var(--zaa-margin-20);
 }
 
-.tabContainer>* ul>li {
+.tabContainer > * ul > li {
 	display: flex;
 	flex: 1;
 }
 
-.tabContainer>* ul>li:hover {
+.tabContainer > * ul > li:hover {
 	background-color: var(--color-background-hover);
 }
 
-.tabContainer>* ul>li>a {
+.tabContainer > * ul > li > a {
 	flex: 1;
 	text-align: center;
 }
 
-.tabContainer>* ul>li>.active {
+.tabContainer > * ul > li > .active {
 	background: transparent !important;
 	color: var(--color-main-text) !important;
 	border-bottom: var(--default-grid-baseline) solid var(--color-primary-element) !important;
 }
 
-.tabContainer>* ul[role="tablist"] {
+.tabContainer > * ul[role='tablist'] {
 	display: flex;
 	margin: 10px 8px 0 8px;
 	justify-content: space-between;
 	border-bottom: 1px solid var(--color-border);
 }
 
-.tabContainer>* ul[role="tablist"]>* a[role="tab"] {
+.tabContainer > * ul[role='tablist'] > * a[role='tab'] {
 	padding-inline-start: 10px;
 	padding-inline-end: 10px;
 	padding-block-start: 10px;
 	padding-block-end: 10px;
 }
 
-.tabContainer>* div[role="tabpanel"] {
+.tabContainer > * div[role='tabpanel'] {
 	margin-block-start: var(--zaa-margin-10);
 }
 

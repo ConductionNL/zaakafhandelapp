@@ -5,7 +5,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 
 <template>
 	<div class="takenContainer">
-		<CnDataTable :rows="items"
+		<CnDataTable
+			:rows="items"
 			:columns="columns"
 			:loading="loading"
 			hide-header
@@ -22,17 +23,20 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			</template>
 			<template #row-actions="{ row }">
 				<NcActions>
-					<NcActionButton icon="icon-toggle"
+					<NcActionButton
+						icon="icon-toggle"
 						close-after-click
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
-					<NcActionButton :icon="iconProgressClose"
+					<NcActionButton
+						:icon="iconProgressClose"
 						close-after-click
 						@click="onCloseStatus(row)">
 						{{ t('zaakafhandelapp', 'Close') }}
 					</NcActionButton>
-					<NcActionButton :icon="iconCalendarCheckOutline"
+					<NcActionButton
+						:icon="iconCalendarCheckOutline"
 						close-after-click
 						@click="onHandledStatus(row)">
 						{{ t('zaakafhandelapp', 'Complete task') }}
@@ -57,7 +61,8 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			</template>
 		</CnDataTable>
 
-		<EditTaakForm v-if="isModalOpen"
+		<EditTaakForm
+			v-if="isModalOpen"
 			:dashboard-widget="true"
 			:taak-id="taakId"
 			@save-success="fetchTaakItems"
@@ -74,7 +79,10 @@ import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/
 import { Taak } from '../../entities/index.js'
 
 // Icons
-import { iconProgressClose, iconCalendarCheckOutline } from '../../services/icons/index.js'
+import {
+	iconProgressClose,
+	iconCalendarCheckOutline,
+} from '../../services/icons/index.js'
 
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
@@ -138,7 +146,9 @@ export default {
 				},
 			})
 			// Destructure the response to directly access `result.ocs.data`
-			const { ocs: { data: user } } = await getUser.json()
+			const {
+				ocs: { data: user },
+			} = await getUser.json()
 
 			const medewerkers = await fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
@@ -147,10 +157,12 @@ export default {
 					'OCS-APIRequest': 'true',
 				},
 			})
-				.then(response => response.json())
+				.then((response) => response.json())
 				.then((data) => Object.values(data.ocs.data.users))
 
-			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.id)
+			const medewerker = medewerkers.find(
+				(medewerker) => medewerker.id === user.id,
+			)
 
 			this.userEmail = medewerker.email
 			this.fetchTaakItems()
@@ -159,19 +171,16 @@ export default {
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
 		fetchTaakItems() {
-
 			this.loading = true
-			taakStore.refreshTakenList(null, true, this.userEmail)
-				.then(() => {
+			taakStore.refreshTakenList(null, true, this.userEmail).then(() => {
+				this.taakItems = taakStore.takenList.map((taak) => ({
+					id: taak.id,
+					mainText: taak.title,
+					subText: `${taak.deadline ? new Date(taak.deadline).toLocaleDateString() : ''} ${taak.deadline && taak.type ? '-' : ''}  ${taak.type}`,
+				}))
 
-					this.taakItems = taakStore.takenList.map(taak => ({
-						id: taak.id,
-						mainText: taak.title,
-						subText: `${taak.deadline ? new Date(taak.deadline).toLocaleDateString() : ''} ${taak.deadline && taak.type ? '-' : ''}  ${taak.type}`,
-					}))
-
-					this.loading = false
-				})
+				this.loading = false
+			})
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
@@ -215,12 +224,11 @@ export default {
 				status: 'gesloten',
 			})
 
-			taakStore.saveTaak(newTaak)
-				.then(({ response }) => {
-					if (response.ok) {
-						this.fetchTaakItems(null, true)
-					}
-				})
+			taakStore.saveTaak(newTaak).then(({ response }) => {
+				if (response.ok) {
+					this.fetchTaakItems(null, true)
+				}
+			})
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
@@ -239,15 +247,13 @@ export default {
 				status: 'afgerond',
 			})
 
-			taakStore.saveTaak(newTaak)
-				.then(({ response }) => {
-					if (response.ok) {
-						this.fetchTaakItems(null, true)
-					}
-				})
+			taakStore.saveTaak(newTaak).then(({ response }) => {
+				if (response.ok) {
+					this.fetchTaakItems(null, true)
+				}
+			})
 		},
 	},
-
 }
 </script>
 <style scoped>

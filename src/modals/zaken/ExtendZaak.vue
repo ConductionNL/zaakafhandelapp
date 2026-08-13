@@ -4,7 +4,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Extend case')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Extend case')"
 		size="normal"
 		label-id="extendZaakModal"
 		:close-on-click-outside="false"
@@ -18,17 +19,30 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<p class="explanation">
-			{{ t('zaakafhandelapp', 'Extending the case shifts its planned and statutory deadlines forward by the chosen duration (Awb art. 4:14, verdaging — single use).') }}
+			{{
+				t(
+					'zaakafhandelapp',
+					'Extending the case shifts its planned and statutory deadlines forward by the chosen duration (Awb art. 4:14, verdaging — single use).',
+				)
+			}}
 		</p>
 
-		<NcTextArea v-model="reden"
+		<NcTextArea
+			v-model="reden"
 			:label="t('zaakafhandelapp', 'Reason for extension')"
 			:disabled="loading"
 			required />
 
-		<NcTextField v-model="durationDays"
+		<NcTextField
+			v-model="durationDays"
 			type="number"
-			:label="maxDays ? t('zaakafhandelapp', 'Extension in days (max {max})', { max: maxDays }) : t('zaakafhandelapp', 'Extension in days')"
+			:label="
+				maxDays
+					? t('zaakafhandelapp', 'Extension in days (max {max})', {
+							max: maxDays,
+						})
+					: t('zaakafhandelapp', 'Extension in days')
+			"
 			:disabled="loading"
 			:max="maxDays || undefined"
 			min="1" />
@@ -40,7 +54,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
-			<NcButton variant="primary"
+			<NcButton
+				variant="primary"
 				:disabled="loading || !reden.trim() || !validDuration"
 				@click="submit">
 				<template #icon>
@@ -54,7 +69,14 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcDialog, NcTextArea, NcTextField, NcNoteCard, NcLoadingIcon } from '@nextcloud/vue'
+import {
+	NcButton,
+	NcDialog,
+	NcTextArea,
+	NcTextField,
+	NcNoteCard,
+	NcLoadingIcon,
+} from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
@@ -88,7 +110,8 @@ export default {
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
 		 */
 		maxDays() {
-			const termijn = zaakStore.zaakItem?.zaaktypeObject?.verlengingstermijn
+			const termijn =
+				zaakStore.zaakItem?.zaaktypeObject?.verlengingstermijn
 				|| zaakStore.zaakItem?.verlengingstermijn
 			return this.durationToDays(termijn)
 		},
@@ -114,12 +137,19 @@ export default {
 			if (/^\d+$/.test(value)) {
 				return parseInt(value, 10)
 			}
-			const m = String(value).match(/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/)
+			const m = String(value).match(
+				/^P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?$/,
+			)
 			if (!m) {
 				return null
 			}
 			const [, y, mo, w, d] = m
-			return (parseInt(y || 0, 10) * 365) + (parseInt(mo || 0, 10) * 30) + (parseInt(w || 0, 10) * 7) + parseInt(d || 0, 10)
+			return (
+				parseInt(y || 0, 10) * 365
+				+ parseInt(mo || 0, 10) * 30
+				+ parseInt(w || 0, 10) * 7
+				+ parseInt(d || 0, 10)
+			)
 		},
 		/**
 		 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
@@ -128,7 +158,10 @@ export default {
 			this.loading = true
 			this.error = ''
 			const zaak = { ...zaakStore.zaakItem }
-			zaak.verlenging = { reden: this.reden.trim(), duur: `P${parseInt(this.durationDays, 10)}D` }
+			zaak.verlenging = {
+				reden: this.reden.trim(),
+				duur: `P${parseInt(this.durationDays, 10)}D`,
+			}
 			try {
 				await zaakStore.saveZaak(zaak)
 				this.success = t('zaakafhandelapp', 'Case extended.')
@@ -136,7 +169,10 @@ export default {
 				setTimeout(() => this.closeModal(), 800)
 			} catch (err) {
 				console.error(err)
-				this.error = t('zaakafhandelapp', 'The extension was refused. The case type may not allow it, the duration may exceed the allowed term, or the case is already extended or suspended.')
+				this.error = t(
+					'zaakafhandelapp',
+					'The extension was refused. The case type may not allow it, the duration may exceed the allowed term, or the case is already extended or suspended.',
+				)
 			} finally {
 				this.loading = false
 			}

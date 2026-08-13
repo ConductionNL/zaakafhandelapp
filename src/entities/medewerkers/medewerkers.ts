@@ -2,7 +2,6 @@ import { SafeParseReturnType, z } from 'zod'
 import { TMedewerker } from './medewerkers.types'
 
 export class Medewerker implements TMedewerker {
-
 	public id: string
 	public voornaam: string
 	public tussenvoegsel: string
@@ -34,5 +33,4 @@ export class Medewerker implements TMedewerker {
 
 		return schema.safeParse(this)
 	}
-
 }

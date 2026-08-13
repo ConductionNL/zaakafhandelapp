@@ -29,7 +29,12 @@
 import { test, expect } from '@playwright/test'
 import { WorkflowFixtures } from './fixtures'
 import {
-	openIndex, openCreateModal, fillField, submitModal, useTableView, rowFor,
+	openIndex,
+	openCreateModal,
+	fillField,
+	submitModal,
+	useTableView,
+	rowFor,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -45,15 +50,18 @@ test.afterAll(async () => {
 })
 
 test.describe('case-workflow — task creation, case linkage, and status transition', () => {
-
 	// GREEN: a Task is created through the UI and persists with real values.
 	// @e2e openspec/specs/domain-entities/spec.md#taak
-	test('task create via UI — a new task row appears and persists', async ({ page }) => {
+	test('task create via UI — a new task row appears and persists', async ({
+		page,
+	}) => {
 		const index = await openIndex(page, 'taken')
 		const dialog = await openCreateModal(page)
 		await fillField(dialog, 'title', `Taak ${RUN}`)
 		await submitModal(dialog)
-		await expect(dialog.getByRole('heading', { name: /^Create/i })).not.toBeVisible({ timeout: 8_000 })
+		await expect(
+			dialog.getByRole('heading', { name: /^Create/i }),
+		).not.toBeVisible({ timeout: 8_000 })
 
 		await useTableView(page)
 		await expect(index.getByText('No items found')).toHaveCount(0)
@@ -62,7 +70,10 @@ test.describe('case-workflow — task creation, case linkage, and status transit
 
 		// Persisted at the data layer.
 		const rows = await fx.list('taak')
-		expect(rows.find((r) => String(r.title ?? '').includes(RUN)), 'task must persist in OpenRegister').toBeTruthy()
+		expect(
+			rows.find((r) => String(r.title ?? '').includes(RUN)),
+			'task must persist in OpenRegister',
+		).toBeTruthy()
 	})
 
 	// GREEN: the task<->case LINKAGE model. The zaak is seeded past the broken
@@ -72,7 +83,9 @@ test.describe('case-workflow — task creation, case linkage, and status transit
 	// task asks for; UI-driven case creation itself is covered (as broken) by
 	// zaak-crud-persistence.spec.ts.
 	// @e2e openspec/specs/zgw-case-lifecycle/spec.md#case-task-linkage
-	test('case-task linkage — a task links to a case and the link is real and queryable', async ({ page }) => {
+	test('case-task linkage — a task links to a case and the link is real and queryable', async ({
+		page,
+	}) => {
 		// Seed a case at the data layer (bypassing the broken UI create hook).
 		const zaakId = await fx.seedZaakBypassingHooks({
 			identificatie: `ZAAK-${RUN}`,
@@ -91,15 +104,25 @@ test.describe('case-workflow — task creation, case linkage, and status transit
 			priority: 'high',
 			zaak: zaakId,
 		})
-		const taakId = String((taak['@self'] as Record<string, unknown>)?.id ?? taak.id)
+		const taakId = String(
+			(taak['@self'] as Record<string, unknown>)?.id ?? taak.id,
+		)
 
 		// The linkage is real: re-reading the task shows it points at the case.
 		const reread = await fx.get('taak', taakId)
-		expect(String(reread?.zaak ?? ''), 'task must reference its parent case').toBe(zaakId)
+		expect(
+			String(reread?.zaak ?? ''),
+			'task must reference its parent case',
+		).toBe(zaakId)
 
 		// And the case can enumerate its linked tasks (findAll filtered by zaak).
-		const linked = (await fx.list('taak')).filter((t) => String(t.zaak ?? '') === zaakId)
-		expect(linked.length, 'case must enumerate at least its one linked task').toBeGreaterThanOrEqual(1)
+		const linked = (await fx.list('taak')).filter(
+			(t) => String(t.zaak ?? '') === zaakId,
+		)
+		expect(
+			linked.length,
+			'case must enumerate at least its one linked task',
+		).toBeGreaterThanOrEqual(1)
 		expect(linked.some((t) => String(t.title ?? '').includes(RUN))).toBe(true)
 
 		// The linked task also renders in the Tasks list UI (real data, not a shell).
@@ -116,15 +139,27 @@ test.describe('case-workflow — task creation, case linkage, and status transit
 	// @e2e openspec/specs/zgw-case-lifecycle/spec.md#status-transition
 	test('status transition — adding a status to a case persists and renders on the case', async () => {
 		const zaakId = await fx.seedZaakBypassingHooks({
-			identificatie: `ZAAK-${RUN}`, omschrijving: `Zaak ${RUN}`, status: 'open', archiefstatus: 'nog_te_archiveren',
+			identificatie: `ZAAK-${RUN}`,
+			omschrijving: `Zaak ${RUN}`,
+			status: 'open',
+			archiefstatus: 'nog_te_archiveren',
 		})
 		expect(zaakId, 'seeded case id').toBeTruthy()
 
 		// Creating a status linked to the case fires the ZGW close hook; it no
 		// longer 500s, so the status record persists.
-		await fx.create('status', { statustype: 'in behandeling', datum: '2026-01-01', zaak: zaakId })
-		const statuses = (await fx.list('status')).filter((s) => String(s.zaak ?? '') === zaakId)
-		expect(statuses.length, 'case status must persist and be queryable').toBeGreaterThanOrEqual(1)
+		await fx.create('status', {
+			statustype: 'in behandeling',
+			datum: '2026-01-01',
+			zaak: zaakId,
+		})
+		const statuses = (await fx.list('status')).filter(
+			(s) => String(s.zaak ?? '') === zaakId,
+		)
+		expect(
+			statuses.length,
+			'case status must persist and be queryable',
+		).toBeGreaterThanOrEqual(1)
 	})
 
 	// GREEN: the full UI-driven workflow — create a case from the Cases screen,
@@ -132,31 +167,47 @@ test.describe('case-workflow — task creation, case linkage, and status transit
 	// fixed) and the zaak create hook no longer 500s (BUG-1/2 fixed), so the case
 	// is created from the browser and a task can be linked to it.
 	// @e2e openspec/specs/zgw-case-lifecycle/spec.md#full-ui-workflow
-	test('full UI workflow — create case through the UI, then assign a task to it', async ({ page }) => {
+	test('full UI workflow — create case through the UI, then assign a task to it', async ({
+		page,
+	}) => {
 		// Create the case entirely through the Cases screen.
 		const zakenIndex = await openIndex(page, 'zaken')
 		const caseDialog = await openCreateModal(page)
 		await fillField(caseDialog, 'omschrijving', `Workflow zaak ${RUN}`)
 		await fillField(caseDialog, 'identificatie', `WF-${RUN}`)
 		await submitModal(caseDialog)
-		await expect(caseDialog.getByRole('heading', { name: /^Create/i })).not.toBeVisible({ timeout: 8_000 })
+		await expect(
+			caseDialog.getByRole('heading', { name: /^Create/i }),
+		).not.toBeVisible({ timeout: 8_000 })
 
 		const caseRow = await rowFor(page, zakenIndex, `Workflow zaak ${RUN}`)
 		await expect(caseRow).toContainText(`Workflow zaak ${RUN}`)
 
 		// The case persisted; resolve its id so we can link a task to it.
 		const zaken = await fx.list('zaak')
-		const zaak = zaken.find((z) => String(z.omschrijving ?? '').includes(`Workflow zaak ${RUN}`))
+		const zaak = zaken.find((z) =>
+			String(z.omschrijving ?? '').includes(`Workflow zaak ${RUN}`),
+		)
 		expect(zaak, 'UI-created case must persist').toBeTruthy()
-		const zaakId = String((zaak?.['@self'] as Record<string, unknown>)?.id ?? zaak?.id)
+		const zaakId = String(
+			(zaak?.['@self'] as Record<string, unknown>)?.id ?? zaak?.id,
+		)
 
 		// Assign a task to the case and assert the linkage is real.
 		const taak = await fx.create('taak', {
-			title: `Workflow taak ${RUN}`, status: 'open', priority: 'high', zaak: zaakId,
+			title: `Workflow taak ${RUN}`,
+			status: 'open',
+			priority: 'high',
+			zaak: zaakId,
 		})
-		const taakId = String((taak['@self'] as Record<string, unknown>)?.id ?? taak.id)
+		const taakId = String(
+			(taak['@self'] as Record<string, unknown>)?.id ?? taak.id,
+		)
 		const reread = await fx.get('taak', taakId)
-		expect(String(reread?.zaak ?? ''), 'task must reference the UI-created case').toBe(zaakId)
+		expect(
+			String(reread?.zaak ?? ''),
+			'task must reference the UI-created case',
+		).toBe(zaakId)
 
 		// The task renders in the Tasks list (real data).
 		const takenIndex = await openIndex(page, 'taken')

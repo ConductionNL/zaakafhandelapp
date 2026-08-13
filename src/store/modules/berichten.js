@@ -24,7 +24,7 @@ export const useBerichtStore = defineStore('berichten', {
 		 */
 		setBerichtenList(berichtenList) {
 			this.berichtenList = berichtenList.map(
-			    (berichtItem) => new Bericht(berichtItem),
+				(berichtItem) => new Bericht(berichtItem),
 			)
 			console.log('Berichten list set to ' + berichtenList.length + ' items')
 		},
@@ -121,16 +121,13 @@ export const useBerichtStore = defineStore('berichten', {
 				: `${apiEndpoint}/${berichtItem.id}`
 			const method = isNewBericht ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(berichtItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(berichtItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

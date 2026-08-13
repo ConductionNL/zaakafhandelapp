@@ -1,10 +1,16 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
+import {
+	contactMomentStore,
+	navigationStore,
+	taakStore,
+	zaakStore,
+} from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Contact moment')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Contact moment')"
 		size="large"
 		label-id="contactMomentenForm"
 		dialog-classes="ContactMomentenForm"
@@ -12,7 +18,9 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 		@closing="closeModalFromButton()">
 		<div>
 			<NcNoteCard v-if="success" type="success">
-				<p>{{ t('zaakafhandelapp', 'Contact moment successfully saved') }}</p>
+				<p>
+					{{ t('zaakafhandelapp', 'Contact moment successfully saved') }}
+				</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -25,25 +33,42 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 							<template #default>
 								<div v-if="klant">
 									{{ `${getSex(klant)} ${getName(klant)}` }}
-									<div v-if="klant?.type === 'persoon'" class="flexContainer">
+									<div
+										v-if="klant?.type === 'persoon'"
+										class="flexContainer">
 										<div>
-											Geboortedatum: {{ getValidISOstring(klant?.geboortedatum) ? new Date(klant?.geboortedatum).toLocaleDateString() : 'N/A' }}
+											Geboortedatum:
+											{{
+												getValidISOstring(
+													klant?.geboortedatum,
+												)
+													? new Date(
+															klant?.geboortedatum,
+														).toLocaleDateString()
+													: 'N/A'
+											}}
 										</div>
 										<div>
-											Geboorteplaats: {{ klant?.plaats ?? 'N/A' }}
+											Geboorteplaats:
+											{{ klant?.plaats ?? 'N/A' }}
 										</div>
 									</div>
-									<div v-if="klant?.type === 'organisatie'" class="flexContainer">
+									<div
+										v-if="klant?.type === 'organisatie'"
+										class="flexContainer">
 										<div>
 											KVK: {{ klant?.kvkNummer ?? 'N/A' }}
 										</div>
 										<div>
-											Locatie: {{ klant?.postcode ?? 'N/A' }} {{ klant?.straatnaam ?? 'N/A' }}
+											Locatie: {{ klant?.postcode ?? 'N/A' }}
+											{{ klant?.straatnaam ?? 'N/A' }}
 										</div>
 									</div>
 								</div>
 								<div v-else>
-									{{ t('zaakafhandelapp', 'No customer selected') }}
+									{{
+										t('zaakafhandelapp', 'No customer selected')
+									}}
 								</div>
 							</template>
 						</NcNoteCard>
@@ -94,54 +119,105 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</div>
 					<div v-if="isView" class="statusContainer">
 						<div v-if="contactMoment.status">
-							{{ t('zaakafhandelapp', 'Status:') }} {{ contactMoment.status }}
+							{{ t('zaakafhandelapp', 'Status:') }}
+							{{ contactMoment.status }}
 						</div>
 						<div v-if="contactMoment.startDate">
-							{{ t('zaakafhandelapp', 'Start date:') }} {{ new Date(contactMoment.startDate).toLocaleDateString() }}
+							{{ t('zaakafhandelapp', 'Start date:') }}
+							{{
+								new Date(
+									contactMoment.startDate,
+								).toLocaleDateString()
+							}}
 						</div>
 					</div>
 				</div>
 
 				<div v-if="!success" class="form-group">
-					<NcTextArea v-model="contactMoment.notitie"
+					<NcTextArea
+						v-model="contactMoment.notitie"
 						:label="t('zaakafhandelapp', 'Note')"
 						:disabled="loading"
 						:loading="fetchLoading"
 						:placeholder="t('zaakafhandelapp', 'Note')" />
 				</div>
 				<div class="tabContainer">
-					<CnTabs content-class="mt-3" justified :aria-label="t('zaakafhandelapp', 'Customer contact moments')">
+					<CnTabs
+						content-class="mt-3"
+						justified
+						:aria-label="
+							t('zaakafhandelapp', 'Customer contact moments')
+						">
 						<CnTab
 							:title="`Contactmomenten ${klant ? (klantContactmomenten.length ? `(${klantContactmomenten.length})` : '(0)') : ''}`">
 							<div v-if="klantContactmomenten.length">
-								<NcListItem v-for="(klantContactmoment, key) in klantContactmomenten"
+								<NcListItem
+									v-for="(
+										klantContactmoment, key
+									) in klantContactmomenten"
 									:key="key"
 									:name="getName(klant)"
 									:bold="false"
 									:disabled="loading"
-									:active="selectedKlantContactMoment === klantContactmoment.id"
+									:active="
+										selectedKlantContactMoment
+										=== klantContactmoment.id
+									"
 									:force-display-actions="true">
 									<template #icon>
-										<Phone v-if="klantContactmoment.kanaal === 'telefoon'" :size="44" />
-										<EmailOutline v-else-if="klantContactmoment.kanaal === 'email'" :size="44" />
-										<FaceAgent v-else-if="klantContactmoment.kanaal === 'balie'" :size="44" />
-										<MailboxOpenOutline v-else-if="klantContactmoment.kanaal === 'brief'" :size="44" />
+										<Phone
+											v-if="
+												klantContactmoment.kanaal
+												=== 'telefoon'
+											"
+											:size="44" />
+										<EmailOutline
+											v-else-if="
+												klantContactmoment.kanaal === 'email'
+											"
+											:size="44" />
+										<FaceAgent
+											v-else-if="
+												klantContactmoment.kanaal === 'balie'
+											"
+											:size="44" />
+										<MailboxOpenOutline
+											v-else-if="
+												klantContactmoment.kanaal === 'brief'
+											"
+											:size="44" />
 										<BriefcaseAccountOutline v-else :size="44" />
 									</template>
 									<template #subname>
-										{{ new Date(klantContactmoment.startDate).toLocaleString() }}
+										{{
+											new Date(
+												klantContactmoment.startDate,
+											).toLocaleString()
+										}}
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No contact moments found')">
+							<NcEmptyContent
+								v-else
+								icon="icon-folder"
+								:title="
+									t('zaakafhandelapp', 'No contact moments found')
+								">
 								<template #description>
-									{{ t('zaakafhandelapp', 'No contact moments were found for this customer.') }}
+									{{
+										t(
+											'zaakafhandelapp',
+											'No contact moments were found for this customer.',
+										)
+									}}
 								</template>
 							</NcEmptyContent>
 						</CnTab>
-						<CnTab :title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
+						<CnTab
+							:title="`Zaken ${klant ? (zaken.length ? `(${zaken.length})` : '(0)') : ''}`">
 							<div v-if="zaken.length">
-								<NcListItem v-for="(zaak, key) in zaken"
+								<NcListItem
+									v-for="(zaak, key) in zaken"
 									:key="key"
 									:name="zaak.identificatie"
 									:bold="false"
@@ -158,15 +234,25 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No cases found')">
+							<NcEmptyContent
+								v-else
+								icon="icon-folder"
+								:title="t('zaakafhandelapp', 'No cases found')">
 								<template #description>
-									{{ t('zaakafhandelapp', 'No cases were found for this customer.') }}
+									{{
+										t(
+											'zaakafhandelapp',
+											'No cases were found for this customer.',
+										)
+									}}
 								</template>
 							</NcEmptyContent>
 						</CnTab>
-						<CnTab :title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
+						<CnTab
+							:title="`Taken ${klant ? (taken.length ? `(${taken.length})` : '(0)') : ''}`">
 							<div v-if="taken.length">
-								<NcListItem v-for="(taak, key) in taken"
+								<NcListItem
+									v-for="(taak, key) in taken"
 									:key="key"
 									:name="taak.title"
 									:bold="false"
@@ -184,15 +270,25 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-tasks" :title="t('zaakafhandelapp', 'No tasks found')">
+							<NcEmptyContent
+								v-else
+								icon="icon-tasks"
+								:title="t('zaakafhandelapp', 'No tasks found')">
 								<template #description>
-									{{ t('zaakafhandelapp', 'No tasks were found for this customer.') }}
+									{{
+										t(
+											'zaakafhandelapp',
+											'No tasks were found for this customer.',
+										)
+									}}
 								</template>
 							</NcEmptyContent>
 						</CnTab>
-						<CnTab :title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
+						<CnTab
+							:title="`Producten ${klant ? (klant?.producten?.length ? `(${klant?.producten?.length})` : '(0)') : ''}`">
 							<div v-if="klant?.producten?.length">
-								<NcListItem v-for="(product, key) in klant.producten"
+								<NcListItem
+									v-for="(product, key) in klant.producten"
 									:key="key"
 									:name="product.naam ?? 'N/A'"
 									:bold="false"
@@ -206,9 +302,17 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 									</template>
 								</NcListItem>
 							</div>
-							<NcEmptyContent v-else icon="icon-folder" :title="t('zaakafhandelapp', 'No products found')">
+							<NcEmptyContent
+								v-else
+								icon="icon-folder"
+								:title="t('zaakafhandelapp', 'No products found')">
 								<template #description>
-									{{ t('zaakafhandelapp', 'No products were found for this customer.') }}
+									{{
+										t(
+											'zaakafhandelapp',
+											'No products were found for this customer.',
+										)
+									}}
 								</template>
 							</NcEmptyContent>
 						</CnTab>
@@ -226,7 +330,8 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
-			<NcActions :disabled="loading || success || fetchLoading"
+			<NcActions
+				:disabled="loading || success || fetchLoading"
 				:primary="true"
 				:force-name="true"
 				:menu-name="t('zaakafhandelapp', 'Actions')">
@@ -245,7 +350,10 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 					</template>
 					{{ t('zaakafhandelapp', 'Create customer task') }}
 				</NcActionButton>
-				<NcActionButton v-if="!isView" :disabled="!contactMomenten[selectedContactMoment].klant?.id" @click="openZaakForm()">
+				<NcActionButton
+					v-if="!isView"
+					:disabled="!contactMomenten[selectedContactMoment].klant?.id"
+					@click="openZaakForm()">
 					<template #icon>
 						<BriefcaseAccountOutline :size="20" />
 					</template>
@@ -255,14 +363,23 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 			<NcButton
 				v-if="!isView"
 				variant="primary"
-				:disabled="!contactMomenten[selectedContactMoment].klant || loading || success || fetchLoading"
+				:disabled="
+					!contactMomenten[selectedContactMoment].klant
+					|| loading
+					|| success
+					|| fetchLoading
+				"
 				:loading="loading"
 				@click="addContactMoment(selectedContactMoment)">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else :size="20" />
 				</template>
-				{{ isEdit ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					isEdit
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -271,7 +388,17 @@ import { contactMomentStore, navigationStore, taakStore, zaakStore } from '../..
 <script>
 // Components
 import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
-import { NcButton, NcActions, NcLoadingIcon, NcDialog, NcTextArea, NcNoteCard, NcListItem, NcActionButton, NcEmptyContent } from '@nextcloud/vue'
+import {
+	NcButton,
+	NcActions,
+	NcLoadingIcon,
+	NcDialog,
+	NcTextArea,
+	NcNoteCard,
+	NcListItem,
+	NcActionButton,
+	NcEmptyContent,
+} from '@nextcloud/vue'
 import _ from 'lodash'
 
 import getValidISOstring from '../../services/getValidISOstring.js'
@@ -398,7 +525,8 @@ export default {
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
 	mounted() {
-		const contactMomentId = this.contactMomentId ?? contactMomentStore.contactMomentItem?.id ?? null
+		const contactMomentId =
+			this.contactMomentId ?? contactMomentStore.contactMomentItem?.id ?? null
 		this.isEdit = !!contactMomentId
 
 		if (this.isEdit) {
@@ -491,13 +619,14 @@ export default {
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		addContactMoment(i) {
-
 			this.selectedContactMoment = i
 			this.contactMoment = this.contactMomenten[i]
 
 			this.loading = true
 
-			const endpoint = this.contactMomentId ? `contactmomenten/${this.contactMomentId}` : 'contactmomenten'
+			const endpoint = this.contactMomentId
+				? `contactmomenten/${this.contactMomentId}`
+				: 'contactmomenten'
 			const method = this.contactMomentId ? 'PUT' : 'POST'
 
 			const contactMomentCopy = _.cloneDeep(this.contactMoment)
@@ -508,28 +637,29 @@ export default {
 			delete contactMomentCopy.klantContactmomenten
 			delete contactMomentCopy.auditTrails
 
-			fetch(
-				`/index.php/apps/zaakafhandelapp/api/${endpoint}`,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						...contactMomentCopy,
-						notitie: contactMomentCopy.notitie,
-						klant: contactMomentCopy.klant?.id ?? '',
-						zaak: contactMomentCopy.selectedZaak ?? '',
-						taak: contactMomentCopy.selectedTaak ?? '',
-						product: contactMomentCopy.selectedProduct ?? '',
-						status: contactMomentCopy.status === 'gesloten' ? 'gesloten' : 'open',
-						startDate: contactMomentCopy.startDate ?? new Date().toISOString(),
-					}),
+			fetch(`/index.php/apps/zaakafhandelapp/api/${endpoint}`, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify({
+					...contactMomentCopy,
+					notitie: contactMomentCopy.notitie,
+					klant: contactMomentCopy.klant?.id ?? '',
+					zaak: contactMomentCopy.selectedZaak ?? '',
+					taak: contactMomentCopy.selectedTaak ?? '',
+					product: contactMomentCopy.selectedProduct ?? '',
+					status:
+						contactMomentCopy.status === 'gesloten'
+							? 'gesloten'
+							: 'open',
+					startDate:
+						contactMomentCopy.startDate ?? new Date().toISOString(),
+				}),
+			})
 				.then((response) => {
 					if (this.isView) {
-						response.json().then(data => {
+						response.json().then((data) => {
 							this.contactMoment = data
 						})
 
@@ -603,7 +733,9 @@ export default {
 
 		closeTaakForm() {
 			this.taakFormOpen = false
-			this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
+			this.fetchKlantData(
+				this.contactMomenten[this.selectedContactMoment].klant.id,
+			)
 		},
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -632,7 +764,9 @@ export default {
 
 		zaakFormSaveSuccess() {
 			this.zaakFormOpen = false
-			this.fetchKlantData(this.contactMomenten[this.selectedContactMoment].klant.id)
+			this.fetchKlantData(
+				this.contactMomenten[this.selectedContactMoment].klant.id,
+			)
 		},
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -650,7 +784,8 @@ export default {
 				status: 'gesloten',
 			})
 
-			contactMomentStore.saveContactMoment(newContactMoment)
+			contactMomentStore
+				.saveContactMoment(newContactMoment)
 				.then(({ response }) => {
 					if (response.ok) {
 						this.closeModal()
@@ -665,12 +800,15 @@ export default {
 		async fetchKlantData(klant) {
 			const klantId = klant.id ?? klant
 			try {
-				const klantResponse = await fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}`)
+				const klantResponse = await fetch(
+					`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}`,
+				)
 				// ifselectedContactMoment
 				if (this.isView) {
 					this.klant = await klantResponse.json()
 				} else {
-					this.contactMomenten[this.selectedContactMoment].klant = await klantResponse.json()
+					this.contactMomenten[this.selectedContactMoment].klant =
+						await klantResponse.json()
 				}
 
 				/**
@@ -700,11 +838,21 @@ export default {
 				 */
 				// #1
 				const results = await Promise.allSettled([
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/zaken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/taken`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/berichten`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/audit_trail`),
-					fetch(`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/contactmomenten`),
+					fetch(
+						`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/zaken`,
+					),
+					fetch(
+						`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/taken`,
+					),
+					fetch(
+						`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/berichten`,
+					),
+					fetch(
+						`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/audit_trail`,
+					),
+					fetch(
+						`/index.php/apps/zaakafhandelapp/api/klanten/${klantId}/contactmomenten`,
+					),
 				])
 
 				// #2 & #3
@@ -718,7 +866,13 @@ export default {
 				)
 
 				// #4
-				const [zakenData, takenData, berichtenData, auditTrailData, contactMomentenData] = parsedResults.map(result =>
+				const [
+					zakenData,
+					takenData,
+					berichtenData,
+					auditTrailData,
+					contactMomentenData,
+				] = parsedResults.map((result) =>
 					result.status === 'fulfilled' ? result.value : null,
 				)
 
@@ -727,7 +881,8 @@ export default {
 					if (this.isView) {
 						this.zaken = zakenData.results
 					} else {
-						this.contactMomenten[this.selectedContactMoment].zaken = zakenData.results
+						this.contactMomenten[this.selectedContactMoment].zaken =
+							zakenData.results
 					}
 				}
 
@@ -735,7 +890,8 @@ export default {
 					if (this.isView) {
 						this.taken = takenData.results
 					} else {
-						this.contactMomenten[this.selectedContactMoment].taken = takenData.results
+						this.contactMomenten[this.selectedContactMoment].taken =
+							takenData.results
 					}
 				}
 
@@ -743,7 +899,8 @@ export default {
 					if (this.isView) {
 						this.berichten = berichtenData.results
 					} else {
-						this.contactMomenten[this.selectedContactMoment].berichten = berichtenData.results
+						this.contactMomenten[this.selectedContactMoment].berichten =
+							berichtenData.results
 					}
 				}
 
@@ -751,21 +908,28 @@ export default {
 					if (this.isView) {
 						this.auditTrails = auditTrailData
 					} else {
-						this.contactMomenten[this.selectedContactMoment].auditTrails = auditTrailData
+						this.contactMomenten[
+							this.selectedContactMoment
+						].auditTrails = auditTrailData
 					}
 				}
 
-				if (contactMomentenData?.results && Array.isArray(contactMomentenData.results)) {
+				if (
+					contactMomentenData?.results
+					&& Array.isArray(contactMomentenData.results)
+				) {
 					if (this.isView) {
-						const filteredResults = contactMomentenData.results.filter((contactMoment) =>
-							contactMoment.id !== this.contactMoment.id,
+						const filteredResults = contactMomentenData.results.filter(
+							(contactMoment) =>
+								contactMoment.id !== this.contactMoment.id,
 						)
 						this.klantContactmomenten = filteredResults
 					} else {
-						this.contactMomenten[this.selectedContactMoment].klantContactmomenten = contactMomentenData.results
+						this.contactMomenten[
+							this.selectedContactMoment
+						].klantContactmomenten = contactMomentenData.results
 					}
 				}
-
 			} catch (error) {
 				console.error('Error in fetchKlantData:', error)
 				// Don't throw the error, as we want the component to continue working
@@ -783,8 +947,11 @@ export default {
 				// A template literal is NEVER nullish, so `?? 'onbekend'` was dead
 				// code and a missing part rendered the word "undefined". Join
 				// only the parts that are present.
-				return [klant.voornaam, klant.tussenvoegsel, klant.achternaam]
-					.filter(Boolean).join(' ') || 'onbekend'
+				return (
+					[klant.voornaam, klant.tussenvoegsel, klant.achternaam]
+						.filter(Boolean)
+						.join(' ') || 'onbekend'
+				)
 			}
 			if (klant.type === 'organisatie') {
 				return klant?.bedrijfsnaam ?? 'onbekend'
@@ -808,7 +975,9 @@ export default {
 		setSelectedZaak(id, zaak) {
 			if (this.contactMomenten[id].selectedZaak === zaak) {
 				this.contactMomenten[id].selectedZaak = null
-			} else { this.contactMomenten[id].selectedZaak = zaak }
+			} else {
+				this.contactMomenten[id].selectedZaak = zaak
+			}
 		},
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
@@ -817,7 +986,9 @@ export default {
 		setSelectedTaak(id, taak) {
 			if (this.contactMomenten[id].selectedTaak === taak) {
 				this.contactMomenten[id].selectedTaak = null
-			} else { this.contactMomenten[id].selectedTaak = taak }
+			} else {
+				this.contactMomenten[id].selectedTaak = taak
+			}
 		},
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
@@ -826,7 +997,9 @@ export default {
 		setSelectedProduct(id, product) {
 			if (this.contactMomenten[id].selectedProduct === product) {
 				this.contactMomenten[id].selectedProduct = null
-			} else { this.contactMomenten[id].selectedProduct = product }
+			} else {
+				this.contactMomenten[id].selectedProduct = product
+			}
 		},
 	},
 }
@@ -840,39 +1013,39 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 
 <style scoped>
 .rolDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
+	margin-inline-start: var(--zaa-margin-20);
+	margin-inline-end: var(--zaa-margin-20);
 }
 
 .success {
-    color: green;
+	color: green;
 }
 
 .headerContainer {
-    display: flex;
-    gap: 200px;
+	display: flex;
+	gap: 200px;
 }
 
 .noteCard {
-    min-width: 350px;
+	min-width: 350px;
 }
 
 .orContainer {
-    margin-inline: var(--zaa-margin-10);
+	margin-inline: var(--zaa-margin-10);
 }
 
 .buttonsContainer {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .form-group {
-    margin-block-end: 100px;
+	margin-block-end: 100px;
 }
 
 .tabContainer {
-    margin-block-end: var(--zaa-margin-20);
+	margin-block-end: var(--zaa-margin-20);
 }
 
 .newTabButton > a {
@@ -882,12 +1055,13 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 }
 
 .modalButtonsContainer {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--zaa-margin-10);
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--zaa-margin-10);
 }
 
-.flexContainer, .statusContainer {
+.flexContainer,
+.statusContainer {
 	display: flex;
 	gap: var(--zaa-margin-10);
 }

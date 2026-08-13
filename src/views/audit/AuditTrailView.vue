@@ -20,7 +20,12 @@
 	<NcAppContent>
 		<div class="zaa-audit-placeholder">
 			<CnNoteCard type="info" :title="t('zaakafhandelapp', 'Audit trail')">
-				{{ t('zaakafhandelapp', 'The cross-app audit trail view will land in a follow-up change.') }}
+				{{
+					t(
+						'zaakafhandelapp',
+						'The cross-app audit trail view will land in a follow-up change.',
+					)
+				}}
 			</CnNoteCard>
 		</div>
 	</NcAppContent>

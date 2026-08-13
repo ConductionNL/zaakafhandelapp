@@ -2,7 +2,6 @@ import { SafeParseReturnType, z } from 'zod'
 import { TContactMoment } from './contactmoment.types'
 
 export class ContactMoment implements TContactMoment {
-
 	public id: string
 	public uuid: string
 	public notitie: string
@@ -52,5 +51,4 @@ export class ContactMoment implements TContactMoment {
 
 		return schema.safeParse(this)
 	}
-
 }

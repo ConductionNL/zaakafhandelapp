@@ -18,7 +18,10 @@ describe('Klant Entity', () => {
 	})
 
 	it('should default contactsUid to an empty string when absent', () => {
-		const klant = new Klant({ ...mockKlantData()[0], contactsUid: undefined as unknown as string })
+		const klant = new Klant({
+			...mockKlantData()[0],
+			contactsUid: undefined as unknown as string,
+		})
 
 		expect(klant.contactsUid).toBe('')
 	})

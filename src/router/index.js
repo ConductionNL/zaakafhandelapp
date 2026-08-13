@@ -81,7 +81,10 @@ const routerDelegate = {
 	 */
 	push(...args) {
 		if (!liveRouter) {
-			console.warn('[zaakafhandelapp] router.push before registerRouter()', args)
+			console.warn(
+				'[zaakafhandelapp] router.push before registerRouter()',
+				args,
+			)
 			return undefined
 		}
 		return liveRouter.push(...args)
@@ -96,7 +99,10 @@ const routerDelegate = {
 	 */
 	replace(...args) {
 		if (!liveRouter) {
-			console.warn('[zaakafhandelapp] router.replace before registerRouter()', args)
+			console.warn(
+				'[zaakafhandelapp] router.replace before registerRouter()',
+				args,
+			)
 			return undefined
 		}
 		return liveRouter.replace(...args)

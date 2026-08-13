@@ -32,4 +32,5 @@ export const mockZaakData = (): TZaak[] => [
 	},
 ]
 
-export const mockZaak = (data: TZaak[] = mockZaakData()): TZaak[] => data.map(item => new Zaak(item))
+export const mockZaak = (data: TZaak[] = mockZaakData()): TZaak[] =>
+	data.map((item) => new Zaak(item))

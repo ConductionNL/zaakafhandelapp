@@ -25,9 +25,7 @@ export const useTaakStore = defineStore('taken', {
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setTakenList(takenList) {
-			this.takenList = takenList.map(
-				(taakItem) => new Taak(taakItem),
-			)
+			this.takenList = takenList.map((taakItem) => new Taak(taakItem))
 			console.log('Taken list set to ' + takenList.length + ' items')
 		},
 		/**
@@ -149,16 +147,13 @@ export const useTaakStore = defineStore('taken', {
 				: `${apiEndpoint}/${taakItem.id}`
 			const method = isNewTaak ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(taakItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(taakItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)
