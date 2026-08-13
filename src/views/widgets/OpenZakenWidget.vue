@@ -7,7 +7,8 @@ import { zaakStore } from '../../store/store.js'
 		<p v-if="overdueCount > 0" class="overdueHeader">
 			{{ overdueHeaderText }}
 		</p>
-		<CnDataTable :rows="items"
+		<CnDataTable
+			:rows="items"
 			:columns="columns"
 			:loading="loading"
 			hide-header
@@ -81,18 +82,26 @@ export default {
 					if (ra !== rb) {
 						return ra - rb
 					}
-					const da = a.uiterlijkeEinddatumAfdoening ? new Date(a.uiterlijkeEinddatumAfdoening).getTime() : Infinity
-					const db = b.uiterlijkeEinddatumAfdoening ? new Date(b.uiterlijkeEinddatumAfdoening).getTime() : Infinity
+					const da = a.uiterlijkeEinddatumAfdoening
+						? new Date(a.uiterlijkeEinddatumAfdoening).getTime()
+						: Infinity
+					const db = b.uiterlijkeEinddatumAfdoening
+						? new Date(b.uiterlijkeEinddatumAfdoening).getTime()
+						: Infinity
 					return da - db
 				})
-				.map(zaak => {
+				.map((zaak) => {
 					const urgency = deriveZaakUrgency(zaak)
-					const label = urgency ? t('zaakafhandelapp', urgencyLabel(urgency)) : ''
+					const label = urgency
+						? t('zaakafhandelapp', urgencyLabel(urgency))
+						: ''
 					const deadline = zaak.uiterlijkeEinddatumAfdoening || ''
 					return {
 						id: zaak.id,
 						mainText: zaak.identificatie,
-						subText: [label, deadline].filter(Boolean).join(' · ') || zaak.zaaktype,
+						subText:
+							[label, deadline].filter(Boolean).join(' · ')
+							|| zaak.zaaktype,
 					}
 				})
 		},
@@ -100,13 +109,20 @@ export default {
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-006
 		 */
 		overdueCount() {
-			return this.zaken.filter(zaak => deriveZaakUrgency(zaak) === 'verlopen').length
+			return this.zaken.filter(
+				(zaak) => deriveZaakUrgency(zaak) === 'verlopen',
+			).length
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-006
 		 */
 		overdueHeaderText() {
-			return n('zaakafhandelapp', '%n case overdue', '%n cases overdue', this.overdueCount)
+			return n(
+				'zaakafhandelapp',
+				'%n case overdue',
+				'%n cases overdue',
+				this.overdueCount,
+			)
 		},
 	},
 
@@ -120,11 +136,10 @@ export default {
 		 */
 		fetchZaakItems() {
 			this.loading = true
-			zaakStore.refreshZakenList()
-				.then(() => {
-					this.zaken = zaakStore.zakenList || []
-					this.loading = false
-				})
+			zaakStore.refreshZakenList().then(() => {
+				this.zaken = zaakStore.zakenList || []
+				this.loading = false
+			})
 		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
@@ -133,22 +148,21 @@ export default {
 			console.info('click')
 		},
 	},
-
 }
 </script>
 <style scoped>
-.openZakenContainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
+.openZakenContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
 .openZakenContainer > .cn-table-container {
 	overflow: auto;
 }
 .overdueHeader {
-   color: var(--color-error);
-   font-weight: bold;
-   margin-block-end: var(--zaa-margin-10, 8px);
+	color: var(--color-error);
+	font-weight: bold;
+	margin-block-end: var(--zaa-margin-10, 8px);
 }
 </style>

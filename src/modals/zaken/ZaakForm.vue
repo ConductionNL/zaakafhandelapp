@@ -4,18 +4,54 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef"
-		label-id="zaakForm"
-		@close="closeModal">
+	<NcModal ref="modalRef" label-id="zaakForm" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ zaakStore.zaakItem?.id ? t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
+			<h2>
+				{{
+					zaakStore.zaakItem?.id
+						? t('zaakafhandelapp', 'Case {action}', {
+								action: t('zaakafhandelapp', 'edit'),
+							})
+						: t('zaakafhandelapp', 'Case {action}', {
+								action: t('zaakafhandelapp', 'create'),
+							})
+				}}
+			</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+					<p>
+						{{
+							zaak.id
+								? t(
+										'zaakafhandelapp',
+										'Case successfully {action}',
+										{ action: t('zaakafhandelapp', 'updated') },
+									)
+								: t(
+										'zaakafhandelapp',
+										'Case successfully {action}',
+										{ action: t('zaakafhandelapp', 'created') },
+									)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success" type="error">
-					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+					<p>
+						{{
+							zaak.id
+								? t(
+										'zaakafhandelapp',
+										'Case not successfully {action}',
+										{ action: t('zaakafhandelapp', 'updated') },
+									)
+								: t(
+										'zaakafhandelapp',
+										'Case not successfully {action}',
+										{ action: t('zaakafhandelapp', 'created') },
+									)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -23,37 +59,44 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcTextField v-model="zaak.identificatie"
+				<NcTextField
+					v-model="zaak.identificatie"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
 					required />
-				<NcTextField v-model="zaak.omschrijving"
+				<NcTextField
+					v-model="zaak.omschrijving"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Description')"
 					maxlength="255" />
-				<NcTextField v-model="zaak.bronorganisatie"
+				<NcTextField
+					v-model="zaak.bronorganisatie"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
 					required />
-				<NcTextField v-model="zaak.verantwoordelijkeOrganisatie"
+				<NcTextField
+					v-model="zaak.verantwoordelijkeOrganisatie"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
 					required />
-				<NcTextField v-model="zaak.startdatum"
+				<NcTextField
+					v-model="zaak.startdatum"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
 					required />
-				<NcSelect v-bind="zaakType"
+				<NcSelect
+					v-bind="zaakType"
 					v-model="zaakType.value"
 					:input-label="t('zaakafhandelapp', 'Case type')"
 					:loading="zaakTypeLoading"
 					:disabled="zaakLoading || zaakTypeLoading"
 					required />
-				<NcSelect v-bind="archiefstatus"
+				<NcSelect
+					v-bind="archiefstatus"
 					v-model="archiefstatus.value"
 					:input-label="t('zaakafhandelapp', 'Archive status')"
 					:disabled="zaakLoading"
@@ -65,17 +108,27 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						:disabled="zaakLoading"
 						required />
 				</div>
-				<NcTextField v-model="zaak.registratiedatum"
+				<NcTextField
+					v-model="zaak.registratiedatum"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Registration date')"
 					maxlength="255" />
-				<NcTextArea v-model="zaak.toelichting"
+				<NcTextArea
+					v-model="zaak.toelichting"
 					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Explanation')" />
 			</div>
 
-			<NcButton v-if="success === null"
-				:disabled="loading || !zaak.identificatie || zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum"
+			<NcButton
+				v-if="success === null"
+				:disabled="
+					loading
+					|| !zaak.identificatie
+					|| zaakTypeLoading
+					|| !zaak.bronorganisatie
+					|| !zaak.verantwoordelijkeOrganisatie
+					|| !zaak.startdatum
+				"
 				variant="primary"
 				@click="saveZaak()">
 				<template #icon>
@@ -83,7 +136,11 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 					<ContentSaveOutline v-else-if="!loading && zaak.id" :size="20" />
 					<Plus v-else-if="!loading && !zaak.id" :size="20" />
 				</template>
-				{{ zaak.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					zaak.id
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -188,7 +245,10 @@ export default {
 			this.zaak = {
 				...this.zaak,
 				...zaakStore.zaakItem,
-				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem.uiterlijkeEinddatumAfdoening ? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening) : null,
+				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem
+					.uiterlijkeEinddatumAfdoening
+					? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening)
+					: null,
 			}
 		}
 	},
@@ -206,9 +266,12 @@ export default {
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
-			zaakTypeStore.refreshZaakTypenList()
+			zaakTypeStore
+				.refreshZaakTypenList()
 				.then(({ entities }) => {
-					const selectedZaakType = entities.find((zaakType) => zaakType.id === this.zaak.zaaktype.id)
+					const selectedZaakType = entities.find(
+						(zaakType) => zaakType.id === this.zaak.zaaktype.id,
+					)
 
 					this.zaakType = {
 						options: entities.map((zaakType) => ({
@@ -217,9 +280,9 @@ export default {
 						})),
 						value: selectedZaakType
 							? {
-								id: selectedZaakType.id,
-								label: selectedZaakType.identificatie,
-							  }
+									id: selectedZaakType.id,
+									label: selectedZaakType.identificatie,
+								}
 							: null,
 					}
 				})
@@ -234,7 +297,9 @@ export default {
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
 		setArchiefStatusOptions() {
-			const selectedArchiefStatusOption = this.archiefstatus.options.find((options) => options.id === this.zaak.archiefstatus)
+			const selectedArchiefStatusOption = this.archiefstatus.options.find(
+				(options) => options.id === this.zaak.archiefstatus,
+			)
 
 			if (selectedArchiefStatusOption) {
 				this.archiefstatus.value = {
@@ -253,11 +318,14 @@ export default {
 				...this.zaak,
 				archiefstatus: this.archiefstatus.value?.id || '',
 				zaaktype: this.zaakType.value?.id || '',
-				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening ? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString() : null,
+				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening
+					? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString()
+					: null,
 				klant: this.klantId,
 			})
 
-			zaakStore.saveZaak(newZaak, { redirect: !this.dashboardWidget })
+			zaakStore
+				.saveZaak(newZaak, { redirect: !this.dashboardWidget })
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -267,7 +335,6 @@ export default {
 					setTimeout(() => {
 						this.closeModal()
 					}, 2500)
-
 				})
 				.catch((err) => {
 					console.error(err)
@@ -282,7 +349,7 @@ export default {
 
 <style scoped>
 .modalContent {
-    margin: var(--zaa-margin-50, 12px);
-    text-align: center;
+	margin: var(--zaa-margin-50, 12px);
+	text-align: center;
 }
 </style>

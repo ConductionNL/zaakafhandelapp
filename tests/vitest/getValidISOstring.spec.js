@@ -13,12 +13,16 @@ import getValidISOstring from '../../src/services/getValidISOstring.js'
 
 describe('getValidISOstring', () => {
 	it('returns the canonical ISO string for a valid date string', () => {
-		expect(getValidISOstring('2026-06-11T10:30:00Z')).toBe('2026-06-11T10:30:00.000Z')
+		expect(getValidISOstring('2026-06-11T10:30:00Z')).toBe(
+			'2026-06-11T10:30:00.000Z',
+		)
 	})
 
 	it('normalises a timezone offset to UTC', () => {
 		// 12:30+02:00 == 10:30Z
-		expect(getValidISOstring('2026-06-11T12:30:00+02:00')).toBe('2026-06-11T10:30:00.000Z')
+		expect(getValidISOstring('2026-06-11T12:30:00+02:00')).toBe(
+			'2026-06-11T10:30:00.000Z',
+		)
 	})
 
 	it('accepts a Date instance', () => {

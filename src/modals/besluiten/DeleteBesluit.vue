@@ -4,11 +4,18 @@ import { besluitStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Delete decision')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Delete decision')"
 		size="normal"
 		:can-close="false">
 		<p v-if="success === null">
-			{{ t('zaakafhandelapp', 'Are you sure you want to permanently delete {name}? This action cannot be undone.', { name: besluitStore.besluitItem?.besluit }) }}
+			{{
+				t(
+					'zaakafhandelapp',
+					'Are you sure you want to permanently delete {name}? This action cannot be undone.',
+					{ name: besluitStore.besluitItem?.besluit },
+				)
+			}}
 		</p>
 
 		<div v-if="success !== null">
@@ -16,7 +23,14 @@ import { besluitStore, navigationStore } from '../../store/store.js'
 				<p>{{ t('zaakafhandelapp', 'Decision successfully deleted') }}</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="!success && !error" type="error">
-				<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the decision') }}</p>
+				<p>
+					{{
+						t(
+							'zaakafhandelapp',
+							'An error occurred while deleting the decision',
+						)
+					}}
+				</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
@@ -28,9 +42,14 @@ import { besluitStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success === null ? t('zaakafhandelapp', 'Cancel') : t('zaakafhandelapp', 'Close') }}
+				{{
+					success === null
+						? t('zaakafhandelapp', 'Cancel')
+						: t('zaakafhandelapp', 'Close')
+				}}
 			</NcButton>
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="loading"
 				variant="error"
 				@click="deleteBesluit()">
@@ -45,12 +64,7 @@ import { besluitStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import {
-	NcButton,
-	NcDialog,
-	NcLoadingIcon,
-	NcNoteCard,
-} from '@nextcloud/vue'
+import { NcButton, NcDialog, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
@@ -89,14 +103,26 @@ export default {
 		async deleteBesluit() {
 			this.loading = true
 
-			besluitStore.deleteBesluit(besluitStore.besluitItem.id)
+			besluitStore
+				.deleteBesluit(besluitStore.besluitItem.id)
 				.then(({ response }) => {
 					this.success = response.ok
-					response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
-				}).catch((error) => {
+					response.ok
+						&& (this.closeModalTimeout = setTimeout(
+							this.closeDialog,
+							2000,
+						))
+				})
+				.catch((error) => {
 					this.success = false
-					this.error = error.message || t('zaakafhandelapp', 'An error occurred while deleting the decision')
-				}).finally(() => {
+					this.error =
+						error.message
+						|| t(
+							'zaakafhandelapp',
+							'An error occurred while deleting the decision',
+						)
+				})
+				.finally(() => {
 					this.loading = false
 				})
 		},

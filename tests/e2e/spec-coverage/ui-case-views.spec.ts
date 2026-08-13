@@ -10,19 +10,27 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { dismissSupportModal, expandNav, navEntryByLabel, openIndexSidebar } from './helpers'
+import {
+	dismissSupportModal,
+	expandNav,
+	navEntryByLabel,
+	openIndexSidebar,
+} from './helpers'
 import { APP } from '../app-path'
 
 test.describe('ui-case-views — case list and detail views', () => {
-
 	// @e2e openspec/specs/ui-case-views/spec.md#loading-the-zaken-list
-	test('loading the zaken list — navigating to /zaken renders the list view', async ({ page }) => {
+	test('loading the zaken list — navigating to /zaken renders the list view', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// Wait for the app nav to confirm the SPA mounted
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		// The Add Item button is the most reliable list-view indicator
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#selecting-a-zaak
@@ -34,20 +42,28 @@ test.describe('ui-case-views — case list and detail views', () => {
 	// closed by default (nc-vue 9c0475f6), so nothing named "Details" exists.
 	// Assert the sidebar surface that the current UI actually offers on an
 	// index page: open it and confirm it carries the page's own heading.
-	test('selecting a zaak — the case list sidebar opens from the list chrome', async ({ page }) => {
+	test('selecting a zaak — the case list sidebar opens from the list chrome', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app to mount first
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		await openIndexSidebar(page)
-		await expect(page.getByRole('heading', { name: 'Cases', exact: true }).first()).toBeVisible({ timeout: 10_000 })
+		await expect(
+			page.getByRole('heading', { name: 'Cases', exact: true }).first(),
+		).toBeVisible({ timeout: 10_000 })
 		// The view-mode chrome confirms the master list mounted. CnActionsBar
 		// renders Cards/Table as aria-pressed buttons, not radios.
-		await expect(page.getByRole('button', { name: 'Cards' }).first()).toBeVisible()
+		await expect(
+			page.getByRole('button', { name: 'Cards' }).first(),
+		).toBeVisible()
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#searching-the-list
-	test('searching the list — search input is accessible in the sidebar', async ({ page }) => {
+	test('searching the list — search input is accessible in the sidebar', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app nav to confirm SPA mounted
@@ -63,22 +79,37 @@ test.describe('ui-case-views — case list and detail views', () => {
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#editing-a-resource
-	test('editing a resource — Add Item button opens the Create Item modal', async ({ page }) => {
+	test('editing a resource — Add Item button opens the Create Item modal', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 15_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 15_000,
+		})
 		await page.getByRole('button', { name: /^Add /i }).click()
 		// Modal appears with a heading
-		await expect(page.getByRole('heading', { name: /^Create /i })).toBeVisible({ timeout: 8_000 })
+		await expect(page.getByRole('heading', { name: /^Create /i })).toBeVisible({
+			timeout: 8_000,
+		})
 		const dialog = page.getByRole('dialog').filter({ hasText: /^Create /i })
-		await expect(dialog.getByRole('button', { name: 'Create' }).or(dialog.getByRole('button', { name: 'Save' })).first()).toBeVisible()
+		await expect(
+			dialog
+				.getByRole('button', { name: 'Create' })
+				.or(dialog.getByRole('button', { name: 'Save' }))
+				.first(),
+		).toBeVisible()
 		// Close modal — scope Cancel to the modal dialog
 		await dialog.getByRole('button', { name: 'Cancel' }).click()
-		await expect(page.getByRole('heading', { name: /^Create /i })).not.toBeVisible({ timeout: 5_000 })
+		await expect(
+			page.getByRole('heading', { name: /^Create /i }),
+		).not.toBeVisible({ timeout: 5_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#rendering-a-resource-icon
-	test('rendering a resource icon — navigation icons are present in the left nav', async ({ page }) => {
+	test('rendering a resource icon — navigation icons are present in the left nav', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// The navigation renders links alongside icons for all entity types.
@@ -98,30 +129,42 @@ test.describe('ui-case-views — case list and detail views', () => {
 	// list view + its sort/filter action surface mount deterministically.
 
 	// @e2e openspec/specs/ui-case-views/spec.md#overdue-zaak-is-flagged-in-the-werkvoorraad
-	test('overdue zaak is flagged in the werkvoorraad — zaken list mounts with urgency surface', async ({ page }) => {
+	test('overdue zaak is flagged in the werkvoorraad — zaken list mounts with urgency surface', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#sorting-by-deadline
-	test('sorting by deadline — the list action menu offers a deadline sort', async ({ page }) => {
+	test('sorting by deadline — the list action menu offers a deadline sort', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#filtering-to-overdue-zaken
-	test('filtering to overdue zaken — the list action menu offers an overdue filter', async ({ page }) => {
+	test('filtering to overdue zaken — the list action menu offers an overdue filter', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#closed-zaken-show-no-urgency
-	test('closed zaken show no urgency — list renders so urgency badges apply only to open zaken', async ({ page }) => {
+	test('closed zaken show no urgency — list renders so urgency badges apply only to open zaken', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
@@ -134,38 +177,59 @@ test.describe('ui-case-views — case list and detail views', () => {
 	// case view mounts and renders its action surface deterministically.
 
 	// @e2e openspec/specs/ui-case-views/spec.md#suspending-from-the-case-detail
-	test('suspending from the case detail — zaken view mounts with its action surface', async ({ page }) => {
+	test('suspending from the case detail — zaken view mounts with its action surface', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({
+			timeout: 15_000,
+		})
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#resuming-shows-the-shifted-deadlines
-	test('resuming shows the shifted deadlines — case detail renders deadline fields', async ({ page }) => {
+	test('resuming shows the shifted deadlines — case detail renders deadline fields', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// The case detail surfaces the planned + statutory deadline fields that a
 		// resume recalculates; the list/detail chrome mounts deterministically.
-		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
+		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({
+			timeout: 15_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#extending-from-the-case-detail
-	test('extending from the case detail — zaken view mounts so the extend action can render', async ({ page }) => {
+	test('extending from the case detail — zaken view mounts so the extend action can render', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({
+			timeout: 15_000,
+		})
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#forbidden-actions-are-not-actionable
-	test('forbidden actions are not actionable — zaken view loads cleanly with policy-gated actions', async ({ page }) => {
+	test('forbidden actions are not actionable — zaken view loads cleanly with policy-gated actions', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
 		// When the zaaktype forbids opschorting/verlenging the actions simply do not
 		// render; the view must still load without error.
-		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({ timeout: 15_000 })
-		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({ timeout: 10_000 })
+		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({
+			timeout: 15_000,
+		})
+		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
+			timeout: 10_000,
+		})
 	})
-
 })

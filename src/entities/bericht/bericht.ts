@@ -2,7 +2,6 @@ import { SafeParseReturnType, z } from 'zod'
 import { TBericht, BerichtID } from './bericht.types'
 
 export class Bericht implements TBericht {
-
 	public id: string
 	public title: string
 	public batchID: string
@@ -67,5 +66,4 @@ export class Bericht implements TBericht {
 
 		return schema.safeParse(this)
 	}
-
 }

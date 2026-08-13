@@ -22,7 +22,10 @@ export const mockRolData = (): TRol[] => [
 			telefoonnummer: '06 123456789',
 			naam: 'Henry',
 		},
-		statussen: ['http://example.com/statussen/active', 'http://example.com/statussen/nieuw'],
+		statussen: [
+			'http://example.com/statussen/active',
+			'http://example.com/statussen/nieuw',
+		],
 		_expand: {},
 		betrokkeneIdentificatie: {
 			identificatie: '',
@@ -33,4 +36,5 @@ export const mockRolData = (): TRol[] => [
 	},
 ]
 
-export const mockRol = (data: TRol[] = mockRolData()): TRol[] => data.map(item => new Rol(item))
+export const mockRol = (data: TRol[] = mockRolData()): TRol[] =>
+	data.map((item) => new Rol(item))

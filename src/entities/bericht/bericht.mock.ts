@@ -23,4 +23,5 @@ export const mockBerichtData = (): TBericht[] => [
 	},
 ]
 
-export const mockBericht = (data: TBericht[] = mockBerichtData()): TBericht[] => data.map(item => new Bericht(item))
+export const mockBericht = (data: TBericht[] = mockBerichtData()): TBericht[] =>
+	data.map((item) => new Bericht(item))

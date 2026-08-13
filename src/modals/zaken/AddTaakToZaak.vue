@@ -6,11 +6,16 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 <template>
 	<NcModal ref="modalRef" label-id="addTaakToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ t('zaakafhandelapp', 'Add task') }}: {{ zaakStore.zaakItem.title }}</h2>
+			<h2>
+				{{ t('zaakafhandelapp', 'Add task') }}:
+				{{ zaakStore.zaakItem.title }}
+			</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ t('zaakafhandelapp', 'Task successfully added to case') }}</p>
+					<p>
+						{{ t('zaakafhandelapp', 'Task successfully added to case') }}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -18,7 +23,8 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcSelect v-bind="taken"
+				<NcSelect
+					v-bind="taken"
 					v-model="taken.value"
 					:input-label="t('zaakafhandelapp', 'Task')"
 					:loading="takenLoading"
@@ -26,7 +32,8 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 					required />
 			</div>
 
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="!taken?.value || loading"
 				variant="primary"
 				@click="addTaakToZaak">
@@ -41,7 +48,13 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcLoadingIcon, NcNoteCard, NcSelect } from '@nextcloud/vue'
+import {
+	NcButton,
+	NcModal,
+	NcLoadingIcon,
+	NcNoteCard,
+	NcSelect,
+} from '@nextcloud/vue'
 import { Taak } from '../../entities/index.js'
 
 import _ from 'lodash'
@@ -89,7 +102,8 @@ export default {
 		fetchTakenData() {
 			this.takenLoading = true
 
-			taakStore.refreshTakenList()
+			taakStore
+				.refreshTakenList()
 				.then(({ data }) => {
 					this.taken = {
 						options: data
@@ -115,7 +129,9 @@ export default {
 			this.loading = true
 			this.error = false
 
-			const taakItem = taakStore.takenList.find((taak) => taak.id === this.taken.value.id)
+			const taakItem = taakStore.takenList.find(
+				(taak) => taak.id === this.taken.value.id,
+			)
 			if (!taakItem) {
 				this.error = 'something went majorly wrong'
 				this.loading = false
@@ -128,7 +144,8 @@ export default {
 
 			const newTaakItem = new Taak(taakItemCopy)
 
-			taakStore.saveTaak(newTaakItem)
+			taakStore
+				.saveTaak(newTaakItem)
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -137,7 +154,7 @@ export default {
 					/**
 					 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 					 */
-					setTimeout(function() {
+					setTimeout(function () {
 						self.success = null
 						self.closeModal()
 					}, 2000)

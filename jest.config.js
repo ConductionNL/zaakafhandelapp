@@ -3,7 +3,8 @@ module.exports = {
 		'^.+\\.vue$': '@vue/vue3-jest',
 		'^.+\\.[cm]?js$': 'babel-jest',
 		'^.+\\.ts$': 'ts-jest',
-		'.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+		'.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$':
+			'jest-transform-stub',
 	},
 	moduleFileExtensions: ['js', 'json', 'vue', 'ts'],
 	// Jest owns the jsdom component/store/entity unit tests that live next
@@ -13,7 +14,11 @@ module.exports = {
 	// crash (`@playwright/test` "Class extends value undefined", duplicate
 	// vitest globals). Scope jest to src/ so each runner owns its own files.
 	testMatch: ['<rootDir>/src/**/*.spec.{js,ts}'],
-	testPathIgnorePatterns: ['/node_modules/', '<rootDir>/tests/e2e/', '<rootDir>/tests/vitest/'],
+	testPathIgnorePatterns: [
+		'/node_modules/',
+		'<rootDir>/tests/e2e/',
+		'<rootDir>/tests/vitest/',
+	],
 	testEnvironment: 'jest-environment-jsdom',
 	// Several @nextcloud/* and @conduction/* packages ship pure ESM (or
 	// CJS chunks that `require('....css')`), which Jest cannot parse out
@@ -28,14 +33,16 @@ module.exports = {
 		// @nextcloud/browser-storage ships pure ESM with `"type": "module"`.
 		// Babel-jest can't transparently transform it from a CJS dependency
 		// chain, so stub it for the unit-test environment.
-		'^@nextcloud/browser-storage$': '<rootDir>/tests/__mocks__/nextcloud-browser-storage.js',
+		'^@nextcloud/browser-storage$':
+			'<rootDir>/tests/__mocks__/nextcloud-browser-storage.js',
 		// Stub the entire @conduction/nextcloud-vue package — its real
 		// require chain pulls in @nextcloud/vue (~MB of CSS+CJS+ESM, plus
 		// JSDOM-incompatible globals like structuredClone) that jest
 		// cannot transform. The store unit tests only need the factory
 		// exports (createObjectStore, useObjectStore, *Plugin); the rest
 		// is reached transitively through router/index.js → store/*.js.
-		'^@conduction/nextcloud-vue$': '<rootDir>/tests/__mocks__/conduction-nextcloud-vue.js',
+		'^@conduction/nextcloud-vue$':
+			'<rootDir>/tests/__mocks__/conduction-nextcloud-vue.js',
 		// Stub CSS / asset imports inside node_modules. Default
 		// `transformIgnorePatterns` excludes node_modules from the
 		// `jest-transform-stub` rule, so a require('....css') from
@@ -47,9 +54,6 @@ module.exports = {
 		// extension and let `moduleFileExtensions` pick `.ts`.
 		'^(\\.{1,2}/.*)\\.js$': '$1',
 	},
-	coveragePathIgnorePatterns: [
-		'index.js',
-		'index.ts',
-	],
+	coveragePathIgnorePatterns: ['index.js', 'index.ts'],
 	coverageDirectory: '<rootDir>/coverage-frontend/',
 }

@@ -30,7 +30,8 @@
  * @return {string} The base URL, without a trailing slash.
  */
 export function resolveBaseUrl(): string {
-	const url = process.env.PLAYWRIGHT_BASE_URL
+	const url =
+		process.env.PLAYWRIGHT_BASE_URL
 		?? process.env.BASE_URL
 		?? process.env.NEXTCLOUD_URL
 		?? process.env.NC_BASE_URL
@@ -38,9 +39,9 @@ export function resolveBaseUrl(): string {
 	if (!url) {
 		throw new Error(
 			'PLAYWRIGHT_BASE_URL (or BASE_URL) must be set to the Nextcloud instance '
-			+ 'under test. There is deliberately no default: the previous fallback was '
-			+ 'http://localhost:8080, the SHARED dev container, and the fixture helpers '
-			+ 'write to it.',
+				+ 'under test. There is deliberately no default: the previous fallback was '
+				+ 'http://localhost:8080, the SHARED dev container, and the fixture helpers '
+				+ 'write to it.',
 		)
 	}
 

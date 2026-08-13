@@ -27,7 +27,7 @@ import { APP } from '../app-path'
  * (dashboard-type) and Search (a custom index route) are covered by their own
  * suites; this list is the entity index pages reachable from the main nav.
  */
-const MAIN_NAV: Array<{ id: string, heading: string }> = [
+const MAIN_NAV: Array<{ id: string; heading: string }> = [
 	{ id: 'Zaken', heading: 'Cases' },
 	{ id: 'Taken', heading: 'Tasks' },
 	{ id: 'Klanten', heading: 'Customers' },
@@ -65,8 +65,12 @@ const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail'] as const
 async function bootNav(page: Page): Promise<void> {
 	await page.goto(`${APP}/#/zaken`)
 	await dismissSupportModal(page)
-	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
-	await expect(page.locator('[data-testid="cn-nav"]')).toBeVisible({ timeout: 10_000 })
+	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
+		timeout: 15_000,
+	})
+	await expect(page.locator('[data-testid="cn-nav"]')).toBeVisible({
+		timeout: 10_000,
+	})
 	// Only the group holding the active route auto-expands, and the
 	// settings-section entries sit in a closed foldout, so every entry outside
 	// CasesGroup is rendered-but-hidden until a user opens its container.
@@ -74,10 +78,11 @@ async function bootNav(page: Page): Promise<void> {
 }
 
 test.describe('ui-nav-navigation — clicking left-nav entries lands on the right page', () => {
-
 	for (const { id, heading } of MAIN_NAV) {
 		// @e2e openspec/specs/ui-search-navigation/spec.md#nav-entry-navigation
-		test(`nav ${id} — clicking the left-nav entry opens the ${heading} index`, async ({ page }) => {
+		test(`nav ${id} — clicking the left-nav entry opens the ${heading} index`, async ({
+			page,
+		}) => {
 			await bootNav(page)
 			const entry = page.locator(`[data-testid="cn-nav-entry-${id}"]`)
 			await expect(entry).toBeVisible({ timeout: 10_000 })
@@ -85,15 +90,21 @@ test.describe('ui-nav-navigation — clicking left-nav entries lands on the righ
 			// The destination index page mounts with its heading. The heading
 			// lives in the index sidebar's header (CnIndexPage `showTitle`
 			// defaults to false), and that sidebar is closed on load.
-			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 10_000 })
+			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({
+				timeout: 10_000,
+			})
 			await openIndexSidebar(page)
-			await expect(page.getByRole('heading', { name: heading, exact: true }).first()).toBeVisible({ timeout: 10_000 })
+			await expect(
+				page.getByRole('heading', { name: heading, exact: true }).first(),
+			).toBeVisible({ timeout: 10_000 })
 		})
 	}
 
 	for (const id of FOOTER_NAV_IDS) {
 		// @e2e openspec/specs/ui-search-navigation/spec.md#nav-footer-section
-		test(`nav ${id} — the footer-section entry is visible in the left nav`, async ({ page }) => {
+		test(`nav ${id} — the footer-section entry is visible in the left nav`, async ({
+			page,
+		}) => {
 			await bootNav(page)
 			await expect(
 				page.locator(`[data-testid="cn-nav-entry-${id}"]`),
@@ -102,14 +113,20 @@ test.describe('ui-nav-navigation — clicking left-nav entries lands on the righ
 	}
 
 	// @e2e openspec/specs/ui-search-navigation/spec.md#nav-dashboard-entry
-	test('nav Dashboard — clicking the Dashboard entry returns to the dashboard root', async ({ page }) => {
+	test('nav Dashboard — clicking the Dashboard entry returns to the dashboard root', async ({
+		page,
+	}) => {
 		await bootNav(page)
 		const dash = page.locator('[data-testid="cn-nav-entry-Dashboard"]')
 		await expect(dash).toBeVisible({ timeout: 10_000 })
 		await dash.click()
 		// The dashboard route is the app root; the page host mounts there.
-		await expect(page.locator('[data-testid="cn-page"]').first()).toBeAttached({ timeout: 10_000 })
-		await expect(page).toHaveURL(new RegExp(`${APP}/(#/?)?$`), { timeout: 10_000 })
+		await expect(page.locator('[data-testid="cn-page"]').first()).toBeAttached({
+			timeout: 10_000,
+		})
+		await expect(page).toHaveURL(new RegExp(`${APP}/(#/?)?$`), {
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/ui-search-navigation/spec.md#nav-all-entries-present
@@ -119,8 +136,15 @@ test.describe('ui-nav-navigation — clicking left-nav entries lands on the righ
 	test('all routed nav entries render in the app left nav', async ({ page }) => {
 		await bootNav(page)
 		const visibleIds = [
-			'Dashboard', 'Zaken', 'Taken', 'Klanten', 'Medewerkers',
-			'Contactmomenten', 'Berichten', 'Rollen', 'Search',
+			'Dashboard',
+			'Zaken',
+			'Taken',
+			'Klanten',
+			'Medewerkers',
+			'Contactmomenten',
+			'Berichten',
+			'Rollen',
+			'Search',
 			...FOOTER_NAV_IDS,
 		]
 		for (const id of visibleIds) {
@@ -136,5 +160,4 @@ test.describe('ui-nav-navigation — clicking left-nav entries lands on the righ
 			).toBeAttached({ timeout: 10_000 })
 		}
 	})
-
 })

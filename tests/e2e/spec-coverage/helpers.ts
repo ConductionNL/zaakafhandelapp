@@ -62,12 +62,18 @@ export function navEntryByLabel(page: Page, label: string): Locator {
  * a separate server-side landing step; the hash deep-link reaches the target
  * directly.
  */
-export async function spaNavigate(page: Page, appRoute: string, entryRoute = '/zaken'): Promise<void> {
+export async function spaNavigate(
+	page: Page,
+	appRoute: string,
+	entryRoute = '/zaken',
+): Promise<void> {
 	void entryRoute
 	await page.goto(`${APP}/#${appRoute}`)
 	await dismissSupportModal(page)
 	// Confirm the shell mounted (the fragment route renders inside it).
-	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
+	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
+		timeout: 15_000,
+	})
 }
 
 /**
@@ -145,7 +151,9 @@ export async function openIndexSidebar(page: Page): Promise<void> {
 	if ((await toggle.getAttribute('aria-pressed')) !== 'true') {
 		await toggle.click()
 	}
-	await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible({ timeout: 10_000 })
+	await expect(page.getByRole('tab', { name: 'Search' }).first()).toBeVisible({
+		timeout: 10_000,
+	})
 }
 
 /**
@@ -179,7 +187,7 @@ export async function expandNav(page: Page): Promise<void> {
 	// than assuming how many groups the manifest declares.
 	for (let i = 0; i < 8; i++) {
 		const toggles = nav.getByRole('button', { name: 'Open menu' })
-		if (await toggles.count() === 0) {
+		if ((await toggles.count()) === 0) {
 			break
 		}
 		const before = await toggles.count()
@@ -191,7 +199,10 @@ export async function expandNav(page: Page): Promise<void> {
 		const dropped = await expect
 			.poll(async () => toggles.count(), { timeout: 5_000 })
 			.toBeLessThan(before)
-			.then(() => true, () => false)
+			.then(
+				() => true,
+				() => false,
+			)
 		if (!dropped) {
 			break
 		}
@@ -205,7 +216,9 @@ export async function expandNav(page: Page): Promise<void> {
 		const foldout = nav.locator('[data-testid="cn-nav-settings"] button').first()
 		if (await foldout.isVisible({ timeout: 2_000 }).catch(() => false)) {
 			await foldout.click()
-			await expect(probe).toBeVisible({ timeout: 5_000 }).catch(() => undefined)
+			await expect(probe)
+				.toBeVisible({ timeout: 5_000 })
+				.catch(() => undefined)
 		}
 	}
 }

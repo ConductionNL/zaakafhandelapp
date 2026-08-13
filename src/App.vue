@@ -158,8 +158,8 @@ export default {
 		 *
 		 * @param {string} key Translation key.
 		 * @return {string} Translated string (or the key on miss).
-		  *
-		  * @spec exclude i18n wrapper around Nextcloud t()
+		 *
+		 * @spec exclude i18n wrapper around Nextcloud t()
 		 */
 		translateForApp(key) {
 			return ncT('zaakafhandelapp', key)

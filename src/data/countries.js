@@ -45,7 +45,7 @@ export const countries = [
 	},
 	{
 		code: 'BS',
-		name: 'Bahama\'s',
+		name: "Bahama's",
 	},
 	{
 		code: 'BH',

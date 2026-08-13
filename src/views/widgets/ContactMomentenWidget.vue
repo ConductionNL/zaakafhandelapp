@@ -1,11 +1,16 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, contactMomentStore, klantStore } from '../../store/store.js'
+import {
+	navigationStore,
+	contactMomentStore,
+	klantStore,
+} from '../../store/store.js'
 </script>
 
 <template>
 	<div class="contactmomentenContainer">
-		<CnDataTable :rows="contactMomentItems"
+		<CnDataTable
+			:rows="contactMomentItems"
 			:columns="columns"
 			:loading="loading"
 			hide-header
@@ -14,7 +19,8 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			:empty-text="t('zaakafhandelapp', 'No contact moments found')"
 			@row-click="onShow">
 			<template #empty>
-				<NcEmptyContent :name="t('zaakafhandelapp', 'No contact moments found')">
+				<NcEmptyContent
+					:name="t('zaakafhandelapp', 'No contact moments found')">
 					<template #icon>
 						<ChatOutline />
 					</template>
@@ -22,17 +28,20 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			</template>
 			<template #row-actions="{ row }">
 				<NcActions>
-					<NcActionButton icon="icon-toggle"
+					<NcActionButton
+						icon="icon-toggle"
 						close-after-click
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
-					<NcActionButton :icon="iconPencil"
+					<NcActionButton
+						:icon="iconPencil"
 						close-after-click
 						@click="onEdit(row)">
 						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
-					<NcActionButton :icon="iconProgressClose"
+					<NcActionButton
+						:icon="iconProgressClose"
 						close-after-click
 						@click="onSluiten(row)">
 						{{ t('zaakafhandelapp', 'Close') }}
@@ -49,7 +58,8 @@ import { navigationStore, contactMomentStore, klantStore } from '../../store/sto
 			</template>
 		</CnDataTable>
 
-		<ContactMomentenForm v-if="isContactMomentFormOpen"
+		<ContactMomentenForm
+			v-if="isContactMomentFormOpen"
 			:dashboard-widget="true"
 			:contact-moment-id="contactMomentId"
 			:is-view="isView"
@@ -126,7 +136,9 @@ export default {
 					'OCS-APIRequest': 'true',
 				},
 			})
-			const { ocs: { data: user } } = await getUser.json()
+			const {
+				ocs: { data: user },
+			} = await getUser.json()
 
 			const medewerkers = await fetch('/ocs/v1.php/cloud/users/details', {
 				method: 'GET',
@@ -135,10 +147,12 @@ export default {
 					'OCS-APIRequest': 'true',
 				},
 			})
-				.then(response => response.json())
+				.then((response) => response.json())
 				.then((data) => Object.values(data.ocs.data.users))
 
-			const medewerker = medewerkers.find((medewerker) => medewerker.id === user.id)
+			const medewerker = medewerkers.find(
+				(medewerker) => medewerker.id === user.id,
+			)
 
 			this.userEmail = medewerker.email
 			this.fetchContactMomentItems()
@@ -150,23 +164,36 @@ export default {
 			this.loading = true
 
 			Promise.all([
-				contactMomentStore.refreshContactMomentenList(null, true, this.userEmail),
+				contactMomentStore.refreshContactMomentenList(
+					null,
+					true,
+					this.userEmail,
+				),
 				klantStore.refreshKlantenList(),
 			])
 				.then(([contactMomentResponse, klantResponse]) => {
-					this.contactMomentItems = contactMomentResponse.entities.map(contactMoment => ({
-						id: contactMoment.id,
-						mainText: (() => { // this is a self calling function to get the klant name, which is why you don't see it being called anywhere
-							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
-							if (klant) {
-								return klant.type === 'persoon' ? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` : `${klant.bedrijfsnaam}`
-							}
-							return ''
-						})(),
-						subText: new Date(contactMoment.startDate).toLocaleString(),
-						// drives the per-kanaal leading row icon (contactMomentIcon)
-						kanaal: contactMoment.kanaal,
-					}))
+					this.contactMomentItems = contactMomentResponse.entities.map(
+						(contactMoment) => ({
+							id: contactMoment.id,
+							mainText: (() => {
+								// this is a self calling function to get the klant name, which is why you don't see it being called anywhere
+								const klant = klantResponse.entities.find(
+									(klant) => klant.id === contactMoment.klant,
+								)
+								if (klant) {
+									return klant.type === 'persoon'
+										? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`
+										: `${klant.bedrijfsnaam}`
+								}
+								return ''
+							})(),
+							subText: new Date(
+								contactMoment.startDate,
+							).toLocaleString(),
+							// drives the per-kanaal leading row icon (contactMomentIcon)
+							kanaal: contactMoment.kanaal,
+						}),
+					)
 				})
 				.finally(() => {
 					this.loading = false
@@ -175,8 +202,8 @@ export default {
 		// === MODAL CONTROL ===
 		/**
 		 * Opens the contactmoment form modal in create/add mode
-		  *
-		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 *
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		openModal() {
 			this.isContactMomentFormOpen = true
@@ -185,8 +212,8 @@ export default {
 		},
 		/**
 		 * runs when the contact form modal closes
-		  *
-		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
+		 *
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		closeModal() {
 			this.isContactMomentFormOpen = false
@@ -198,8 +225,8 @@ export default {
 		/**
 		 * runs when the user clicks on the show button, and opens the contactmoment form modal in view mode
 		 * @param {{id: number}} event - the contactmoment item received from the widget
-		  *
-		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 *
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onShow(event) {
 			this.contactMomentId = event.id
@@ -209,8 +236,8 @@ export default {
 		/**
 		 * runs when the user clicks on the edit button, and opens the contactmoment form modal in edit mode
 		 * @param {{id: number}} event - the contactmoment item received from the widget
-		  *
-		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 *
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onEdit(event) {
 			this.contactMomentId = event.id
@@ -220,8 +247,8 @@ export default {
 		/**
 		 * runs when the user clicks on the "sluiten" button, and changes the status of the contactmoment to 'gesloten'
 		 * @param {{id: number}} event - the contactmoment item received from the widget
-		  *
-		  * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
+		 *
+		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		async onSluiten(event) {
 			const { data } = await contactMomentStore.getContactMoment(event.id)
@@ -236,7 +263,8 @@ export default {
 				status: 'gesloten',
 			})
 
-			contactMomentStore.saveContactMoment(newContactMoment, { redirect: false })
+			contactMomentStore
+				.saveContactMoment(newContactMoment, { redirect: false })
 				.then(({ response }) => {
 					if (response.ok) {
 						this.fetchContactMomentItems(null, true)
@@ -244,7 +272,6 @@ export default {
 				})
 		},
 	},
-
 }
 </script>
 <style scoped>

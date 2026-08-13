@@ -33,7 +33,13 @@
 import { test, expect } from '@playwright/test'
 import { WorkflowFixtures } from './fixtures'
 import {
-	openIndex, openCreateModal, fillField, submitModal, useTableView, rowFor, rowAction,
+	openIndex,
+	openCreateModal,
+	fillField,
+	submitModal,
+	useTableView,
+	rowFor,
+	rowAction,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -49,13 +55,14 @@ test.afterAll(async () => {
 })
 
 test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI', () => {
-
 	// GREEN: create a case through the Cases form. The create now succeeds (the
 	// archive-prerequisite check no longer rejects a fresh case with no archive
 	// fields — BUG-3 — and the ObjectCreated hook no longer 500s — BUG-1/BUG-2),
 	// so the row appears and persists in OpenRegister with the real values.
 	// @e2e openspec/specs/domain-entities/spec.md#zaak
-	test('create via UI form — a new case row appears with the real values', async ({ page }) => {
+	test('create via UI form — a new case row appears with the real values', async ({
+		page,
+	}) => {
 		const index = await openIndex(page, 'zaken')
 		const dialog = await openCreateModal(page)
 		await fillField(dialog, 'omschrijving', `Zaak ${RUN}`)
@@ -63,17 +70,23 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 
 		// The authoritative signal is the create POST itself: it must now succeed.
 		const postPromise = page.waitForResponse(
-			(r) => r.url().includes('/api/objects/zaakafhandelapp/zaak')
+			(r) =>
+				r.url().includes('/api/objects/zaakafhandelapp/zaak')
 				&& r.request().method() === 'POST',
 			{ timeout: 15_000 },
 		)
 		await submitModal(dialog)
 		const post = await postPromise
-		expect(post.status(), 'zaak create POST must succeed (BUG-1/2/3 fixed)').toBeGreaterThanOrEqual(200)
+		expect(
+			post.status(),
+			'zaak create POST must succeed (BUG-1/2/3 fixed)',
+		).toBeGreaterThanOrEqual(200)
 		expect(post.status(), 'zaak create POST must not 4xx/5xx').toBeLessThan(300)
 
 		// The modal closes on a successful save.
-		await expect(dialog.getByRole('heading', { name: /^Create/i })).not.toBeVisible({ timeout: 8_000 })
+		await expect(
+			dialog.getByRole('heading', { name: /^Create/i }),
+		).not.toBeVisible({ timeout: 8_000 })
 
 		// The row renders in the Table list with the real value.
 		await useTableView(page)
@@ -82,14 +95,19 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 
 		// Persisted at the data layer.
 		const rows = await fx.list('zaak')
-		expect(rows.find((r) => String(r.omschrijving ?? '').includes(RUN)), 'case must persist in OpenRegister').toBeTruthy()
+		expect(
+			rows.find((r) => String(r.omschrijving ?? '').includes(RUN)),
+			'case must persist in OpenRegister',
+		).toBeTruthy()
 	})
 
 	// GREEN: edit a case field through the row Edit action and assert it persists
 	// (the ObjectUpdating hook no longer 500s — BUG-1 setVertrouwelijkheidaanduiding
 	// -> find(_extend:) — so the update is accepted and re-renders).
 	// @e2e openspec/specs/domain-entities/spec.md#zaak
-	test('edit — changing a case field persists and re-renders', async ({ page }) => {
+	test('edit — changing a case field persists and re-renders', async ({
+		page,
+	}) => {
 		// Seed a case to edit (data layer; equivalent to one the UI just created).
 		const zaakId = await fx.seedZaakBypassingHooks({
 			identificatie: `ID-EDIT-${RUN}`,
@@ -105,31 +123,43 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 
 		const newOmschrijving = `Zaak edited ${RUN}`
 		const putPromise = page.waitForResponse(
-			(r) => r.url().includes('/api/objects/zaakafhandelapp/zaak')
+			(r) =>
+				r.url().includes('/api/objects/zaakafhandelapp/zaak')
 				&& r.request().method() === 'PUT',
 			{ timeout: 15_000 },
 		)
 		await rowAction(page, row, 'Edit')
 		const dialog = page.getByRole('dialog').first()
-		await expect(dialog.getByRole('heading', { name: /^Edit/i })).toBeVisible({ timeout: 8_000 })
+		await expect(dialog.getByRole('heading', { name: /^Edit/i })).toBeVisible({
+			timeout: 8_000,
+		})
 		await fillField(dialog, 'omschrijving', newOmschrijving)
 		await submitModal(dialog)
 
 		const put = await putPromise
-		expect(put.status(), 'zaak update PUT must succeed (BUG-1 fixed)').toBeGreaterThanOrEqual(200)
+		expect(
+			put.status(),
+			'zaak update PUT must succeed (BUG-1 fixed)',
+		).toBeGreaterThanOrEqual(200)
 		expect(put.status()).toBeLessThan(300)
-		await expect(dialog.getByRole('heading', { name: /^Edit/i })).not.toBeVisible({ timeout: 8_000 })
+		await expect(
+			dialog.getByRole('heading', { name: /^Edit/i }),
+		).not.toBeVisible({ timeout: 8_000 })
 
 		// Persisted at the data layer.
 		const reread = await fx.get('zaak', zaakId)
-		expect(String(reread?.omschrijving ?? ''), 'edited value must persist').toBe(newOmschrijving)
+		expect(String(reread?.omschrijving ?? ''), 'edited value must persist').toBe(
+			newOmschrijving,
+		)
 	})
 
 	// GREEN: delete a case through the row Delete action and assert it is gone
 	// from both the list and the data store (the ObjectDeleted hook no longer
 	// 500s — BUG-5 — so the cascade completes and the row is actually removed).
 	// @e2e openspec/specs/domain-entities/spec.md#zaak
-	test('delete — removing a case takes it out of the list and the data store', async ({ page }) => {
+	test('delete — removing a case takes it out of the list and the data store', async ({
+		page,
+	}) => {
 		const zaakId = await fx.seedZaakBypassingHooks({
 			identificatie: `ID-DEL-${RUN}`,
 			omschrijving: `Zaak del ${RUN}`,
@@ -143,17 +173,24 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 		await expect(row).toBeVisible()
 
 		const delPromise = page.waitForResponse(
-			(r) => r.url().includes(`/api/objects/zaakafhandelapp/zaak/${zaakId}`)
+			(r) =>
+				r.url().includes(`/api/objects/zaakafhandelapp/zaak/${zaakId}`)
 				&& r.request().method() === 'DELETE',
 			{ timeout: 15_000 },
 		)
 		await rowAction(page, row, 'Delete')
 		// A confirmation dialog may appear; accept it if present.
-		await page.getByRole('button', { name: /^(Delete|Confirm|Yes)$/i })
-			.first().click({ timeout: 3_000 }).catch(() => undefined)
+		await page
+			.getByRole('button', { name: /^(Delete|Confirm|Yes)$/i })
+			.first()
+			.click({ timeout: 3_000 })
+			.catch(() => undefined)
 
 		const del = await delPromise
-		expect(del.status(), 'zaak delete DELETE must succeed (BUG-5 fixed)').toBeGreaterThanOrEqual(200)
+		expect(
+			del.status(),
+			'zaak delete DELETE must succeed (BUG-5 fixed)',
+		).toBeGreaterThanOrEqual(200)
 		expect(del.status()).toBeLessThan(300)
 
 		// Gone from the data store (no 500, row actually removed).

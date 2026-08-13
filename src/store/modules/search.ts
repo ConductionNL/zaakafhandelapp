@@ -42,15 +42,15 @@ export const useSearchStore = defineStore('search', {
 			// @ts-expect-error -- for some reason it gives errors in TS even doh it works
 			const searchParams = new URLSearchParams({
 				...(this.search && { _search: this.search }),
-				...(enabledPublicationTypeIds[0] && { publication_type: enabledPublicationTypeIds }),
+				...(enabledPublicationTypeIds[0] && {
+					publication_type: enabledPublicationTypeIds,
+				}),
 				...(enabledCatalogiIds[0] && { catalog: enabledCatalogiIds }),
 			}).toString()
 
-			fetch('/index.php/apps/opencatalogi/api/publications?' + searchParams,
-				{
-					method: 'GET',
-				},
-			)
+			fetch('/index.php/apps/opencatalogi/api/publications?' + searchParams, {
+				method: 'GET',
+			})
 				.then((response) => {
 					response.json().then((data) => {
 						if (data?.code === 403 && data?.message) {
@@ -59,16 +59,12 @@ export const useSearchStore = defineStore('search', {
 							this.searchError = '' // Clear any previous errors
 						}
 						this.searchResults = data
-					},
-					)
-				},
-				)
-				.catch(
-					(err) => {
-						this.searchError = err.message || 'An error occurred'
-						console.error(err.message ?? err)
-					},
-				)
+					})
+				})
+				.catch((err) => {
+					this.searchError = err.message || 'An error occurred'
+					console.error(err.message ?? err)
+				})
 		},
 		/**
 		 * @spec openspec/specs/state-stores/spec.md#REQ-005
@@ -78,5 +74,4 @@ export const useSearchStore = defineStore('search', {
 			this.searchError = ''
 		},
 	},
-},
-)
+})

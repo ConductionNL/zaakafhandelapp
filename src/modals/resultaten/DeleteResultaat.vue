@@ -4,7 +4,8 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Delete result')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Delete result')"
 		size="normal"
 		:can-close="false">
 		<!-- if zaken list is not populated yet, show a quick loading icon (this should under normal conditions not happen) -->
@@ -13,7 +14,15 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 		</div>
 		<div v-else>
 			<p v-if="success === null">
-				{{ t('zaakafhandelapp', 'Are you sure you want to permanently delete {name}? This action cannot be undone.', { name: `${zaakStore.zakenList.find((zaak) => zaak.id === resultaatStore.resultaatItem?.zaak)?.identificatie} > ${resultaatStore.resultaatItem?.toelichting}` }) }}
+				{{
+					t(
+						'zaakafhandelapp',
+						'Are you sure you want to permanently delete {name}? This action cannot be undone.',
+						{
+							name: `${zaakStore.zakenList.find((zaak) => zaak.id === resultaatStore.resultaatItem?.zaak)?.identificatie} > ${resultaatStore.resultaatItem?.toelichting}`,
+						},
+					)
+				}}
 			</p>
 
 			<div v-if="success !== null">
@@ -21,7 +30,14 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 					<p>{{ t('zaakafhandelapp', 'Result successfully deleted') }}</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success && !error" type="error">
-					<p>{{ t('zaakafhandelapp', 'An error occurred while deleting the result') }}</p>
+					<p>
+						{{
+							t(
+								'zaakafhandelapp',
+								'An error occurred while deleting the result',
+							)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -34,9 +50,14 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success === null ? t('zaakafhandelapp', 'Cancel') : t('zaakafhandelapp', 'Close') }}
+				{{
+					success === null
+						? t('zaakafhandelapp', 'Cancel')
+						: t('zaakafhandelapp', 'Close')
+				}}
 			</NcButton>
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="loading"
 				variant="error"
 				@click="deleteResultaat()">
@@ -51,12 +72,7 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 </template>
 
 <script>
-import {
-	NcButton,
-	NcDialog,
-	NcLoadingIcon,
-	NcNoteCard,
-} from '@nextcloud/vue'
+import { NcButton, NcDialog, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
@@ -97,17 +113,30 @@ export default {
 		async deleteResultaat() {
 			this.loading = true
 
-			resultaatStore.deleteResultaat({
-				...resultaatStore.resultaatItem,
-			}).then(({ response }) => {
-				this.success = response.ok
-				response.ok && (this.closeModalTimeout = setTimeout(this.closeDialog, 2000))
-			}).catch((error) => {
-				this.success = false
-				this.error = error.message || t('zaakafhandelapp', 'An error occurred while deleting the result')
-			}).finally(() => {
-				this.loading = false
-			})
+			resultaatStore
+				.deleteResultaat({
+					...resultaatStore.resultaatItem,
+				})
+				.then(({ response }) => {
+					this.success = response.ok
+					response.ok
+						&& (this.closeModalTimeout = setTimeout(
+							this.closeDialog,
+							2000,
+						))
+				})
+				.catch((error) => {
+					this.success = false
+					this.error =
+						error.message
+						|| t(
+							'zaakafhandelapp',
+							'An error occurred while deleting the result',
+						)
+				})
+				.finally(() => {
+					this.loading = false
+				})
 		},
 	},
 }

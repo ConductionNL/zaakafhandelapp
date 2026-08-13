@@ -4,15 +4,37 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef"
-		label-id="zaakForm"
-		@close="closeModal">
+	<NcModal ref="modalRef" label-id="zaakForm" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Decision {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Decision {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
+			<h2>
+				{{
+					IS_EDIT
+						? t('zaakafhandelapp', 'Decision {action}', {
+								action: t('zaakafhandelapp', 'edit'),
+							})
+						: t('zaakafhandelapp', 'Decision {action}', {
+								action: t('zaakafhandelapp', 'create'),
+							})
+				}}
+			</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Decision successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Decision successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+					<p>
+						{{
+							IS_EDIT
+								? t(
+										'zaakafhandelapp',
+										'Decision successfully {action}',
+										{ action: t('zaakafhandelapp', 'updated') },
+									)
+								: t(
+										'zaakafhandelapp',
+										'Decision successfully {action}',
+										{ action: t('zaakafhandelapp', 'created') },
+									)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -20,8 +42,13 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null">
-				<p>{{ t('zaakafhandelapp', 'Select a case to create the decision.') }}</p>
-				<NcSelect v-bind="zaak"
+				<p>
+					{{
+						t('zaakafhandelapp', 'Select a case to create the decision.')
+					}}
+				</p>
+				<NcSelect
+					v-bind="zaak"
 					v-model="zaak.value"
 					:input-label="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
@@ -29,7 +56,8 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 					required />
 
 				<div class="form-group">
-					<NcTextField v-model="besluit.besluit"
+					<NcTextField
+						v-model="besluit.besluit"
 						:disabled="zaakLoading"
 						:label="t('zaakafhandelapp', 'Decision')"
 						maxlength="1000"
@@ -37,10 +65,9 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 				</div>
 			</div>
 
-			<NcButton v-if="success === null"
-				:disabled="loading
-					|| !zaak.value?.id
-					|| !besluit.besluit"
+			<NcButton
+				v-if="success === null"
+				:disabled="loading || !zaak.value?.id || !besluit.besluit"
 				variant="primary"
 				@click="saveBesluit()">
 				<template #icon>
@@ -48,7 +75,11 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 					<ContentSaveOutline v-else-if="!loading && IS_EDIT" :size="20" />
 					<Plus v-else-if="!loading && !IS_EDIT" :size="20" />
 				</template>
-				{{ IS_EDIT ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					IS_EDIT
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -134,10 +165,13 @@ export default {
 		fetchZaak() {
 			this.zaakLoading = true
 
-			zaakStore.refreshZakenList()
+			zaakStore
+				.refreshZakenList()
 				.then(({ entities }) => {
 					const compareId = this.besluit?.zaak || besluitStore.zaakId
-					const selectedZaak = entities.find((zaak) => zaak.id === compareId)
+					const selectedZaak = entities.find(
+						(zaak) => zaak.id === compareId,
+					)
 
 					this.zaak = {
 						options: entities.map((zaak) => ({
@@ -146,9 +180,9 @@ export default {
 						})),
 						value: selectedZaak
 							? {
-								label: selectedZaak.identificatie,
-								id: selectedZaak.id,
-							}
+									label: selectedZaak.identificatie,
+									id: selectedZaak.id,
+								}
 							: null,
 					}
 				})
@@ -166,10 +200,11 @@ export default {
 				...this.besluit,
 			})
 
-			besluitStore.saveBesluit({
-				...newBesluit,
-				zaak: this.zaak.value.id,
-			})
+			besluitStore
+				.saveBesluit({
+					...newBesluit,
+					zaak: this.zaak.value.id,
+				})
 				.then(({ response }) => {
 					this.success = response.ok
 					setTimeout(this.closeModal, 2500)
@@ -178,7 +213,9 @@ export default {
 				})
 				.catch((err) => {
 					console.error(err)
-					this.error = err.message || 'Er is iets fout gegaan bij het opslaan van het besluit.'
+					this.error =
+						err.message
+						|| 'Er is iets fout gegaan bij het opslaan van het besluit.'
 					this.success = false
 				})
 				.finally(() => {
@@ -191,7 +228,7 @@ export default {
 
 <style scoped>
 .modalContent {
-    margin: var(--zaa-margin-50, 12px);
-    text-align: center;
+	margin: var(--zaa-margin-50, 12px);
+	text-align: center;
 }
 </style>

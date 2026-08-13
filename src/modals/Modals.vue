@@ -15,26 +15,34 @@ import { navigationStore, rolStore } from '../store/store.js'
 		<SuspendZaak v-if="navigationStore.modal === 'suspendZaak'" />
 		<ExtendZaak v-if="navigationStore.modal === 'extendZaak'" />
 		<!-- contactmomenten -->
-		<ContactMomentenForm v-if="navigationStore.modal === 'contactMomentenForm'" />
-		<ViewContactMoment v-if="navigationStore.viewModal === 'viewContactMoment'" />
-		<DeleteContactMoment v-if="navigationStore.modal === 'deleteContactMoment'" />
+		<ContactMomentenForm
+			v-if="navigationStore.modal === 'contactMomentenForm'" />
+		<ViewContactMoment
+			v-if="navigationStore.viewModal === 'viewContactMoment'" />
+		<DeleteContactMoment
+			v-if="navigationStore.modal === 'deleteContactMoment'" />
 		<!-- zaaktypen -->
 		<ZaaktypeForm v-if="navigationStore.modal === 'zaaktypeForm'" />
 		<DeleteZaaktype v-if="navigationStore.modal === 'deleteZaaktype'" />
 		<!-- klanten -->
 		<EditKlant />
-		<ViewKlantAuditTrail v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
+		<ViewKlantAuditTrail
+			v-if="navigationStore.modal === 'viewKlantAuditTrail'" />
 		<ViewKlant v-if="navigationStore.modal === 'viewKlant'" />
 		<DeleteKlant v-if="navigationStore.modal === 'deleteKlant'" />
 		<ImportContact v-if="navigationStore.modal === 'importContact'" />
 		<!-- berichten -->
 		<EditBericht />
-		<ViewBerichtAuditTrail v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
+		<ViewBerichtAuditTrail
+			v-if="navigationStore.modal === 'viewBerichtAuditTrail'" />
 		<!-- taken -->
 		<EditTaak v-if="navigationStore.modal === 'editTaak'" />
 		<ViewTaakAuditTrail v-if="navigationStore.modal === 'viewTaakAuditTrail'" />
 		<!-- rollen -->
-		<RolForm v-if="navigationStore.modal === 'rolForm'" :zaak-id="rolStore.zaakId" :redirect="rolStore.extraData?.redirect" />
+		<RolForm
+			v-if="navigationStore.modal === 'rolForm'"
+			:zaak-id="rolStore.zaakId"
+			:redirect="rolStore.extraData?.redirect" />
 		<DeleteRol v-if="navigationStore.modal === 'deleteRol'" />
 		<!-- medewerkers -->
 		<EditMedewerker v-if="navigationStore.modal === 'editMedewerker'" />

@@ -2,23 +2,48 @@
 import { defineStore } from 'pinia'
 
 interface NavigationStoreState {
-    modal: 'zaakForm' | 'viewZaakAuditTrail' | 'widgetZaakForm' | 'addBerichtToZaak' | 'addTaakToZaak' | 'addRolToZaak' | 'contactMomentenForm' | 'deleteContactMoment' | 'zaaktypeForm' | 'deleteZaaktype' | 'viewKlantAuditTrail' | 'viewBerichtAuditTrail' | 'editTaak' | 'viewTaakAuditTrail' | 'viewKlantRegister' | 'editMedewerker' | 'resultaatForm' | 'deleteResultaat' | 'besluitForm' | 'deleteBesluit' | 'importContact' | 'suspendZaak' | 'extendZaak' | null;
-    viewModal: 'viewContactMoment';
-    dialog: string;
-    transferData: string;
+	modal:
+		| 'zaakForm'
+		| 'viewZaakAuditTrail'
+		| 'widgetZaakForm'
+		| 'addBerichtToZaak'
+		| 'addTaakToZaak'
+		| 'addRolToZaak'
+		| 'contactMomentenForm'
+		| 'deleteContactMoment'
+		| 'zaaktypeForm'
+		| 'deleteZaaktype'
+		| 'viewKlantAuditTrail'
+		| 'viewBerichtAuditTrail'
+		| 'editTaak'
+		| 'viewTaakAuditTrail'
+		| 'viewKlantRegister'
+		| 'editMedewerker'
+		| 'resultaatForm'
+		| 'deleteResultaat'
+		| 'besluitForm'
+		| 'deleteBesluit'
+		| 'importContact'
+		| 'suspendZaak'
+		| 'extendZaak'
+		| null
+	viewModal: 'viewContactMoment'
+	dialog: string
+	transferData: string
 }
 
 export const useNavigationStore = defineStore('ui', {
-	state: () => ({
-		// The currently active modal, managed trough the state to ensure that only one modal can be active at the same time
-		modal: null,
-		// The currently active view modal, managed trough the state to ensure that only one view modal can be active at the same time
-		viewModal: null,
-		// The currently active dialog
-		dialog: null,
-		// Any data needed in various models, dialogs, views which cannot be transferred through normal means or without writing bad/excessive code
-		transferData: null,
-	} as NavigationStoreState),
+	state: () =>
+		({
+			// The currently active modal, managed trough the state to ensure that only one modal can be active at the same time
+			modal: null,
+			// The currently active view modal, managed trough the state to ensure that only one view modal can be active at the same time
+			viewModal: null,
+			// The currently active dialog
+			dialog: null,
+			// Any data needed in various models, dialogs, views which cannot be transferred through normal means or without writing bad/excessive code
+			transferData: null,
+		}) as NavigationStoreState,
 	actions: {
 		/**
 		 * @spec openspec/specs/state-stores/spec.md#REQ-005

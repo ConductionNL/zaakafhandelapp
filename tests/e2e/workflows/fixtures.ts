@@ -67,7 +67,10 @@ export class WorkflowFixtures {
 		this.ctx = await request.newContext({
 			baseURL: BASE,
 			storageState: STORAGE_STATE,
-			extraHTTPHeaders: { 'OCS-APIRequest': 'true', 'Content-Type': 'application/json' },
+			extraHTTPHeaders: {
+				'OCS-APIRequest': 'true',
+				'Content-Type': 'application/json',
+			},
 		})
 		// Fail fast with an actionable message if the OpenRegister backing the
 		// manifest UI is not configured (the app expects an admin to wire a
@@ -77,9 +80,9 @@ export class WorkflowFixtures {
 		if (!reg.ok()) {
 			throw new Error(
 				`OpenRegister register "${REGISTER}" is not configured (GET ${OR}/registers/${REGISTER} -> ${reg.status()}). `
-				+ 'The zaakafhandelapp manifest UI reads/writes through OpenRegister using this register slug + schema slugs '
-				+ '(zaak/taak/klant/status). Create the register and schemas (and the matching *_register / *_schema appconfig) '
-				+ 'before running the workflow e2e layer. See tests/e2e/workflows/BUGS.md (Environment note).',
+					+ 'The zaakafhandelapp manifest UI reads/writes through OpenRegister using this register slug + schema slugs '
+					+ '(zaak/taak/klant/status). Create the register and schemas (and the matching *_register / *_schema appconfig) '
+					+ 'before running the workflow e2e layer. See tests/e2e/workflows/BUGS.md (Environment note).',
 			)
 		}
 	}
@@ -94,10 +97,15 @@ export class WorkflowFixtures {
 	}
 
 	/** Create a record (OR saveObject) and register it for afterAll cleanup. */
-	async create(schema: SchemaSlug, data: Record<string, unknown>): Promise<Record<string, unknown>> {
+	async create(
+		schema: SchemaSlug,
+		data: Record<string, unknown>,
+	): Promise<Record<string, unknown>> {
 		const res = await this.ctx.post(this.url(schema), { data })
 		if (!res.ok()) {
-			throw new Error(`fixture create ${schema} failed: ${res.status()} ${await res.text()}`)
+			throw new Error(
+				`fixture create ${schema} failed: ${res.status()} ${await res.text()}`,
+			)
 		}
 		const body = await res.json()
 		const id = WorkflowFixtures.idOf(body)
@@ -106,19 +114,32 @@ export class WorkflowFixtures {
 	}
 
 	/** List records (OR findAll). Control params take the underscore prefix. */
-	async list(schema: SchemaSlug, params: Record<string, string | number> = {}): Promise<Record<string, unknown>[]> {
-		const qs = new URLSearchParams({ _limit: '200', ...Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])) })
+	async list(
+		schema: SchemaSlug,
+		params: Record<string, string | number> = {},
+	): Promise<Record<string, unknown>[]> {
+		const qs = new URLSearchParams({
+			_limit: '200',
+			...Object.fromEntries(
+				Object.entries(params).map(([k, v]) => [k, String(v)]),
+			),
+		})
 		const res = await this.ctx.get(`${this.url(schema)}?${qs.toString()}`)
-		if (!res.ok()) throw new Error(`fixture list ${schema} failed: ${res.status()}`)
+		if (!res.ok())
+			throw new Error(`fixture list ${schema} failed: ${res.status()}`)
 		const body = await res.json()
 		return (body.results ?? []) as Record<string, unknown>[]
 	}
 
 	/** Read one record (OR find). Returns null on 404. */
-	async get(schema: SchemaSlug, id: string): Promise<Record<string, unknown> | null> {
+	async get(
+		schema: SchemaSlug,
+		id: string,
+	): Promise<Record<string, unknown> | null> {
 		const res = await this.ctx.get(this.url(schema, id))
 		if (res.status() === 404) return null
-		if (!res.ok()) throw new Error(`fixture get ${schema}/${id} failed: ${res.status()}`)
+		if (!res.ok())
+			throw new Error(`fixture get ${schema}/${id} failed: ${res.status()}`)
 		return res.json()
 	}
 
@@ -146,14 +167,19 @@ export class WorkflowFixtures {
 	}
 
 	/** Detach the schema slug, delete the row, restore the slug. */
-	private async purgeViaSlugDetach(schema: SchemaSlug, id: string): Promise<boolean> {
+	private async purgeViaSlugDetach(
+		schema: SchemaSlug,
+		id: string,
+	): Promise<boolean> {
 		const sid = await this.schemaId(schema)
 		if (!sid) return false
 		const tmp = `${schema}-e2e-tmp-${Date.now().toString(36)}`
 		await this.ctx.put(`${OR}/schemas/${sid}`, { data: { slug: tmp } })
 		let ok = false
 		try {
-			const del = await this.ctx.delete(`${OR}/objects/${REGISTER}/${tmp}/${id}`)
+			const del = await this.ctx.delete(
+				`${OR}/objects/${REGISTER}/${tmp}/${id}`,
+			)
 			ok = del.ok()
 		} finally {
 			await this.ctx.put(`${OR}/schemas/${sid}`, { data: { slug: schema } })

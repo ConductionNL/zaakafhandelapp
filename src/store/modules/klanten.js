@@ -31,9 +31,7 @@ export const useKlantStore = defineStore('klanten', {
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setKlantenList(klantenList) {
-			this.klantenList = klantenList.map(
-			    (klantItem) => new Klant(klantItem),
-			)
+			this.klantenList = klantenList.map((klantItem) => new Klant(klantItem))
 			console.log('Klanten list set to ' + klantenList.length + ' items')
 		},
 		setAuditTrailItem(auditTrailItem) {
@@ -215,16 +213,13 @@ export const useKlantStore = defineStore('klanten', {
 				: `${apiEndpoint}/${klantItem.id}`
 			const method = isNewKlant ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(klantItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(klantItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

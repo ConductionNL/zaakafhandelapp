@@ -32,9 +32,11 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		 */
 		setMedewerkersList(medewerkersList) {
 			this.medewerkersList = medewerkersList.map(
-			    (medewerkerItem) => new Medewerker(medewerkerItem),
+				(medewerkerItem) => new Medewerker(medewerkerItem),
 			)
-			console.log('Medewerkers list set to ' + medewerkersList.length + ' items')
+			console.log(
+				'Medewerkers list set to ' + medewerkersList.length + ' items',
+			)
 		},
 		setAuditTrailItem(auditTrailItem) {
 			this.auditTrailItem = auditTrailItem
@@ -60,7 +62,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -87,7 +91,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -116,7 +122,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -145,7 +153,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -215,16 +225,13 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 				: `${apiEndpoint}/${medewerkerItem.id}`
 			const method = isNewMedewerker ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(medewerkerItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(medewerkerItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

@@ -5,8 +5,8 @@ import { getTheme } from '../../getTheme.js'
  *
  * this class name can be put into a component that accepts an 'icon' prop
  * @return {string}
-  *
-  * @spec openspec/specs/ui-search-navigation/spec.md#REQ-005
+ *
+ * @spec openspec/specs/ui-search-navigation/spec.md#REQ-005
  */
 export function iconPencil() {
 	const theme = getTheme()

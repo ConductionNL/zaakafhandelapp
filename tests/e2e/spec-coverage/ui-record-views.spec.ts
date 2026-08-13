@@ -33,24 +33,34 @@ import { APP } from '../app-path'
  * `title` is the page heading rendered by the index page (e.g. "Employees").
  */
 async function assertIndexChrome(page: Page, title: string): Promise<void> {
-	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
+	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
+		timeout: 15_000,
+	})
 	// The index page host confirms the manifest index page mounted.
-	await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 10_000 })
+	await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({
+		timeout: 10_000,
+	})
 	// The primary create button is the canonical list-view action. Its label
 	// is entity-specific ("Add Item", "Add Document", "Add Decision", …) —
 	// match the "Add <entity>" prefix rather than a single hardcoded label so
 	// every index page is covered regardless of its schema's singular name.
-	await expect(page.getByRole('button', { name: /^Add /i }).first()).toBeVisible({ timeout: 10_000 })
+	await expect(page.getByRole('button', { name: /^Add /i }).first()).toBeVisible({
+		timeout: 10_000,
+	})
 	// The view-mode chrome confirms the master list mounted. CnActionsBar
 	// renders the Cards/Table segmented control as `aria-pressed` buttons
 	// inside a `role="group"` — it used to be an NcCheckboxRadioSwitch radio
 	// group, which is what this suite was written against.
-	await expect(page.getByRole('button', { name: 'Cards' }).first()).toBeVisible({ timeout: 10_000 })
+	await expect(page.getByRole('button', { name: 'Cards' }).first()).toBeVisible({
+		timeout: 10_000,
+	})
 	// The index sidebar is closed on load (see openIndexSidebar). The page
 	// heading lives in its header, so open it and assert the heading there —
 	// that is where CnIndexPage puts the title while `showTitle` is false.
 	await openIndexSidebar(page)
-	await expect(page.getByRole('heading', { name: title, exact: true }).first()).toBeVisible({ timeout: 10_000 })
+	await expect(
+		page.getByRole('heading', { name: title, exact: true }).first(),
+	).toBeVisible({ timeout: 10_000 })
 }
 
 /** Server-routed index page: reachable via a hard goto. */
@@ -61,7 +71,6 @@ async function gotoIndex(page: Page, route: string, title: string): Promise<void
 }
 
 test.describe('ui-record-views — generic index pages render shared list chrome', () => {
-
 	// @e2e openspec/specs/domain-entities/spec.md#medewerker
 	test('medewerkers — Employees index renders list chrome', async ({ page }) => {
 		await gotoIndex(page, '/medewerkers', 'Employees')
@@ -112,10 +121,14 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	// (Worth raising in nc-vue — a mutually-exclusive segmented control is an
 	// ARIA radiogroup, not a set of independent toggle buttons — but the
 	// semantics belong there, not in this app's e2e suite.)
-	test('view-mode toggle — the Table segment switches the medewerkers list to table mode', async ({ page }) => {
+	test('view-mode toggle — the Table segment switches the medewerkers list to table mode', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/medewerkers`)
 		await dismissSupportModal(page)
-		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
+		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
+			timeout: 15_000,
+		})
 		const viewToggle = page.getByRole('group', { name: 'View mode' }).first()
 		const cardsBtn = viewToggle.getByRole('button', { name: 'Cards' }).first()
 		const tableBtn = viewToggle.getByRole('button', { name: 'Table' }).first()
@@ -131,10 +144,14 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	})
 
 	// @e2e openspec/specs/ui-modals/spec.md#opening-a-create-modal
-	test('rollen create modal — Add button opens the create dialog and cancels cleanly', async ({ page }) => {
+	test('rollen create modal — Add button opens the create dialog and cancels cleanly', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/rollen`)
 		await dismissSupportModal(page)
-		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
+		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
+			timeout: 15_000,
+		})
 		const addBtn = page.getByRole('button', { name: /^Add /i }).first()
 		await expect(addBtn).toBeVisible({ timeout: 10_000 })
 		await addBtn.click()
@@ -151,17 +168,31 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	// walking every record index page. Handled `console.error` noise from
 	// empty OR collections on a seedless instance is data-dependent and not
 	// asserted; an uncaught exception means the index page genuinely broke.
-	test('no uncaught JS exceptions across the record index pages', async ({ page }) => {
+	test('no uncaught JS exceptions across the record index pages', async ({
+		page,
+	}) => {
 		test.setTimeout(90_000)
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Server-routed pages via hard goto (all index pages have routes now).
-		for (const route of ['/medewerkers', '/berichten', '/rollen', '/zaaktypen', '/statussen', '/besluiten', '/documenten', '/resultaten']) {
+		for (const route of [
+			'/medewerkers',
+			'/berichten',
+			'/rollen',
+			'/zaaktypen',
+			'/statussen',
+			'/besluiten',
+			'/documenten',
+			'/resultaten',
+		]) {
 			await page.goto(`${APP}/#${route}`)
 			await dismissSupportModal(page)
-			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 15_000 })
+			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({
+				timeout: 15_000,
+			})
 		}
-		expect(errors, `Uncaught JS exceptions: ${errors.join(' | ')}`).toHaveLength(0)
+		expect(errors, `Uncaught JS exceptions: ${errors.join(' | ')}`).toHaveLength(
+			0,
+		)
 	})
-
 })

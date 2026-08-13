@@ -63,15 +63,15 @@ export const WIDGET_COLUMNS = [
  */
 export function contactMomentIcon(row) {
 	switch (row?.kanaal) {
-	case 'telefoon':
-		return 'Phone'
-	case 'email':
-		return 'EmailOutline'
-	case 'brief':
-		return 'MailboxOpenOutline'
-	case 'balie':
-		return 'FaceAgent'
-	default:
-		return 'ChatOutline'
+		case 'telefoon':
+			return 'Phone'
+		case 'email':
+			return 'EmailOutline'
+		case 'brief':
+			return 'MailboxOpenOutline'
+		case 'balie':
+			return 'FaceAgent'
+		default:
+			return 'ChatOutline'
 	}
 }

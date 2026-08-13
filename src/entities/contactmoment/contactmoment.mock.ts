@@ -18,4 +18,6 @@ export const mockContactMomentData = (): TContactMoment[] => [
 	},
 ]
 
-export const mockContactMoment = (data: TContactMoment[] = mockContactMomentData()): TContactMoment[] => data.map(item => new ContactMoment(item))
+export const mockContactMoment = (
+	data: TContactMoment[] = mockContactMomentData(),
+): TContactMoment[] => data.map((item) => new ContactMoment(item))

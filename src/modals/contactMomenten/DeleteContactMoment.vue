@@ -9,7 +9,13 @@ import { contactMomentStore, navigationStore } from '../../store/store.js'
 		size="normal"
 		:can-close="false">
 		<p v-if="!success">
-			{{ t('zaakafhandelapp', 'Do you want to delete {name}? This action cannot be undone.', { name: contactMomentStore.contactMomentItem.titel }) }}
+			{{
+				t(
+					'zaakafhandelapp',
+					'Do you want to delete {name}? This action cannot be undone.',
+					{ name: contactMomentStore.contactMomentItem.titel },
+				)
+			}}
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
@@ -20,12 +26,15 @@ import { contactMomentStore, navigationStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<template #actions>
-			<NcButton
-				@click="closeModal">
+			<NcButton @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+				{{
+					success
+						? t('zaakafhandelapp', 'Close')
+						: t('zaakafhandelapp', 'Cancel')
+				}}
 			</NcButton>
 			<NcButton
 				v-if="!success"
@@ -43,12 +52,7 @@ import { contactMomentStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import {
-	NcButton,
-	NcDialog,
-	NcLoadingIcon,
-	NcNoteCard,
-} from '@nextcloud/vue'
+import { NcButton, NcDialog, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
@@ -87,7 +91,9 @@ export default {
 		async deleteContactMoment() {
 			this.loading = true
 			try {
-				await contactMomentStore.deleteContactMoment(contactMomentStore.contactMomentItem)
+				await contactMomentStore.deleteContactMoment(
+					contactMomentStore.contactMomentItem,
+				)
 				// Close modal or show success message
 				this.success = true
 				this.loading = false
@@ -98,7 +104,9 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while deleting the contact moment'
+				this.error =
+					error.message
+					|| 'An error occurred while deleting the contact moment'
 			}
 		},
 	},

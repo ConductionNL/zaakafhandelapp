@@ -2,40 +2,52 @@ import { SafeParseReturnType, z } from 'zod'
 import { TRol } from './rol.types'
 
 export class Rol implements TRol {
-
 	public id: string
 	public url: string
 	public uuid: string
 	public zaak: string
 	public betrokkene?: string
-	public betrokkeneType: 'natuurlijk_persoon' | 'niet_natuurlijk_persoon' | 'vestiging' | 'organisatorische_eenheid' | 'medewerker'
+	public betrokkeneType:
+		| 'natuurlijk_persoon'
+		| 'niet_natuurlijk_persoon'
+		| 'vestiging'
+		| 'organisatorische_eenheid'
+		| 'medewerker'
 	public afwijkendeNaamBetrokkene?: string
 	public roltype: string
 	public omschrijving: string
-	public omschrijvingGeneriek: 'adviseur' | 'behandelaar' | 'belanghebbende' | 'beslisser' | 'initiator' | 'klantcontacter' | 'zaakcoordinator' | 'mede_initiator'
+	public omschrijvingGeneriek:
+		| 'adviseur'
+		| 'behandelaar'
+		| 'belanghebbende'
+		| 'beslisser'
+		| 'initiator'
+		| 'klantcontacter'
+		| 'zaakcoordinator'
+		| 'mede_initiator'
 	public roltoelichting: string
 	public registratiedatum: string
 	public indicatieMachtiging?: 'gemachtigde' | 'machtiginggever'
 	public contactpersoonRol?: {
-        emailadres?: string
-        functie?: string
-        telefoonnummer?: string
-        naam: string
-    }
+		emailadres?: string
+		functie?: string
+		telefoonnummer?: string
+		naam: string
+	}
 
 	public statussen: string[]
 	public _expand: {
-        zaak?: string
-        roltype?: string
-        statussen?: string
-    }
+		zaak?: string
+		roltype?: string
+		statussen?: string
+	}
 
 	public betrokkeneIdentificatie?: {
-        identificatie?: string
-        achternaam?: string
-        voorletters?: string
-        voorvoegselAchternaam?: string
-    }
+		identificatie?: string
+		achternaam?: string
+		voorletters?: string
+		voorvoegselAchternaam?: string
+	}
 	/**
 	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
 	 */
@@ -67,43 +79,65 @@ export class Rol implements TRol {
 			uuid: z.string().uuid(),
 			zaak: z.string().url().min(1).max(1000),
 			betrokkene: z.string().url().max(1000).optional(),
-			betrokkeneType: z.enum(['natuurlijk_persoon', 'niet_natuurlijk_persoon', 'vestiging', 'organisatorische_eenheid', 'medewerker']),
+			betrokkeneType: z.enum([
+				'natuurlijk_persoon',
+				'niet_natuurlijk_persoon',
+				'vestiging',
+				'organisatorische_eenheid',
+				'medewerker',
+			]),
 			afwijkendeNaamBetrokkene: z.string().max(625).optional(),
 			roltype: z.string().url().max(1000),
 			omschrijving: z.string(),
-			omschrijvingGeneriek: z.enum(['adviseur', 'behandelaar', 'belanghebbende', 'beslisser', 'initiator', 'klantcontacter', 'zaakcoordinator', 'mede_initiator']),
+			omschrijvingGeneriek: z.enum([
+				'adviseur',
+				'behandelaar',
+				'belanghebbende',
+				'beslisser',
+				'initiator',
+				'klantcontacter',
+				'zaakcoordinator',
+				'mede_initiator',
+			]),
 			roltoelichting: z.string().max(1000),
 			registratiedatum: z.string().datetime(),
-			indicatieMachtiging: z.enum(['gemachtigde', 'machtiginggever', '']).optional(),
-			contactpersoonRol: z.object({
-				emailadres: z.string().max(254).optional(),
-				functie: z.string().max(50).optional(),
-				telefoonnummer: z.string().max(20).optional(),
-				naam: z.string().max(40),
-			}).optional(),
-			statussen: z.array(z.string().url().min(1).max(1000)).superRefine((val, ctx) => {
-				// statussen is supposed to be a unique array according to docs
-				// https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/redoc-1.5.1#tag/rollen/operation/rol_retrieve
-				if (val.length !== new Set(val).size) {
-					ctx.addIssue({
-						code: z.ZodIssueCode.custom,
-						message: 'No duplicates allowed.',
-					})
-				}
-			}),
+			indicatieMachtiging: z
+				.enum(['gemachtigde', 'machtiginggever', ''])
+				.optional(),
+			contactpersoonRol: z
+				.object({
+					emailadres: z.string().max(254).optional(),
+					functie: z.string().max(50).optional(),
+					telefoonnummer: z.string().max(20).optional(),
+					naam: z.string().max(40),
+				})
+				.optional(),
+			statussen: z
+				.array(z.string().url().min(1).max(1000))
+				.superRefine((val, ctx) => {
+					// statussen is supposed to be a unique array according to docs
+					// https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/redoc-1.5.1#tag/rollen/operation/rol_retrieve
+					if (val.length !== new Set(val).size) {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: 'No duplicates allowed.',
+						})
+					}
+				}),
 			// `_expand` carries optionally-expanded related objects (or reference
 			// strings when not expanded); its shape varies per request, so accept
 			// any object here rather than enforcing a fixed sub-schema.
 			_expand: z.record(z.any()),
-			betrokkeneIdentificatie: z.object({
-				identificatie: z.string().optional(),
-				achternaam: z.string().optional(),
-				voorletters: z.string().optional(),
-				voorvoegselAchternaam: z.string().optional(),
-			}).optional(),
+			betrokkeneIdentificatie: z
+				.object({
+					identificatie: z.string().optional(),
+					achternaam: z.string().optional(),
+					voorletters: z.string().optional(),
+					voorvoegselAchternaam: z.string().optional(),
+				})
+				.optional(),
 		})
 
 		return schema.safeParse(this)
 	}
-
 }

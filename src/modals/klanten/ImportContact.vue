@@ -4,14 +4,16 @@ import { navigationStore, klantStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Import from contacts')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Import from contacts')"
 		size="normal"
 		label-id="importContactModal"
 		dialog-classes="importContactModal"
 		:close-on-click-outside="false"
 		@closing="closeModal">
 		<div class="searchContainer">
-			<NcTextField v-model="query"
+			<NcTextField
+				v-model="query"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Search contacts')"
 				maxlength="255"
@@ -19,7 +21,8 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				@keydown.enter="search">
 				<Magnify :size="20" />
 			</NcTextField>
-			<NcButton variant="primary"
+			<NcButton
+				variant="primary"
 				:disabled="loading || !query"
 				class="searchButton"
 				@click="search">
@@ -40,25 +43,42 @@ import { navigationStore, klantStore } from '../../store/store.js'
 
 		<div class="resultsContainer">
 			<div v-if="results.length && !loading">
-				<NcListItem v-for="(contact, i) in results"
+				<NcListItem
+					v-for="(contact, i) in results"
 					:key="`${contact.uid}${i}`"
-					:name="contact.name || contact.org || contact.email || contact.uid"
+					:name="
+						contact.name || contact.org || contact.email || contact.uid
+					"
 					:force-display-actions="true"
-					:details="contact.alreadyLinked ? t('zaakafhandelapp', 'Linked') : ''">
+					:details="
+						contact.alreadyLinked ? t('zaakafhandelapp', 'Linked') : ''
+					">
 					<template #icon>
-						<OfficeBuildingOutline v-if="contact.org" disable-menu :size="44" />
+						<OfficeBuildingOutline
+							v-if="contact.org"
+							disable-menu
+							:size="44" />
 						<AccountOutline v-else disable-menu :size="44" />
 					</template>
 					<template #subname>
-						{{ [contact.email, contact.phone].filter(Boolean).join(' · ') }}
+						{{
+							[contact.email, contact.phone]
+								.filter(Boolean)
+								.join(' · ')
+						}}
 					</template>
 					<template #actions>
-						<NcActionButton :disabled="contact.alreadyLinked || importing"
+						<NcActionButton
+							:disabled="contact.alreadyLinked || importing"
 							@click="importContact(contact)">
 							<template #icon>
 								<Import :size="20" />
 							</template>
-							{{ contact.alreadyLinked ? t('zaakafhandelapp', 'Already linked') : t('zaakafhandelapp', 'Import as customer') }}
+							{{
+								contact.alreadyLinked
+									? t('zaakafhandelapp', 'Already linked')
+									: t('zaakafhandelapp', 'Import as customer')
+							}}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -68,7 +88,8 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				{{ t('zaakafhandelapp', 'No contacts found.') }}
 			</div>
 
-			<NcLoadingIcon v-if="loading"
+			<NcLoadingIcon
+				v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
@@ -87,7 +108,15 @@ import { navigationStore, klantStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcTextField, NcDialog, NcListItem, NcActionButton, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
+import {
+	NcButton,
+	NcTextField,
+	NcDialog,
+	NcListItem,
+	NcActionButton,
+	NcLoadingIcon,
+	NcNoteCard,
+} from '@nextcloud/vue'
 
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
@@ -133,10 +162,13 @@ export default {
 			this.loading = true
 			this.error = ''
 			this.success = ''
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/contacts/search?query=${encodeURIComponent(this.query)}`, {
-				method: 'GET',
-			})
-				.then(response => response.json())
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/contacts/search?query=${encodeURIComponent(this.query)}`,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => response.json())
 				.then((data) => {
 					this.results = Array.isArray(data) ? data : []
 					this.searched = true
@@ -167,13 +199,18 @@ export default {
 				.then(async (response) => {
 					const data = await response.json()
 					if (!response.ok) {
-						throw new Error(data?.error || t('zaakafhandelapp', 'Import failed'))
+						throw new Error(
+							data?.error || t('zaakafhandelapp', 'Import failed'),
+						)
 					}
 					return data
 				})
 				.then(() => {
 					contact.alreadyLinked = true
-					this.success = t('zaakafhandelapp', 'Contact imported as customer.')
+					this.success = t(
+						'zaakafhandelapp',
+						'Contact imported as customer.',
+					)
 					klantStore.refreshKlantenList()
 				})
 				.catch((err) => {

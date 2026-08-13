@@ -32,9 +32,11 @@ export const useDocumentStore = defineStore('documenten', {
 		 */
 		setDocumentenList(documentenList: Document[] | TDocument[]) {
 			this.documentenList = documentenList.map(
-			    (documentItem) => new Document(documentItem),
+				(documentItem) => new Document(documentItem),
 			)
-			console.info('Documenten list set to ' + documentenList.length + ' items')
+			console.info(
+				'Documenten list set to ' + documentenList.length + ' items',
+			)
 		},
 		/**
 		 * Refresh the list of documenten items.
@@ -43,7 +45,9 @@ export const useDocumentStore = defineStore('documenten', {
 		 * @throws If the HTTP request fails.
 		 * @return { Promise<{ response: Response, data: TDocument[], entities: Document[] }> } The response, raw data, and entities.
 		 */
-		async refreshDocumentenList(search: string = null): Promise<{ response: Response, data: TDocument[], entities: Document[] }> {
+		async refreshDocumentenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TDocument[]; entities: Document[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -62,7 +66,9 @@ export const useDocumentStore = defineStore('documenten', {
 			}
 
 			const data = (await response.json()).results as TDocument[]
-			const entities = data.map((documentItem: TDocument) => new Document(documentItem))
+			const entities = data.map(
+				(documentItem: TDocument) => new Document(documentItem),
+			)
 
 			this.setDocumentenList(data)
 
@@ -79,7 +85,7 @@ export const useDocumentStore = defineStore('documenten', {
 		async getDocument(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TDocument, entity: Document }> {
+		): Promise<{ response: Response; data: TDocument; entity: Document }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching document item with id: ' + id)
@@ -107,7 +113,9 @@ export const useDocumentStore = defineStore('documenten', {
 		 * @throws If the HTTP request fails.
 		 * @return { Promise<{ response: Response, data: TDocument[], entities: Document[] }> } The response, raw data array, and entity array.
 		 */
-		async getDocumenten(zaakId: string = null): Promise<{ response: Response, data: TDocument[], entities: Document[] }> {
+		async getDocumenten(
+			zaakId: string = null,
+		): Promise<{ response: Response; data: TDocument[]; entities: Document[] }> {
 			const params = new URLSearchParams()
 			if (zaakId) {
 				params.append('zaak', zaakId)
@@ -170,7 +178,7 @@ export const useDocumentStore = defineStore('documenten', {
 		async saveDocument(
 			documentItem: Document | TDocument,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TDocument, entity: Document }> {
+		): Promise<{ response: Response; data: TDocument; entity: Document }> {
 			if (!documentItem) {
 				throw new Error('No document item to save')
 			}
@@ -183,23 +191,20 @@ export const useDocumentStore = defineStore('documenten', {
 
 			console.info('Saving document item with id: ' + documentItem?.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(documentItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			)
+				body: JSON.stringify(documentItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(response.statusText || 'Failed to save document')
 			}
 
-			const data = await response.json() as TDocument
+			const data = (await response.json()) as TDocument
 			const entity = new Document(data)
 
 			options.setItem && this.setDocumentItem(data)

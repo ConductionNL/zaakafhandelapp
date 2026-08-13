@@ -4,7 +4,10 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Employee')" size="normal" :can-close="false">
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Employee')"
+		size="normal"
+		:can-close="false">
 		<NcNoteCard v-if="success" type="success">
 			<p>{{ t('zaakafhandelapp', 'Employee successfully updated') }}</p>
 		</NcNoteCard>
@@ -13,27 +16,32 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<div v-if="!success" class="form-group">
-			<NcTextField v-model="medewerkerItem.voornaam"
+			<NcTextField
+				v-model="medewerkerItem.voornaam"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'First name')"
 				maxlength="255" />
 
-			<NcTextField v-model="medewerkerItem.tussenvoegsel"
+			<NcTextField
+				v-model="medewerkerItem.tussenvoegsel"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Middle name')"
 				maxlength="255" />
 
-			<NcTextField v-model="medewerkerItem.achternaam"
+			<NcTextField
+				v-model="medewerkerItem.achternaam"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Last name')"
 				maxlength="255" />
 
-			<NcTextField v-model="medewerkerItem.email"
+			<NcTextField
+				v-model="medewerkerItem.email"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Email address')"
 				maxlength="255" />
 
-			<NcTextField v-model="medewerkerItem.telefoonnummer"
+			<NcTextField
+				v-model="medewerkerItem.telefoonnummer"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Phone number')"
 				minlength="10"
@@ -46,25 +54,43 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+				{{
+					success
+						? t('zaakafhandelapp', 'Close')
+						: t('zaakafhandelapp', 'Cancel')
+				}}
 			</NcButton>
 			<NcButton
-				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+				@click="
+					openLink(
+						'https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties',
+						'_blank',
+					)
+				">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
+			<NcButton
+				v-if="!success"
 				:disabled="loading"
 				variant="primary"
 				@click="editMedewerker()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading && medewerkerStore.medewerkerItem?.id" :size="20" />
-					<Plus v-if="!loading && !medewerkerStore.medewerkerItem?.id" :size="20" />
+					<ContentSaveOutline
+						v-if="!loading && medewerkerStore.medewerkerItem?.id"
+						:size="20" />
+					<Plus
+						v-if="!loading && !medewerkerStore.medewerkerItem?.id"
+						:size="20" />
 				</template>
-				{{ medewerkerStore.medewerkerItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					medewerkerStore.medewerkerItem?.id
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -158,7 +184,8 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while saving the medewerker'
+				this.error =
+					error.message || 'An error occurred while saving the medewerker'
 			}
 		},
 		/**

@@ -21,7 +21,7 @@ export default {
 </script>
 <style>
 .dashboardContainer {
-    margin-inline-start: 75px;
-    margin-block-start: 20px
+	margin-inline-start: 75px;
+	margin-block-start: 20px;
 }
 </style>

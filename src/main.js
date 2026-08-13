@@ -7,7 +7,11 @@
 
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { translate as t, translatePlural as n, loadTranslations } from '@nextcloud/l10n'
+import {
+	translate as t,
+	translatePlural as n,
+	loadTranslations,
+} from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import {
 	defaultPageTypes,
@@ -58,7 +62,10 @@ try {
 } catch (e) {
 	// Non-fatal — lib translations fall back to English source.
 	// eslint-disable-next-line no-console
-	console.warn('[zaakafhandelapp] registerTranslations failed; falling back to English', e)
+	console.warn(
+		'[zaakafhandelapp] registerTranslations failed; falling back to English',
+		e,
+	)
 }
 
 // Fire-and-forget translation load. Some Nextcloud installs (including
@@ -73,7 +80,10 @@ function tryLoadTranslations() {
 	try {
 		const result = loadTranslations('zaakafhandelapp', () => {})
 		if (result && typeof result.then === 'function') {
-			result.then(() => {}, () => {})
+			result.then(
+				() => {},
+				() => {},
+			)
 		}
 	} catch {
 		// no-op
@@ -92,10 +102,13 @@ tryLoadTranslations()
 try {
 	const result = initializeStores()
 	if (result && typeof result.then === 'function') {
-		result.then(() => {}, (e) => {
-			// eslint-disable-next-line no-console
-			console.warn('[zaakafhandelapp] initializeStores failed', e)
-		})
+		result.then(
+			() => {},
+			(e) => {
+				// eslint-disable-next-line no-console
+				console.warn('[zaakafhandelapp] initializeStores failed', e)
+			},
+		)
 	}
 } catch (e) {
 	// eslint-disable-next-line no-console
@@ -106,7 +119,10 @@ try {
 // by this app's own webpack build, so it stays app-local — then hand the base
 // manifest, fragments, and menu-layout to the shared pipeline (ADR-044).
 const fragmentCtx = require.context('./manifest.d/', false, /\.json$/)
-const fragments = fragmentCtx.keys().sort().map((key) => fragmentCtx(key))
+const fragments = fragmentCtx
+	.keys()
+	.sort()
+	.map((key) => fragmentCtx(key))
 const mergedManifest = buildManifest(bundledManifest, fragments, menuLayout)
 
 // vue-router 4 replaces `mode: 'hash'` + `base` with a history object that

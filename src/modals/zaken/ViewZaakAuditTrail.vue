@@ -4,18 +4,32 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal label-id="View Zaak Audit Trail modal"
-		@close="closeDialog">
+	<NcModal label-id="View Zaak Audit Trail modal" @close="closeDialog">
 		<div class="modal__content">
 			<div class="audit-item">
 				<h3>Audit Trail ID: {{ auditTrail.id }}</h3>
 
 				<div class="audit-item-details">
-					<p><strong>{{ t('zaakafhandelapp', 'Action:') }}</strong> {{ auditTrail.action }}</p>
-					<p><strong>{{ t('zaakafhandelapp', 'User:') }}</strong> {{ auditTrail.userName }} ({{ auditTrail.user }})</p>
-					<p><strong>{{ t('zaakafhandelapp', 'Session:') }}</strong> {{ auditTrail.session }}</p>
-					<p><strong>{{ t('zaakafhandelapp', 'IP Address:') }}</strong> {{ auditTrail.ipAddress }}</p>
-					<p><strong>{{ t('zaakafhandelapp', 'Created:') }}</strong> {{ new Date(auditTrail.created).toLocaleString() }}</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'Action:') }}</strong>
+						{{ auditTrail.action }}
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'User:') }}</strong>
+						{{ auditTrail.userName }} ({{ auditTrail.user }})
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'Session:') }}</strong>
+						{{ auditTrail.session }}
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'IP Address:') }}</strong>
+						{{ auditTrail.ipAddress }}
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'Created:') }}</strong>
+						{{ new Date(auditTrail.created).toLocaleString() }}
+					</p>
 				</div>
 
 				<div v-if="auditTrail.changed" class="audit-trail-changes">
@@ -24,14 +38,24 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 						<table class="audit-trail-table">
 							<thead>
 								<tr>
-									<th scope="col">{{ t('zaakafhandelapp', 'Field') }}</th>
-									<th scope="col">{{ t('zaakafhandelapp', 'Old value') }}</th>
-									<th scope="col">{{ t('zaakafhandelapp', 'New value') }}</th>
+									<th scope="col">
+										{{ t('zaakafhandelapp', 'Field') }}
+									</th>
+									<th scope="col">
+										{{ t('zaakafhandelapp', 'Old value') }}
+									</th>
+									<th scope="col">
+										{{ t('zaakafhandelapp', 'New value') }}
+									</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="(change, key) in auditTrail.changed" :key="key">
-									<td><strong>{{ key }}</strong></td>
+								<tr
+									v-for="(change, key) in auditTrail.changed"
+									:key="key">
+									<td>
+										<strong>{{ key }}</strong>
+									</td>
 									<td>{{ formatValue(change.old) }}</td>
 									<td>{{ formatValue(change.new) }}</td>
 								</tr>
@@ -52,10 +76,7 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import {
-	NcModal,
-	NcButton,
-} from '@nextcloud/vue'
+import { NcModal, NcButton } from '@nextcloud/vue'
 
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 

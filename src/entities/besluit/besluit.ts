@@ -2,7 +2,6 @@ import { SafeParseReturnType, z } from 'zod'
 import { TBesluit } from './besluit.types'
 
 export class Besluit implements TBesluit {
-
 	public id: string
 	public url: string
 	public besluit: string
@@ -28,5 +27,4 @@ export class Besluit implements TBesluit {
 
 		return schema.safeParse(this)
 	}
-
 }

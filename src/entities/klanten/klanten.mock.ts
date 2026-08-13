@@ -34,4 +34,5 @@ export const mockKlantData = (): TKlant[] => [
 	},
 ]
 
-export const mockKlant = (data: TKlant[] = mockKlantData()): TKlant[] => data.map(item => new Klant(item))
+export const mockKlant = (data: TKlant[] = mockKlantData()): TKlant[] =>
+	data.map((item) => new Klant(item))
