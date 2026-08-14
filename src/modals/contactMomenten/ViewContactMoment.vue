@@ -12,9 +12,9 @@ import {
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Contact moment')"
 		size="large"
-		label-id="contactMomentenForm"
-		dialog-classes="ContactMomentenForm"
-		:close-on-click-outside="false"
+		labelId="contactMomentenForm"
+		dialogClasses="ContactMomentenForm"
+		:closeOnClickOutside="false"
 		@closing="closeModalFromButton()">
 		<div>
 			<NcNoteCard v-if="success" type="success">
@@ -143,7 +143,7 @@ import {
 				</div>
 				<div class="tabContainer">
 					<CnTabs
-						content-class="mt-3"
+						contentClass="mt-3"
 						justified
 						:aria-label="
 							t('zaakafhandelapp', 'Customer contact moments')
@@ -163,7 +163,7 @@ import {
 										selectedKlantContactMoment
 										=== klantContactmoment.id
 									"
-									:force-display-actions="true">
+									:forceDisplayActions="true">
 									<template #icon>
 										<Phone
 											v-if="
@@ -225,7 +225,7 @@ import {
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedZaak === zaak.id"
-									:force-display-actions="true">
+									:forceDisplayActions="true">
 									<template #icon>
 										<BriefcaseAccountOutline :size="44" />
 									</template>
@@ -260,7 +260,7 @@ import {
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedTaak === taak.id"
-									:force-display-actions="true">
+									:forceDisplayActions="true">
 									<template #icon>
 										<CalendarMonthOutline :size="44" />
 									</template>
@@ -296,7 +296,7 @@ import {
 									:disabled="loading"
 									:loading="fetchLoading"
 									:active="selectedProduct === product.id"
-									:force-display-actions="true">
+									:forceDisplayActions="true">
 									<template #icon>
 										<BriefcaseAccountOutline :size="44" />
 									</template>
@@ -333,8 +333,8 @@ import {
 			<NcActions
 				:disabled="loading || success || fetchLoading"
 				:primary="true"
-				:force-name="true"
-				:menu-name="t('zaakafhandelapp', 'Actions')">
+				:forceName="true"
+				:menuName="t('zaakafhandelapp', 'Actions')">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
@@ -387,38 +387,35 @@ import {
 
 <script>
 // Components
-import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
+import { CnTab, CnTabs } from '@conduction/nextcloud-vue'
 import {
-	NcButton,
-	NcActions,
-	NcLoadingIcon,
-	NcDialog,
-	NcTextArea,
-	NcNoteCard,
-	NcListItem,
 	NcActionButton,
+	NcActions,
+	NcButton,
+	NcDialog,
 	NcEmptyContent,
+	NcListItem,
+	NcLoadingIcon,
+	NcNoteCard,
+	NcTextArea,
 } from '@nextcloud/vue'
 import _ from 'lodash'
-
-import getValidISOstring from '../../services/getValidISOstring.js'
-// Forms
-
-// Entities
-import { ContactMoment } from '../../entities/index.js'
-
-// Icons
-import Plus from 'vue-material-design-icons/Plus.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+// Forms
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Minus from 'vue-material-design-icons/Minus.vue'
-import Phone from 'vue-material-design-icons/Phone.vue'
 import EmailOutline from 'vue-material-design-icons/EmailOutline.vue'
 import FaceAgent from 'vue-material-design-icons/FaceAgent.vue'
 import MailboxOpenOutline from 'vue-material-design-icons/MailboxOpenOutline.vue'
+import Minus from 'vue-material-design-icons/Minus.vue'
+import Phone from 'vue-material-design-icons/Phone.vue'
+// Icons
+import Plus from 'vue-material-design-icons/Plus.vue'
+// Entities
+import { ContactMoment } from '../../entities/index.js'
+import getValidISOstring from '../../services/getValidISOstring.js'
 
 export default {
 	name: 'ViewContactMoment',
@@ -439,15 +436,18 @@ export default {
 		CalendarMonthOutline,
 		DotsHorizontal,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			default: false,
 		},
+
 		contactMomentId: {
 			type: String,
 			default: null,
 		},
+
 		/**
 		 * The ID of the klant to fetch data for
 		 */
@@ -455,6 +455,7 @@ export default {
 			type: String,
 			default: null,
 		},
+
 		/**
 		 * If true, the form is in view mode and no actions are shown
 		 */
@@ -463,6 +464,7 @@ export default {
 			default: false,
 		},
 	},
+
 	data() {
 		return {
 			/**
@@ -483,6 +485,7 @@ export default {
 				selectedTaak: null,
 				selectedProduct: null,
 			},
+
 			klantenLoading: false,
 			zaken: [],
 			taken: [],
@@ -504,6 +507,7 @@ export default {
 					klantContactmomenten: [],
 				},
 			},
+
 			selectedContactMoment: 1,
 			auditTrails: [],
 			klant: null,
@@ -521,6 +525,7 @@ export default {
 			tabCounter: 1,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -536,6 +541,7 @@ export default {
 			this.fetchKlantData(this.klantId)
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -548,6 +554,7 @@ export default {
 				}
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -605,6 +612,7 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -616,6 +624,7 @@ export default {
 
 		// Contactmoment functions
 		/**
+		 * @param i
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		addContactMoment(i) {
@@ -704,6 +713,7 @@ export default {
 
 		// Search functions
 		/**
+		 * @param type
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openSearchKlantModal(type) {
@@ -958,7 +968,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSex(klant) {
@@ -970,6 +982,8 @@ export default {
 
 		// Tabs
 		/**
+		 * @param id
+		 * @param zaak
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
 		setSelectedZaak(id, zaak) {

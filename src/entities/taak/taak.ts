@@ -1,5 +1,7 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TTaak, ZaakID } from './taak.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TTaak, ZaakID } from './taak.types'
+
+import { z } from 'zod'
 import getValidISOstring from '../../services/getValidISOstring'
 
 export class Taak implements TTaak {
@@ -16,6 +18,7 @@ export class Taak implements TTaak {
 	public contactmoment: string
 	public medewerker: string
 	/**
+	 * @param source
 	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
 	 */
 	constructor(source: TTaak) {

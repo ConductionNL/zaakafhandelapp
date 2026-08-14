@@ -18,21 +18,20 @@
 //   - openspec/changes/zaakafhandelapp-manifest-v1/design.md
 //   - @conduction/nextcloud-vue → docs/migrating-to-manifest.md
 
-// --- Custom-fallback page components (referenced by `pages[].component`) ---
-import SearchView from './views/search/SearchIndex.vue'
-import AuditTrailView from './views/audit/AuditTrailView.vue'
-
+import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
+import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
+import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
+import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
+import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
 // --- Detail-tab custom components for ZaakDetail ---
 // Each remaining tab references a thin stub today (`<CnNoteCard>` placeholder
 // pointing at the existing modal-based UI). The besluiten tab was dissolved to
 // a built-in object-table sidebar-tab widget (nextcloud-vue #89), so it no
 // longer needs a component entry here.
 import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
-import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
-import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
-import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
-import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
-import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
+import AuditTrailView from './views/audit/AuditTrailView.vue'
+// --- Custom-fallback page components (referenced by `pages[].component`) ---
+import SearchView from './views/search/SearchIndex.vue'
 
 export default {
 	// --- Genuine exception: multi-store search; no abstract analogue. ---

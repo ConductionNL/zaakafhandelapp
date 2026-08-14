@@ -9,10 +9,10 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 			:rows="items"
 			:columns="columns"
 			:loading="loading"
-			hide-header
+			hideHeader
 			borderless
-			row-icon="BriefcaseAccountOutline"
-			:empty-text="t('zaakafhandelapp', 'No open cases')">
+			rowIcon="BriefcaseAccountOutline"
+			:emptyText="t('zaakafhandelapp', 'No open cases')">
 			<template #empty>
 				<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
 					<template #icon>
@@ -32,8 +32,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 
 		<ZaakForm
 			v-if="isModalOpen"
-			:dashboard-widget="true"
-			@save-success="fetchZaakItems"
+			:dashboardWidget="true"
+			@saveSuccess="fetchZaakItems"
 			@close="closeModal" />
 	</div>
 </template>
@@ -41,10 +41,9 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 <script>
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
-import { NcEmptyContent, NcButton } from '@nextcloud/vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
+import { NcButton, NcEmptyContent } from '@nextcloud/vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
-
+import Plus from 'vue-material-design-icons/Plus.vue'
 import ZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
 import { WIDGET_COLUMNS } from './widgetTable.js'
 
@@ -57,6 +56,7 @@ export default {
 		Plus,
 		Folder,
 	},
+
 	data() {
 		return {
 			loading: false,
@@ -65,6 +65,7 @@ export default {
 			columns: WIDGET_COLUMNS,
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
@@ -73,9 +74,11 @@ export default {
 			return this.zaakItems
 		},
 	},
+
 	mounted() {
 		this.fetchZaakItems()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
@@ -92,6 +95,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
@@ -100,6 +104,7 @@ export default {
 			zaakStore.setZaakItem(null)
 			navigationStore.setModal('zaakForm')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
@@ -123,6 +128,7 @@ export default {
 	overflow: auto;
 }
 </style>
+
 <style>
 :root {
 	--zaa-margin-10: 10px;

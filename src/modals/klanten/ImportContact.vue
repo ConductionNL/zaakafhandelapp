@@ -1,15 +1,15 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, klantStore } from '../../store/store.js'
+import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Import from contacts')"
 		size="normal"
-		label-id="importContactModal"
-		dialog-classes="importContactModal"
-		:close-on-click-outside="false"
+		labelId="importContactModal"
+		dialogClasses="importContactModal"
+		:closeOnClickOutside="false"
 		@closing="closeModal">
 		<div class="searchContainer">
 			<NcTextField
@@ -49,16 +49,16 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					:name="
 						contact.name || contact.org || contact.email || contact.uid
 					"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="
 						contact.alreadyLinked ? t('zaakafhandelapp', 'Linked') : ''
 					">
 					<template #icon>
 						<OfficeBuildingOutline
 							v-if="contact.org"
-							disable-menu
+							disableMenu
 							:size="44" />
-						<AccountOutline v-else disable-menu :size="44" />
+						<AccountOutline v-else disableMenu :size="44" />
 					</template>
 					<template #subname>
 						{{
@@ -109,20 +109,19 @@ import { navigationStore, klantStore } from '../../store/store.js'
 
 <script>
 import {
+	NcActionButton,
 	NcButton,
-	NcTextField,
 	NcDialog,
 	NcListItem,
-	NcActionButton,
 	NcLoadingIcon,
 	NcNoteCard,
+	NcTextField,
 } from '@nextcloud/vue'
-
-import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-import Magnify from 'vue-material-design-icons/Magnify.vue'
-import Import from 'vue-material-design-icons/Import.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Import from 'vue-material-design-icons/Import.vue'
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 
 export default {
 	name: 'ImportContact',
@@ -140,6 +139,7 @@ export default {
 		Import,
 		Cancel,
 	},
+
 	data() {
 		return {
 			query: '',
@@ -151,6 +151,7 @@ export default {
 			success: '',
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-001
@@ -181,7 +182,9 @@ export default {
 					this.loading = false
 				})
 		},
+
 		/**
+		 * @param contact
 		 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
 		 */
 		importContact(contact) {
@@ -221,6 +224,7 @@ export default {
 					this.importing = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */

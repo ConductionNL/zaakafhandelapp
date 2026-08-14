@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
+import type { TContactMoment } from '../../entities/index.js'
+
 import { defineStore } from 'pinia'
-import { ContactMoment, TContactMoment } from '../../entities/index.js'
+import { ContactMoment } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/contactmomenten'
@@ -49,7 +51,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * @param notClosed - Optional boolean to filter out closed contact moments from the contact moments list. (default: `false`)
 		 * @param user - Optional user ID to filter the contact moments list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
 		async refreshContactMomentenList(
 			search: string = null,
@@ -100,7 +102,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 *
 		 * @param id - The ID of the contact moment to fetch.
 		 * @throws If the ID is invalid or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getContactMoment(id: string | number): Promise<{
 			response: Response
@@ -139,7 +141,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * @param contactMomentItem - The contact moment item to delete.
 		 * @throws If there is no contact moment item to delete or if the contact moment item does not have an id.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteContactMoment(
 			contactMomentItem: ContactMoment,
@@ -172,7 +174,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * @param options - The options to save the contact moment.
 		 * @param options.redirect - Whether to redirect to the contact moment after saving. (default: `true`)
 		 * @throws If there is no contact moment item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveContactMoment(
 			contactMomentItem: TContactMoment | ContactMoment,

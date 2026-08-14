@@ -8,7 +8,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 		v-if="navigationStore.modal === 'editKlant'"
 		:name="t('zaakafhandelapp', 'Customer')"
 		size="normal"
-		:can-close="false">
+		:canClose="false">
 		<NcNoteCard v-if="success" type="success">
 			<p>{{ t('zaakafhandelapp', 'Customer successfully updated') }}</p>
 		</NcNoteCard>
@@ -21,7 +21,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				v-bind="typeOptions"
 				v-model="klantItem.type"
 				:disabled="loading"
-				:input-label="t('zaakafhandelapp', 'Customer type')"
+				:inputLabel="t('zaakafhandelapp', 'Customer type')"
 				required />
 
 			<NcTextField
@@ -58,7 +58,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<NcDateTimePicker
 					v-model="klantItem.geboortedatum"
 					:disabled="loading"
-					:input-label="t('zaakafhandelapp', 'Date of birth')" />
+					:inputLabel="t('zaakafhandelapp', 'Date of birth')" />
 			</div>
 
 			<NcSelect
@@ -67,14 +67,14 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				:clearable="false"
 				class="wide-select"
 				:disabled="loading"
-				:input-label="t('zaakafhandelapp', 'Gender')" />
+				:inputLabel="t('zaakafhandelapp', 'Gender')" />
 
 			<NcSelect
 				v-bind="countryOptions"
 				v-model="klantItem.land"
 				class="wide-select"
 				:disabled="loading"
-				:input-label="t('zaakafhandelapp', 'Country')" />
+				:inputLabel="t('zaakafhandelapp', 'Country')" />
 
 			<NcTextField
 				v-model="klantItem.telefoonnummer"
@@ -227,20 +227,19 @@ import { klantStore, navigationStore } from '../../store/store.js'
 <script>
 import {
 	NcButton,
+	NcDateTimePicker,
 	NcDialog,
-	NcTextField,
 	NcLoadingIcon,
 	NcNoteCard,
 	NcSelect,
-	NcDateTimePicker,
+	NcTextField,
 } from '@nextcloud/vue'
-import { countries } from '../../data/countries.js'
-
+import Cancel from 'vue-material-design-icons/Cancel.vue'
 // Icons
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
 import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import { countries } from '../../data/countries.js'
 
 export default {
 	name: 'EditKlant',
@@ -258,6 +257,7 @@ export default {
 		Plus,
 		Help,
 	},
+
 	data() {
 		return {
 			success: false,
@@ -270,6 +270,7 @@ export default {
 					label: country.name,
 				})),
 			},
+
 			klantItem: {
 				voornaam: '',
 				tweedeVoornaam: '',
@@ -298,6 +299,7 @@ export default {
 				subjectIdentificatie: '',
 				subjectType: '',
 			},
+
 			typeOptions: {
 				options: [
 					{ value: 'persoon', label: t('zaakafhandelapp', 'Person') },
@@ -307,6 +309,7 @@ export default {
 					},
 				],
 			},
+
 			sexOptions: {
 				options: [
 					{ value: 'man', label: t('zaakafhandelapp', 'Male') },
@@ -316,6 +319,7 @@ export default {
 			},
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -324,6 +328,7 @@ export default {
 			return this.contactMomentItems
 		},
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 	 */
@@ -350,16 +355,19 @@ export default {
 						value: 'persoon',
 						label: t('zaakafhandelapp', 'Person'),
 					},
+
 					tussenvoegsel: klantStore.klantItem.tussenvoegsel || '',
 					achternaam: klantStore.klantItem.achternaam || '',
 					bsn: klantStore.klantItem.bsn || '',
 					geboortedatum: klantStore.klantItem.geboortedatum
 						? new Date(klantStore.klantItem.geboortedatum)
 						: '',
+
 					geslacht: sex || {
 						value: 'man',
 						label: t('zaakafhandelapp', 'Male'),
 					},
+
 					land: country || '',
 					telefoonnummer: klantStore.klantItem.telefoonnummer || '',
 					emailadres: klantStore.klantItem.emailadres || '',
@@ -378,12 +386,14 @@ export default {
 					subject: klantStore.klantItem.subject || '',
 					subjectIdentificatie:
 						klantStore.klantItem.subjectIdentificatie || '',
+
 					subjectType: klantStore.klantItem.subjectType || '',
 				}
 			}
 			this.hasUpdated = true
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -423,6 +433,7 @@ export default {
 				subjectType: '',
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -449,7 +460,10 @@ export default {
 					error.message || 'An error occurred while saving the klant'
 			}
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {

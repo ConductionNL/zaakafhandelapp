@@ -1,9 +1,9 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
 import {
-	navigationStore,
 	contactMomentStore,
 	klantStore,
+	navigationStore,
 } from '../../store/store.js'
 </script>
 
@@ -13,11 +13,11 @@ import {
 			:rows="contactMomentItems"
 			:columns="columns"
 			:loading="loading"
-			hide-header
+			hideHeader
 			borderless
-			:row-icon="contactMomentIcon"
-			:empty-text="t('zaakafhandelapp', 'No contact moments found')"
-			@row-click="onShow">
+			:rowIcon="contactMomentIcon"
+			:emptyText="t('zaakafhandelapp', 'No contact moments found')"
+			@rowClick="onShow">
 			<template #empty>
 				<NcEmptyContent
 					:name="t('zaakafhandelapp', 'No contact moments found')">
@@ -30,19 +30,19 @@ import {
 				<NcActions>
 					<NcActionButton
 						icon="icon-toggle"
-						close-after-click
+						closeAfterClick
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconPencil"
-						close-after-click
+						closeAfterClick
 						@click="onEdit(row)">
 						{{ t('zaakafhandelapp', 'Edit') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconProgressClose"
-						close-after-click
+						closeAfterClick
 						@click="onSluiten(row)">
 						{{ t('zaakafhandelapp', 'Close') }}
 					</NcActionButton>
@@ -60,30 +60,27 @@ import {
 
 		<ContactMomentenForm
 			v-if="isContactMomentFormOpen"
-			:dashboard-widget="true"
-			:contact-moment-id="contactMomentId"
-			:is-view="isView"
-			@save-success="fetchContactMomentItems"
-			@close-modal="closeModal" />
+			:dashboardWidget="true"
+			:contactMomentId="contactMomentId"
+			:isView="isView"
+			@saveSuccess="fetchContactMomentItems"
+			@closeModal="closeModal" />
 	</div>
 </template>
 
 <script>
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
-import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
-
-// Entities
-import { ContactMoment } from '../../entities/index.js'
-
-// Icons
-import { iconPencil, iconProgressClose } from '../../services/icons/index.js'
-import Plus from 'vue-material-design-icons/Plus.vue'
+import { NcActionButton, NcActions, NcButton, NcEmptyContent } from '@nextcloud/vue'
 import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
-
+import Plus from 'vue-material-design-icons/Plus.vue'
 // Modals
 import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
-import { WIDGET_COLUMNS, contactMomentIcon } from './widgetTable.js'
+// Entities
+import { ContactMoment } from '../../entities/index.js'
+// Icons
+import { iconPencil, iconProgressClose } from '../../services/icons/index.js'
+import { contactMomentIcon, WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
 	name: 'ContactMomentenWidget',
@@ -119,9 +116,11 @@ export default {
 			iconProgressClose,
 		}
 	},
+
 	mounted() {
 		this.fetchUser()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
@@ -157,6 +156,7 @@ export default {
 			this.userEmail = medewerker.email
 			this.fetchContactMomentItems()
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
@@ -199,6 +199,7 @@ export default {
 					this.loading = false
 				})
 		},
+
 		// === MODAL CONTROL ===
 		/**
 		 * Opens the contactmoment form modal in create/add mode
@@ -210,6 +211,7 @@ export default {
 			this.contactMomentId = null
 			contactMomentStore.setContactMomentItem(null)
 		},
+
 		/**
 		 * runs when the contact form modal closes
 		 *
@@ -221,9 +223,11 @@ export default {
 			navigationStore.setModal(null)
 			this.fetchContactMomentItems()
 		},
+
 		// === EVENTS ===
 		/**
 		 * runs when the user clicks on the show button, and opens the contactmoment form modal in view mode
+		 *
 		 * @param {{id: number}} event - the contactmoment item received from the widget
 		 *
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
@@ -233,8 +237,10 @@ export default {
 			this.isContactMomentFormOpen = true
 			this.isView = true
 		},
+
 		/**
 		 * runs when the user clicks on the edit button, and opens the contactmoment form modal in edit mode
+		 *
 		 * @param {{id: number}} event - the contactmoment item received from the widget
 		 *
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
@@ -244,8 +250,10 @@ export default {
 			this.isContactMomentFormOpen = true
 			this.isView = false
 		},
+
 		/**
 		 * runs when the user clicks on the "sluiten" button, and changes the status of the contactmoment to 'gesloten'
+		 *
 		 * @param {{id: number}} event - the contactmoment item received from the widget
 		 *
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
@@ -274,6 +282,7 @@ export default {
 	},
 }
 </script>
+
 <style scoped>
 .contactmomentenContainer {
 	display: flex;

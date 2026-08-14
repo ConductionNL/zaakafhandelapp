@@ -4,7 +4,7 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="rolForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="rolForm" @close="closeModal">
 		<div class="modal__content">
 			<h2>
 				{{
@@ -40,7 +40,7 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					v-bind="zaakOptions"
 					v-model="zaakOptions.value"
 					:disabled="loading"
-					:input-label="t('zaakafhandelapp', 'Case')"
+					:inputLabel="t('zaakafhandelapp', 'Case')"
 					required />
 
 				<NcTextField
@@ -54,7 +54,7 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					v-model="betrokkeneTypeOptions.value"
 					:disabled="loading"
 					:clearable="false"
-					:input-label="t('zaakafhandelapp', 'Involved party type')"
+					:inputLabel="t('zaakafhandelapp', 'Involved party type')"
 					required />
 
 				<NcTextField
@@ -81,9 +81,7 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					v-bind="indicatieMachtigingOptions"
 					v-model="indicatieMachtigingOptions.value"
 					:disabled="loading"
-					:input-label="
-						t('zaakafhandelapp', 'Authorization indication')
-					" />
+					:inputLabel="t('zaakafhandelapp', 'Authorization indication')" />
 			</div>
 
 			<NcButton
@@ -112,10 +110,10 @@ import {
 	NcButton,
 	NcLoadingIcon,
 	NcModal,
-	NcTextField,
+	NcNoteCard,
 	NcSelect,
 	NcTextArea,
-	NcNoteCard,
+	NcTextField,
 } from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
@@ -132,14 +130,17 @@ export default {
 		// Icons
 		ContentSaveOutline,
 	},
+
 	props: {
 		zaakId: {
 			type: String,
 			required: false,
 			default: null,
 		},
+
 		/**
 		 * indicates if the modal should redirect the user to the detail page after saving
+		 *
 		 * @default true
 		 */
 		redirect: {
@@ -148,6 +149,7 @@ export default {
 			default: true,
 		},
 	},
+
 	data() {
 		return {
 			rolItem: {
@@ -167,13 +169,16 @@ export default {
 					telefoonnummer: '',
 					naam: '',
 				},
+
 				statussen: [],
 			},
+
 			zaakOptionsLoading: false,
 			zaakOptions: {
 				options: [],
 				value: null,
 			},
+
 			betrokkeneTypeOptions: {
 				options: [
 					{
@@ -194,11 +199,13 @@ export default {
 					},
 					{ label: t('zaakafhandelapp', 'Employee'), id: 'medewerker' },
 				],
+
 				value: {
 					label: t('zaakafhandelapp', 'Natural person'),
 					id: 'natuurlijk_persoon',
 				},
 			},
+
 			indicatieMachtigingOptions: {
 				options: [
 					{
@@ -210,8 +217,10 @@ export default {
 						id: 'machtiginggever',
 					},
 				],
+
 				value: null,
 			},
+
 			// =======
 			success: null,
 			loading: false,
@@ -219,6 +228,7 @@ export default {
 			IS_EDIT: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -240,6 +250,7 @@ export default {
 
 		this.fetchZaak(rolStore.rolItem?.zaak || this.zaakId)
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -249,7 +260,9 @@ export default {
 			rolStore.setZaakId(null)
 			delete rolStore.extraData?.redirect
 		},
+
 		/**
+		 * @param id
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchData(id) {
@@ -269,7 +282,9 @@ export default {
 					this.rolLoading = false
 				})
 		},
+
 		/**
+		 * @param zaakId
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchZaak(zaakId) {
@@ -296,6 +311,7 @@ export default {
 					this.zaakOptionsLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */

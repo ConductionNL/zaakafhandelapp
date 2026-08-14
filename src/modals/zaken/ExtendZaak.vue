@@ -7,8 +7,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Extend case')"
 		size="normal"
-		label-id="extendZaakModal"
-		:close-on-click-outside="false"
+		labelId="extendZaakModal"
+		:closeOnClickOutside="false"
 		@closing="closeModal">
 		<NcNoteCard v-if="error" type="error">
 			{{ error }}
@@ -72,14 +72,13 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 import {
 	NcButton,
 	NcDialog,
+	NcLoadingIcon,
+	NcNoteCard,
 	NcTextArea,
 	NcTextField,
-	NcNoteCard,
-	NcLoadingIcon,
 } from '@nextcloud/vue'
-
-import Cancel from 'vue-material-design-icons/Cancel.vue'
 import CalendarPlus from 'vue-material-design-icons/CalendarPlus.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
 
 export default {
 	name: 'ExtendZaak',
@@ -93,6 +92,7 @@ export default {
 		Cancel,
 		CalendarPlus,
 	},
+
 	data() {
 		return {
 			reden: '',
@@ -102,6 +102,7 @@ export default {
 			success: '',
 		}
 	},
+
 	computed: {
 		/**
 		 * Maximum extension in days, parsed from the zaaktype's verlengingstermijn
@@ -115,6 +116,7 @@ export default {
 				|| zaakStore.zaakItem?.verlengingstermijn
 			return this.durationToDays(termijn)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
 		 */
@@ -126,8 +128,10 @@ export default {
 			return !this.maxDays || n <= this.maxDays
 		},
 	},
+
 	methods: {
 		/**
+		 * @param value
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
 		 */
 		durationToDays(value) {
@@ -151,6 +155,7 @@ export default {
 				+ parseInt(d || 0, 10)
 			)
 		},
+
 		/**
 		 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
 		 */
@@ -177,6 +182,7 @@ export default {
 				this.loading = false
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */

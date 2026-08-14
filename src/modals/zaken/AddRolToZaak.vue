@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
+import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="addRolToZaak" @close="closeModal">
+	<NcModal ref="modalRef" labelId="addRolToZaak" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{ t('zaakafhandelapp', 'Add role') }}:
@@ -26,7 +26,7 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 				<NcSelect
 					v-bind="rollen"
 					v-model="rollen.value"
-					:input-label="t('zaakafhandelapp', 'Role')"
+					:inputLabel="t('zaakafhandelapp', 'Role')"
 					:loading="rollenLoading"
 					:disabled="loading"
 					required />
@@ -50,15 +50,14 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 <script>
 import {
 	NcButton,
-	NcModal,
 	NcLoadingIcon,
+	NcModal,
 	NcNoteCard,
 	NcSelect,
 } from '@nextcloud/vue'
-import { Rol } from '../../entities/index.js'
-
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import { Rol } from '../../entities/index.js'
 
 export default {
 	name: 'AddRolToZaak',
@@ -71,6 +70,7 @@ export default {
 		// Icons
 		Plus,
 	},
+
 	data() {
 		return {
 			rollenLoading: false,
@@ -82,9 +82,11 @@ export default {
 			hasUpdated: false,
 		}
 	},
+
 	mounted() {
 		this.fetchRollenData()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -92,6 +94,7 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -118,6 +121,7 @@ export default {
 					this.rollenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */

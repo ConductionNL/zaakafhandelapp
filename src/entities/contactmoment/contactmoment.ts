@@ -1,5 +1,7 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TContactMoment } from './contactmoment.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TContactMoment } from './contactmoment.types'
+
+import { z } from 'zod'
 
 export class ContactMoment implements TContactMoment {
 	public id: string

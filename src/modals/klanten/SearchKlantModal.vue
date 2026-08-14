@@ -11,9 +11,9 @@ import { klantStore } from '../../store/store.js'
 				: t('zaakafhandelapp', 'Search organisation')
 		"
 		size="normal"
-		label-id="searchKlantModal"
-		dialog-classes="SearchKlantModal"
-		:close-on-click-outside="false"
+		labelId="searchKlantModal"
+		dialogClasses="SearchKlantModal"
+		:closeOnClickOutside="false"
 		@closing="closeModalFromButton()">
 		<div class="listContainer">
 			<div class="filtersContainer">
@@ -144,7 +144,7 @@ import { klantStore } from '../../store/store.js'
 					:key="`${klant}${i}`"
 					:name="`${getSex(klant)} ${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant?.id === klant?.id"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="_.upperFirst(klant.type)"
 					@click="setActive(klant)">
 					<template #icon>
@@ -153,14 +153,14 @@ import { klantStore } from '../../store/store.js'
 							:class="
 								selectedKlant?.id === klant?.id && 'selectedZaakIcon'
 							"
-							disable-menu
+							disableMenu
 							:size="44" />
 						<AccountOutline
 							v-if="klant.type === 'persoon'"
 							:class="
 								selectedKlant?.id === klant?.id && 'selectedZaakIcon'
 							"
-							disable-menu
+							disableMenu
 							:size="44" />
 					</template>
 					<template #subname>
@@ -209,22 +209,21 @@ import { klantStore } from '../../store/store.js'
 // Components
 import {
 	NcButton,
-	NcTextField,
+	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
 	NcDialog,
 	NcListItem,
 	NcLoadingIcon,
-	NcCheckboxRadioSwitch,
-	NcDateTimePicker,
+	NcTextField,
 } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
 import _ from 'lodash'
-
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Search from 'vue-material-design-icons/Magnify.vue'
 // Icons
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
-import Search from 'vue-material-design-icons/Magnify.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
+import { getTheme } from '../../services/getTheme.js'
 import getValidISOstring from '../../services/getValidISOstring.js'
 export default {
 	name: 'SearchKlantModal',
@@ -239,9 +238,11 @@ export default {
 		NcDateTimePicker,
 		NcLoadingIcon,
 	},
+
 	props: {
 		/**
 		 * Determines the initial type of customer search to display
+		 *
 		 * @param { "persoon" | "organisatie" | "all" } startingType - The type of customer search to display
 		 * @default 'all'
 		 *
@@ -257,14 +258,17 @@ export default {
 			type: String,
 			required: true, // required is set to true as I want developers to be aware of the functionality they're adding / using
 			/**
+			 * @param value
 			 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 			 */
 			validator(value) {
 				return ['persoon', 'organisatie', 'all'].includes(value)
 			},
 		},
+
 		/**
 		 * The label of the select button
+		 *
 		 * @param {string} selectButtonLabel - The label of the select button
 		 * @default Select
 		 */
@@ -274,6 +278,7 @@ export default {
 			default: 'Select',
 		},
 	},
+
 	data() {
 		return {
 			modalType: (() => {
@@ -284,6 +289,7 @@ export default {
 				}
 				return typeMap[this.startingType] || typeMap.all
 			})(),
+
 			succes: false,
 			loading: false,
 			error: false,
@@ -294,6 +300,7 @@ export default {
 			klantenSearchType: 'emailadres',
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -306,8 +313,10 @@ export default {
 						'zaakafhandelapp',
 						'with date of birth and last name',
 					),
+
 					bsn: t('zaakafhandelapp', 'with BSN'),
 				},
+
 				organisatie: {
 					default: t('zaakafhandelapp', 'organisation'),
 					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
@@ -316,12 +325,14 @@ export default {
 						'with chamber of commerce number',
 					),
 				},
+
 				all: {
 					default: t('zaakafhandelapp', 'customer'),
 					geboortedatum_achternaam: t(
 						'zaakafhandelapp',
 						'with date of birth and last name',
 					),
+
 					bsn: t('zaakafhandelapp', 'with BSN'),
 					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
 					kvkNummer: t(
@@ -335,6 +346,7 @@ export default {
 					'zaakafhandelapp',
 					'with postal code and house number',
 				),
+
 				emailadres: t('zaakafhandelapp', 'with email address'),
 				telefoonnummer: t('zaakafhandelapp', 'with phone number'),
 			}
@@ -352,8 +364,10 @@ export default {
 			return label
 		},
 	},
+
 	watch: {
 		/**
+		 * @param newVal
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		klantenSearchType(newVal) {
@@ -364,6 +378,7 @@ export default {
 			}
 		},
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -373,12 +388,14 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
 		closeModal() {
 			this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -413,6 +430,7 @@ export default {
 						geboortedatum: refinedQuery[0].toISOString()
 							? refinedQuery[0].toISOString()
 							: '',
+
 						achternaam: refinedQuery[1],
 					}
 					break
@@ -430,6 +448,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -459,7 +478,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSubname(klant) {
@@ -475,7 +496,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSummary(klant) {
@@ -491,7 +514,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSex(klant) {
@@ -500,7 +525,9 @@ export default {
 			}
 			return ''
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
 		setActive(klant) {

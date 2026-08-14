@@ -14,6 +14,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 	}),
 	actions: {
 		/**
+		 * @param medewerkerItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setMedewerkerItem(medewerkerItem) {
@@ -21,6 +22,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			console.log('Active medewerker item set to ' + medewerkerItem)
 		},
 		/**
+		 * @param widgetMedewerkerId
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setWidgetMedewerkerId(widgetMedewerkerId) {
@@ -28,6 +30,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			console.log('Widget medewerker id set to ' + widgetMedewerkerId)
 		},
 		/**
+		 * @param medewerkersList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setMedewerkersList(medewerkersList) {
@@ -43,6 +46,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		/**
+		 * @param search
 		 * @spec openspec/specs/state-stores/spec.md#REQ-002
 		 */
 		async refreshMedewerkersList(search = null) {
@@ -164,6 +168,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 		// New function to get a single medewerker
 		/**
+		 * @param id
 		 * @spec openspec/specs/state-stores/spec.md#REQ-003
 		 */
 		async getMedewerker(id) {
@@ -187,6 +192,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		},
 		// Delete a medewerker
 		/**
+		 * @param medewerkerItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async deleteMedewerker(medewerkerItem) {
@@ -212,6 +218,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		},
 		// Create or save a medewerker from store
 		/**
+		 * @param medewerkerItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async saveMedewerker(medewerkerItem) {

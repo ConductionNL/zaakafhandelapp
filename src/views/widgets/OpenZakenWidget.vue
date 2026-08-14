@@ -11,10 +11,10 @@ import { zaakStore } from '../../store/store.js'
 			:rows="items"
 			:columns="columns"
 			:loading="loading"
-			hide-header
+			hideHeader
 			borderless
-			row-icon="BriefcaseAccountOutline"
-			:empty-text="t('zaakafhandelapp', 'No open cases')">
+			rowIcon="BriefcaseAccountOutline"
+			:emptyText="t('zaakafhandelapp', 'No open cases')">
 			<template #empty>
 				<NcEmptyContent :name="t('zaakafhandelapp', 'No open cases')">
 					<template #icon>
@@ -37,12 +37,11 @@ import { zaakStore } from '../../store/store.js'
 <script>
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
-import { NcEmptyContent, NcButton } from '@nextcloud/vue'
-import { translate as t, translatePlural as n } from '@nextcloud/l10n'
-import { deriveZaakUrgency, urgencyLabel } from '../../services/zaakUrgency.js'
-import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
+import { translatePlural as n, translate as t } from '@nextcloud/l10n'
+import { NcButton, NcEmptyContent } from '@nextcloud/vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
-
+import OpenInApp from 'vue-material-design-icons/OpenInApp.vue'
+import { deriveZaakUrgency, urgencyLabel } from '../../services/zaakUrgency.js'
 import { WIDGET_COLUMNS } from './widgetTable.js'
 
 const URGENCY_RANK = { verlopen: 0, 'bijna-verlopen': 1, 'op-tijd': 2 }
@@ -105,6 +104,7 @@ export default {
 					}
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-006
 		 */
@@ -113,6 +113,7 @@ export default {
 				(zaak) => deriveZaakUrgency(zaak) === 'verlopen',
 			).length
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-006
 		 */
@@ -141,6 +142,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
 		 */
@@ -150,6 +152,7 @@ export default {
 	},
 }
 </script>
+
 <style scoped>
 .openZakenContainer {
 	display: flex;

@@ -1,6 +1,6 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
+import { berichtStore, klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -79,7 +79,7 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 
 			<NcTextField
 				:disabled="true"
-				:model-value="klantStore.klantItem?.id || berichtItem.gebruikerID"
+				:modelValue="klantStore.klantItem?.id || berichtItem.gebruikerID"
 				:label="t('zaakafhandelapp', 'User ID')" />
 
 			<NcTextField
@@ -138,16 +138,16 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 <script>
 import {
 	NcButton,
-	NcLoadingIcon,
 	NcDialog,
-	NcTextField,
-	NcTextArea,
+	NcLoadingIcon,
 	NcNoteCard,
+	NcTextArea,
+	NcTextField,
 } from '@nextcloud/vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'EditBericht',
@@ -164,12 +164,14 @@ export default {
 		Plus,
 		Help,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			required: false,
 		},
 	},
+
 	data() {
 		return {
 			success: false,
@@ -194,6 +196,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 	 */
@@ -218,6 +221,7 @@ export default {
 						klantStore.klantItem?.id
 						|| berichtStore.berichtItem.gebruikerID
 						|| '',
+
 					volgorde: berichtStore.berichtItem.volgorde || '',
 				}
 			} else if (klantStore.klantItem?.id) {
@@ -226,6 +230,7 @@ export default {
 			this.hasUpdated = true
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -235,6 +240,7 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -262,6 +268,7 @@ export default {
 			}
 			this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -286,7 +293,10 @@ export default {
 					error.message || 'An error occurred while saving the bericht'
 			}
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {

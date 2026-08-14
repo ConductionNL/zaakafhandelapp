@@ -11,7 +11,7 @@
  *
  * @spec openspec/specs/ui-search-navigation/spec.md#REQ-004
  */
-export const getTheme = () => {
+export function getTheme() {
 	if (document.body.hasAttribute('data-theme-light')) {
 		return 'light'
 	} else if (document.body.hasAttribute('data-theme-dark')) {

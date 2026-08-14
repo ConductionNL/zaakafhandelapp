@@ -1,5 +1,7 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TRol } from './rol.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TRol } from './rol.types'
+
+import { z } from 'zod'
 
 export class Rol implements TRol {
 	public id: string
@@ -13,6 +15,7 @@ export class Rol implements TRol {
 		| 'vestiging'
 		| 'organisatorische_eenheid'
 		| 'medewerker'
+
 	public afwijkendeNaamBetrokkene?: string
 	public roltype: string
 	public omschrijving: string
@@ -25,6 +28,7 @@ export class Rol implements TRol {
 		| 'klantcontacter'
 		| 'zaakcoordinator'
 		| 'mede_initiator'
+
 	public roltoelichting: string
 	public registratiedatum: string
 	public indicatieMachtiging?: 'gemachtigde' | 'machtiginggever'

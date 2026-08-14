@@ -15,12 +15,12 @@ import {
 			:rows="personenItems"
 			:columns="columns"
 			:loading="loading"
-			:loading-text="t('zaakafhandelapp', 'Loading person...')"
-			hide-header
+			:loadingText="t('zaakafhandelapp', 'Loading person...')"
+			hideHeader
 			borderless
-			row-icon="AccountOutline"
-			:empty-text="t('zaakafhandelapp', 'No persons found')"
-			@row-click="onShow">
+			rowIcon="AccountOutline"
+			:emptyText="t('zaakafhandelapp', 'No persons found')"
+			@rowClick="onShow">
 			<template #empty>
 				<NcEmptyContent :name="t('zaakafhandelapp', 'No persons found')">
 					<template #icon>
@@ -32,25 +32,25 @@ import {
 				<NcActions>
 					<NcActionButton
 						icon="icon-toggle"
-						close-after-click
+						closeAfterClick
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconBriefcaseAccountOutline"
-						close-after-click
+						closeAfterClick
 						@click="() => (zaakFormModalOpen = true)">
 						{{ t('zaakafhandelapp', 'Start case') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconCardAccountPhoneOutline"
-						close-after-click
+						closeAfterClick
 						@click="() => (contactmomentModalOpen = true)">
 						{{ t('zaakafhandelapp', 'Start contact moment') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconCalendarMonthOutline"
-						close-after-click
+						closeAfterClick
 						@click="() => (taakModalOpen = true)">
 						{{ t('zaakafhandelapp', 'Start task') }}
 					</NcActionButton>
@@ -72,62 +72,59 @@ import {
 
 		<SearchKlantModal
 			v-if="searchKlantModalOpen"
-			:dashboard-widget="true"
-			starting-type="persoon"
-			@selected-klant="createKlantItems($event)"
-			@close-modal="() => (searchKlantModalOpen = false)" />
+			:dashboardWidget="true"
+			startingType="persoon"
+			@selectedKlant="createKlantItems($event)"
+			@closeModal="() => (searchKlantModalOpen = false)" />
 
 		<ViewKlant
 			v-if="isModalOpen"
-			:dashboard-widget="true"
-			:klant-id="selectedKlantId"
-			@close-modal="() => (isModalOpen = false)" />
+			:dashboardWidget="true"
+			:klantId="selectedKlantId"
+			@closeModal="() => (isModalOpen = false)" />
 
 		<ZaakForm
 			v-if="zaakFormModalOpen"
-			:dashboard-widget="true"
-			:klant-id="selectedKlantId"
-			@close-modal="() => (zaakFormModalOpen = false)"
-			@save-success="fetchZaakItems" />
+			:dashboardWidget="true"
+			:klantId="selectedKlantId"
+			@closeModal="() => (zaakFormModalOpen = false)"
+			@saveSuccess="fetchZaakItems" />
 
 		<ContactMomentenForm
 			v-if="contactmomentModalOpen"
-			:dashboard-widget="true"
-			:klant-id="selectedKlantId"
-			@close-modal="() => (contactmomentModalOpen = false)"
-			@save-success="fetchContactMomentenItems" />
+			:dashboardWidget="true"
+			:klantId="selectedKlantId"
+			@closeModal="() => (contactmomentModalOpen = false)"
+			@saveSuccess="fetchContactMomentenItems" />
 
 		<EditTaak
 			v-if="taakModalOpen"
-			:dashboard-widget="true"
-			client-type="klant"
-			:klant-id="selectedKlantId"
-			@close-modal="() => (taakModalOpen = false)"
-			@save-success="fetchTaakItems" />
+			:dashboardWidget="true"
+			clientType="klant"
+			:klantId="selectedKlantId"
+			@closeModal="() => (taakModalOpen = false)"
+			@saveSuccess="fetchTaakItems" />
 	</div>
 </template>
 
 <script>
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
-import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
-
-import {
-	iconCalendarMonthOutline,
-	iconCardAccountPhoneOutline,
-	iconBriefcaseAccountOutline,
-} from '../../services/icons/index.js'
-
+import { NcActionButton, NcActions, NcButton, NcEmptyContent } from '@nextcloud/vue'
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 // icons
 import Search from 'vue-material-design-icons/Magnify.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-
+import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
+import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 // Modals
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
-import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
-import ZaakForm from '../../modals/zaken/ZaakForm.vue'
-import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+import {
+	iconBriefcaseAccountOutline,
+	iconCalendarMonthOutline,
+	iconCardAccountPhoneOutline,
+} from '../../services/icons/index.js'
 import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
@@ -168,6 +165,7 @@ export default {
 
 	methods: {
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		createKlantItems(klant) {
@@ -181,19 +179,23 @@ export default {
 				},
 			]
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		openSearchKlantModal() {
 			this.searchKlantModalOpen = true
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		closeSearchKlantModal() {
 			this.searchKlantModalOpen = false
 		},
+
 		/**
+		 * @param item
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onShow(item) {
@@ -201,6 +203,7 @@ export default {
 			this.isModalOpen = true
 			navigationStore.setModal('viewKlant')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
@@ -210,6 +213,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
@@ -219,6 +223,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
@@ -231,6 +236,7 @@ export default {
 	},
 }
 </script>
+
 <style scoped>
 .personenContainer {
 	display: flex;

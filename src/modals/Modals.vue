@@ -41,7 +41,7 @@ import { navigationStore, rolStore } from '../store/store.js'
 		<!-- rollen -->
 		<RolForm
 			v-if="navigationStore.modal === 'rolForm'"
-			:zaak-id="rolStore.zaakId"
+			:zaakId="rolStore.zaakId"
 			:redirect="rolStore.extraData?.redirect" />
 		<DeleteRol v-if="navigationStore.modal === 'deleteRol'" />
 		<!-- medewerkers -->
@@ -59,37 +59,37 @@ import { navigationStore, rolStore } from '../store/store.js'
 </template>
 
 <script>
-import ZaakForm from './zaken/ZaakForm.vue'
-import WidgetZaakForm from './zaken/WidgetZaakForm.vue'
-import ZaaktypeForm from './zaakTypen/ZaaktypeForm.vue'
-import DeleteZaaktype from './zaakTypen/DeleteZaaktype.vue'
-import EditKlant from './klanten/EditKlant.vue'
-import ViewKlantAuditTrail from './klanten/ViewKlantAuditTrail.vue'
 import EditBericht from './berichten/EditBericht.vue'
 import ViewBerichtAuditTrail from './berichten/ViewBerichtAuditTrail.vue'
-import EditTaak from './taken/EditTaak.vue'
-import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
-import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
-import ViewKlant from './klanten/ViewKlant.vue'
-import DeleteKlant from './klanten/DeleteKlant.vue'
-import ImportContact from './klanten/ImportContact.vue'
-import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
-import EditMedewerker from './medewerkers/EditMedewerker.vue'
-import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
-import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
-import SuspendZaak from './zaken/SuspendZaak.vue'
-import ExtendZaak from './zaken/ExtendZaak.vue'
-import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
-import AddRolToZaak from './zaken/AddRolToZaak.vue'
-import ResultaatForm from './resultaten/ResultaatForm.vue'
-import DeleteResultaat from './resultaten/DeleteResultaat.vue'
 import BesluitForm from './besluiten/BesluitForm.vue'
 import DeleteBesluit from './besluiten/DeleteBesluit.vue'
+import ContactMomentenForm from './contactMomenten/ContactMomentenForm.vue'
+import DeleteContactMoment from './contactMomenten/DeleteContactMoment.vue'
 import ViewContactMoment from './contactMomenten/ViewContactMoment.vue'
-import DocumentForm from './documenten/DocumentForm.vue'
 import DeleteDocument from './documenten/DeleteDocument.vue'
-import RolForm from './rollen/RolForm.vue'
+import DocumentForm from './documenten/DocumentForm.vue'
+import DeleteKlant from './klanten/DeleteKlant.vue'
+import EditKlant from './klanten/EditKlant.vue'
+import ImportContact from './klanten/ImportContact.vue'
+import ViewKlant from './klanten/ViewKlant.vue'
+import ViewKlantAuditTrail from './klanten/ViewKlantAuditTrail.vue'
+import EditMedewerker from './medewerkers/EditMedewerker.vue'
+import DeleteResultaat from './resultaten/DeleteResultaat.vue'
+import ResultaatForm from './resultaten/ResultaatForm.vue'
 import DeleteRol from './rollen/DeleteRol.vue'
+import RolForm from './rollen/RolForm.vue'
+import EditTaak from './taken/EditTaak.vue'
+import ViewTaakAuditTrail from './taken/ViewTaakAuditTrail.vue'
+import DeleteZaaktype from './zaakTypen/DeleteZaaktype.vue'
+import ZaaktypeForm from './zaakTypen/ZaaktypeForm.vue'
+import AddBerichtToZaak from './zaken/AddBerichtToZaak.vue'
+import AddRolToZaak from './zaken/AddRolToZaak.vue'
+import AddTaakToZaak from './zaken/AddTaakToZaak.vue'
+import ExtendZaak from './zaken/ExtendZaak.vue'
+import SuspendZaak from './zaken/SuspendZaak.vue'
+import ViewZaakAuditTrail from './zaken/ViewZaakAuditTrail.vue'
+import WidgetZaakForm from './zaken/WidgetZaakForm.vue'
+import ZaakForm from './zaken/ZaakForm.vue'
 
 export default {
 	name: 'Modals',

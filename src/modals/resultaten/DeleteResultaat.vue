@@ -1,13 +1,13 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js'
+import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Delete result')"
 		size="normal"
-		:can-close="false">
+		:canClose="false">
 		<!-- if zaken list is not populated yet, show a quick loading icon (this should under normal conditions not happen) -->
 		<div v-if="!zaakStore.zakenList?.length">
 			<NcLoadingIcon :size="40" />
@@ -73,7 +73,6 @@ import { resultaatStore, navigationStore, zaakStore } from '../../store/store.js
 
 <script>
 import { NcButton, NcDialog, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
-
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
@@ -88,6 +87,7 @@ export default {
 		TrashCanOutline,
 		Cancel,
 	},
+
 	data() {
 		return {
 			success: null,
@@ -96,9 +96,11 @@ export default {
 			closeModalTimeout: null,
 		}
 	},
+
 	mounted() {
 		zaakStore.refreshZakenList()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -107,6 +109,7 @@ export default {
 			navigationStore.setModal(null)
 			clearTimeout(this.closeModalTimeout)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */

@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
+import { berichtStore, navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="addBerichtToZaak" @close="closeModal">
+	<NcModal ref="modalRef" labelId="addBerichtToZaak" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{ t('zaakafhandelapp', 'Add message') }}:
@@ -31,7 +31,7 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 				<NcSelect
 					v-bind="berichten"
 					v-model="berichten.value"
-					:input-label="t('zaakafhandelapp', 'Message')"
+					:inputLabel="t('zaakafhandelapp', 'Message')"
 					:loading="berichtenLoading"
 					:disabled="loading"
 					required />
@@ -55,15 +55,14 @@ import { zaakStore, navigationStore, berichtStore } from '../../store/store.js'
 <script>
 import {
 	NcButton,
-	NcModal,
 	NcLoadingIcon,
+	NcModal,
 	NcNoteCard,
 	NcSelect,
 } from '@nextcloud/vue'
-import { Zaak } from '../../entities/index.js'
-
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import { Zaak } from '../../entities/index.js'
 
 export default {
 	name: 'AddBerichtToZaak',
@@ -76,6 +75,7 @@ export default {
 		// Icons
 		Plus,
 	},
+
 	data() {
 		return {
 			berichtenLoading: false,
@@ -87,6 +87,7 @@ export default {
 			hasUpdated: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -94,6 +95,7 @@ export default {
 		this.zaakItem = zaakStore.zaakItem
 		this.fetchBerichtenData()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -101,6 +103,7 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -131,6 +134,7 @@ export default {
 					this.berichtenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */

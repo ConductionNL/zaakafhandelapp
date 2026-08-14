@@ -1,9 +1,9 @@
 <template>
 	<CnAdminSettingsShell
-		app-id="zaakafhandelapp"
-		app-name="Zaak afhandelapp"
-		doc-url="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers"
-		:show-reimport="false">
+		appId="zaakafhandelapp"
+		appName="Zaak afhandelapp"
+		docUrl="https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers"
+		:showReimport="false">
 		<NcSettingsSection
 			:name="t('zaakafhandelapp', 'Data storage')"
 			:description="
@@ -89,7 +89,7 @@
 							v-bind="labelOptions"
 							v-model="getDataProperty(objectType.id).selectedSource"
 							required
-							:input-label="t('zaakafhandelapp', 'Source')"
+							:inputLabel="t('zaakafhandelapp', 'Source')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="
 								loading || getDataProperty(objectType.id).loading
@@ -102,7 +102,7 @@
 							"
 							v-bind="availableRegistersOptions"
 							v-model="getDataProperty(objectType.id).selectedRegister"
-							:input-label="t('zaakafhandelapp', 'Register')"
+							:inputLabel="t('zaakafhandelapp', 'Register')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="
 								loading || getDataProperty(objectType.id).loading
@@ -117,7 +117,7 @@
 							"
 							v-bind="getDataProperty(objectType.id).availableSchemas"
 							v-model="getDataProperty(objectType.id).selectedSchema"
-							:input-label="t('zaakafhandelapp', 'Schema')"
+							:inputLabel="t('zaakafhandelapp', 'Schema')"
 							:loading="getDataProperty(objectType.id).loading"
 							:disabled="
 								loading || getDataProperty(objectType.id).loading
@@ -176,18 +176,18 @@
 </template>
 
 <script>
+import { CnAdminSettingsShell } from '@conduction/nextcloud-vue'
+import { translatePlural as n, translate as t } from '@nextcloud/l10n'
 // Components
 import {
-	NcSettingsSection,
-	NcNoteCard,
-	NcSelect,
 	NcButton,
 	NcLoadingIcon,
+	NcNoteCard,
+	NcSelect,
+	NcSettingsSection,
 } from '@nextcloud/vue'
-import { CnAdminSettingsShell } from '@conduction/nextcloud-vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
 import Restart from 'vue-material-design-icons/Restart.vue'
-import { translate as t, translatePlural as n } from '@nextcloud/l10n'
 
 export default {
 	name: 'Settings',
@@ -201,6 +201,7 @@ export default {
 		Plus,
 		Restart,
 	},
+
 	data() {
 		return {
 			loading: false,
@@ -218,6 +219,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			besluiten: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -225,6 +227,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			documenten: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -232,6 +235,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			klanten: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -239,6 +243,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			resultaten: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -246,6 +251,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			taken: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -253,6 +259,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			informatieobjecten: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -260,6 +267,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			organisaties: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -267,6 +275,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			personen: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -274,6 +283,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			zaken: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -281,6 +291,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			zaaktypen: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -288,6 +299,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			contactmomenten: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -295,6 +307,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			medewerkers: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -302,6 +315,7 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			rollen: {
 				selectedSource: '',
 				selectedRegister: '',
@@ -309,12 +323,14 @@ export default {
 				availableSchemas: [],
 				loading: false,
 			},
+
 			labelOptions: {
 				options: [
 					{ label: 'Internal', value: 'internal' },
 					{ label: 'OpenRegister', value: 'openregister' },
 				],
 			},
+
 			objectTypesList: [],
 		}
 	},
@@ -332,6 +348,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for messages',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -342,6 +359,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for decisions',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -352,6 +370,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for documents',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -362,6 +381,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for customer data',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -372,6 +392,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for results',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -389,6 +410,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for information objects',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -399,6 +421,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for organisation data',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -409,6 +432,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for person data',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -426,6 +450,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for case types',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -436,6 +461,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for contact moments',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -446,6 +472,7 @@ export default {
 						'zaakafhandelapp',
 						'Configure storage for employees',
 					),
+
 					helpLink:
 						'https://conduction.gitbook.io/zaakafhandelapp-nextcloud/gebruikers',
 				},
@@ -463,6 +490,7 @@ export default {
 	watch: {
 		'berichten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -471,10 +499,14 @@ export default {
 					this.berichten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'berichten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -486,10 +518,13 @@ export default {
 						&& (this.berichten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'besluiten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -498,10 +533,14 @@ export default {
 					this.besluiten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'besluiten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -513,10 +552,13 @@ export default {
 						&& (this.besluiten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'documenten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -525,10 +567,14 @@ export default {
 					this.documenten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'documenten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -540,10 +586,13 @@ export default {
 						&& (this.documenten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'klanten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -552,10 +601,14 @@ export default {
 					this.klanten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'klanten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -567,10 +620,13 @@ export default {
 						&& (this.klanten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'resultaten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -579,10 +635,14 @@ export default {
 					this.resultaten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'resultaten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -594,10 +654,13 @@ export default {
 						&& (this.resultaten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'taken.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -606,10 +669,14 @@ export default {
 					this.taken.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'taken.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -621,10 +688,13 @@ export default {
 						&& (this.taken.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'informatieobjecten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -633,10 +703,14 @@ export default {
 					this.informatieobjecten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'informatieobjecten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -651,10 +725,13 @@ export default {
 						&& (this.informatieobjecten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'organisaties.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -663,10 +740,14 @@ export default {
 					this.organisaties.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'organisaties.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -678,10 +759,13 @@ export default {
 						&& (this.organisaties.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'personen.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -690,10 +774,14 @@ export default {
 					this.personen.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'personen.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -705,10 +793,13 @@ export default {
 						&& (this.personen.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'zaken.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -717,10 +808,14 @@ export default {
 					this.zaken.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'zaken.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -732,10 +827,13 @@ export default {
 						&& (this.zaken.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'zaaktypen.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -744,10 +842,14 @@ export default {
 					this.zaaktypen.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'zaaktypen.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -759,10 +861,13 @@ export default {
 						&& (this.zaaktypen.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'contactmomenten.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -771,10 +876,14 @@ export default {
 					this.contactmomenten.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'contactmomenten.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -786,10 +895,13 @@ export default {
 						&& (this.contactmomenten.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'medewerkers.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -798,10 +910,14 @@ export default {
 					this.medewerkers.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'medewerkers.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -813,10 +929,13 @@ export default {
 						&& (this.medewerkers.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
+
 		'rollen.selectedSource': {
 			/**
+			 * @param newValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue) {
@@ -825,10 +944,14 @@ export default {
 					this.rollen.selectedSchema = ''
 				}
 			},
+
 			deep: true,
 		},
+
 		'rollen.selectedRegister': {
 			/**
+			 * @param newValue
+			 * @param oldValue
 			 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 			 */
 			handler(newValue, oldValue) {
@@ -840,19 +963,25 @@ export default {
 						&& (this.rollen.selectedSchema = '')
 				}
 			},
+
 			deep: true,
 		},
 	},
+
 	mounted() {
 		this.fetchAll()
 	},
+
 	methods: {
 		t,
 		n,
 		getDataProperty(name) {
 			return this[name]
 		},
+
 		/**
+		 * @param registerId
+		 * @param property
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 		 */
 		setRegisterSchemaOptions(registerId, property) {
@@ -867,6 +996,7 @@ export default {
 				})),
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-001
 		 */
@@ -935,7 +1065,9 @@ export default {
 					return err
 				})
 		},
+
 		/**
+		 * @param configId
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-005
 		 */
 		saveConfig(configId) {
@@ -1213,7 +1345,10 @@ export default {
 					return err
 				})
 		},
+
 		/**
+		 * @param url
+		 * @param type
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-004
 		 */
 		openLink(url, type = '') {
@@ -1222,6 +1357,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .selectionContainer {
 	display: grid;

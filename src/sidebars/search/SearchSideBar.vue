@@ -1,6 +1,6 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, klantStore } from '../../store/store.js'
+import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -25,7 +25,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					:key="`${klant}${i}`"
 					:name="getName(klant)"
 					:active="klantStore.klantItem.id === klant?.id"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="_.upperFirst(klant.type)"
 					:loading="loading">
 					<template #icon>
@@ -34,7 +34,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 								klantStore.klantItem === klant.id
 								&& 'selectedZaakIcon'
 							"
-							disable-menu
+							disableMenu
 							:size="44" />
 					</template>
 					<template #subname>
@@ -152,7 +152,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					:key="`${klant}${i}`"
 					:name="getName(klant)"
 					:active="klantStore.klantItem.id === klant?.id"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="_.upperFirst(klant.type)"
 					:loading="loading">
 					<template #icon>
@@ -161,7 +161,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 								klantStore.klantItem === klant.id
 								&& 'selectedZaakIcon'
 							"
-							disable-menu
+							disableMenu
 							:size="44" />
 					</template>
 					<template #subname>
@@ -233,7 +233,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 					:key="`${klant}${i}`"
 					:name="getName(klant)"
 					:active="klantStore.klantItem.id === klant?.id"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="_.upperFirst(klant.type)"
 					:loading="loading">
 					<template #icon>
@@ -242,7 +242,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 								klantStore.klantItem === klant.id
 								&& 'selectedZaakIcon'
 							"
-							disable-menu
+							disableMenu
 							:size="44" />
 					</template>
 					<template #subname>
@@ -298,22 +298,23 @@ import { navigationStore, klantStore } from '../../store/store.js'
 		</NcAppSidebarTab>
 	</NcAppSidebar>
 </template>
+
 <script>
 import {
+	NcActionButton,
 	NcAppSidebar,
 	NcAppSidebarTab,
-	NcTextField,
 	NcCheckboxRadioSwitch,
 	NcListItem,
-	NcActionButton,
 	NcLoadingIcon,
+	NcTextField,
 } from '@nextcloud/vue'
 import _ from 'lodash'
-import Magnify from 'vue-material-design-icons/Magnify.vue'
 import AccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline.vue'
-import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 import Pencil from 'vue-material-design-icons/Pencil.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
@@ -332,6 +333,7 @@ export default {
 		AccountGroupOutline,
 		OfficeBuildingOutline,
 	},
+
 	data() {
 		return {
 			starred: false,
@@ -347,6 +349,7 @@ export default {
 			activeTab: 'search-tab',
 		}
 	},
+
 	watch: {
 		/**
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
@@ -354,18 +357,21 @@ export default {
 		klantenSearch() {
 			this.debouncedFetchKlanten()
 		},
+
 		/**
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */
 		personenSearch() {
 			this.debouncedFetchKlanten()
 		},
+
 		/**
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */
 		organisatiesSearch() {
 			this.debouncedFetchKlanten()
 		},
+
 		/**
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */
@@ -373,9 +379,11 @@ export default {
 			this.fetchKlanten()
 		},
 	},
+
 	mounted() {
 		this.fetchKlanten()
 	},
+
 	/**
 	 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 	 */
@@ -383,8 +391,11 @@ export default {
 		// Initialize the debounced function
 		this.debouncedFetchKlanten = this.debounce(() => this.fetchKlanten(), 100)
 	},
+
 	methods: {
 		/**
+		 * @param func
+		 * @param timeout
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */
 		debounce(func, timeout = 300) {
@@ -396,7 +407,9 @@ export default {
 				}, timeout)
 			}
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */
 		getName(klant) {
@@ -408,7 +421,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */
 		getSubname(klant) {
@@ -424,6 +439,7 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
 		 * @spec openspec/specs/ui-search-navigation/spec.md#REQ-001
 		 */

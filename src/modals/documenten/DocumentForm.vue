@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
+import { documentStore, navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="documentForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="documentForm" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{
@@ -50,7 +50,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 				<NcSelect
 					v-bind="zaak"
 					v-model="zaak.value"
-					:input-label="t('zaakafhandelapp', 'Case')"
+					:inputLabel="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading" />
 
@@ -86,7 +86,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 					<NcSelect
 						v-bind="vertrouwelijkheidaanduidingOptions"
 						v-model="vertrouwelijkheidaanduidingOptions.value"
-						:input-label="
+						:inputLabel="
 							t('zaakafhandelapp', 'Confidentiality indication')
 						" />
 
@@ -100,7 +100,7 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 					<NcSelect
 						v-bind="statusOptions"
 						v-model="statusOptions.value"
-						:input-label="t('zaakafhandelapp', 'Status')" />
+						:inputLabel="t('zaakafhandelapp', 'Status')" />
 
 					<NcCheckboxRadioSwitch v-model="document.inhoudIsVervallen">
 						{{ t('zaakafhandelapp', 'Content expired') }}
@@ -209,21 +209,19 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 
 <script>
 import {
-	NcModal,
-	NcInputField,
-	NcNoteCard,
 	NcButton,
-	NcTextField,
-	NcLoadingIcon,
-	NcSelect,
-	NcDateTimePicker,
 	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
+	NcInputField,
+	NcLoadingIcon,
+	NcModal,
+	NcNoteCard,
+	NcSelect,
+	NcTextField,
 } from '@nextcloud/vue'
-
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-
 // entities
 import { Document } from '../../entities/index.js'
 
@@ -242,6 +240,7 @@ export default {
 		Plus,
 		ContentSaveOutline,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
@@ -249,6 +248,7 @@ export default {
 			required: false,
 		},
 	},
+
 	data() {
 		return {
 			document: {
@@ -274,6 +274,7 @@ export default {
 				informatieobjecttype: '',
 				trefwoorden: '',
 			},
+
 			vertrouwelijkheidaanduidingOptions: {
 				options: [
 					{ label: 'Openbaar', value: 'openbaar' },
@@ -285,8 +286,10 @@ export default {
 					{ label: 'Geheim', value: 'geheim' },
 					{ label: 'Zeer geheim', value: 'zeer_geheim' },
 				],
+
 				value: null,
 			},
+
 			statusOptions: {
 				options: [
 					{ label: 'In bewerking', value: 'in_bewerking' },
@@ -294,8 +297,10 @@ export default {
 					{ label: 'Definitief', value: 'definitief' },
 					{ label: 'Gearchiveerd', value: 'gearchiveerd' },
 				],
+
 				value: null,
 			},
+
 			IS_EDIT: false,
 			loading: false,
 			success: null,
@@ -307,6 +312,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -334,6 +340,7 @@ export default {
 
 		this.fetchZaak()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -343,6 +350,7 @@ export default {
 			documentStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -374,6 +382,7 @@ export default {
 					this.zaakLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -387,6 +396,7 @@ export default {
 				&& this.document.informatieobjecttype
 			)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -398,6 +408,7 @@ export default {
 				zaak: this.zaak.value?.id,
 				vertrouwelijkheidaanduiding:
 					this.vertrouwelijkheidaanduidingOptions.value?.value ?? null,
+
 				status: this.statusOptions.value?.value ?? null,
 				creatiedatum: this.document.creatiedatum.toISOString(),
 				ontvangstdatum: this.document.ontvangstdatum.toISOString(),

@@ -11,7 +11,6 @@
  */
 
 import { registerIcons } from '@conduction/nextcloud-vue'
-
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'

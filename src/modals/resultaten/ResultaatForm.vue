@@ -4,7 +4,7 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="zaakForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="zaakForm" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{
@@ -45,7 +45,7 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 				<NcSelect
 					v-bind="zaak"
 					v-model="zaak.value"
-					:input-label="t('zaakafhandelapp', 'Case')"
+					:inputLabel="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
@@ -84,18 +84,16 @@ import { navigationStore, resultaatStore, zaakStore } from '../../store/store.js
 
 <script>
 import {
+	NcButton,
+	NcLoadingIcon,
 	NcModal,
 	NcNoteCard,
-	NcButton,
-	NcTextField,
 	NcSelect,
-	NcLoadingIcon,
+	NcTextField,
 } from '@nextcloud/vue'
-
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-
 // entities
 import { Resultaat } from '../../entities/index.js'
 
@@ -107,12 +105,14 @@ export default {
 		NcButton,
 		NcSelect,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			default: false,
 			required: false,
 		},
+
 		/**
 		 * The id of the zaak that the resultaat is for.
 		 */
@@ -121,6 +121,7 @@ export default {
 			default: null,
 		},
 	},
+
 	data() {
 		return {
 			resultaat: {
@@ -129,6 +130,7 @@ export default {
 				resultaattype: '',
 				toelichting: '',
 			},
+
 			IS_EDIT: false,
 			loading: false,
 			success: null,
@@ -140,6 +142,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -155,6 +158,7 @@ export default {
 
 		this.fetchZaak()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -164,6 +168,7 @@ export default {
 			resultaatStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -200,6 +205,7 @@ export default {
 					this.zaakLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */

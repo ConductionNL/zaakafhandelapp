@@ -4,7 +4,7 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="zaaktypeForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="zaaktypeForm" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{
@@ -220,13 +220,13 @@ import { navigationStore, zaakTypeStore } from '../../store/store.js'
 <script>
 import {
 	NcButton,
-	NcModal,
-	NcTextField,
-	NcNoteCard,
 	NcLoadingIcon,
+	NcModal,
+	NcNoteCard,
+	NcTextField,
 } from '@nextcloud/vue'
-import { ZaakType } from '../../entities/index.js'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import { ZaakType } from '../../entities/index.js'
 
 export default {
 	name: 'ZaaktypeForm',
@@ -239,6 +239,7 @@ export default {
 		// Icons
 		ContentSaveOutline,
 	},
+
 	data() {
 		return {
 			zaaktype: {
@@ -270,6 +271,7 @@ export default {
 				eindeObject: '',
 				versiedatum: '',
 			},
+
 			archiefstatus: {
 				options: [
 					{ id: 'nog_te_archiveren', label: 'Nog te archiveren' },
@@ -280,14 +282,17 @@ export default {
 					},
 					{ id: 'overgedragen', label: 'Overgedragen' },
 				],
+
 				value: null,
 			},
+
 			success: null,
 			loading: false,
 			error: false,
 			closeModalTimeout: null,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -296,6 +301,7 @@ export default {
 			this.initZaaktype()
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -311,6 +317,7 @@ export default {
 			)
 			this.archiefstatus.value = selectedArchiefStatus || null
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -318,6 +325,7 @@ export default {
 			navigationStore.setModal(null)
 			clearTimeout(this.closeModalTimeout)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
