@@ -11,8 +11,8 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 				: t('zaakafhandelapp', 'Suspend case')
 		"
 		size="normal"
-		label-id="suspendZaakModal"
-		:close-on-click-outside="false"
+		labelId="suspendZaakModal"
+		:closeOnClickOutside="false"
 		@closing="closeModal">
 		<NcNoteCard v-if="error" type="error">
 			{{ error }}
@@ -76,11 +76,10 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 import {
 	NcButton,
 	NcDialog,
-	NcTextArea,
-	NcNoteCard,
 	NcLoadingIcon,
+	NcNoteCard,
+	NcTextArea,
 } from '@nextcloud/vue'
-
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import PauseOutline from 'vue-material-design-icons/PauseCircleOutline.vue'
 import PlayOutline from 'vue-material-design-icons/PlayCircleOutline.vue'
@@ -97,6 +96,7 @@ export default {
 		PauseOutline,
 		PlayOutline,
 	},
+
 	data() {
 		return {
 			reden: '',
@@ -105,6 +105,7 @@ export default {
 			success: '',
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
@@ -113,6 +114,7 @@ export default {
 			return zaakStore.zaakItem?.opschorting?.indicatie === true
 		},
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
@@ -143,6 +145,7 @@ export default {
 				this.loading = false
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */

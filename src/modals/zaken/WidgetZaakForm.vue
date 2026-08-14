@@ -1,15 +1,15 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
 import {
+	klantStore,
 	navigationStore,
 	zaakStore,
 	zaakTypeStore,
-	klantStore,
 } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="zaakForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="zaakForm" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{
@@ -96,20 +96,20 @@ import {
 				<NcSelect
 					v-bind="zaakType"
 					v-model="zaakType.value"
-					:input-label="t('zaakafhandelapp', 'Case type')"
+					:inputLabel="t('zaakafhandelapp', 'Case type')"
 					:loading="zaakTypeLoading"
 					:disabled="true || zaakLoading || zaakTypeLoading"
 					required />
 				<NcSelect
 					v-bind="archiefstatus"
 					v-model="archiefstatus.value"
-					:input-label="t('zaakafhandelapp', 'Archive status')"
+					:inputLabel="t('zaakafhandelapp', 'Archive status')"
 					:disabled="zaakLoading"
 					required />
 				<NcSelect
 					v-bind="klanten"
 					v-model="klanten.value"
-					:input-label="t('zaakafhandelapp', 'Customer')"
+					:inputLabel="t('zaakafhandelapp', 'Customer')"
 					:loading="klantenLoading"
 					:disabled="zaakLoading" />
 				<NcTextField
@@ -152,19 +152,17 @@ import {
 
 <script>
 import {
+	NcButton,
+	NcLoadingIcon,
 	NcModal,
 	NcNoteCard,
-	NcButton,
-	NcTextField,
 	NcSelect,
 	NcTextArea,
-	NcLoadingIcon,
+	NcTextField,
 } from '@nextcloud/vue'
-
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-
 // entities
 import { Zaak } from '../../entities/index.js'
 
@@ -177,18 +175,21 @@ export default {
 		NcSelect,
 		NcTextArea,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			default: false,
 			required: false,
 		},
+
 		selectedKlantFromWidget: {
 			type: Object,
 			default: null,
 			required: false,
 		},
 	},
+
 	data() {
 		return {
 			zaak: {
@@ -203,6 +204,7 @@ export default {
 				archiefstatus: '',
 				klant: '',
 			},
+
 			loading: false,
 			success: null,
 			error: null,
@@ -233,6 +235,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -249,6 +252,7 @@ export default {
 			}
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -276,6 +280,7 @@ export default {
 				this.$emit('close-modal')
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -326,6 +331,7 @@ export default {
 					this.klantenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -359,6 +365,7 @@ export default {
 					this.zaakTypeLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
@@ -374,6 +381,7 @@ export default {
 				}
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */

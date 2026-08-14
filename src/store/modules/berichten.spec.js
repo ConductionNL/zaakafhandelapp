@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
-import { useBerichtStore } from './berichten.js'
+import { createPinia, setActivePinia } from 'pinia'
 import { Bericht, mockBericht } from '../../entities/index.js'
+import { useBerichtStore } from './berichten.js'
 
 describe('Bericht Store', () => {
 	beforeEach(() => {

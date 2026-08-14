@@ -1,5 +1,7 @@
+import type { TRol } from '../../entities/index.js'
+
 import { defineStore } from 'pinia'
-import { TRol, Rol } from '../../entities/index.js'
+import { Rol } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/rollen'
@@ -37,6 +39,7 @@ export const useRolStore = defineStore('rollen', {
 	}),
 	actions: {
 		/**
+		 * @param rolItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setRolItem(rolItem: Rol | TRol) {
@@ -44,6 +47,7 @@ export const useRolStore = defineStore('rollen', {
 			console.info('Active rol item set to ' + rolItem)
 		},
 		/**
+		 * @param rollenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setRollenList(rollenList: Rol[] | TRol[]) {
@@ -58,7 +62,7 @@ export const useRolStore = defineStore('rollen', {
 		 *
 		 * @param search - Optional search query to filter the rollen list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TRol[], entities: Rol[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
 		async refreshRollenList(
 			search: string = null,
@@ -93,7 +97,7 @@ export const useRolStore = defineStore('rollen', {
 		 * @param id - The ID of the rol item to fetch.
 		 * @param options - Options for fetching the rol item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TRol, entity: Rol }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getRol(
 			id: string,
@@ -125,7 +129,7 @@ export const useRolStore = defineStore('rollen', {
 		 * @param rolId - The id of the rol item to delete.
 		 * @throws If there is no rol item to delete or if the rol item does not have an id.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteRol(rolId: string): Promise<{ response: Response }> {
 			if (!rolId) {
@@ -157,7 +161,7 @@ export const useRolStore = defineStore('rollen', {
 		 * @param rolItem - The rol item to save.
 		 * @param options - Options for saving the rol item. (default: `{ setItem: true }`)
 		 * @throws If there is no rol item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TRol, entity: Rol }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveRol(
 			rolItem: Rol | TRol,

@@ -7,7 +7,7 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Employee')"
 		size="normal"
-		:can-close="false">
+		:canClose="false">
 		<NcNoteCard v-if="success" type="success">
 			<p>{{ t('zaakafhandelapp', 'Employee successfully updated') }}</p>
 		</NcNoteCard>
@@ -100,17 +100,16 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 import {
 	NcButton,
 	NcDialog,
-	NcTextField,
 	NcLoadingIcon,
 	NcNoteCard,
+	NcTextField,
 } from '@nextcloud/vue'
-import { countries } from '../../data/countries.js'
-
+import Cancel from 'vue-material-design-icons/Cancel.vue'
 // Icons
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
 import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import { countries } from '../../data/countries.js'
 
 export default {
 	name: 'EditMedewerker',
@@ -126,6 +125,7 @@ export default {
 		Plus,
 		Help,
 	},
+
 	data() {
 		return {
 			success: false,
@@ -137,6 +137,7 @@ export default {
 					label: country.name,
 				})),
 			},
+
 			medewerkerItem: {
 				voornaam: '',
 				tussenvoegsel: '',
@@ -146,6 +147,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -161,6 +163,7 @@ export default {
 			}
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -168,6 +171,7 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -188,7 +192,10 @@ export default {
 					error.message || 'An error occurred while saving the medewerker'
 			}
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {

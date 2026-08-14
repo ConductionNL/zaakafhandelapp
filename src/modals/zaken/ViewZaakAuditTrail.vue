@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore } from '../../store/store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal label-id="View Zaak Audit Trail modal" @close="closeDialog">
+	<NcModal labelId="View Zaak Audit Trail modal" @close="closeDialog">
 		<div class="modal__content">
 			<div class="audit-item">
 				<h3>Audit Trail ID: {{ auditTrail.id }}</h3>
@@ -76,8 +76,7 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcModal, NcButton } from '@nextcloud/vue'
-
+import { NcButton, NcModal } from '@nextcloud/vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 
 export default {
@@ -87,11 +86,13 @@ export default {
 		NcButton,
 		Cancel,
 	},
+
 	data() {
 		return {
 			auditTrail: {}, // Initialize with an empty object
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -99,6 +100,7 @@ export default {
 		// Assuming zaakStore.auditTrailItem is a single audit trail object
 		this.auditTrail = zaakStore.auditTrailItem || {}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -107,7 +109,9 @@ export default {
 			navigationStore.setModal(null)
 			zaakStore.setAuditTrailItem(null)
 		},
+
 		/**
+		 * @param value
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		formatValue(value) {

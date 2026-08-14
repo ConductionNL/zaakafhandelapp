@@ -11,6 +11,7 @@ export const useSearchStore = defineStore('search', {
 	}),
 	actions: {
 		/**
+		 * @param search
 		 * @spec openspec/specs/state-stores/spec.md#REQ-005
 		 */
 		setSearch(search: string) {
@@ -18,6 +19,7 @@ export const useSearchStore = defineStore('search', {
 			console.log('Active search set to ' + search)
 		},
 		/**
+		 * @param searchResults
 		 * @spec openspec/specs/state-stores/spec.md#REQ-005
 		 */
 		setSearchResults(searchResults: string[]) {
@@ -30,12 +32,12 @@ export const useSearchStore = defineStore('search', {
 		 */
 		getSearchResults() {
 			const enabledPublicationTypeIds = Object.entries(this.publicationType)
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 				.filter(([_, value]) => value === true)
 				.map((publicationType) => publicationType[0])
 
 			const enabledCatalogiIds = Object.entries(this.catalogi)
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 				.filter(([_, value]) => value === true)
 				.map((catalogi) => catalogi[0])
 

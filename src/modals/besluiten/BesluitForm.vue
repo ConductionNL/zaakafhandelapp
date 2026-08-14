@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
+import { besluitStore, navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="zaakForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="zaakForm" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{
@@ -50,7 +50,7 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 				<NcSelect
 					v-bind="zaak"
 					v-model="zaak.value"
-					:input-label="t('zaakafhandelapp', 'Case')"
+					:inputLabel="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading"
 					required />
@@ -87,18 +87,16 @@ import { navigationStore, besluitStore, zaakStore } from '../../store/store.js'
 
 <script>
 import {
+	NcButton,
+	NcLoadingIcon,
 	NcModal,
 	NcNoteCard,
-	NcButton,
-	NcTextField,
-	NcLoadingIcon,
 	NcSelect,
+	NcTextField,
 } from '@nextcloud/vue'
-
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-
 // entities
 import { Besluit } from '../../entities/index.js'
 
@@ -110,6 +108,7 @@ export default {
 		NcButton,
 		NcSelect,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
@@ -117,12 +116,14 @@ export default {
 			required: false,
 		},
 	},
+
 	data() {
 		return {
 			besluit: {
 				besluit: '',
 				zaak: '',
 			},
+
 			IS_EDIT: false,
 			zaak_id: null,
 			loading: false,
@@ -135,6 +136,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -150,6 +152,7 @@ export default {
 
 		this.fetchZaak()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -159,6 +162,7 @@ export default {
 			besluitStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -190,6 +194,7 @@ export default {
 					this.zaakLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */

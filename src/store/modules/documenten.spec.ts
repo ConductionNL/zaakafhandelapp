@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
-import { useDocumentStore } from './documenten.js'
+import { createPinia, setActivePinia } from 'pinia'
 import { Document, mockDocumentData } from '../../entities/index.js'
+import { useDocumentStore } from './documenten.js'
 
 describe('Document Store', () => {
 	beforeEach(() => {

@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import SearchSideBar from './search/SearchSideBar.vue'
 import DashboardSideBar from './dashboard/DashboardSideBar.vue'
+import SearchSideBar from './search/SearchSideBar.vue'
 
 export default {
 	name: 'SideBars',
@@ -16,6 +16,7 @@ export default {
 		SearchSideBar,
 		DashboardSideBar,
 	},
+
 	data() {
 		return {}
 	},

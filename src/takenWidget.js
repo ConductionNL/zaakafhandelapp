@@ -1,5 +1,5 @@
+import { translatePlural as n, translate as t } from '@nextcloud/l10n'
 import { createApp } from 'vue'
-import { translate as t, translatePlural as n } from '@nextcloud/l10n'
 import TakenWidget from './views/widgets/TakenWidget.vue'
 
 // Library CSS (CnDataTable styles live in the lib's central CSS, not in the

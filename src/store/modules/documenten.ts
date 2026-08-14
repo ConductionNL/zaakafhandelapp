@@ -1,5 +1,7 @@
+import type { TDocument } from '../../entities/index.js'
+
 import { defineStore } from 'pinia'
-import { TDocument, Document } from '../../entities/index.js'
+import { Document } from '../../entities/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/documenten'
 
@@ -21,6 +23,7 @@ export const useDocumentStore = defineStore('documenten', {
 	}),
 	actions: {
 		/**
+		 * @param documentItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setDocumentItem(documentItem: Document | TDocument) {
@@ -28,6 +31,7 @@ export const useDocumentStore = defineStore('documenten', {
 			console.info('Active document item set to ' + documentItem)
 		},
 		/**
+		 * @param documentenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setDocumentenList(documentenList: Document[] | TDocument[]) {
@@ -43,7 +47,7 @@ export const useDocumentStore = defineStore('documenten', {
 		 *
 		 * @param search - Optional search query to filter the documenten list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TDocument[], entities: Document[] }> } The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
 		async refreshDocumentenList(
 			search: string = null,
@@ -80,7 +84,7 @@ export const useDocumentStore = defineStore('documenten', {
 		 * @param id - The ID of the document item to fetch.
 		 * @param options - Options for fetching the document item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TDocument, entity: Document }> } The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getDocument(
 			id: string,
@@ -111,7 +115,7 @@ export const useDocumentStore = defineStore('documenten', {
 		 *
 		 * @param zaakId - Optional ID of the zaak to filter documenten by
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TDocument[], entities: Document[] }> } The response, raw data array, and entity array.
+		 * @return The response, raw data array, and entity array.
 		 */
 		async getDocumenten(
 			zaakId: string = null,
@@ -147,7 +151,7 @@ export const useDocumentStore = defineStore('documenten', {
 		 *
 		 * @param id - The ID of the document item to delete.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteDocument(id: string): Promise<{ response: Response }> {
 			if (!id) {
@@ -173,7 +177,7 @@ export const useDocumentStore = defineStore('documenten', {
 		 * @param documentItem - The document item to save.
 		 * @param options - Options for saving the document item. (default: `{ setItem: true }`)
 		 * @throws If there is no document item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TDocument, entity: Document }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveDocument(
 			documentItem: Document | TDocument,

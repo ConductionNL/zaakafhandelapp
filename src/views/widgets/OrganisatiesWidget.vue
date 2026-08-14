@@ -9,11 +9,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 			:rows="items"
 			:columns="columns"
 			:loading="loading"
-			hide-header
+			hideHeader
 			borderless
-			row-icon="OfficeBuildingOutline"
-			:empty-text="t('zaakafhandelapp', 'No organisations found')"
-			@row-click="onShow">
+			rowIcon="OfficeBuildingOutline"
+			:emptyText="t('zaakafhandelapp', 'No organisations found')"
+			@rowClick="onShow">
 			<template #empty>
 				<NcEmptyContent
 					:name="t('zaakafhandelapp', 'No organisations found')">
@@ -26,7 +26,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 				<NcActions>
 					<NcActionButton
 						icon="icon-toggle"
-						close-after-click
+						closeAfterClick
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
@@ -57,10 +57,10 @@ import { klantStore, navigationStore } from '../../store/store.js'
 
 		<ViewKlant
 			v-if="isModalOpen"
-			:dashboard-widget="true"
-			:klant-id="klantStore.widgetKlantId"
-			@save-success="fetchOrganisatieItems"
-			@close-modal="() => (isModalOpen = false)" />
+			:dashboardWidget="true"
+			:klantId="klantStore.widgetKlantId"
+			@saveSuccess="fetchOrganisatieItems"
+			@closeModal="() => (isModalOpen = false)" />
 	</div>
 </template>
 
@@ -68,11 +68,11 @@ import { klantStore, navigationStore } from '../../store/store.js'
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
 import {
-	NcEmptyContent,
-	NcButton,
-	NcTextField,
-	NcActions,
 	NcActionButton,
+	NcActions,
+	NcButton,
+	NcEmptyContent,
+	NcTextField,
 } from '@nextcloud/vue'
 import Search from 'vue-material-design-icons/Magnify.vue'
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
@@ -136,6 +136,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-002
 		 */
@@ -157,7 +158,9 @@ export default {
 					this.loading = false
 				})
 		},
+
 		/**
+		 * @param item
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onShow(item) {
@@ -168,6 +171,7 @@ export default {
 	},
 }
 </script>
+
 <style scoped>
 .openZakenContainer {
 	display: flex;

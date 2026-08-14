@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
 import {
-	taakStore,
-	navigationStore,
-	klantStore,
 	contactMomentStore,
+	klantStore,
+	navigationStore,
+	taakStore,
 } from '../../store/store.js'
 </script>
 
@@ -37,7 +37,7 @@ import {
 			<NcSelect
 				v-bind="taakType"
 				v-model="taakType.value"
-				:input-label="t('zaakafhandelapp', 'Type')"
+				:inputLabel="t('zaakafhandelapp', 'Type')"
 				:clearable="false"
 				:loading="klantenLoading"
 				:disabled="loading" />
@@ -79,7 +79,7 @@ import {
 						"
 						v-bind="klanten"
 						v-model="klanten.value"
-						:input-label="t('zaakafhandelapp', 'Customer*')"
+						:inputLabel="t('zaakafhandelapp', 'Customer*')"
 						:loading="klantenLoading"
 						:disabled="loading" />
 
@@ -92,7 +92,7 @@ import {
 						"
 						v-bind="medewerkers"
 						v-model="medewerkers.value"
-						:input-label="t('zaakafhandelapp', 'Employee*')"
+						:inputLabel="t('zaakafhandelapp', 'Employee*')"
 						:loading="medewerkersLoading"
 						:disabled="loading" />
 				</div>
@@ -107,7 +107,7 @@ import {
 						:bold="false"
 						:details="contactMoment.subText"
 						:disabled="loading"
-						:force-display-actions="true">
+						:forceDisplayActions="true">
 						<template #icon>
 							<BriefcaseAccountOutline :size="44" />
 						</template>
@@ -185,36 +185,34 @@ import {
 
 		<ViewContactMoment
 			v-if="isContactMomentFormOpen"
-			:dashboard-widget="true"
-			:contact-moment-id="viewContactMomentId"
-			:is-view="viewContactMomentIsView"
-			@close-modal="closeViewContactMomentModal" />
+			:dashboardWidget="true"
+			:contactMomentId="viewContactMomentId"
+			:isView="viewContactMomentIsView"
+			@closeModal="closeViewContactMomentModal" />
 	</NcDialog>
 </template>
 
 <script>
 import {
 	NcButton,
-	NcDialog,
-	NcTextField,
-	NcTextArea,
-	NcDateTimePicker,
-	NcSelect,
 	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
+	NcDialog,
+	NcListItem,
 	NcLoadingIcon,
 	NcNoteCard,
-	NcListItem,
+	NcSelect,
+	NcTextArea,
+	NcTextField,
 } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
-
-import ViewContactMoment from '../contactMomenten/ViewContactMoment.vue'
-
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
-import Help from 'vue-material-design-icons/Help.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
+import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import ViewContactMoment from '../contactMomenten/ViewContactMoment.vue'
+import { getTheme } from '../../services/getTheme.js'
 
 /**
  * EditTaak component
@@ -250,6 +248,7 @@ export default {
 		Help,
 		BriefcaseAccountOutline,
 	},
+
 	props: {
 		/**
 		 * Whether the modal is being used within a dashboard widget.
@@ -260,6 +259,7 @@ export default {
 			type: Boolean,
 			required: false,
 		},
+
 		/**
 		 * ID of the taak (task) to load and edit.
 		 *
@@ -277,6 +277,7 @@ export default {
 			type: String,
 			default: null,
 		},
+
 		/**
 		 * Determines which client type to use for the taak.
 		 *
@@ -299,6 +300,7 @@ export default {
 			 */
 			validator: (value) => ['klant', 'medewerker', 'both'].includes(value),
 		},
+
 		/**
 		 * ID of the klant (client) to pre-select in the klanten dropdown.
 		 *
@@ -313,6 +315,7 @@ export default {
 			type: String,
 			default: null,
 		},
+
 		/**
 		 * ID of the medewerker (employee) to pre-select in the medewerkers dropdown.
 		 *
@@ -333,6 +336,7 @@ export default {
 			default: false,
 		},
 	},
+
 	data() {
 		return {
 			// state
@@ -356,6 +360,7 @@ export default {
 				toelichting: '',
 				contactmoment: null,
 			},
+
 			executorOptions: {
 				options: [
 					{
@@ -367,11 +372,13 @@ export default {
 						label: 'Medewerker',
 					},
 				],
+
 				value: {
 					id: 'klant',
 					label: 'Klant',
 				},
 			},
+
 			statusOptions: {
 				options: [
 					{
@@ -388,6 +395,7 @@ export default {
 					},
 				],
 			},
+
 			taakType: {
 				options: [
 					{
@@ -395,16 +403,19 @@ export default {
 						label: t('zaakafhandelapp', 'Callback request'),
 					},
 				],
+
 				value: {
 					id: 'terugbel',
 					label: t('zaakafhandelapp', 'Callback request'),
 				},
 			},
+
 			viewContactMomentIsView: false,
 			viewContactMomentId: null,
 			isContactMomentFormOpen: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -412,6 +423,7 @@ export default {
 		this.fetchData()
 		this.fetchMedewerkers()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -421,6 +433,7 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -431,6 +444,7 @@ export default {
 				this.$emit('close-modal')
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -473,6 +487,7 @@ export default {
 				this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
 			this.fetchContactMomentItems()
 		},
+
 		/**
 		 * @param {string} klantId - Optional ID of the klant to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                           If none are provided the default selected klant will be `null`.
@@ -521,6 +536,7 @@ export default {
 					this.klantenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -581,6 +597,7 @@ export default {
 			this.isContactMomentFormOpen = false
 			navigationStore.setViewModal(null)
 		},
+
 		// === ICONS ===
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
@@ -598,6 +615,7 @@ export default {
 				? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg`
 				: `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
 		},
+
 		/**
 		 * @param {string} medewerkerId - Optional ID of the medewerker to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                                If none are provided the default selected medewerker will be `null`.
@@ -648,6 +666,7 @@ export default {
 					}
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -707,7 +726,10 @@ export default {
 					this.loading = false
 				})
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {

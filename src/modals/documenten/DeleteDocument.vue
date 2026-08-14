@@ -7,7 +7,7 @@ import { documentStore, navigationStore } from '../../store/store.js'
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Delete document')"
 		size="normal"
-		:can-close="false">
+		:canClose="false">
 		<p v-if="success === null">
 			{{
 				t(
@@ -69,7 +69,6 @@ import { documentStore, navigationStore } from '../../store/store.js'
 
 <script>
 import { NcButton, NcDialog, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
-
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
@@ -84,6 +83,7 @@ export default {
 		TrashCanOutline,
 		Cancel,
 	},
+
 	data() {
 		return {
 			success: null,
@@ -92,6 +92,7 @@ export default {
 			closeModalTimeout: null,
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -101,6 +102,7 @@ export default {
 			documentStore.zaakId = null
 			clearTimeout(this.closeModalTimeout)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */

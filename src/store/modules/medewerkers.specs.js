@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
-import { useMedewerkerStore } from './medewerkers.js'
+import { createPinia, setActivePinia } from 'pinia'
 import { Medewerker, mockMedewerker } from '../../entities/index.js'
+import { useMedewerkerStore } from './medewerkers.js'
 
 describe('Medewerker Store', () => {
 	beforeEach(() => {

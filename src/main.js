@@ -5,34 +5,33 @@
 // Mirrors the decidesk reference (src/main.js) — see
 // openspec/changes/zaakafhandelapp-manifest-v1/design.md.
 
-import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
 import {
-	translate as t,
-	translatePlural as n,
-	loadTranslations,
-} from '@nextcloud/l10n'
-import { generateUrl } from '@nextcloud/router'
-import {
+	buildManifest,
 	defaultPageTypes,
 	registerBuiltinDashboardWidgets,
 	registerIcons,
 	registerTranslations,
-	buildManifest,
 } from '@conduction/nextcloud-vue'
-import pinia from './pinia.js'
+import {
+	loadTranslations,
+	translatePlural as n,
+	translate as t,
+} from '@nextcloud/l10n'
+import { generateUrl } from '@nextcloud/router'
+import { createApp } from 'vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import App from './App.vue'
+import customComponents from './customComponents.js'
+import appIcons from './icons.js'
 import bundledManifest from './manifest.json'
 import menuLayout from './menu-layout.json'
-import customComponents from './customComponents.js'
+import pinia from './pinia.js'
 import registry from './registry.js'
-import appIcons from './icons.js'
+import { registerRouter, routesFromManifest } from './router/index.js'
 import { initializeStores } from './store/store.js'
-import { routesFromManifest, registerRouter } from './router/index.js'
 
 // Library CSS — must be explicit import (webpack tree-shakes side-effect imports from aliased packages)
 import '@conduction/nextcloud-vue/css/index.css'
-
 // GridStack drives the dashboard widget grid inside CnWidgetGrid. nc-vue
 // declares `gridstack` as a PEER dependency and ships none of its CSS, so the
 // consumer must install it and import the stylesheet FROM THE SAME COPY —
@@ -76,6 +75,9 @@ try {
 // its callback meant boot silently failed when translations couldn't
 // load. Strings just fall back to their English source on miss; boot
 // MUST not depend on this resolving.
+/**
+ *
+ */
 function tryLoadTranslations() {
 	try {
 		const result = loadTranslations('zaakafhandelapp', () => {})

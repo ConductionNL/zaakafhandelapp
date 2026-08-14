@@ -11,9 +11,9 @@ import { klantStore } from '../../store/store.js'
 				: t('zaakafhandelapp', 'Search organisation')
 		"
 		size="normal"
-		label-id="searchKlantModal"
-		dialog-classes="SearchKlantModal"
-		:close-on-click-outside="false"
+		labelId="searchKlantModal"
+		dialogClasses="SearchKlantModal"
+		:closeOnClickOutside="false"
 		@closing="closeModalFromButton()">
 		<div class="listContainer">
 			<div class="filtersContainer">
@@ -123,19 +123,19 @@ import { klantStore } from '../../store/store.js'
 					:key="`${klant}${i}`"
 					:name="`${getSex(klant)} ${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant === klant?.id"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="_.upperFirst(klant.type)"
 					@click="setActive(klant.id)">
 					<template #icon>
 						<OfficeBuildingOutline
 							v-if="klant.type === 'organisatie'"
 							:class="selectedKlant === klant.id && 'selectedZaakIcon'"
-							disable-menu
+							disableMenu
 							:size="44" />
 						<AccountOutline
 							v-if="klant.type === 'persoon'"
 							:class="selectedKlant === klant.id && 'selectedZaakIcon'"
-							disable-menu
+							disableMenu
 							:size="44" />
 					</template>
 					<template #subname>
@@ -184,22 +184,21 @@ import { klantStore } from '../../store/store.js'
 // Components
 import {
 	NcButton,
-	NcTextField,
+	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
 	NcDialog,
 	NcListItem,
 	NcLoadingIcon,
-	NcCheckboxRadioSwitch,
-	NcDateTimePicker,
+	NcTextField,
 } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
 import _ from 'lodash'
-
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Search from 'vue-material-design-icons/Magnify.vue'
 // Icons
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
-import Search from 'vue-material-design-icons/Magnify.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
+import { getTheme } from '../../services/getTheme.js'
 import getValidISOstring from '../../services/getValidISOstring.js'
 export default {
 	name: 'SearchKlantModal',
@@ -214,6 +213,7 @@ export default {
 		NcDateTimePicker,
 		NcLoadingIcon,
 	},
+
 	props: {
 		startingType: {
 			type: String,
@@ -221,6 +221,7 @@ export default {
 			default: 'all',
 		},
 	},
+
 	data() {
 		return {
 			succes: false,
@@ -234,6 +235,7 @@ export default {
 			klantenSearchType: 'emailadres',
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -246,8 +248,10 @@ export default {
 						'zaakafhandelapp',
 						'with date of birth and last name',
 					),
+
 					bsn: t('zaakafhandelapp', 'with BSN'),
 				},
+
 				organisatie: {
 					default: t('zaakafhandelapp', 'organisation'),
 					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
@@ -262,6 +266,7 @@ export default {
 					'zaakafhandelapp',
 					'with postal code and house number',
 				),
+
 				emailadres: t('zaakafhandelapp', 'with email address'),
 				telefoonnummer: t('zaakafhandelapp', 'with phone number'),
 			}
@@ -279,6 +284,7 @@ export default {
 			return label
 		},
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -288,12 +294,14 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
 		closeModal() {
 			this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -330,6 +338,7 @@ export default {
 							&& this.searchQuery_geboortedatum.toISOString()
 								? this.searchQuery_geboortedatum.toISOString()
 								: '',
+
 						achternaam: newQuery,
 					}
 					break
@@ -350,6 +359,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -379,7 +389,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSubname(klant) {
@@ -395,7 +407,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSummary(klant) {
@@ -411,7 +425,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSex(klant) {
@@ -420,7 +436,9 @@ export default {
 			}
 			return ''
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
 		setActive(klant) {

@@ -1,5 +1,7 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TOpschorting, TVerlenging, TZaak, zaakTypeID } from './zaak.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TOpschorting, TVerlenging, TZaak, zaakTypeID } from './zaak.types'
+
+import { z } from 'zod'
 
 export class Zaak implements TZaak {
 	public id: string

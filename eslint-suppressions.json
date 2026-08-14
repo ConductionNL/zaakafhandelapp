@@ -1,0 +1,697 @@
+{
+  "src/dialogs/Dialogs.vue": {
+    "vue/multi-word-component-names": {
+      "count": 1
+    }
+  },
+  "src/entities/bericht/berich.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/bericht/bericht.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/besluit/besluit.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/besluit/besluit.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/contactmoment/contactmoment.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/contactmoment/contactmoment.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/document/document.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/document/document.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/index.js": {
+    "import/export": {
+      "count": 1
+    }
+  },
+  "src/entities/klanten/klanten.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/klanten/klanten.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/medewerkers/medewerkers.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/medewerkers/medewerkers.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/resultaat/resultaat.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/resultaat/resultaat.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/rol/rol.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/rol/rol.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/taak/taak.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/taak/taak.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/taak/taak.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/zaak/zaak.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/zaak/zaak.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/zaakTypen/zaakTypen.mock.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/entities/zaakTypen/zaakTypen.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/main.js": {
+    "no-undef": {
+      "count": 1
+    }
+  },
+  "src/modals/Modals.vue": {
+    "vue/multi-word-component-names": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/berichten/EditBericht.vue": {
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/berichten/ViewBerichtAuditTrail.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/besluiten/BesluitForm.vue": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/besluiten/DeleteBesluit.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/contactMomenten/ContactMomentenForm.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "jsdoc/require-param-type": {
+      "count": 7
+    },
+    "no-console": {
+      "count": 4
+    },
+    "vue/custom-event-name-casing": {
+      "count": 4
+    },
+    "vue/match-component-import-name": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/contactMomenten/DeleteContactMoment.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/contactMomenten/ViewContactMoment.vue": {
+    "jsdoc/require-param-type": {
+      "count": 5
+    },
+    "no-console": {
+      "count": 3
+    },
+    "vue/custom-event-name-casing": {
+      "count": 4
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/documenten/DeleteDocument.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/documenten/DocumentForm.vue": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/klanten/DeleteKlant.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/klanten/EditKlant.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/klanten/ImportContact.vue": {
+    "jsdoc/require-param-type": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/klanten/SearchKlantModal.vue": {
+    "jsdoc/require-param-type": {
+      "count": 6
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/no-reserved-component-names": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/klanten/ViewKlant.vue": {
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 3
+    },
+    "vue/custom-event-name-casing": {
+      "count": 1
+    },
+    "vue/match-component-import-name": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/klanten/ViewKlantAuditTrail.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/medewerkers/EditMedewerker.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/medewerkers/SearchKlantModal.vue": {
+    "jsdoc/require-param-type": {
+      "count": 4
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/no-reserved-component-names": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/medewerkers/ViewKlantAuditTrail.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/resultaten/DeleteResultaat.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/resultaten/ResultaatForm.vue": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 2
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/rollen/DeleteRol.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/rollen/RolForm.vue": {
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/taken/EditTaak.vue": {
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/taken/ViewTaakAuditTrail.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaakTypen/DeleteZaaktype.vue": {
+    "@nextcloud/no-deprecated-library-props": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaakTypen/ZaaktypeForm.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/AddBerichtToZaak.vue": {
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/AddRolToZaak.vue": {
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/AddTaakToZaak.vue": {
+    "@typescript-eslint/no-this-alias": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/ExtendZaak.vue": {
+    "jsdoc/require-param-type": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/SuspendZaak.vue": {
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/ViewZaakAuditTrail.vue": {
+    "jsdoc/require-param-type": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/WidgetZaakForm.vue": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 3
+    },
+    "vue/custom-event-name-casing": {
+      "count": 3
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/modals/zaken/ZaakForm.vue": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 2
+    },
+    "vue/custom-event-name-casing": {
+      "count": 2
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/router/index.js": {
+    "no-console": {
+      "count": 2
+    }
+  },
+  "src/sidebars/dashboard/DashboardSideBar.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/sidebars/search/SearchSideBar.vue": {
+    "jsdoc/require-param-type": {
+      "count": 4
+    },
+    "no-useless-assignment": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/store/modules/besluiten.ts": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 8
+    }
+  },
+  "src/store/modules/documenten.ts": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 11
+    }
+  },
+  "src/store/modules/medewerkers.specs.js": {
+    "no-undef": {
+      "count": 11
+    }
+  },
+  "src/store/modules/resultaten.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/store/modules/resultaten.ts": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 9
+    }
+  },
+  "src/store/modules/rol.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 10
+    }
+  },
+  "src/store/modules/search.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/store/modules/zaakTypen.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/store/modules/zaakTypen.ts": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 9
+    }
+  },
+  "src/store/modules/zaken.spec.ts": {
+    "import-extensions/extensions": {
+      "count": 1
+    }
+  },
+  "src/store/modules/zaken.ts": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 2
+    },
+    "no-console": {
+      "count": 10
+    }
+  },
+  "src/views/settings/Settings.vue": {
+    "@typescript-eslint/no-unused-expressions": {
+      "count": 14
+    },
+    "@typescript-eslint/no-unused-vars": {
+      "count": 1
+    },
+    "jsdoc/require-param-type": {
+      "count": 47
+    },
+    "no-console": {
+      "count": 6
+    },
+    "vue/multi-word-component-names": {
+      "count": 1
+    }
+  },
+  "src/views/widgets/ContactMomentenWidget.vue": {
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/views/widgets/OpenZakenWidget.vue": {
+    "no-console": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/views/widgets/OrganisatiesWidget.vue": {
+    "jsdoc/require-param-type": {
+      "count": 1
+    },
+    "vue/no-reserved-component-names": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/views/widgets/PersonenWidget.vue": {
+    "@nextcloud/l10n-enforce-ellipsis": {
+      "count": 1
+    },
+    "jsdoc/require-param-type": {
+      "count": 2
+    },
+    "vue/no-reserved-component-names": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/views/widgets/TakenWidget.vue": {
+    "jsdoc/require-param-type": {
+      "count": 1
+    },
+    "no-console": {
+      "count": 2
+    },
+    "vue/match-component-import-name": {
+      "count": 1
+    },
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  },
+  "src/views/widgets/ZakenWidget.vue": {
+    "vue/prefer-define-options": {
+      "count": 1
+    }
+  }
+}

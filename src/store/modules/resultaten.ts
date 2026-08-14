@@ -1,5 +1,7 @@
+import type { TResultaat } from '../../entities/index.js'
+
 import { defineStore } from 'pinia'
-import { TResultaat, Resultaat } from '../../entities/index.js'
+import { Resultaat } from '../../entities/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/resultaten'
 
@@ -21,6 +23,7 @@ export const useResultaatStore = defineStore('resultaten', {
 	}),
 	actions: {
 		/**
+		 * @param resultaatItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setResultaatItem(resultaatItem: Resultaat | TResultaat) {
@@ -28,6 +31,7 @@ export const useResultaatStore = defineStore('resultaten', {
 			console.info('Active resultaat item set to ' + resultaatItem)
 		},
 		/**
+		 * @param resultatenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setResultatenList(resultatenList: Resultaat[] | TResultaat[]) {
@@ -43,7 +47,7 @@ export const useResultaatStore = defineStore('resultaten', {
 		 *
 		 * @param search - Optional search query to filter the resultaten list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TResultaat[], entities: Resultaat[] }> } The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
 		async refreshResultatenList(search: string = null): Promise<{
 			response: Response
@@ -82,7 +86,7 @@ export const useResultaatStore = defineStore('resultaten', {
 		 * @param id - The ID of the resultaat item to fetch.
 		 * @param options - Options for fetching the resultaat item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TResultaat, entity: Resultaat }> } The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getResultaat(
 			id: string,
@@ -113,7 +117,7 @@ export const useResultaatStore = defineStore('resultaten', {
 		 *
 		 * @param resultaatItem - The resultaat item to delete.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteResultaat(
 			resultaatItem: Resultaat | TResultaat,
@@ -144,7 +148,7 @@ export const useResultaatStore = defineStore('resultaten', {
 		 * @param resultaatItem - The resultaat item to save.
 		 * @param options - Options for saving the resultaat item. (default: `{ setItem: true }`)
 		 * @throws If there is no resultaat item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TResultaat, entity: Resultaat }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveResultaat(
 			resultaatItem: Resultaat | TResultaat,

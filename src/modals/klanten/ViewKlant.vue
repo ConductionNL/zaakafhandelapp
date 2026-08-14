@@ -1,11 +1,11 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
 import {
-	taakStore,
-	navigationStore,
-	zaakStore,
-	klantStore,
 	contactMomentStore,
+	klantStore,
+	navigationStore,
+	taakStore,
+	zaakStore,
 } from '../../store/store.js'
 </script>
 
@@ -79,7 +79,7 @@ import {
 		</div>
 		<div class="tabContainer">
 			<CnTabs
-				content-class="mt-3"
+				contentClass="mt-3"
 				justified
 				:aria-label="t('zaakafhandelapp', 'Customer details')">
 				<CnTab :title="t('zaakafhandelapp', 'Cases')">
@@ -90,7 +90,7 @@ import {
 							:name="zaak.identificatie"
 							:bold="false"
 							:details="zaak.omschrijving"
-							:force-display-actions="true">
+							:forceDisplayActions="true">
 							<template #icon>
 								<BriefcaseAccountOutline :size="44" />
 							</template>
@@ -118,7 +118,7 @@ import {
 							:name="taak.title"
 							:bold="false"
 							:details="taak.description"
-							:force-display-actions="true">
+							:forceDisplayActions="true">
 							<template #icon>
 								<CalendarMonthOutline :size="44" />
 							</template>
@@ -146,7 +146,7 @@ import {
 							:name="bericht.title"
 							:bold="false"
 							:details="bericht.description"
-							:force-display-actions="true">
+							:forceDisplayActions="true">
 							<template #icon>
 								<ChatOutline :size="44" />
 							</template>
@@ -187,7 +187,7 @@ import {
 							:key="key"
 							:name="getName(klant)"
 							:bold="false"
-							:force-display-actions="true">
+							:forceDisplayActions="true">
 							<template #icon>
 								<CardAccountPhoneOutline :size="44" />
 							</template>
@@ -217,7 +217,7 @@ import {
 			</CnTabs>
 		</div>
 		<template #actions>
-			<NcActions :primary="true" :menu-name="t('zaakafhandelapp', 'Actions')">
+			<NcActions :primary="true" :menuName="t('zaakafhandelapp', 'Actions')">
 				<template #icon>
 					<DotsHorizontal :size="20" />
 				</template>
@@ -273,38 +273,37 @@ import {
 
 		<WidgetZaakForm
 			v-if="zaakModalOpen"
-			:dashboard-widget="true"
-			:selected-klant-from-widget="klant"
-			@save-success="fetchZaakItems" />
+			:dashboardWidget="true"
+			:selectedKlantFromWidget="klant"
+			@saveSuccess="fetchZaakItems" />
 
 		<EditTaakForm
 			v-if="taakModalOpen"
-			:dashboard-widget="true"
-			:selected-klant-from-widget="klant"
-			@save-success="fetchTaakItems"
-			@close-modal="() => (taakModalOpen = false)" />
+			:dashboardWidget="true"
+			:selectedKlantFromWidget="klant"
+			@saveSuccess="fetchTaakItems"
+			@closeModal="() => (taakModalOpen = false)" />
 	</NcDialog>
 </template>
 
 <script>
 // Components
-import { CnTabs, CnTab } from '@conduction/nextcloud-vue'
+import { CnTab, CnTabs } from '@conduction/nextcloud-vue'
 import {
+	NcActionButton,
+	NcActions,
 	NcButton,
 	NcDialog,
 	NcEmptyContent,
 	NcListItem,
-	NcActions,
-	NcActionButton,
 } from '@nextcloud/vue'
-
-import Cancel from 'vue-material-design-icons/Cancel.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
-import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
 import CardAccountPhoneOutline from 'vue-material-design-icons/CardAccountPhoneOutline.vue'
-import Eye from 'vue-material-design-icons/Eye.vue'
+import ChatOutline from 'vue-material-design-icons/ChatOutline.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
+import Eye from 'vue-material-design-icons/Eye.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
 import WidgetZaakForm from '../../modals/zaken/WidgetZaakForm.vue'
 
@@ -327,16 +326,19 @@ export default {
 		EditTaakForm: EditTaak,
 		WidgetZaakForm,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			required: false,
 		},
+
 		klantId: {
 			type: String,
 			required: true,
 		},
 	},
+
 	data() {
 		return {
 			klant: {},
@@ -352,6 +354,7 @@ export default {
 			currentActiveKlant: {},
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -362,6 +365,7 @@ export default {
 			)
 		},
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -373,6 +377,7 @@ export default {
 			this.fetchKlantData(klantStore.widgetKlantId)
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 	 */
@@ -385,6 +390,7 @@ export default {
 			this.fetchKlantData(klantStore.widgetKlantId)
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
@@ -445,6 +451,7 @@ export default {
 					this.taken = data.results
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -488,6 +495,7 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -495,12 +503,16 @@ export default {
 			navigationStore.setModal(false)
 			if (this.dashboardWidget) this.$emit('close-modal')
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {
 			window.open(url, target)
 		},
+
 		getKlantName(klant) {
 			return klant?.type === 'persoon'
 				? `${klant?.voornaam} ${klant?.tussenvoegsel} ${klant?.achternaam}`
@@ -509,6 +521,7 @@ export default {
 	},
 }
 </script>
+
 <style>
 .detailContainer {
 	margin-block-start: var(--zaa-margin-20);

@@ -4,7 +4,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal label-id="View Klant Audit Trail modal" @close="closeDialog">
+	<NcModal labelId="View Klant Audit Trail modal" @close="closeDialog">
 		<div class="modal__content">
 			<div class="audit-item">
 				<h3>Audit Trail ID: {{ auditTrail.id }}</h3>
@@ -59,8 +59,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcModal, NcButton } from '@nextcloud/vue'
-
+import { NcButton, NcModal } from '@nextcloud/vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 
 export default {
@@ -70,11 +69,13 @@ export default {
 		NcButton,
 		Cancel,
 	},
+
 	data() {
 		return {
 			auditTrail: {}, // Initialize with an empty object
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -82,6 +83,7 @@ export default {
 		// Assuming klantStore.auditTrailItem is a single audit trail object
 		this.auditTrail = klantStore.auditTrailItem || {}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004

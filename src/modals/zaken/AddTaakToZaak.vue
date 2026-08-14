@@ -1,10 +1,10 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
+import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="addTaakToZaak" @close="closeModal">
+	<NcModal ref="modalRef" labelId="addTaakToZaak" @close="closeModal">
 		<div class="modalContent">
 			<h2>
 				{{ t('zaakafhandelapp', 'Add task') }}:
@@ -26,7 +26,7 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 				<NcSelect
 					v-bind="taken"
 					v-model="taken.value"
-					:input-label="t('zaakafhandelapp', 'Task')"
+					:inputLabel="t('zaakafhandelapp', 'Task')"
 					:loading="takenLoading"
 					:disabled="loading"
 					required />
@@ -50,15 +50,14 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 <script>
 import {
 	NcButton,
-	NcModal,
 	NcLoadingIcon,
+	NcModal,
 	NcNoteCard,
 	NcSelect,
 } from '@nextcloud/vue'
-import { Taak } from '../../entities/index.js'
-
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import { Taak } from '../../entities/index.js'
 
 export default {
 	name: 'AddTaakToZaak',
@@ -71,6 +70,7 @@ export default {
 		// Icons
 		Plus,
 	},
+
 	data() {
 		return {
 			takenLoading: false,
@@ -82,6 +82,7 @@ export default {
 			hasUpdated: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -89,6 +90,7 @@ export default {
 		this.zaakItem = zaakStore.zaakItem
 		this.fetchTakenData()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -96,6 +98,7 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -122,6 +125,7 @@ export default {
 					this.takenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */

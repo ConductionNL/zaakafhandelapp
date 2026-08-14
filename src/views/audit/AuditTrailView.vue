@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import { NcAppContent } from '@nextcloud/vue'
 import { CnNoteCard } from '@conduction/nextcloud-vue'
+import { NcAppContent } from '@nextcloud/vue'
 
 export default {
 	name: 'AuditTrailView',

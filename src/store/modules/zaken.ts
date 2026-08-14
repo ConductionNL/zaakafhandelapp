@@ -1,5 +1,7 @@
+import type { TZaak } from '../../entities/index.js'
+
 import { defineStore } from 'pinia'
-import { TZaak, Zaak } from '../../entities/index.js'
+import { Zaak } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/zaken'
@@ -19,6 +21,7 @@ export const useZaakStore = defineStore('zaken', {
 	}),
 	actions: {
 		/**
+		 * @param zaakItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZaakItem(zaakItem: Zaak | TZaak) {
@@ -26,6 +29,7 @@ export const useZaakStore = defineStore('zaken', {
 			console.info('Active zaak item set to ' + zaakItem)
 		},
 		/**
+		 * @param zakenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZakenList(zakenList: Zaak[] | TZaak[]) {
@@ -40,7 +44,7 @@ export const useZaakStore = defineStore('zaken', {
 		 *
 		 * @param search - Optional search query to filter the zaken list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaak[], entities: Zaak[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
 		async refreshZakenList(
 			search: string = null,
@@ -75,7 +79,7 @@ export const useZaakStore = defineStore('zaken', {
 		 * @param id - The ID of the zaak item to fetch.
 		 * @param options - Options for fetching the zaak item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaak, entity: Zaak }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getZaak(
 			id: string,
@@ -107,7 +111,7 @@ export const useZaakStore = defineStore('zaken', {
 		 * @param zaakItem - The zaak item to delete.
 		 * @throws If there is no zaak item to delete or if the zaak item does not have a uuid.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteZaak(zaakItem: Zaak | TZaak): Promise<{ response: Response }> {
 			if (!zaakItem) {
@@ -142,7 +146,7 @@ export const useZaakStore = defineStore('zaken', {
 		 * @param zaakItem - The zaak item to save.
 		 * @param options - Options for saving the zaak item. (default: `{ setZaakItem: true }`)
 		 * @throws If there is no zaak item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaak, entity: Zaak }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveZaak(
 			zaakItem: Zaak | TZaak,

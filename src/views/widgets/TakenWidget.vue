@@ -1,6 +1,6 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { taakStore, navigationStore } from '../../store/store.js'
+import { navigationStore, taakStore } from '../../store/store.js'
 </script>
 
 <template>
@@ -9,11 +9,11 @@ import { taakStore, navigationStore } from '../../store/store.js'
 			:rows="items"
 			:columns="columns"
 			:loading="loading"
-			hide-header
+			hideHeader
 			borderless
-			row-icon="CalendarMonthOutline"
-			:empty-text="t('zaakafhandelapp', 'No open tasks')"
-			@row-click="onShow">
+			rowIcon="CalendarMonthOutline"
+			:emptyText="t('zaakafhandelapp', 'No open tasks')"
+			@rowClick="onShow">
 			<template #empty>
 				<NcEmptyContent :name="t('zaakafhandelapp', 'No open tasks')">
 					<template #icon>
@@ -25,19 +25,19 @@ import { taakStore, navigationStore } from '../../store/store.js'
 				<NcActions>
 					<NcActionButton
 						icon="icon-toggle"
-						close-after-click
+						closeAfterClick
 						@click="onShow(row)">
 						{{ t('zaakafhandelapp', 'View') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconProgressClose"
-						close-after-click
+						closeAfterClick
 						@click="onCloseStatus(row)">
 						{{ t('zaakafhandelapp', 'Close') }}
 					</NcActionButton>
 					<NcActionButton
 						:icon="iconCalendarCheckOutline"
-						close-after-click
+						closeAfterClick
 						@click="onHandledStatus(row)">
 						{{ t('zaakafhandelapp', 'Complete task') }}
 					</NcActionButton>
@@ -63,31 +63,28 @@ import { taakStore, navigationStore } from '../../store/store.js'
 
 		<EditTaakForm
 			v-if="isModalOpen"
-			:dashboard-widget="true"
-			:taak-id="taakId"
-			@save-success="fetchTaakItems"
-			@close-modal="closeModal" />
+			:dashboardWidget="true"
+			:taakId="taakId"
+			@saveSuccess="fetchTaakItems"
+			@closeModal="closeModal" />
 	</div>
 </template>
 
 <script>
 // Components
 import { CnDataTable } from '@conduction/nextcloud-vue'
-import { NcEmptyContent, NcButton, NcActions, NcActionButton } from '@nextcloud/vue'
-
-// Entities
-import { Taak } from '../../entities/index.js'
-
-// Icons
-import {
-	iconProgressClose,
-	iconCalendarCheckOutline,
-} from '../../services/icons/index.js'
-
-import Plus from 'vue-material-design-icons/Plus.vue'
+import { NcActionButton, NcActions, NcButton, NcEmptyContent } from '@nextcloud/vue'
 import Folder from 'vue-material-design-icons/Folder.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 import Refresh from 'vue-material-design-icons/Refresh.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+// Entities
+import { Taak } from '../../entities/index.js'
+// Icons
+import {
+	iconCalendarCheckOutline,
+	iconProgressClose,
+} from '../../services/icons/index.js'
 import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
@@ -167,6 +164,7 @@ export default {
 			this.userEmail = medewerker.email
 			this.fetchTaakItems()
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
@@ -182,6 +180,7 @@ export default {
 				this.loading = false
 			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
@@ -191,6 +190,7 @@ export default {
 			taakStore.setTaakItem(null)
 			navigationStore.setModal('editTaak')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
@@ -230,7 +230,9 @@ export default {
 				}
 			})
 		},
+
 		/**
+		 * @param event
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		async onHandledStatus(event) {
@@ -256,6 +258,7 @@ export default {
 	},
 }
 </script>
+
 <style scoped>
 .takenContainer {
 	display: flex;

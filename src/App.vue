@@ -16,12 +16,12 @@
 <template>
 	<div class="zaa-app-root">
 		<CnAppRoot
-			:ai-companion="true"
+			:aiCompanion="true"
 			:manifest="manifest"
-			:custom-components="customComponents"
-			:page-types="pageTypes"
+			:customComponents="customComponents"
+			:pageTypes="pageTypes"
 			:registry="registry"
-			app-id="zaakafhandelapp"
+			appId="zaakafhandelapp"
 			:translate="translateForApp"
 			:permissions="permissions">
 			<template #sidebar>
@@ -29,11 +29,11 @@
 					v-if="objectSidebarState.active"
 					:title="objectSidebarState.title"
 					:subtitle="objectSidebarState.subtitle"
-					:object-type="objectSidebarState.objectType"
-					:object-id="objectSidebarState.objectId"
+					:objectType="objectSidebarState.objectType"
+					:objectId="objectSidebarState.objectId"
 					:register="objectSidebarState.register"
 					:schema="objectSidebarState.schema"
-					:hidden-tabs="objectSidebarState.hiddenTabs"
+					:hiddenTabs="objectSidebarState.hiddenTabs"
 					:tabs="objectSidebarState.tabs"
 					:open="objectSidebarState.open"
 					@update:open="objectSidebarState.open = $event" />
@@ -47,11 +47,11 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
-import { translate as ncT } from '@nextcloud/l10n'
 import { CnAppRoot, CnObjectSidebar } from '@conduction/nextcloud-vue'
-import Modals from './modals/Modals.vue'
+import { translate as ncT } from '@nextcloud/l10n'
+import { reactive } from 'vue'
 import Dialogs from './dialogs/Dialogs.vue'
+import Modals from './modals/Modals.vue'
 
 export default {
 	name: 'App',
@@ -86,6 +86,7 @@ export default {
 			type: Object,
 			required: true,
 		},
+
 		/**
 		 * Registry of consumer-injected components used by:
 		 *   - `type: "custom"` pages (`page.component`)
@@ -99,6 +100,7 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
+
 		/**
 		 * Page-type registry — `{ index, detail, dashboard, settings, ... }`.
 		 * Wired through to descendant `CnPageRenderer` instances via
@@ -110,6 +112,7 @@ export default {
 			type: Object,
 			default: null,
 		},
+
 		/**
 		 * V2 component registry. Map of registry key →
 		 * `{ kind, component, ...kindMetadata }`. Passed to CnAppRoot

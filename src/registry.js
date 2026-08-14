@@ -23,9 +23,8 @@
 // ── kind: "page" ───────────────────────────────────────────────────────────
 // Pages referenced by manifest pages[].component (type: "custom")
 
-import SearchView from './views/search/SearchIndex.vue'
-import AuditTrailView from './views/audit/AuditTrailView.vue'
-
+import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
+import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
 // ── kind: "widget" (dashboard stats-block) ──────────────────────────────────
 // The dashboard manifest places `widgetKey: "stats-block"` cards in the "body"
 // slot, but `stats-block` is NOT one of CnWidgetGrid's built-in widget keys
@@ -34,25 +33,21 @@ import AuditTrailView from './views/audit/AuditTrailView.vue'
 // widgetKey" and skips every card, leaving the dashboard body empty.
 // CnStatsBlockWidget reads the manifest `dataSource` block
 // ({ register, schema, aggregate: "count" }) and renders CnStatsBlock.
-
-import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
-
+import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
 // NOTE: the `audit-trail` widget key is a library built-in (CnAuditTrailWidget).
 // The former app-local adapter registry entry was removed in ADR-049 Phase-4 —
 // CnDetailPage resolves manifest `type: "audit-trail"` widgets against the lib
 // built-in, which self-fetches from the detail object-context merge.
-
 // ── kind: "widget" (sidebar tabs) ─────────────────────────────────────────
 // ZaakDetail sidebar tabs for ZGW-API related objects.
 // These tabs fetch data via ZGW-API controllers (not OR) and have no
 // built-in widget analogue today.
-
-import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
-import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
-import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
-import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
 import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
+import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
 import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
+import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
+import AuditTrailView from './views/audit/AuditTrailView.vue'
+import SearchView from './views/search/SearchIndex.vue'
 
 export default {
 	// ── kind: "page" ────────────────────────────────────────────────────────

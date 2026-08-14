@@ -1,5 +1,7 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TDocument } from './document.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TDocument } from './document.types'
+
+import { z } from 'zod'
 
 export class Document implements TDocument {
 	public id: string
@@ -18,9 +20,11 @@ export class Document implements TDocument {
 		| 'confidentieel'
 		| 'geheim'
 		| 'zeer_geheim'
+
 	public auteur: string
 	public status?:
 		'in_bewerking' | 'ter_vaststelling' | 'definitief' | 'gearchiveerd'
+
 	public inhoudIsVervallen?: boolean
 	public formaat?: string
 	public taal: string

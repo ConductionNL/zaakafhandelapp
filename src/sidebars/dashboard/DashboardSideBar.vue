@@ -38,11 +38,12 @@ import { translate as t } from '@nextcloud/l10n'
 		</NcAppSidebarTab>
 	</NcAppSidebar>
 </template>
+
 <script>
 import { NcAppSidebar, NcAppSidebarTab, NcNoteCard } from '@nextcloud/vue'
-import Magnify from 'vue-material-design-icons/Magnify.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
 import CalendarMonthOutline from 'vue-material-design-icons/CalendarMonthOutline.vue'
+import Magnify from 'vue-material-design-icons/Magnify.vue'
 
 export default {
 	name: 'DashboardSideBar',
@@ -55,6 +56,7 @@ export default {
 		BriefcaseAccountOutline,
 		CalendarMonthOutline,
 	},
+
 	data() {
 		return {
 			publications: false,

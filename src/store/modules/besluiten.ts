@@ -1,5 +1,7 @@
+import type { TBesluit } from '../../entities/index.js'
+
 import { defineStore } from 'pinia'
-import { TBesluit, Besluit } from '../../entities/index.js'
+import { Besluit } from '../../entities/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/besluiten'
 
@@ -17,6 +19,7 @@ export const useBesluitStore = defineStore('besluiten', {
 	}),
 	actions: {
 		/**
+		 * @param besluitItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setBesluitItem(besluitItem: Besluit | TBesluit) {
@@ -29,7 +32,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * @param id - The ID of the besluit item to fetch.
 		 * @param options - Options for fetching the besluit item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TBesluit, entity: Besluit }> } The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getBesluit(
 			id: string,
@@ -64,7 +67,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		 *
 		 * @param zaakId - Optional ID of the zaak to filter besluiten by
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> } The response, raw data array, and entity array.
+		 * @return The response, raw data array, and entity array.
 		 */
 		async getBesluiten(
 			zaakId: string = null,
@@ -100,7 +103,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		 *
 		 * @param besluitId - The ID of the besluit item to delete.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteBesluit(besluitId: string): Promise<{ response: Response }> {
 			if (!besluitId) {
@@ -124,7 +127,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * @param besluitItem - The besluit item to save.
 		 * @param options - Options for saving the besluit item. (default: `{ setItem: true }`)
 		 * @throws If there is no besluit item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TBesluit, entity: Besluit }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveBesluit(
 			besluitItem: Besluit | TBesluit,
