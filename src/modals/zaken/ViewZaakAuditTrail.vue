@@ -134,6 +134,7 @@ export default {
 	padding: 0 0 10px 0;
 	margin: 0 0 10px 0;
 }
+
 .audit-item > *:not(:last-child) {
 	margin-bottom: 1rem;
 }
