@@ -114,12 +114,12 @@ class KlantContactsController extends Controller {
 		}
 
 		try {
-			$klant = $this->contactSyncService->importContact($uid, $type);
+			$customer = $this->contactSyncService->importContact($uid, $type);
 		} catch (RuntimeException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
 
-		return new JSONResponse($klant);
+		return new JSONResponse($customer);
 	}//end importContact()
 
 	/**
@@ -150,11 +150,11 @@ class KlantContactsController extends Controller {
 		$addressBookKey = $this->request->getParam('addressBookKey');
 
 		try {
-			$klant = $this->contactSyncService->exportKlant($id, $addressBookKey);
+			$customer = $this->contactSyncService->exportKlant($id, $addressBookKey);
 		} catch (RuntimeException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
 
-		return new JSONResponse($klant);
+		return new JSONResponse($customer);
 	}//end exportContact()
 }//end class

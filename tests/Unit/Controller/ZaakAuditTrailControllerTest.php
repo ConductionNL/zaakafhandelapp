@@ -53,7 +53,7 @@ class ZaakAuditTrailControllerTest extends TestCase {
 	 *
 	 * @var array<string,mixed>|null
 	 */
-	private ?array $resolvedZaak = ['id' => self::ZAAK];
+	private ?array $resolvedCase = ['id' => self::ZAAK];
 
 	protected function setUp(): void {
 		$this->objectService = $this->createMock(ObjectService::class);
@@ -63,7 +63,7 @@ class ZaakAuditTrailControllerTest extends TestCase {
 		// rule, so a per-test re-stub of the same method would silently be ignored
 		// and the scope-guard tests would pass for the wrong reason.
 		$this->objectService->method('getObject')->willReturnCallback(
-			fn (): ?array => $this->resolvedZaak
+			fn (): ?array => $this->resolvedCase
 		);
 
 		$urlGenerator = $this->createMock(IURLGenerator::class);
@@ -132,7 +132,7 @@ class ZaakAuditTrailControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testIndexAnswers404ForAnIdOutsideThisAppsRegister(): void {
-		$this->resolvedZaak = null;
+		$this->resolvedCase = null;
 		$this->objectService->expects($this->never())->method('getAuditTrail');
 
 		$response = $this->controller->index('an-id-from-another-register');
@@ -146,7 +146,7 @@ class ZaakAuditTrailControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testShowAnswers404ForAnIdOutsideThisAppsRegister(): void {
-		$this->resolvedZaak = null;
+		$this->resolvedCase = null;
 		$this->objectService->expects($this->never())->method('getAuditTrail');
 
 		$response = $this->controller->show('an-id-from-another-register', 'e1');

@@ -73,7 +73,7 @@ final class KlantContactSyncServiceTest extends TestCase {
 	}//end testSearchFlagsAlreadyLinked()
 
 	public function testVCardToKlantMapsPersonFields(): void {
-		$klant = $this->service->vCardToKlant([
+		$customer = $this->service->vCardToKlant([
 			'N' => 'Jansen;Jan;;de;',
 			'FN' => 'Jan de Jansen',
 			'EMAIL' => 'jan@example.com',
@@ -81,25 +81,25 @@ final class KlantContactSyncServiceTest extends TestCase {
 			'ADR' => ';;Dorpsstraat 1;Utrecht;;3500AA;Nederland',
 		]);
 
-		$this->assertSame('persoon', $klant['type']);
-		$this->assertSame('Jan', $klant['voornaam']);
-		$this->assertSame('Jansen', $klant['achternaam']);
-		$this->assertSame('de', $klant['tussenvoegsel']);
-		$this->assertSame('jan@example.com', $klant['emailadres']);
-		$this->assertSame('0612345678', $klant['telefoonnummer']);
-		$this->assertSame('Dorpsstraat 1', $klant['straatnaam']);
-		$this->assertSame('Utrecht', $klant['plaats']);
-		$this->assertSame('3500AA', $klant['postcode']);
+		$this->assertSame('persoon', $customer['type']);
+		$this->assertSame('Jan', $customer['voornaam']);
+		$this->assertSame('Jansen', $customer['achternaam']);
+		$this->assertSame('de', $customer['tussenvoegsel']);
+		$this->assertSame('jan@example.com', $customer['emailadres']);
+		$this->assertSame('0612345678', $customer['telefoonnummer']);
+		$this->assertSame('Dorpsstraat 1', $customer['straatnaam']);
+		$this->assertSame('Utrecht', $customer['plaats']);
+		$this->assertSame('3500AA', $customer['postcode']);
 	}//end testVCardToKlantMapsPersonFields()
 
 	public function testVCardToKlantTypesOrganisationFromOrg(): void {
-		$klant = $this->service->vCardToKlant([
+		$customer = $this->service->vCardToKlant([
 			'FN' => 'Acme BV',
 			'ORG' => 'Acme BV',
 		]);
 
-		$this->assertSame('organisatie', $klant['type']);
-		$this->assertSame('Acme BV', $klant['bedrijfsnaam']);
+		$this->assertSame('organisatie', $customer['type']);
+		$this->assertSame('Acme BV', $customer['bedrijfsnaam']);
 	}//end testVCardToKlantTypesOrganisationFromOrg()
 
 	public function testKlantToVCardExcludesBsn(): void {
@@ -136,11 +136,11 @@ final class KlantContactSyncServiceTest extends TestCase {
 			return $obj;
 		});
 
-		$klant = $this->service->importContact('uid-1');
+		$customer = $this->service->importContact('uid-1');
 
 		$this->assertSame('uid-1', $captured['contactsUid']);
 		$this->assertArrayNotHasKey('id', $captured);
-		$this->assertSame('new-klant', $klant['id']);
+		$this->assertSame('new-klant', $customer['id']);
 	}//end testImportCreatesNewKlantWithContactsUid()
 
 	public function testImportIsIdempotentOnContactsUid(): void {
@@ -159,13 +159,13 @@ final class KlantContactSyncServiceTest extends TestCase {
 			return $obj;
 		});
 
-		$klant = $this->service->importContact('uid-1');
+		$customer = $this->service->importContact('uid-1');
 
 		// Updates the existing klant (same id), never creates a duplicate.
 		$this->assertSame('existing-1', $captured['id']);
 		$this->assertSame('uid-1', $captured['contactsUid']);
 		$this->assertSame('new@example.com', $captured['emailadres']);
-		$this->assertSame('existing-1', $klant['id']);
+		$this->assertSame('existing-1', $customer['id']);
 	}//end testImportIsIdempotentOnContactsUid()
 
 	public function testImportUnknownUidThrows(): void {

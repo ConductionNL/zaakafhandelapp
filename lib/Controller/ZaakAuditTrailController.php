@@ -244,7 +244,7 @@ class ZaakAuditTrailController extends Controller {
 
 		$changes = ($entry['changed'] ?? $entry['changes'] ?? $entry['wijzigingen'] ?? null);
 
-		$zaakUrl = $this->urlGenerator->getAbsoluteURL(
+		$caseUrl = $this->urlGenerator->getAbsoluteURL(
 			'/index.php/apps/zaakafhandelapp/api/zrc/zaken/' . $zaakUuid
 		);
 
@@ -257,9 +257,9 @@ class ZaakAuditTrailController extends Controller {
 			'actie' => $actie,
 			'actieWeergave' => ($entry['actionLabel'] ?? $entry['actieWeergave'] ?? $actie),
 			'resultaat' => ($entry['result'] ?? $entry['resultaat'] ?? null),
-			'hoofdObject' => $zaakUrl,
+			'hoofdObject' => $caseUrl,
 			'resource' => 'zaak',
-			'resourceUrl' => $zaakUrl,
+			'resourceUrl' => $caseUrl,
 			'resourceWeergave' => ($entry['resourceLabel'] ?? $entry['resourceWeergave'] ?? null),
 			'aanmaakdatum' => ($entry['created'] ?? $entry['aanmaakdatum'] ?? ($entry['timestamp'] ?? null)),
 			'wijzigingen' => $this->mapChanges($changes),

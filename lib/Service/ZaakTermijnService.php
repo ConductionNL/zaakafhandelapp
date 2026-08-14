@@ -66,25 +66,25 @@ class ZaakTermijnService {
 	 * the derived dates. Never overrides client-supplied values; skips silently
 	 * when the zaaktype or its terms are missing.
 	 *
-	 * @param ObjectEntity $zaak The zaak being created.
+	 * @param ObjectEntity $case The zaak being created.
 	 *
 	 * @return void
 	 *
 	 * @spec openspec/specs/zaak-termijn-monitoring/spec.md#REQ-001
 	 */
-	public function deriveTermijnen(ObjectEntity $zaak): void {
-		$arr = $zaak->jsonSerialize();
+	public function deriveTermijnen(ObjectEntity $case): void {
+		$arr = $case->jsonSerialize();
 
 		$needsUiterste = (string)($arr['uiterlijkeEinddatumAfdoening'] ?? '') === '';
-		$needsGepland = (string)($arr['einddatumGepland'] ?? '') === '';
+		$needsPlanned = (string)($arr['einddatumGepland'] ?? '') === '';
 
-		if ($needsUiterste === false && $needsGepland === false) {
+		if ($needsUiterste === false && $needsPlanned === false) {
 			// Both client-supplied; nothing to derive.
 			return;
 		}
 
-		$zaaktype = $this->resolveZaaktype($arr);
-		if ($zaaktype === []) {
+		$caseType = $this->resolveCaseType($arr);
+		if ($caseType === []) {
 			return;
 		}
 
@@ -98,7 +98,7 @@ class ZaakTermijnService {
 		// same block: [target field => [zaaktype term, whether it still needs one]].
 		$derivations = [
 			'uiterlijkeEinddatumAfdoening' => ['doorlooptijd', $needsUiterste],
-			'einddatumGepland' => ['servicenorm', $needsGepland],
+			'einddatumGepland' => ['servicenorm', $needsPlanned],
 		];
 
 		$changed = false;
@@ -107,7 +107,7 @@ class ZaakTermijnService {
 				continue;
 			}
 
-			$date = $this->termijnDate((string)($zaaktype[$term] ?? ''), $base);
+			$date = $this->termDate((string)($caseType[$term] ?? ''), $base);
 			if ($date === null) {
 				continue;
 			}
@@ -117,7 +117,7 @@ class ZaakTermijnService {
 		}
 
 		if ($changed === true) {
-			$zaak->setObject($arr);
+			$case->setObject($arr);
 		}
 	}//end deriveTermijnen()
 
@@ -130,7 +130,7 @@ class ZaakTermijnService {
 	 * @return ?string The derived date as Y-m-d, or null when the term is absent
 	 *                 or unparsable.
 	 */
-	private function termijnDate(string $duration, DateTimeImmutable $base): ?string {
+	private function termDate(string $duration, DateTimeImmutable $base): ?string {
 		$days = $this->durationToDays($duration);
 		if ($days === null || $days <= 0) {
 			return null;
@@ -170,16 +170,16 @@ class ZaakTermijnService {
 	 *
 	 * @return array<string,mixed> The zaaktype payload.
 	 */
-	private function resolveZaaktype(array $arr): array {
-		$zaaktypeUrl = ($arr['zaaktype'] ?? null);
-		if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+	private function resolveCaseType(array $arr): array {
+		$caseTypeUrl = ($arr['zaaktype'] ?? null);
+		if ($caseTypeUrl === null || $caseTypeUrl === '') {
 			return [];
 		}
 
 		try {
 			$this->objectService->clearCurrents();
-			$zaaktype = $this->objectService->find($this->registry->getObjectIdByEndpointUrl((string)$zaaktypeUrl));
-			return $zaaktype->jsonSerialize();
+			$caseType = $this->objectService->find($this->registry->getObjectIdByEndpointUrl((string)$caseTypeUrl));
+			return $caseType->jsonSerialize();
 		} catch (\Throwable $e) {
 			$this->logger->info('ZaakTermijnService: could not resolve zaaktype for derivation', ['error' => $e->getMessage()]);
 			return [];

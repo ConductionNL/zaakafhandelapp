@@ -66,11 +66,11 @@ class ZGWZaakLifecycleService {
 			return;
 		}
 
-		$zaak = $this->find($statusArray['zaak']);
-		$zaakArray = $zaak->jsonSerialize();
-		$zaakArray['einddatum'] = $zaakArray['archiefactiedatum'] = $zaakArray['archiefnominatie'] = null;
-		$zaak->setObject($zaakArray);
-		$this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
+		$case = $this->find($statusArray['zaak']);
+		$caseArray = $case->jsonSerialize();
+		$caseArray['einddatum'] = $caseArray['archiefactiedatum'] = $caseArray['archiefnominatie'] = null;
+		$case->setObject($caseArray);
+		$this->objectService->saveObject(object: $case, register: $case->getRegister(), schema: $case->getSchema());
 	}//end reopenZaak()
 
 	/**
@@ -78,8 +78,8 @@ class ZGWZaakLifecycleService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
 	 */
-	public function deleteZaak(ObjectEntity $zaak): void {
-		$arr = $this->objectService->renderEntity($zaak);
+	public function deleteZaak(ObjectEntity $case): void {
+		$arr = $this->objectService->renderEntity($case);
 
 		// Build the URL list; resultaat and klantcontact are nullable singletons — guard
 		// with array_filter so null entries never reach getObjectIdByEndpointUrl (#278).
@@ -134,28 +134,28 @@ class ZGWZaakLifecycleService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-003
 	 */
-	public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void {
-		$zaakArray = $zaak->jsonSerialize();
+	public function setVertrouwelijkheidaanduiding(ObjectEntity $case): void {
+		$caseArray = $case->jsonSerialize();
 
-		$zaaktypeUrl = $zaakArray['zaaktype'] ?? null;
-		if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+		$caseTypeUrl = $caseArray['zaaktype'] ?? null;
+		if ($caseTypeUrl === null || $caseTypeUrl === '') {
 			// No zaaktype linked; there is no minimum classification to enforce.
 			return;
 		}
 
-		$zaaktype = $this->find($zaaktypeUrl);
-		$ztMinimum = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
+		$caseType = $this->find($caseTypeUrl);
+		$ztMinimum = $caseType->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
 
 		if ($ztMinimum === null) {
 			// Zaaktype has no classification configured; nothing to enforce.
 			return;
 		}
 
-		$current = $zaakArray['vertrouwelijkheidaanduiding'] ?? null;
+		$current = $caseArray['vertrouwelijkheidaanduiding'] ?? null;
 
 		// Inherit the zaaktype default when no classification has been set yet.
 		if ($current === null) {
-			$zaakArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
+			$caseArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
 		}
 
 		// Enforce minimum: if the zaak's classification is lower than the zaaktype
@@ -165,17 +165,17 @@ class ZGWZaakLifecycleService {
 			$minimumRank = self::VERTROUWELIJKHEID_ORDER[$ztMinimum] ?? 0;
 
 			if ($currentRank < $minimumRank) {
-				$zaakArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
+				$caseArray['vertrouwelijkheidaanduiding'] = $ztMinimum;
 			}
 		}
 
-		if ($zaakArray['vertrouwelijkheidaanduiding'] === ($zaak->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null)) {
+		if ($caseArray['vertrouwelijkheidaanduiding'] === ($case->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null)) {
 			// No change needed; skip the save to avoid an unnecessary write.
 			return;
 		}
 
-		$zaak->setObject($zaakArray);
-		$this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
+		$case->setObject($caseArray);
+		$this->objectService->saveObject(object: $case, register: $case->getRegister(), schema: $case->getSchema());
 	}//end setVertrouwelijkheidaanduiding()
 
 	private function find(string $url, array $extend = []): ObjectEntity {

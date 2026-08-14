@@ -43,19 +43,19 @@ class KlantVCardMapper {
 		// contact describes an organisation rather than a person.
 		$type = ($type ?? (($org !== '') ? 'organisatie' : 'persoon'));
 
-		$klant = [
+		$customer = [
 			'type' => $type,
 			'emailadres' => $this->firstValue(($contact['EMAIL'] ?? '')),
 			'telefoonnummer' => $this->firstValue(($contact['TEL'] ?? '')),
 			'bedrijfsnaam' => $org,
 		];
 
-		$klant = array_merge($klant, $this->nameFieldsFromVCard($contact));
-		$klant = array_merge($klant, $this->addressFieldsFromVCard($contact));
+		$customer = array_merge($customer, $this->nameFieldsFromVCard($contact));
+		$customer = array_merge($customer, $this->addressFieldsFromVCard($contact));
 
-		// Every $klant value is produced by firstValue()/trim(), both of which
+		// Every $customer value is produced by firstValue()/trim(), both of which
 		// return string, so dropping the empty ones is the whole filter.
-		return array_filter($klant, static fn (string $value): bool => $value !== '');
+		return array_filter($customer, static fn (string $value): bool => $value !== '');
 	}//end vCardToKlant()
 
 	/**
@@ -123,33 +123,33 @@ class KlantVCardMapper {
 	 * Privacy-sensitive fields (bsn) are never emitted. When $uid is provided
 	 * the property set carries it so an update replaces the existing card.
 	 *
-	 * @param array<string, mixed> $klant The klant.
+	 * @param array<string, mixed> $customer The klant.
 	 * @param ?string $uid The existing contact uid, or null for a new card.
 	 *
 	 * @return array<string, mixed> The vCard property key-value set.
 	 *
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
 	 */
-	public function klantToVCard(array $klant, ?string $uid): array {
+	public function klantToVCard(array $customer, ?string $uid): array {
 		$properties = [];
 
 		if (($uid ?? '') !== '') {
 			$properties['UID'] = $uid;
 		}
 
-		$properties = array_merge($properties, $this->nameProperties($klant));
+		$properties = array_merge($properties, $this->nameProperties($customer));
 
-		$email = (string)($klant['emailadres'] ?? '');
+		$email = (string)($customer['emailadres'] ?? '');
 		if ($email !== '') {
 			$properties['EMAIL'] = $email;
 		}
 
-		$phone = (string)($klant['telefoonnummer'] ?? '');
+		$phone = (string)($customer['telefoonnummer'] ?? '');
 		if ($phone !== '') {
 			$properties['TEL'] = $phone;
 		}
 
-		$properties = array_merge($properties, $this->addressProperties($klant));
+		$properties = array_merge($properties, $this->addressProperties($customer));
 
 		// Defence in depth (REQ-003): the property set is assembled above from
 		// an explicit vCard-key allowlist, so a privacy-sensitive klant field
@@ -162,13 +162,13 @@ class KlantVCardMapper {
 	/**
 	 * Build the name-carrying vCard properties for a klant.
 	 *
-	 * @param array<string, mixed> $klant The klant.
+	 * @param array<string, mixed> $customer The klant.
 	 *
 	 * @return array<string, string> The FN/N/ORG properties.
 	 */
-	private function nameProperties(array $klant): array {
-		$type = ($klant['type'] ?? 'persoon');
-		$bedrijfsnaam = (string)($klant['bedrijfsnaam'] ?? '');
+	private function nameProperties(array $customer): array {
+		$type = ($customer['type'] ?? 'persoon');
+		$bedrijfsnaam = (string)($customer['bedrijfsnaam'] ?? '');
 
 		// An organisation card is just the company name.
 		if ($type === 'organisatie' && $bedrijfsnaam !== '') {
@@ -178,10 +178,10 @@ class KlantVCardMapper {
 			];
 		}
 
-		$voornaam = (string)($klant['voornaam'] ?? '');
-		$tussenvoegsel = (string)($klant['tussenvoegsel'] ?? '');
-		$achternaam = (string)($klant['achternaam'] ?? '');
-		$family = trim(trim($tussenvoegsel . ' ' . $achternaam));
+		$voornaam = (string)($customer['voornaam'] ?? '');
+		$tussenvoegsel = (string)($customer['tussenvoegsel'] ?? '');
+		$lastName = (string)($customer['achternaam'] ?? '');
+		$family = trim(trim($tussenvoegsel . ' ' . $lastName));
 
 		$properties = [
 			'FN' => trim($voornaam . ' ' . $family),
@@ -200,15 +200,15 @@ class KlantVCardMapper {
 	/**
 	 * Build the ADR vCard property for a klant, when it has any address at all.
 	 *
-	 * @param array<string, mixed> $klant The klant.
+	 * @param array<string, mixed> $customer The klant.
 	 *
 	 * @return array<string, string> The ADR property, or an empty array.
 	 */
-	private function addressProperties(array $klant): array {
-		$street = trim((string)($klant['straatnaam'] ?? '') . ' ' . (string)($klant['huisnummer'] ?? ''));
-		$city = (string)($klant['plaats'] ?? '');
-		$postal = (string)($klant['postcode'] ?? '');
-		$country = (string)($klant['land'] ?? '');
+	private function addressProperties(array $customer): array {
+		$street = trim((string)($customer['straatnaam'] ?? '') . ' ' . (string)($customer['huisnummer'] ?? ''));
+		$city = (string)($customer['plaats'] ?? '');
+		$postal = (string)($customer['postcode'] ?? '');
+		$country = (string)($customer['land'] ?? '');
 
 		// One concatenation rather than four separate emptiness tests: ADR is
 		// emitted as soon as any single component carries a value.

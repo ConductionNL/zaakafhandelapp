@@ -54,10 +54,10 @@ class ZGWArchiveDateService {
 	 * Calculate the archive action date based on the afleidingswijze.
 	 *
 	 * @param string|null $afleidingswijze The derivation method
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 * @param array $resultaattypeArray The resultaattype data array
 	 * @param string $brcRegister The BRC register slug
-	 * @param string $besluitSchema The besluit schema slug
+	 * @param string $decisionSchema The besluit schema slug
 	 *
 	 * @return string|null The calculated archive action date, or null
 	 *
@@ -65,24 +65,24 @@ class ZGWArchiveDateService {
 	 */
 	public function calculateArchiveDate(
 		?string $afleidingswijze,
-		array $zaakArray,
+		array $caseArray,
 		array $resultaattypeArray,
 		string $brcRegister,
-		string $besluitSchema,
+		string $decisionSchema,
 	): ?string {
 		// Per ZGW spec and Archiefwet: brondatum + resultaattype.archiefactietermijn = archiefactiedatum.
 		// 'termijn' already includes the interval via procestermijn; all other branches derive only
 		// the brondatum and must still add archiefactietermijn. (C3/C4 fix)
 		$brondatum = match ($afleidingswijze) {
-			'afgehandeld' => $zaakArray['einddatum'],
-			'hoofdzaak' => $this->calculateFromHoofdzaak($zaakArray),
-			'eigenschap' => $this->calculateFromEigenschap($zaakArray, $resultaattypeArray),
+			'afgehandeld' => $caseArray['einddatum'],
+			'hoofdzaak' => $this->calculateFromHoofdzaak($caseArray),
+			'eigenschap' => $this->calculateFromAttribute($caseArray, $resultaattypeArray),
 			'ander_datumkenmerk' => null,
-			'termijn' => $this->calculateFromTermijn($zaakArray, $resultaattypeArray),
-			'ingangsdatum_besluit' => $this->calculateFromBesluit($zaakArray, 'ingangsdatum', $brcRegister, $besluitSchema),
-			'vervaldatum_besluit' => $this->calculateFromBesluit($zaakArray, 'vervaldatum', $brcRegister, $besluitSchema),
-			'gerelateerde_zaak' => $this->calculateFromGerelateerdeZaak($zaakArray),
-			'zaakobject' => $this->calculateFromZaakobject($zaakArray, $resultaattypeArray),
+			'termijn' => $this->calculateFromTerm($caseArray, $resultaattypeArray),
+			'ingangsdatum_besluit' => $this->calculateFromDecision($caseArray, 'ingangsdatum', $brcRegister, $decisionSchema),
+			'vervaldatum_besluit' => $this->calculateFromDecision($caseArray, 'vervaldatum', $brcRegister, $decisionSchema),
+			'gerelateerde_zaak' => $this->calculateFromGerelateerdeCase($caseArray),
+			'zaakobject' => $this->calculateFromZaakobject($caseArray, $resultaattypeArray),
 			default => $this->handleUnknownAfleidingswijze($afleidingswijze),
 		};
 
@@ -98,17 +98,17 @@ class ZGWArchiveDateService {
 	/**
 	 * Calculate archive date from hoofdzaak.
 	 *
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 *
 	 * @return string|null The archive date
 	 */
-	private function calculateFromHoofdzaak(array $zaakArray): ?string {
+	private function calculateFromHoofdzaak(array $caseArray): ?string {
 		// Guard: hoofdzaak may be null when this zaak is not a deelzaak (#278).
-		if (empty($zaakArray['hoofdzaak']) === true) {
+		if (empty($caseArray['hoofdzaak']) === true) {
 			return null;
 		}
 
-		$hoofdzaakId = explode('/', $zaakArray['hoofdzaak']);
+		$hoofdzaakId = explode('/', $caseArray['hoofdzaak']);
 		$hoofdzaakId = end($hoofdzaakId);
 		$this->objectService->clearCurrents();
 		$hoofdzaak = $this->objectService->find($hoofdzaakId);
@@ -119,55 +119,55 @@ class ZGWArchiveDateService {
 	/**
 	 * Calculate archive date from eigenschap.
 	 *
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 * @param array $resultaattypeArray The resultaattype data array
 	 *
 	 * @return string|null The archive date
 	 */
-	private function calculateFromEigenschap(array $zaakArray, array $resultaattypeArray): ?string {
-		$eigenschap = $resultaattypeArray['brondatumArchiefprocedure']['datumkenmerk'] ?? null;
-		$eigenschapIds = array_map(
+	private function calculateFromAttribute(array $caseArray, array $resultaattypeArray): ?string {
+		$attribute = $resultaattypeArray['brondatumArchiefprocedure']['datumkenmerk'] ?? null;
+		$attributeIds = array_map(
 			function ($item) {
 				$exploded = explode('/', $item);
 				return end($exploded);
 			},
-			$zaakArray['eigenschappen']
+			$caseArray['eigenschappen']
 		);
 
 		// Guard: an empty ids array would cause findAll to return ALL objects (M1).
 		// Return null immediately when the zaak has no eigenschappen.
-		if (empty($eigenschapIds) === true) {
+		if (empty($attributeIds) === true) {
 			return null;
 		}
 
 		$this->objectService->clearCurrents();
-		$eigenschappen = $this->objectService->findAll(['ids' => $eigenschapIds]);
-		$eigenschapObjects = array_filter(
-			$eigenschappen,
-			function (ObjectEntity $eigenschapObject) use ($eigenschap) {
-				return $eigenschapObject->jsonSerialize()['naam'] === $eigenschap;
+		$attributes = $this->objectService->findAll(['ids' => $attributeIds]);
+		$attributeObjects = array_filter(
+			$attributes,
+			function (ObjectEntity $attributeObject) use ($attribute) {
+				return $attributeObject->jsonSerialize()['naam'] === $attribute;
 			}
 		);
-		$eigenschapObject = array_shift($eigenschapObjects);
+		$attributeObject = array_shift($attributeObjects);
 
 		// Guard: array_shift returns null when no matching eigenschap was found (#278).
-		if ($eigenschapObject === null) {
+		if ($attributeObject === null) {
 			return null;
 		}
 
-		return $eigenschapObject->jsonSerialize()['waarde'] ?? null;
+		return $attributeObject->jsonSerialize()['waarde'] ?? null;
 	}//end calculateFromEigenschap()
 
 	/**
 	 * Calculate archive date from termijn.
 	 *
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 * @param array $resultaattypeArray The resultaattype data array
 	 *
 	 * @return string The archive date
 	 */
-	private function calculateFromTermijn(array $zaakArray, array $resultaattypeArray): string {
-		$date = new DateTime($zaakArray['einddatum']);
+	private function calculateFromTerm(array $caseArray, array $resultaattypeArray): string {
+		$date = new DateTime($caseArray['einddatum']);
 		$interval = new DateInterval($resultaattypeArray['brondatumArchiefprocedure']['procestermijn']);
 
 		return $date->add($interval)->format('Y-m-d');
@@ -176,29 +176,29 @@ class ZGWArchiveDateService {
 	/**
 	 * Calculate archive date from besluit ingangsdatum or vervaldatum.
 	 *
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 * @param string $dateField The date field to use ('ingangsdatum' or 'vervaldatum')
 	 * @param string $brcRegister The BRC register slug
-	 * @param string $besluitSchema The besluit schema slug
+	 * @param string $decisionSchema The besluit schema slug
 	 *
 	 * @return string|null The archive date
 	 */
-	private function calculateFromBesluit(
-		array $zaakArray,
+	private function calculateFromDecision(
+		array $caseArray,
 		string $dateField,
 		string $brcRegister,
-		string $besluitSchema,
+		string $decisionSchema,
 	): ?string {
 		// OpenRegister findAll expects numeric IDs for register/schema filters, not slugs.
 		// Resolve the slugs to their database IDs first (fixes #277).
 		$registerId = $this->registerMapper->find($brcRegister)->getId();
-		$schemaId = $this->schemaMapper->find($besluitSchema)->getId();
+		$schemaId = $this->schemaMapper->find($decisionSchema)->getId();
 
 		$this->objectService->clearCurrents();
-		$besluiten = $this->objectService->findAll(
+		$decisions = $this->objectService->findAll(
 			[
 				'filters' => [
-					'zaak' => $zaakArray['url'],
+					'zaak' => $caseArray['url'],
 					'register' => $registerId,
 					'schema' => $schemaId,
 				],
@@ -206,10 +206,10 @@ class ZGWArchiveDateService {
 		);
 
 		$mapped = array_map(
-			function (ObjectEntity $besluit) use ($dateField) {
-				return $besluit->jsonSerialize()[$dateField] ?? null;
+			function (ObjectEntity $decision) use ($dateField) {
+				return $decision->jsonSerialize()[$dateField] ?? null;
 			},
-			$besluiten
+			$decisions
 		);
 		$data = array_filter($mapped);
 
@@ -223,31 +223,31 @@ class ZGWArchiveDateService {
 	 * Per VNG ZGW: use the einddatum of the related zaak referenced by the resultaattype's
 	 * brondatumArchiefprocedure.objecttype context.
 	 *
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 *
 	 * @return string|null The brondatum
 	 */
-	private function calculateFromGerelateerdeZaak(array $zaakArray): ?string {
-		$relevanteAndereZaken = $zaakArray['relevanteAndereZaken'] ?? [];
-		if (empty($relevanteAndereZaken) === true) {
+	private function calculateFromGerelateerdeCase(array $caseArray): ?string {
+		$relevanteAndereCases = $caseArray['relevanteAndereZaken'] ?? [];
+		if (empty($relevanteAndereCases) === true) {
 			return null;
 		}
 
 		$dates = [];
-		foreach ($relevanteAndereZaken as $relatie) {
-			$zaakUrl = is_array($relatie) ? ($relatie['url'] ?? $relatie) : $relatie;
-			$zaakId = explode('/', rtrim((string)$zaakUrl, '/'));
-			$zaakId = end($zaakId);
-			if (empty($zaakId) === true) {
+		foreach ($relevanteAndereCases as $relationship) {
+			$caseUrl = is_array($relationship) ? ($relationship['url'] ?? $relationship) : $relationship;
+			$caseId = explode('/', rtrim((string)$caseUrl, '/'));
+			$caseId = end($caseId);
+			if (empty($caseId) === true) {
 				continue;
 			}
 
 			$this->objectService->clearCurrents();
 			try {
-				$relatedZaak = $this->objectService->find($zaakId);
-				$einddatum = $relatedZaak->jsonSerialize()['einddatum'] ?? null;
-				if ($einddatum !== null) {
-					$dates[] = $einddatum;
+				$relatedCase = $this->objectService->find($caseId);
+				$endDate = $relatedCase->jsonSerialize()['einddatum'] ?? null;
+				if ($endDate !== null) {
+					$dates[] = $endDate;
 				}
 			} catch (\Exception $e) {
 				// Related zaak not found; skip it.
@@ -263,15 +263,15 @@ class ZGWArchiveDateService {
 	 * Per VNG ZGW: use the datumkenmerk field value from the zaakobject identified by
 	 * the resultaattype's brondatumArchiefprocedure.objecttype.
 	 *
-	 * @param array $zaakArray The zaak data array
+	 * @param array $caseArray The zaak data array
 	 * @param array $resultaattypeArray The resultaattype data array
 	 *
 	 * @return string|null The brondatum
 	 */
-	private function calculateFromZaakobject(array $zaakArray, array $resultaattypeArray): ?string {
+	private function calculateFromZaakobject(array $caseArray, array $resultaattypeArray): ?string {
 		$datumkenmerk = $resultaattypeArray['brondatumArchiefprocedure']['datumkenmerk'] ?? null;
 		$objecttype = $resultaattypeArray['brondatumArchiefprocedure']['objecttype'] ?? null;
-		$zaakobjecten = $zaakArray['zaakobjecten'] ?? [];
+		$zaakobjecten = $caseArray['zaakobjecten'] ?? [];
 
 		if ($datumkenmerk === null || empty($zaakobjecten) === true) {
 			return null;
@@ -292,9 +292,9 @@ class ZGWArchiveDateService {
 					continue;
 				}
 
-				$datum = $zaakobjectData['object'][$datumkenmerk] ?? $zaakobjectData[$datumkenmerk] ?? null;
-				if ($datum !== null) {
-					return (string)$datum;
+				$date = $zaakobjectData['object'][$datumkenmerk] ?? $zaakobjectData[$datumkenmerk] ?? null;
+				if ($date !== null) {
+					return (string)$date;
 				}
 			} catch (\Exception $e) {
 				// Zaakobject not found; skip it.
@@ -317,9 +317,9 @@ class ZGWArchiveDateService {
 	 * @return string The archive action date (Y-m-d)
 	 */
 	private function applyArchiefactietermijn(string $brondatum, array $resultaattypeArray): string {
-		$termijn = $resultaattypeArray['archiefactietermijn'] ?? null;
+		$term = $resultaattypeArray['archiefactietermijn'] ?? null;
 
-		if ($termijn === null || $termijn === '') {
+		if ($term === null || $term === '') {
 			// No termijn defined on the resultaattype; fall back to brondatum as-is.
 			$this->logger->warning(
 				'ZGWArchiveDateService: resultaattype has no archiefactietermijn; using brondatum as archiefactiedatum',
@@ -333,14 +333,14 @@ class ZGWArchiveDateService {
 
 		try {
 			$date = new DateTime($brondatum);
-			$interval = new DateInterval($termijn);
+			$interval = new DateInterval($term);
 			return $date->add($interval)->format('Y-m-d');
 		} catch (\Exception $e) {
 			$this->logger->warning(
 				'ZGWArchiveDateService: could not apply archiefactietermijn; using brondatum as archiefactiedatum',
 				[
 					'brondatum' => $brondatum,
-					'termijn' => $termijn,
+					'termijn' => $term,
 					'error' => $e->getMessage(),
 				]
 			);

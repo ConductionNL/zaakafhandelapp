@@ -34,9 +34,9 @@ class ZGWZaakEventHandler {
 		private readonly ZGWLogicService $logicService,
 		private readonly ZGWZaakLifecycleService $lifecycleService,
 		private readonly ZGWValidationService $validationService,
-		private readonly ZGWZaakValidationService $zaakValidator,
-		private readonly ZaakTermijnService $termijnService,
-		private readonly ZGWZaakOpschortingVerlengingService $opschortingService,
+		private readonly ZGWZaakValidationService $caseValidator,
+		private readonly ZaakTermijnService $termService,
+		private readonly ZGWZaakOpschortingVerlengingService $suspensionService,
 		private readonly ZGWRegistryService $registry,
 		private readonly SchemaMapper $schemaMapper,
 	) {
@@ -151,11 +151,11 @@ class ZGWZaakEventHandler {
 		}
 
 		if ($slug === $this->registry->getZaakSchema()) {
-			$this->assertZaakWritable($obj);
+			$this->assertCaseWritable($obj);
 			// Derive the behandeltermijn fields from the zaaktype before the zaak is
 			// persisted (uiterlijkeEinddatumAfdoening from doorlooptijd, einddatumGepland
 			// from servicenorm). Client-supplied dates are never overridden.
-			$this->termijnService->deriveTermijnen($obj);
+			$this->termService->deriveTermijnen($obj);
 		}
 
 		if ($slug === $this->registry->getBesluitSchema()) {
@@ -182,12 +182,12 @@ class ZGWZaakEventHandler {
 			return;
 		}
 
-		$this->assertZaakWritable($obj);
+		$this->assertCaseWritable($obj);
 
 		// Apply opschorting/verlenging transitions: gate on the zaaktype policy,
 		// shift the termijn fields, and abort (via CustomValidationException) when
 		// the transition is not allowed (ZRC opschorting/verlenging — Awb 4:14/4:15).
-		$this->opschortingService->applyTransitions($obj);
+		$this->suspensionService->applyTransitions($obj);
 	}//end onObjectUpdating()
 
 	/**
@@ -197,11 +197,11 @@ class ZGWZaakEventHandler {
 	 *
 	 * @return void
 	 */
-	private function assertZaakWritable(ObjectEntity $obj): void {
-		$this->zaakValidator->checkProductenOfDiensten($obj);
+	private function assertCaseWritable(ObjectEntity $obj): void {
+		$this->caseValidator->checkProductenOfDiensten($obj);
 		$this->validationService->checkRelevanteAndereZaken($obj);
-		$this->zaakValidator->checkArchivePrerequisites($obj);
-		$this->zaakValidator->checkGegevensgroepen($obj);
+		$this->caseValidator->checkArchivePrerequisites($obj);
+		$this->caseValidator->checkGegevensgroepen($obj);
 	}//end assertZaakWritable()
 
 	/**

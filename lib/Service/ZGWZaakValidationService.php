@@ -33,25 +33,25 @@ class ZGWZaakValidationService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
 	 */
-	public function checkProductenOfDiensten(ObjectEntity $zaak): void {
-		$arr = $zaak->jsonSerialize();
+	public function checkProductenOfDiensten(ObjectEntity $case): void {
+		$arr = $case->jsonSerialize();
 
 		if (is_array($arr['productenOfDiensten'] ?? null) === false) {
 			// No producten/diensten configured on the zaak; nothing to validate.
 			return;
 		}
 
-		$zaaktypeUrl = $arr['zaaktype'] ?? null;
-		if ($zaaktypeUrl === null || $zaaktypeUrl === '') {
+		$caseTypeUrl = $arr['zaaktype'] ?? null;
+		if ($caseTypeUrl === null || $caseTypeUrl === '') {
 			// Without a zaaktype there is no reference set to validate against.
 			return;
 		}
 
-		$ztId = explode('/', $zaaktypeUrl);
+		$ztId = explode('/', $caseTypeUrl);
 		$this->objectService->clearCurrents();
-		$zaaktype = $this->objectService->find(end($ztId));
+		$caseType = $this->objectService->find(end($ztId));
 
-		$allowed = $zaaktype->jsonSerialize()['productenOfDiensten'] ?? [];
+		$allowed = $caseType->jsonSerialize()['productenOfDiensten'] ?? [];
 		if (is_array($allowed) === false) {
 			$allowed = [];
 		}
@@ -70,8 +70,8 @@ class ZGWZaakValidationService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
 	 */
-	public function checkArchivePrerequisites(ObjectEntity $zaak): void {
-		$arr = $this->objectService->renderEntity($zaak);
+	public function checkArchivePrerequisites(ObjectEntity $case): void {
+		$arr = $this->objectService->renderEntity($case);
 
 		// A zaak that is not (yet) flagged for archiving has no archive prerequisites.
 		// When the archive lifecycle has not started, archiefstatus is either absent
@@ -98,8 +98,8 @@ class ZGWZaakValidationService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
 	 */
-	public function checkGegevensgroepen(ObjectEntity $zaak): void {
-		$arr = $zaak->jsonSerialize();
+	public function checkGegevensgroepen(ObjectEntity $case): void {
+		$arr = $case->jsonSerialize();
 
 		if (($arr['verlenging'] ?? null) !== null) {
 			$this->validateRequiredFields($arr['verlenging'], 'verlenging', ['reden', 'duur'], 'Verlenging is incorrect');

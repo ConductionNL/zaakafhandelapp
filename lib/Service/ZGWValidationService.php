@@ -40,23 +40,23 @@ class ZGWValidationService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-005
 	 */
-	public function checkRelevanteAndereZaken(ObjectEntity $zaak): void {
-		$zaakArray = $zaak->jsonSerialize();
+	public function checkRelevanteAndereZaken(ObjectEntity $case): void {
+		$caseArray = $case->jsonSerialize();
 
-		if (is_array($zaakArray['relevanteAndereZaken']) === false) {
+		if (is_array($caseArray['relevanteAndereZaken']) === false) {
 			return;
 		}
 
 		$index = 0;
-		foreach ($zaakArray['relevanteAndereZaken'] as $relevanteZaak) {
+		foreach ($caseArray['relevanteAndereZaken'] as $relevanteCase) {
 			$this->objectService->clearCurrents();
-			if (isset($relevanteZaak['url']) === false) {
+			if (isset($relevanteCase['url']) === false) {
 				$index++;
 				continue;
 			}
 
 			try {
-				$id = explode('/', $relevanteZaak['url']);
+				$id = explode('/', $relevanteCase['url']);
 				$this->objectService->clearCurrents();
 				$this->objectService->find(end($id));
 				$this->objectService->clearCurrents();
@@ -80,11 +80,11 @@ class ZGWValidationService {
 		$arr = $bio->jsonSerialize();
 
 		$eio = $this->findByUrl($arr['informatieobject'], ['informatieobjecttype']);
-		$besluit = $this->findByUrl($arr['besluit'], ['besluittype']);
+		$decision = $this->findByUrl($arr['besluit'], ['besluittype']);
 
 		$iot = $eio->jsonSerialize()['informatieobjecttype']['omschrijving'];
 
-		if (in_array(needle: $iot, haystack: $besluit->jsonSerialize()['besluittype']['informatieobjecttypen']) === false) {
+		if (in_array(needle: $iot, haystack: $decision->jsonSerialize()['besluittype']['informatieobjecttypen']) === false) {
 			throw new CustomValidationException(
 				'Informatieobjecttype niet in besluittype',
 				[['name' => 'nonFieldErrors', 'code' => 'invalid-informatieobjecttype', 'reason' => 'informatieobjecttype niet aanwezig op besluittype']]

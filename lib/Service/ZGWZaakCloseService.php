@@ -66,10 +66,10 @@ class ZGWZaakCloseService {
 		}
 
 		// Load the zaak with its informatieobjecten so gebruiksrechten can be inspected.
-		$zaakArray = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject'])->jsonSerialize();
+		$caseArray = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject'])->jsonSerialize();
 
 		// Guard: zaak must have a resultaat.
-		if (empty($zaakArray['resultaat']) === true) {
+		if (empty($caseArray['resultaat']) === true) {
 			throw new CustomValidationException(
 				'Zaak heeft geen resultaat',
 				[['name' => 'resultaat', 'code' => 'required', 'reason' => 'Een zaak moet een resultaat hebben voordat hij gesloten kan worden']]
@@ -77,7 +77,7 @@ class ZGWZaakCloseService {
 		}
 
 		// Guard: all informatieobjecten must have gebruiksrechten configured.
-		$this->assertGebruiksrechten($zaakArray);
+		$this->assertGebruiksrechten($caseArray);
 
 		// Guard: datumStatusGezet must be a valid ISO 8601 date.
 		try {
@@ -107,11 +107,11 @@ class ZGWZaakCloseService {
 			return;
 		}
 
-		$zaak = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']);
-		$zaakArray = $zaak->jsonSerialize();
+		$case = $this->find($statusArray['zaak'], ['zaakinformatieobjecten', 'zaakinformatieobjecten.informatieobject']);
+		$caseArray = $case->jsonSerialize();
 
 		try {
-			$zaakArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format('Y-m-d');
+			$caseArray['einddatum'] = (new DateTime($statusArray['datumStatusGezet']))->format('Y-m-d');
 		} catch (\Exception $e) {
 			// datumStatusGezet was already validated in validateClosePrerequisites; log and skip.
 			$this->logger->error('ZaakAfhandelApp: closeZaak unexpected date error', ['exception' => $e->getMessage()]);
@@ -119,8 +119,8 @@ class ZGWZaakCloseService {
 		}
 
 		try {
-			$resultaatRecord = $this->find($zaakArray['resultaat']);
-			$resultaattype = $this->find($resultaatRecord->jsonSerialize()['resultaattype'])->jsonSerialize();
+			$resultRecord = $this->find($caseArray['resultaat']);
+			$resultaattype = $this->find($resultRecord->jsonSerialize()['resultaattype'])->jsonSerialize();
 		} catch (\Exception $e) {
 			$this->logger->error('ZaakAfhandelApp: closeZaak cannot resolve resultaattype', ['exception' => $e->getMessage()]);
 			throw new CustomValidationException(
@@ -129,18 +129,18 @@ class ZGWZaakCloseService {
 			);
 		}
 
-		$zaakArray['archiefnominatie'] = $resultaattype['archiefnominatie'];
-		$zaakArray['archiefactiedatum'] = $this->archiveService->calculateArchiveDate(
+		$caseArray['archiefnominatie'] = $resultaattype['archiefnominatie'];
+		$caseArray['archiefactiedatum'] = $this->archiveService->calculateArchiveDate(
 			$resultaattype['brondatumArchiefprocedure']['afleidingswijze'] ?? null,
-			$zaakArray,
+			$caseArray,
 			$resultaattype,
 			$this->registry->getBrcRegister(),
 			$this->registry->getBesluitSchema()
 		);
 
 		$this->objectService->clearCurrents();
-		$zaak->setObject($zaakArray);
-		$this->objectService->saveObject(object: $zaak, register: $zaak->getRegister(), schema: $zaak->getSchema());
+		$case->setObject($caseArray);
+		$this->objectService->saveObject(object: $case, register: $case->getRegister(), schema: $case->getSchema());
 	}//end closeZaak()
 
 	/**
@@ -164,8 +164,8 @@ class ZGWZaakCloseService {
 		return $statusData['volgnummer'] === $max;
 	}//end isEindStatus()
 
-	private function assertGebruiksrechten(array $zaakArray): void {
-		$bad = array_filter($zaakArray['zaakinformatieobjecten'], fn (array $zio) => count($zio['informatieobject']['gebruiksrechten']) === 0 && $zio['informatieobject']['indicatieGebruiksrecht'] === null);
+	private function assertGebruiksrechten(array $caseArray): void {
+		$bad = array_filter($caseArray['zaakinformatieobjecten'], fn (array $zio) => count($zio['informatieobject']['gebruiksrechten']) === 0 && $zio['informatieobject']['indicatieGebruiksrecht'] === null);
 		if (count($bad) > 0) {
 			throw new CustomValidationException('Indicatiegebruiksrecht niet geset', [['name' => 'nonFieldErrors', 'code' => 'indicatiegebruiksrecht-unset', 'reason' => 'Alle informatieobjecten moeten een gebruiksrecht hebben.']]);
 		}

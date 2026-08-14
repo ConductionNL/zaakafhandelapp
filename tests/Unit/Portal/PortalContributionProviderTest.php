@@ -271,12 +271,12 @@ final class PortalContributionProviderTest extends TestCase {
 	public function testJoinDirections(): void {
 		$collections = $this->collectionsById();
 
-		$zaken = $collections['citizenZaken'];
-		$this->assertSame('rol', $zaken['via']['schema']);
-		$this->assertSame('betrokkeneIdentificatie.inpBsn', $zaken['via']['scopeField']);
-		$this->assertSame('zaak', $zaken['via']['targetField']);
-		$this->assertSame('id', $zaken['via']['match']);
-		$this->assertSame('', $zaken['scopeField'], 'A forward join ignores the outer scopeField.');
+		$cases = $collections['citizenZaken'];
+		$this->assertSame('rol', $cases['via']['schema']);
+		$this->assertSame('betrokkeneIdentificatie.inpBsn', $cases['via']['scopeField']);
+		$this->assertSame('zaak', $cases['via']['targetField']);
+		$this->assertSame('id', $cases['via']['match']);
+		$this->assertSame('', $cases['scopeField'], 'A forward join ignores the outer scopeField.');
 
 		foreach (['citizenTaken' => 'klant', 'citizenBerichten' => 'gebruikerID'] as $id => $outerScopeField) {
 			$collection = $collections[$id];

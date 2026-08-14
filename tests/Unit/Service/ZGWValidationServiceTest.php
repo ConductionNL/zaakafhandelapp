@@ -137,11 +137,11 @@ class ZGWValidationServiceTest extends TestCase {
 	 */
 	public function testValidateBesluitInformatieObjectAllowedTypePasses(): void {
 		$eio = $this->entity(['informatieobjecttype' => ['omschrijving' => 'factuur']]);
-		$besluit = $this->entity(['besluittype' => ['informatieobjecttypen' => ['factuur', 'brief']]]);
+		$decision = $this->entity(['besluittype' => ['informatieobjecttypen' => ['factuur', 'brief']]]);
 
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id, $_extend = []) use ($eio, $besluit) {
-				return in_array('informatieobjecttype', (array)$_extend, true) ? $eio : $besluit;
+			function ($id, $_extend = []) use ($eio, $decision) {
+				return in_array('informatieobjecttype', (array)$_extend, true) ? $eio : $decision;
 			}
 		);
 
@@ -164,11 +164,11 @@ class ZGWValidationServiceTest extends TestCase {
 	 */
 	public function testValidateBesluitInformatieObjectDisallowedTypeRejects(): void {
 		$eio = $this->entity(['informatieobjecttype' => ['omschrijving' => 'geheim']]);
-		$besluit = $this->entity(['besluittype' => ['informatieobjecttypen' => ['factuur', 'brief']]]);
+		$decision = $this->entity(['besluittype' => ['informatieobjecttypen' => ['factuur', 'brief']]]);
 
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id, $_extend = []) use ($eio, $besluit) {
-				return in_array('informatieobjecttype', (array)$_extend, true) ? $eio : $besluit;
+			function ($id, $_extend = []) use ($eio, $decision) {
+				return in_array('informatieobjecttype', (array)$_extend, true) ? $eio : $decision;
 			}
 		);
 

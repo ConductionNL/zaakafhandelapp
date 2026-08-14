@@ -141,7 +141,7 @@ class KlantContactsControllerTest extends TestCase {
 	 * @return void
 	 */
 	public function testExportPassesTheRouteIdAndAddressbookThrough(): void {
-		$klant = [
+		$customer = [
 			'id' => self::KLANT_ID,
 			'contactsUid' => 'vcard-uid-1',
 		];
@@ -150,12 +150,12 @@ class KlantContactsControllerTest extends TestCase {
 		$this->contactSyncService->expects($this->once())
 			->method('exportKlant')
 			->with(self::KLANT_ID, 'contacts:personal')
-			->willReturn($klant);
+			->willReturn($customer);
 
 		$response = $this->makeController(['addressBookKey' => 'contacts:personal'])->exportContact(self::KLANT_ID);
 
 		$this->assertSame(Http::STATUS_OK, $response->getStatus());
-		$this->assertSame($klant, $response->getData());
+		$this->assertSame($customer, $response->getData());
 	}//end testExportPassesTheRouteIdAndAddressbookThrough()
 
 	/**

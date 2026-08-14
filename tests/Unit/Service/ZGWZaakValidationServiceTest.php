@@ -64,7 +64,7 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 *
 	 * @return ObjectEntity
 	 */
-	private function zaak(array $data): ObjectEntity {
+	private function case(array $data): ObjectEntity {
 		$entity = new ObjectEntity();
 		$entity->setObject($data);
 		return $entity;
@@ -78,11 +78,11 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testArchivePrerequisitesAbsentArchiefstatusDoesNotReject(): void {
-		$zaak = $this->zaak(['identificatie' => 'ZAAK-1']);
-		$this->objectService->method('renderEntity')->willReturn($zaak->jsonSerialize());
+		$case = $this->case(['identificatie' => 'ZAAK-1']);
+		$this->objectService->method('renderEntity')->willReturn($case->jsonSerialize());
 
 		// No exception expected.
-		$this->service->checkArchivePrerequisites($zaak);
+		$this->service->checkArchivePrerequisites($case);
 		$this->addToAssertionCount(1);
 	}//end testArchivePrerequisitesAbsentArchiefstatusDoesNotReject()
 
@@ -93,10 +93,10 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testArchivePrerequisitesEmptyArchiefstatusDoesNotReject(): void {
-		$zaak = $this->zaak(['archiefstatus' => '']);
-		$this->objectService->method('renderEntity')->willReturn($zaak->jsonSerialize());
+		$case = $this->case(['archiefstatus' => '']);
+		$this->objectService->method('renderEntity')->willReturn($case->jsonSerialize());
 
-		$this->service->checkArchivePrerequisites($zaak);
+		$this->service->checkArchivePrerequisites($case);
 		$this->addToAssertionCount(1);
 	}//end testArchivePrerequisitesEmptyArchiefstatusDoesNotReject()
 
@@ -106,10 +106,10 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testArchivePrerequisitesNogTeArchiverenDoesNotReject(): void {
-		$zaak = $this->zaak(['archiefstatus' => 'nog_te_archiveren']);
-		$this->objectService->method('renderEntity')->willReturn($zaak->jsonSerialize());
+		$case = $this->case(['archiefstatus' => 'nog_te_archiveren']);
+		$this->objectService->method('renderEntity')->willReturn($case->jsonSerialize());
 
-		$this->service->checkArchivePrerequisites($zaak);
+		$this->service->checkArchivePrerequisites($case);
 		$this->addToAssertionCount(1);
 	}//end testArchivePrerequisitesNogTeArchiverenDoesNotReject()
 
@@ -120,16 +120,16 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testArchivePrerequisitesStartedWithoutNominatieRejects(): void {
-		$zaak = $this->zaak(
+		$case = $this->case(
 			[
 				'archiefstatus' => 'gearchiveerd',
 				'zaakinformatieobjecten' => [],
 			]
 		);
-		$this->objectService->method('renderEntity')->willReturn($zaak->jsonSerialize());
+		$this->objectService->method('renderEntity')->willReturn($case->jsonSerialize());
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->checkArchivePrerequisites($zaak);
+		$this->service->checkArchivePrerequisites($case);
 	}//end testArchivePrerequisitesStartedWithoutNominatieRejects()
 
 	/**
@@ -139,7 +139,7 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testArchivePrerequisitesStartedWithCompleteMetadataPasses(): void {
-		$zaak = $this->zaak(
+		$case = $this->case(
 			[
 				'archiefstatus' => 'gearchiveerd',
 				'archiefnominatie' => 'vernietigen',
@@ -147,9 +147,9 @@ class ZGWZaakValidationServiceTest extends TestCase {
 				'zaakinformatieobjecten' => [],
 			]
 		);
-		$this->objectService->method('renderEntity')->willReturn($zaak->jsonSerialize());
+		$this->objectService->method('renderEntity')->willReturn($case->jsonSerialize());
 
-		$this->service->checkArchivePrerequisites($zaak);
+		$this->service->checkArchivePrerequisites($case);
 		$this->addToAssertionCount(1);
 	}//end testArchivePrerequisitesStartedWithCompleteMetadataPasses()
 
@@ -160,7 +160,7 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testGegevensgroepenWithoutGroupsPasses(): void {
-		$this->service->checkGegevensgroepen($this->zaak(['identificatie' => 'ZAAK-2']));
+		$this->service->checkGegevensgroepen($this->case(['identificatie' => 'ZAAK-2']));
 		$this->addToAssertionCount(1);
 	}//end testGegevensgroepenWithoutGroupsPasses()
 
@@ -171,10 +171,10 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testGegevensgroepenIncompleteVerlengingRejects(): void {
-		$zaak = $this->zaak(['verlenging' => ['reden' => 'x']]);
+		$case = $this->case(['verlenging' => ['reden' => 'x']]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->checkGegevensgroepen($zaak);
+		$this->service->checkGegevensgroepen($case);
 	}//end testGegevensgroepenIncompleteVerlengingRejects()
 
 	/**
@@ -184,9 +184,9 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testGegevensgroepenCompleteVerlengingPasses(): void {
-		$zaak = $this->zaak(['verlenging' => ['reden' => 'x', 'duur' => 'P1W']]);
+		$case = $this->case(['verlenging' => ['reden' => 'x', 'duur' => 'P1W']]);
 
-		$this->service->checkGegevensgroepen($zaak);
+		$this->service->checkGegevensgroepen($case);
 		$this->addToAssertionCount(1);
 	}//end testGegevensgroepenCompleteVerlengingPasses()
 
@@ -199,7 +199,7 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	public function testProductenOfDienstenAbsentSkipsZaaktypeLookup(): void {
 		$this->objectService->expects($this->never())->method('find');
 
-		$this->service->checkProductenOfDiensten($this->zaak(['identificatie' => 'ZAAK-3']));
+		$this->service->checkProductenOfDiensten($this->case(['identificatie' => 'ZAAK-3']));
 		$this->addToAssertionCount(1);
 	}//end testProductenOfDienstenAbsentSkipsZaaktypeLookup()
 
@@ -209,17 +209,17 @@ class ZGWZaakValidationServiceTest extends TestCase {
 	 * @return void
 	 */
 	public function testProductenOfDienstenNotOnZaaktypeRejects(): void {
-		$zaak = $this->zaak(
+		$case = $this->case(
 			[
 				'productenOfDiensten' => ['http://example/product/forbidden'],
 				'zaaktype' => 'http://example/zaaktype/42',
 			]
 		);
 
-		$zaaktype = $this->zaak(['productenOfDiensten' => ['http://example/product/allowed']]);
-		$this->objectService->method('find')->willReturn($zaaktype);
+		$caseType = $this->case(['productenOfDiensten' => ['http://example/product/allowed']]);
+		$this->objectService->method('find')->willReturn($caseType);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->checkProductenOfDiensten($zaak);
+		$this->service->checkProductenOfDiensten($case);
 	}//end testProductenOfDienstenNotOnZaaktypeRejects()
 }//end class

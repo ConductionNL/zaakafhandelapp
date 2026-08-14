@@ -88,7 +88,7 @@ class ZaakBesluitenController extends Controller {
 				filters: ['zaak' => $zaakUuid]
 			);
 
-			$results = array_map(fn (array $object): array => $this->mapZaakBesluit($object), $objects);
+			$results = array_map(fn (array $object): array => $this->mapCaseDecision($object), $objects);
 
 			return new JSONResponse(['results' => array_values($results)]);
 		} catch (Exception $e) {
@@ -115,9 +115,9 @@ class ZaakBesluitenController extends Controller {
 		}
 
 		try {
-			$object = $this->requireZaakBesluitOnZaak(id: $id, zaakUuid: $zaakUuid);
+			$object = $this->requireCaseDecisionOnCase(id: $id, zaakUuid: $zaakUuid);
 
-			return new JSONResponse($this->mapZaakBesluit($object));
+			return new JSONResponse($this->mapCaseDecision($object));
 		} catch (ZaakBesluitNotFoundException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
@@ -145,11 +145,11 @@ class ZaakBesluitenController extends Controller {
 		$data = $this->request->getParams();
 		unset($data['id'], $data['_route']);
 
-		if ($this->requireZaakExists(zaakUuid: $zaakUuid) === false) {
+		if ($this->requireCaseExists(zaakUuid: $zaakUuid) === false) {
 			return new JSONResponse(['error' => "Zaak '$zaakUuid' does not exist."], Http::STATUS_NOT_FOUND);
 		}
 
-		if ($this->requireBesluitResolves(besluit: ($data['besluit'] ?? null)) === false) {
+		if ($this->requireDecisionResolves(decision: ($data['besluit'] ?? null)) === false) {
 			return new JSONResponse(
 				['error' => "The 'besluit' reference is missing or does not resolve."],
 				Http::STATUS_BAD_REQUEST
@@ -161,7 +161,7 @@ class ZaakBesluitenController extends Controller {
 		try {
 			$object = (array)$this->objectService->saveObject(self::OBJECT_TYPE, $data);
 
-			return new JSONResponse($this->mapZaakBesluit($object), Http::STATUS_CREATED);
+			return new JSONResponse($this->mapCaseDecision($object), Http::STATUS_CREATED);
 		} catch (Exception $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
@@ -187,7 +187,7 @@ class ZaakBesluitenController extends Controller {
 
 		$data = $this->request->getParams();
 
-		if (isset($data['besluit']) === true && $this->requireBesluitResolves(besluit: $data['besluit']) === false) {
+		if (isset($data['besluit']) === true && $this->requireDecisionResolves(decision: $data['besluit']) === false) {
 			return new JSONResponse(
 				['error' => "The 'besluit' reference does not resolve."],
 				Http::STATUS_BAD_REQUEST
@@ -195,7 +195,7 @@ class ZaakBesluitenController extends Controller {
 		}
 
 		try {
-			$this->requireZaakBesluitOnZaak(id: $id, zaakUuid: $zaakUuid);
+			$this->requireCaseDecisionOnCase(id: $id, zaakUuid: $zaakUuid);
 
 			// Only besluit may change; zaak stays the routed value.
 			$data['id'] = $id;
@@ -204,7 +204,7 @@ class ZaakBesluitenController extends Controller {
 
 			$object = (array)$this->objectService->saveObject(self::OBJECT_TYPE, $data);
 
-			return new JSONResponse($this->mapZaakBesluit($object));
+			return new JSONResponse($this->mapCaseDecision($object));
 		} catch (ZaakBesluitNotFoundException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
@@ -231,7 +231,7 @@ class ZaakBesluitenController extends Controller {
 		}
 
 		try {
-			$this->requireZaakBesluitOnZaak(id: $id, zaakUuid: $zaakUuid);
+			$this->requireCaseDecisionOnCase(id: $id, zaakUuid: $zaakUuid);
 
 			$this->objectService->deleteObject(self::OBJECT_TYPE, $id);
 
@@ -250,7 +250,7 @@ class ZaakBesluitenController extends Controller {
 	 *
 	 * @return array{url: string, uuid: (string|null), zaak: mixed, besluit: mixed}
 	 */
-	private function mapZaakBesluit(array $object): array {
+	private function mapCaseDecision(array $object): array {
 		$uuid = ($object['id'] ?? $object['uuid'] ?? null);
 
 		return [
@@ -277,7 +277,7 @@ class ZaakBesluitenController extends Controller {
 	 *
 	 * @throws ZaakBesluitNotFoundException When absent or bound to another zaak.
 	 */
-	private function requireZaakBesluitOnZaak(string $id, string $zaakUuid): array {
+	private function requireCaseDecisionOnCase(string $id, string $zaakUuid): array {
 		$object = (array)$this->objectService->getObject(self::OBJECT_TYPE, $id);
 
 		if ($this->resolveReference($object['zaak'] ?? '') !== $this->resolveReference($zaakUuid)) {
@@ -294,11 +294,11 @@ class ZaakBesluitenController extends Controller {
 	 *
 	 * @return bool True when the zaak resolves.
 	 */
-	private function requireZaakExists(string $zaakUuid): bool {
+	private function requireCaseExists(string $zaakUuid): bool {
 		try {
-			$zaak = (array)$this->objectService->getObject('zaken', $zaakUuid);
+			$case = (array)$this->objectService->getObject('zaken', $zaakUuid);
 
-			return empty($zaak) === false;
+			return empty($case) === false;
 		} catch (Exception $e) {
 			return false;
 		}
@@ -310,21 +310,21 @@ class ZaakBesluitenController extends Controller {
 	 * A local uuid is read from OpenRegister; an absolute external URL is
 	 * accepted verbatim (ZGW allows remote BRC references).
 	 *
-	 * @param mixed $besluit The besluit reference (uuid or absolute URL).
+	 * @param mixed $decision The besluit reference (uuid or absolute URL).
 	 *
 	 * @return bool True when the reference is valid.
 	 */
-	private function requireBesluitResolves(mixed $besluit): bool {
-		if (is_string($besluit) === false || $besluit === '') {
+	private function requireDecisionResolves(mixed $decision): bool {
+		if (is_string($decision) === false || $decision === '') {
 			return false;
 		}
 
-		if (filter_var($besluit, FILTER_VALIDATE_URL) !== false) {
+		if (filter_var($decision, FILTER_VALIDATE_URL) !== false) {
 			return true;
 		}
 
 		try {
-			$object = (array)$this->objectService->getObject('besluiten', $besluit);
+			$object = (array)$this->objectService->getObject('besluiten', $decision);
 
 			return empty($object) === false;
 		} catch (Exception $e) {

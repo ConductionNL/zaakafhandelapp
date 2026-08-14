@@ -204,17 +204,17 @@ class ZGWZaakCloseServiceTest extends TestCase {
 	public function testValidateClosePrerequisitesRejectsMissingResultaat(): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturnArgument(0);
 
-		$eindStatustype = $this->entity(
+		$endStatustype = $this->entity(
 			[
 				'volgnummer' => 2,
 				'_extend' => ['zaaktype' => ['_extend' => ['statustypen' => [['volgnummer' => 1], ['volgnummer' => 2]]]]],
 			]
 		);
-		$zaak = $this->entity(['identificatie' => 'ZAAK-1']);
+		$case = $this->entity(['identificatie' => 'ZAAK-1']);
 
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id) use ($eindStatustype, $zaak) {
-				return str_contains((string)$id, 'statustype') ? $eindStatustype : $zaak;
+			function ($id) use ($endStatustype, $case) {
+				return str_contains((string)$id, 'statustype') ? $endStatustype : $case;
 			}
 		);
 
@@ -239,13 +239,13 @@ class ZGWZaakCloseServiceTest extends TestCase {
 	public function testValidateClosePrerequisitesRejectsInvalidDate(): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturnArgument(0);
 
-		$eindStatustype = $this->entity(
+		$endStatustype = $this->entity(
 			[
 				'volgnummer' => 2,
 				'_extend' => ['zaaktype' => ['_extend' => ['statustypen' => [['volgnummer' => 1], ['volgnummer' => 2]]]]],
 			]
 		);
-		$zaak = $this->entity(
+		$case = $this->entity(
 			[
 				'resultaat' => 'http://example/resultaat/1',
 				'zaakinformatieobjecten' => [],
@@ -253,8 +253,8 @@ class ZGWZaakCloseServiceTest extends TestCase {
 		);
 
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id) use ($eindStatustype, $zaak) {
-				return str_contains((string)$id, 'statustype') ? $eindStatustype : $zaak;
+			function ($id) use ($endStatustype, $case) {
+				return str_contains((string)$id, 'statustype') ? $endStatustype : $case;
 			}
 		);
 
@@ -279,13 +279,13 @@ class ZGWZaakCloseServiceTest extends TestCase {
 	public function testValidateClosePrerequisitesPassesForCompleteEindstatus(): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturnArgument(0);
 
-		$eindStatustype = $this->entity(
+		$endStatustype = $this->entity(
 			[
 				'volgnummer' => 2,
 				'_extend' => ['zaaktype' => ['_extend' => ['statustypen' => [['volgnummer' => 1], ['volgnummer' => 2]]]]],
 			]
 		);
-		$zaak = $this->entity(
+		$case = $this->entity(
 			[
 				'resultaat' => 'http://example/resultaat/1',
 				'zaakinformatieobjecten' => [],
@@ -293,8 +293,8 @@ class ZGWZaakCloseServiceTest extends TestCase {
 		);
 
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id) use ($eindStatustype, $zaak) {
-				return str_contains((string)$id, 'statustype') ? $eindStatustype : $zaak;
+			function ($id) use ($endStatustype, $case) {
+				return str_contains((string)$id, 'statustype') ? $endStatustype : $case;
 			}
 		);
 
