@@ -258,8 +258,8 @@ class KlantenController extends Controller {
 		}
 
 		$requestParams = ['klant' => $id];
-		$zaken = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
-		return new JSONResponse($zaken);
+		$cases = $this->objectService->getResultArrayForRequest('zaken', $requestParams);
+		return new JSONResponse($cases);
 	}//end getZaken()
 
 	/**
@@ -298,8 +298,8 @@ class KlantenController extends Controller {
 		}
 
 		$requestParams = ['gebruikerID' => $id];
-		$berichten = $this->objectService->getResultArrayForRequest('berichten', $requestParams);
-		return new JSONResponse($berichten);
+		$messages = $this->objectService->getResultArrayForRequest('berichten', $requestParams);
+		return new JSONResponse($messages);
 	}//end getBerichten()
 
 	/**

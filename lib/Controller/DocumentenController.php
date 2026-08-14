@@ -153,11 +153,11 @@ class DocumentenController extends Controller {
 			return new JSONResponse(['error' => "Field 'inhoud' (base64 content) is required."], Http::STATUS_BAD_REQUEST);
 		}
 
-		$bestandsnaam = (string)($data['bestandsnaam'] ?? $data['titel']);
-		$zaakFolder = (string)($data['zaak'] ?? 'algemeen');
+		$fileName = (string)($data['bestandsnaam'] ?? $data['titel']);
+		$caseFolder = (string)($data['zaak'] ?? 'algemeen');
 
 		try {
-			$written = $this->caseDocumentService->writeDocument($zaakFolder, $bestandsnaam, $data['inhoud']);
+			$written = $this->caseDocumentService->writeDocument($caseFolder, $fileName, $data['inhoud']);
 		} catch (CaseDocumentException $e) {
 			return new JSONResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
@@ -165,7 +165,7 @@ class DocumentenController extends Controller {
 		unset($data['inhoud']);
 		$data['fileId'] = $written['fileId'];
 		$data['bestandsomvang'] = $written['bestandsomvang'];
-		$data['bestandsnaam'] = $bestandsnaam;
+		$data['bestandsnaam'] = $fileName;
 		$data['versie'] = 1;
 
 		try {

@@ -177,21 +177,21 @@ class KlantContactSyncService {
 			throw new RuntimeException('Contact not found in any accessible addressbook');
 		}
 
-		$klantFields = $this->vCardToKlant($contact, $type);
+		$customerFields = $this->vCardToKlant($contact, $type);
 
-		$existing = $this->findKlantByContactsUid($uid);
+		$existing = $this->findCustomerByContactsUid($uid);
 		if ($existing !== null) {
-			$merged = array_merge($existing, $klantFields);
+			$merged = array_merge($existing, $customerFields);
 			$merged['id'] = $existing['id'];
 			$merged['contactsUid'] = $uid;
 
 			return (array)$this->objectService->saveObject(self::KLANT_TYPE, $merged);
 		}
 
-		$klantFields['contactsUid'] = $uid;
-		unset($klantFields['id']);
+		$customerFields['contactsUid'] = $uid;
+		unset($customerFields['id']);
 
-		return (array)$this->objectService->saveObject(self::KLANT_TYPE, $klantFields);
+		return (array)$this->objectService->saveObject(self::KLANT_TYPE, $customerFields);
 	}//end importContact()
 
 	/**
@@ -201,15 +201,15 @@ class KlantContactSyncService {
 	 * has no `contactsUid`, or the linked contact no longer exists. Never writes
 	 * privacy-sensitive fields (bsn).
 	 *
-	 * @param array<string, mixed> $klant The klant to push.
+	 * @param array<string, mixed> $customer The klant to push.
 	 *
 	 * @return boolean True when the vCard was updated, false when skipped.
 	 *
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-004
 	 */
-	public function pushKlant(array $klant): bool {
-		$uid = ($klant['contactsUid'] ?? '');
+	public function pushKlant(array $customer): bool {
+		$uid = ($customer['contactsUid'] ?? '');
 		if ($uid === '') {
 			return false;
 		}
@@ -225,7 +225,7 @@ class KlantContactSyncService {
 			return false;
 		}
 
-		$properties = $this->klantToVCard($klant, $uid);
+		$properties = $this->klantToVCard($customer, $uid);
 		$this->contactsManager->createOrUpdate($properties, ($contact['addressbook-key'] ?? ''));
 
 		return true;
@@ -237,7 +237,7 @@ class KlantContactSyncService {
 	 * Creates a new vCard from the klant fields, stores the new uid as the
 	 * klant's `contactsUid` and returns the updated klant.
 	 *
-	 * @param string $klantId The klant id to export.
+	 * @param string $customerId The klant id to export.
 	 * @param ?string $addressBookKey The target addressbook key, or null to use
 	 *                                the first writable addressbook.
 	 *
@@ -248,7 +248,7 @@ class KlantContactSyncService {
 	 *
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
 	 */
-	public function exportKlant(string $klantId, ?string $addressBookKey = null): array {
+	public function exportKlant(string $customerId, ?string $addressBookKey = null): array {
 		if ($this->isAvailable() === false) {
 			throw new RuntimeException('Nextcloud Contacts is not available');
 		}
@@ -262,20 +262,20 @@ class KlantContactSyncService {
 			$addressBookKey = $writable[0]['key'];
 		}
 
-		$klant = $this->objectService->getObject(self::KLANT_TYPE, $klantId);
-		if ($klant === null) {
+		$customer = $this->objectService->getObject(self::KLANT_TYPE, $customerId);
+		if ($customer === null) {
 			throw new RuntimeException('Klant not found');
 		}
 
-		$klant = (array)$klant;
+		$customer = (array)$customer;
 
-		$properties = $this->klantToVCard($klant, null);
+		$properties = $this->klantToVCard($customer, null);
 		$created = $this->contactsManager->createOrUpdate($properties, $addressBookKey);
 
 		$newUid = ($created['UID'] ?? ($properties['UID'] ?? ''));
-		$klant['contactsUid'] = $newUid;
+		$customer['contactsUid'] = $newUid;
 
-		return (array)$this->objectService->saveObject(self::KLANT_TYPE, $klant);
+		return (array)$this->objectService->saveObject(self::KLANT_TYPE, $customer);
 	}//end exportKlant()
 
 	/**
@@ -298,15 +298,15 @@ class KlantContactSyncService {
 	 * Privacy-sensitive fields (bsn) are never emitted. When $uid is provided
 	 * the property set carries it so an update replaces the existing card.
 	 *
-	 * @param array<string, mixed> $klant The klant.
+	 * @param array<string, mixed> $customer The klant.
 	 * @param ?string $uid The existing contact uid, or null for a new card.
 	 *
 	 * @return array<string, mixed> The vCard property key-value set.
 	 *
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-003
 	 */
-	public function klantToVCard(array $klant, ?string $uid): array {
-		return $this->mapper->klantToVCard($klant, $uid);
+	public function klantToVCard(array $customer, ?string $uid): array {
+		return $this->mapper->klantToVCard($customer, $uid);
 	}//end klantToVCard()
 
 	/**
@@ -318,9 +318,9 @@ class KlantContactSyncService {
 		$klanten = $this->objectService->getAllObjects(self::KLANT_TYPE);
 
 		$uids = [];
-		foreach ($klanten as $klant) {
-			$klant = (array)$klant;
-			$uid = ($klant['contactsUid'] ?? '');
+		foreach ($klanten as $customer) {
+			$customer = (array)$customer;
+			$uid = ($customer['contactsUid'] ?? '');
 			if ($uid !== '') {
 				$uids[] = $uid;
 			}
@@ -336,7 +336,7 @@ class KlantContactSyncService {
 	 *
 	 * @return ?array<string, mixed> The linked klant or null.
 	 */
-	private function findKlantByContactsUid(string $uid): ?array {
+	private function findCustomerByContactsUid(string $uid): ?array {
 		$matches = $this->objectService->getObjects(
 			self::KLANT_TYPE,
 			null,
@@ -344,10 +344,10 @@ class KlantContactSyncService {
 			['contactsUid' => $uid]
 		);
 
-		foreach ($matches as $klant) {
-			$klant = (array)$klant;
-			if (($klant['contactsUid'] ?? '') === $uid) {
-				return $klant;
+		foreach ($matches as $customer) {
+			$customer = (array)$customer;
+			if (($customer['contactsUid'] ?? '') === $uid) {
+				return $customer;
 			}
 		}
 

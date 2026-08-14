@@ -149,22 +149,22 @@ class ZGWZaakLifecycleServiceTest extends TestCase {
 			->with('http://example/zaak/7')
 			->willReturn('zaak-uuid-7');
 
-		$zaak = $this->entity(
+		$case = $this->entity(
 			[
 				'einddatum' => '2024-01-01',
 				'archiefactiedatum' => '2030-01-01',
 				'archiefnominatie' => 'vernietigen',
 			]
 		);
-		$zaak->setRegister('5');
-		$zaak->setSchema('9');
+		$case->setRegister('5');
+		$case->setSchema('9');
 
 		// Assert the named-parameter contract: id is the registry-resolved
 		// value, _extend is the (empty) default.
 		$this->objectService->expects($this->once())
 			->method('find')
 			->with('zaak-uuid-7', [])
-			->willReturn($zaak);
+			->willReturn($case);
 
 		$savedPayload = null;
 		$this->objectService->method('saveObject')->willReturnCallback(
@@ -204,8 +204,8 @@ class ZGWZaakLifecycleServiceTest extends TestCase {
 	public function testVertrouwelijkheidInheritsZaaktypeDefault(): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturn('zt-uuid');
 
-		$zaaktype = $this->entity(['vertrouwelijkheidaanduiding' => 'zaakvertrouwelijk']);
-		$this->objectService->method('find')->willReturn($zaaktype);
+		$caseType = $this->entity(['vertrouwelijkheidaanduiding' => 'zaakvertrouwelijk']);
+		$this->objectService->method('find')->willReturn($caseType);
 
 		$saved = null;
 		$this->objectService->method('saveObject')->willReturnCallback(
@@ -215,8 +215,8 @@ class ZGWZaakLifecycleServiceTest extends TestCase {
 			}
 		);
 
-		$zaak = $this->entity(['zaaktype' => 'http://example/zaaktype/1']);
-		$this->service->setVertrouwelijkheidaanduiding($zaak);
+		$case = $this->entity(['zaaktype' => 'http://example/zaaktype/1']);
+		$this->service->setVertrouwelijkheidaanduiding($case);
 
 		$this->assertSame('zaakvertrouwelijk', $saved['vertrouwelijkheidaanduiding']);
 	}//end testVertrouwelijkheidInheritsZaaktypeDefault()
@@ -244,8 +244,8 @@ class ZGWZaakLifecycleServiceTest extends TestCase {
 	public function testVertrouwelijkheidRaisesTooLowClassification(): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturn('zt-uuid');
 
-		$zaaktype = $this->entity(['vertrouwelijkheidaanduiding' => 'vertrouwelijk']);
-		$this->objectService->method('find')->willReturn($zaaktype);
+		$caseType = $this->entity(['vertrouwelijkheidaanduiding' => 'vertrouwelijk']);
+		$this->objectService->method('find')->willReturn($caseType);
 
 		$saved = null;
 		$this->objectService->method('saveObject')->willReturnCallback(
@@ -255,13 +255,13 @@ class ZGWZaakLifecycleServiceTest extends TestCase {
 			}
 		);
 
-		$zaak = $this->entity(
+		$case = $this->entity(
 			[
 				'zaaktype' => 'http://example/zaaktype/1',
 				'vertrouwelijkheidaanduiding' => 'openbaar',
 			]
 		);
-		$this->service->setVertrouwelijkheidaanduiding($zaak);
+		$this->service->setVertrouwelijkheidaanduiding($case);
 
 		$this->assertSame('vertrouwelijk', $saved['vertrouwelijkheidaanduiding']);
 	}//end testVertrouwelijkheidRaisesTooLowClassification()

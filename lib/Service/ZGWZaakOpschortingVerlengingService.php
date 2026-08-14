@@ -69,8 +69,8 @@ class ZGWZaakOpschortingVerlengingService {
 	 * Raises a CustomValidationException — aborting the write — when a transition
 	 * is not allowed.
 	 *
-	 * @param ObjectEntity $zaak The zaak being updated (new state).
-	 * @param array<string,mixed>|null $oldZaak The previously persisted zaak state, or
+	 * @param ObjectEntity $case The zaak being updated (new state).
+	 * @param array<string,mixed>|null $oldCase The previously persisted zaak state, or
 	 *                                          null to resolve it from the store by uuid.
 	 * @param DateTimeImmutable|null $now The reference "now" (injectable for tests).
 	 *
@@ -79,21 +79,21 @@ class ZGWZaakOpschortingVerlengingService {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
 	 */
-	public function applyTransitions(ObjectEntity $zaak, ?array $oldZaak = null, ?DateTimeImmutable $now = null): void {
+	public function applyTransitions(ObjectEntity $case, ?array $oldCase = null, ?DateTimeImmutable $now = null): void {
 		$now = $now ?? new DateTimeImmutable();
-		$new = $zaak->jsonSerialize();
+		$new = $case->jsonSerialize();
 
-		if ($oldZaak === null) {
-			$oldZaak = $this->resolveOldZaak($zaak);
+		if ($oldCase === null) {
+			$oldCase = $this->resolveOldCase($case);
 		}
 
 		// Both handlers must run, so each call sits on the LEFT of the || and is
 		// never short-circuited away.
-		$changed = $this->handleOpschorting($new, $oldZaak, $now);
-		$changed = $this->handleVerlenging($new, $oldZaak) || $changed;
+		$changed = $this->handleSuspension($new, $oldCase, $now);
+		$changed = $this->handleExtension($new, $oldCase) || $changed;
 
 		if ($changed === true) {
-			$zaak->setObject($new);
+			$case->setObject($new);
 		}
 	}//end applyTransitions()
 
@@ -108,32 +108,32 @@ class ZGWZaakOpschortingVerlengingService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
 	 */
-	private function handleOpschorting(array &$new, array $old, DateTimeImmutable $now): bool {
-		$newIndicatie = $this->isIndicatie($new['opschorting'] ?? null);
-		$oldIndicatie = $this->isIndicatie($old['opschorting'] ?? null);
+	private function handleSuspension(array &$new, array $old, DateTimeImmutable $now): bool {
+		$newIndication = $this->isIndication($new['opschorting'] ?? null);
+		$oldIndication = $this->isIndication($old['opschorting'] ?? null);
 
 		// No transition.
-		if ($newIndicatie === $oldIndicatie) {
+		if ($newIndication === $oldIndication) {
 			return false;
 		}
 
-		if ($newIndicatie === true) {
+		if ($newIndication === true) {
 			// Suspend.
 			$this->assertOpen($old, 'opschorting');
-			if ($this->zaaktypeAllows($new, 'opschortingEnAanhoudingMogelijk') === false) {
+			if ($this->caseTypeAllows($new, 'opschortingEnAanhoudingMogelijk') === false) {
 				$this->fail('opschorting', 'opschorting-not-allowed', 'Het zaaktype staat opschorting niet toe');
 			}
 
-			$reden = (string)($new['opschorting']['reden'] ?? '');
-			if (trim($reden) === '') {
+			$reason = (string)($new['opschorting']['reden'] ?? '');
+			if (trim($reason) === '') {
 				$this->fail('opschorting.reden', 'required', 'Een reden voor opschorting is verplicht');
 			}
 
-			$opschorting = (array)$new['opschorting'];
-			$opschorting['indicatie'] = true;
+			$suspension = (array)$new['opschorting'];
+			$suspension['indicatie'] = true;
 			// App-managed bookkeeping: ZGW has no field for the suspension start.
-			$opschorting['_opschortingGestart'] = $now->format(DATE_ATOM);
-			$new['opschorting'] = $opschorting;
+			$suspension['_opschortingGestart'] = $now->format(DATE_ATOM);
+			$new['opschorting'] = $suspension;
 
 			return true;
 		}
@@ -148,11 +148,11 @@ class ZGWZaakOpschortingVerlengingService {
 			}
 		}
 
-		$opschorting = (array)($new['opschorting'] ?? []);
-		$opschorting['indicatie'] = false;
+		$suspension = (array)($new['opschorting'] ?? []);
+		$suspension['indicatie'] = false;
 		// Keep the last reden for the record; clear the start bookkeeping.
-		unset($opschorting['_opschortingGestart']);
-		$new['opschorting'] = $opschorting;
+		unset($suspension['_opschortingGestart']);
+		$new['opschorting'] = $suspension;
 
 		return true;
 	}//end handleOpschorting()
@@ -167,16 +167,16 @@ class ZGWZaakOpschortingVerlengingService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
 	 */
-	private function handleVerlenging(array &$new, array $old): bool {
-		$newVerlenging = ($new['verlenging'] ?? null);
+	private function handleExtension(array &$new, array $old): bool {
+		$newExtension = ($new['verlenging'] ?? null);
 		// Only act on a freshly-added verlenging.
-		if (is_array($newVerlenging) === false || ($newVerlenging['duur'] ?? '') === '') {
+		if (is_array($newExtension) === false || ($newExtension['duur'] ?? '') === '') {
 			return false;
 		}
 
-		$duurDays = $this->assertVerlengingAllowed($new, $old, $newVerlenging);
+		$durationDays = $this->assertExtensionAllowed($new, $old, $newExtension);
 
-		$this->shiftDeadlines($new, $duurDays);
+		$this->shiftDeadlines($new, $durationDays);
 
 		return true;
 	}//end handleVerlenging()
@@ -190,7 +190,7 @@ class ZGWZaakOpschortingVerlengingService {
 	 *
 	 * @param array<string,mixed> $new The new zaak.
 	 * @param array<string,mixed> $old The previously persisted zaak.
-	 * @param array<string,mixed> $verlenging The verlenging group being applied.
+	 * @param array<string,mixed> $extension The verlenging group being applied.
 	 *
 	 * @return integer The validated verlenging duration in days.
 	 *
@@ -198,15 +198,15 @@ class ZGWZaakOpschortingVerlengingService {
 	 *
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
 	 */
-	private function assertVerlengingAllowed(array $new, array $old, array $verlenging): int {
+	private function assertExtensionAllowed(array $new, array $old, array $extension): int {
 		// The same persisted verlenging being re-saved unchanged is not a new
 		// extension and must not shift the deadlines again.
-		$oldDuur = '';
+		$oldDuration = '';
 		if (is_array($old['verlenging'] ?? null) === true) {
-			$oldDuur = (string)($old['verlenging']['duur'] ?? '');
+			$oldDuration = (string)($old['verlenging']['duur'] ?? '');
 		}
 
-		if ($oldDuur !== '') {
+		if ($oldDuration !== '') {
 			$this->fail('verlenging', 'verlenging-already-applied', 'De zaak is al verlengd (verdaging is eenmalig)');
 		}
 
@@ -216,40 +216,40 @@ class ZGWZaakOpschortingVerlengingService {
 			$this->fail('verlenging', 'zaak-suspended', 'Een opgeschorte zaak kan niet worden verlengd');
 		}
 
-		if ($this->zaaktypeAllows($new, 'verlengingMogelijk') === false) {
+		if ($this->caseTypeAllows($new, 'verlengingMogelijk') === false) {
 			$this->fail('verlenging', 'verlenging-not-allowed', 'Het zaaktype staat verlenging niet toe');
 		}
 
-		$reden = (string)($verlenging['reden'] ?? '');
-		if (trim($reden) === '') {
+		$reason = (string)($extension['reden'] ?? '');
+		if (trim($reason) === '') {
 			$this->fail('verlenging.reden', 'required', 'Een reden voor verlenging is verplicht');
 		}
 
-		$duurDays = (int)$this->durationToDays((string)$verlenging['duur']);
-		if ($duurDays <= 0) {
+		$durationDays = (int)$this->durationToDays((string)$extension['duur']);
+		if ($durationDays <= 0) {
 			$this->fail('verlenging.duur', 'invalid-duration', 'De duur is geen geldige ISO 8601 duur');
 		}
 
 		// Cap against the zaaktype's verlengingstermijn when configured.
-		$maxDays = $this->zaaktypeMaxVerlengingDays($new);
-		if ($maxDays !== null && $duurDays > $maxDays) {
+		$maxDays = $this->caseTypeMaxExtensionDays($new);
+		if ($maxDays !== null && $durationDays > $maxDays) {
 			$this->fail('verlenging.duur', 'duration-exceeds-termijn', 'De duur overschrijdt de verlengingstermijn van het zaaktype');
 		}
 
-		return $duurDays;
+		return $durationDays;
 	}//end assertVerlengingAllowed()
 
 	/**
 	 * Shift einddatumGepland and uiterlijkeEinddatumAfdoening forward by N days.
 	 *
-	 * @param array<string,mixed> $zaak The zaak (mutated in place).
+	 * @param array<string,mixed> $case The zaak (mutated in place).
 	 * @param integer $days The number of days to add.
 	 *
 	 * @return void
 	 */
-	private function shiftDeadlines(array &$zaak, int $days): void {
+	private function shiftDeadlines(array &$case, int $days): void {
 		foreach (['einddatumGepland', 'uiterlijkeEinddatumAfdoening'] as $field) {
-			$value = (string)($zaak[$field] ?? '');
+			$value = (string)($case[$field] ?? '');
 			if ($value === '') {
 				continue;
 			}
@@ -260,19 +260,19 @@ class ZGWZaakOpschortingVerlengingService {
 				continue;
 			}
 
-			$zaak[$field] = $date->add(new DateInterval('P' . $days . 'D'))->format('Y-m-d');
+			$case[$field] = $date->add(new DateInterval('P' . $days . 'D'))->format('Y-m-d');
 		}
 	}//end shiftDeadlines()
 
 	/**
 	 * Resolve the previously persisted zaak state by uuid.
 	 *
-	 * @param ObjectEntity $zaak The new zaak.
+	 * @param ObjectEntity $case The new zaak.
 	 *
 	 * @return array<string,mixed> The old zaak state, or an empty array when not found.
 	 */
-	private function resolveOldZaak(ObjectEntity $zaak): array {
-		$uuid = (string)$zaak->getUuid();
+	private function resolveOldCase(ObjectEntity $case): array {
+		$uuid = (string)$case->getUuid();
 		if ($uuid === '') {
 			return [];
 		}
@@ -289,29 +289,29 @@ class ZGWZaakOpschortingVerlengingService {
 	/**
 	 * Whether an opschorting group has indicatie === true.
 	 *
-	 * @param mixed $opschorting The opschorting group.
+	 * @param mixed $suspension The opschorting group.
 	 *
 	 * @return boolean True when suspended.
 	 */
-	private function isIndicatie(mixed $opschorting): bool {
-		if (is_array($opschorting) === false) {
+	private function isIndication(mixed $suspension): bool {
+		if (is_array($suspension) === false) {
 			return false;
 		}
 
-		return ($opschorting['indicatie'] ?? false) === true;
+		return ($suspension['indicatie'] ?? false) === true;
 	}//end isIndicatie()
 
 	/**
 	 * Assert the zaak is open (no einddatum). Closed zaken refuse the transition.
 	 *
-	 * @param array<string,mixed> $zaak The previously persisted zaak.
+	 * @param array<string,mixed> $case The previously persisted zaak.
 	 * @param string $group The group name for the error.
 	 *
 	 * @return void
 	 */
-	private function assertOpen(array $zaak, string $group): void {
-		$einddatum = (string)($zaak['einddatum'] ?? '');
-		if ($einddatum !== '') {
+	private function assertOpen(array $case, string $group): void {
+		$endDate = (string)($case['einddatum'] ?? '');
+		if ($endDate !== '') {
 			$this->fail($group, 'zaak-closed', 'De zaak is gesloten');
 		}
 	}//end assertOpen()
@@ -321,14 +321,14 @@ class ZGWZaakOpschortingVerlengingService {
 	 *
 	 * The zaaktype switch is stored as a string ('true'/'1') on the entity.
 	 *
-	 * @param array<string,mixed> $zaak The zaak (carries the zaaktype url).
+	 * @param array<string,mixed> $case The zaak (carries the zaaktype url).
 	 * @param string $property The policy property name.
 	 *
 	 * @return boolean True when the policy is enabled.
 	 */
-	private function zaaktypeAllows(array $zaak, string $property): bool {
-		$zaaktype = $this->resolveZaaktype($zaak);
-		$value = ($zaaktype[$property] ?? null);
+	private function caseTypeAllows(array $case, string $property): bool {
+		$caseType = $this->resolveCaseType($case);
+		$value = ($caseType[$property] ?? null);
 
 		// The switch is stored as a bool on some entities and as a string on
 		// others, so accept every truthy spelling in one strict lookup.
@@ -338,37 +338,37 @@ class ZGWZaakOpschortingVerlengingService {
 	/**
 	 * The zaaktype's verlengingstermijn expressed in days, or null when unset.
 	 *
-	 * @param array<string,mixed> $zaak The zaak.
+	 * @param array<string,mixed> $case The zaak.
 	 *
 	 * @return ?integer The max verlenging in days, or null.
 	 */
-	private function zaaktypeMaxVerlengingDays(array $zaak): ?int {
-		$zaaktype = $this->resolveZaaktype($zaak);
-		$termijn = (string)($zaaktype['verlengingstermijn'] ?? '');
-		if ($termijn === '') {
+	private function caseTypeMaxExtensionDays(array $case): ?int {
+		$caseType = $this->resolveCaseType($case);
+		$term = (string)($caseType['verlengingstermijn'] ?? '');
+		if ($term === '') {
 			return null;
 		}
 
-		return $this->durationToDays($termijn);
+		return $this->durationToDays($term);
 	}//end zaaktypeMaxVerlengingDays()
 
 	/**
 	 * Resolve the linked zaaktype as an array, or an empty array.
 	 *
-	 * @param array<string,mixed> $zaak The zaak.
+	 * @param array<string,mixed> $case The zaak.
 	 *
 	 * @return array<string,mixed> The zaaktype payload.
 	 */
-	private function resolveZaaktype(array $zaak): array {
-		$zaaktypeUrl = (string)($zaak['zaaktype'] ?? '');
-		if ($zaaktypeUrl === '') {
+	private function resolveCaseType(array $case): array {
+		$caseTypeUrl = (string)($case['zaaktype'] ?? '');
+		if ($caseTypeUrl === '') {
 			return [];
 		}
 
 		try {
 			$this->objectService->clearCurrents();
-			$zaaktype = $this->objectService->find($this->registry->getObjectIdByEndpointUrl((string)$zaaktypeUrl));
-			return $zaaktype->jsonSerialize();
+			$caseType = $this->objectService->find($this->registry->getObjectIdByEndpointUrl((string)$caseTypeUrl));
+			return $caseType->jsonSerialize();
 		} catch (\Throwable $e) {
 			return [];
 		}

@@ -60,17 +60,17 @@ final class ZGWZaakOpschortingVerlengingServiceTest extends TestCase {
 	/**
 	 * Stub the zaaktype resolution so the policy gates pass/fail as configured.
 	 *
-	 * @param array<string,mixed> $zaaktype The zaaktype payload to return.
+	 * @param array<string,mixed> $caseType The zaaktype payload to return.
 	 */
-	private function stubZaaktype(array $zaaktype): void {
+	private function stubCaseType(array $caseType): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturn('zt-uuid');
-		$this->objectService->method('find')->willReturn($this->entity($zaaktype));
+		$this->objectService->method('find')->willReturn($this->entity($caseType));
 	}//end stubZaaktype()
 
 	public function testSuspendRecordsStartAndKeepsDeadlines(): void {
-		$this->stubZaaktype(['opschortingEnAanhoudingMogelijk' => 'true']);
+		$this->stubCaseType(['opschortingEnAanhoudingMogelijk' => 'true']);
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'einddatumGepland' => '2026-07-01',
 			'uiterlijkeEinddatumAfdoening' => '2026-07-01',
@@ -78,9 +78,9 @@ final class ZGWZaakOpschortingVerlengingServiceTest extends TestCase {
 		]);
 
 		$now = new DateTimeImmutable('2026-06-01T00:00:00+00:00');
-		$this->service->applyTransitions($zaak, [], $now);
+		$this->service->applyTransitions($case, [], $now);
 
-		$out = $zaak->jsonSerialize();
+		$out = $case->jsonSerialize();
 		$this->assertTrue($out['opschorting']['indicatie']);
 		$this->assertArrayHasKey('_opschortingGestart', $out['opschorting']);
 		// Deadlines are unchanged on suspend.
@@ -94,7 +94,7 @@ final class ZGWZaakOpschortingVerlengingServiceTest extends TestCase {
 			'uiterlijkeEinddatumAfdoening' => '2026-07-01',
 			'opschorting' => ['indicatie' => true, 'reden' => 'x', '_opschortingGestart' => '2026-06-01T00:00:00+00:00'],
 		];
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'einddatumGepland' => '2026-07-01',
 			'uiterlijkeEinddatumAfdoening' => '2026-07-01',
 			'opschorting' => ['indicatie' => false, 'reden' => 'x'],
@@ -102,9 +102,9 @@ final class ZGWZaakOpschortingVerlengingServiceTest extends TestCase {
 
 		// Resumed 10 days after suspension started.
 		$now = new DateTimeImmutable('2026-06-11T00:00:00+00:00');
-		$this->service->applyTransitions($zaak, $old, $now);
+		$this->service->applyTransitions($case, $old, $now);
 
-		$out = $zaak->jsonSerialize();
+		$out = $case->jsonSerialize();
 		$this->assertFalse($out['opschorting']['indicatie']);
 		$this->assertSame('2026-07-11', $out['uiterlijkeEinddatumAfdoening']);
 		$this->assertSame('2026-07-11', $out['einddatumGepland']);
@@ -112,117 +112,117 @@ final class ZGWZaakOpschortingVerlengingServiceTest extends TestCase {
 	}//end testResumeShiftsDeadlinesByElapsedSuspension()
 
 	public function testSuspendForbiddenByZaaktypeRefused(): void {
-		$this->stubZaaktype(['opschortingEnAanhoudingMogelijk' => 'false']);
+		$this->stubCaseType(['opschortingEnAanhoudingMogelijk' => 'false']);
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'opschorting' => ['indicatie' => true, 'reden' => 'reden'],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, [], new DateTimeImmutable());
+		$this->service->applyTransitions($case, [], new DateTimeImmutable());
 	}//end testSuspendForbiddenByZaaktypeRefused()
 
 	public function testSuspendWithoutRedenRefused(): void {
-		$this->stubZaaktype(['opschortingEnAanhoudingMogelijk' => 'true']);
+		$this->stubCaseType(['opschortingEnAanhoudingMogelijk' => 'true']);
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'opschorting' => ['indicatie' => true, 'reden' => '  '],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, [], new DateTimeImmutable());
+		$this->service->applyTransitions($case, [], new DateTimeImmutable());
 	}//end testSuspendWithoutRedenRefused()
 
 	public function testSuspendClosedZaakRefused(): void {
 		$old = ['einddatum' => '2026-05-01'];
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'opschorting' => ['indicatie' => true, 'reden' => 'reden'],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, $old, new DateTimeImmutable());
+		$this->service->applyTransitions($case, $old, new DateTimeImmutable());
 	}//end testSuspendClosedZaakRefused()
 
 	public function testExtendShiftsDeadlines(): void {
-		$this->stubZaaktype(['verlengingMogelijk' => 'true']);
+		$this->stubCaseType(['verlengingMogelijk' => 'true']);
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'einddatumGepland' => '2026-07-01',
 			'uiterlijkeEinddatumAfdoening' => '2026-07-01',
 			'verlenging' => ['reden' => 'meer tijd', 'duur' => 'P14D'],
 		]);
 
-		$this->service->applyTransitions($zaak, [], new DateTimeImmutable());
+		$this->service->applyTransitions($case, [], new DateTimeImmutable());
 
-		$out = $zaak->jsonSerialize();
+		$out = $case->jsonSerialize();
 		$this->assertSame('2026-07-15', $out['uiterlijkeEinddatumAfdoening']);
 		$this->assertSame('2026-07-15', $out['einddatumGepland']);
 		$this->assertSame('P14D', $out['verlenging']['duur']);
 	}//end testExtendShiftsDeadlines()
 
 	public function testExtendExceedingVerlengingstermijnRefused(): void {
-		$this->stubZaaktype(['verlengingMogelijk' => 'true', 'verlengingstermijn' => 'P14D']);
+		$this->stubCaseType(['verlengingMogelijk' => 'true', 'verlengingstermijn' => 'P14D']);
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'verlenging' => ['reden' => 'meer tijd', 'duur' => 'P30D'],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, [], new DateTimeImmutable());
+		$this->service->applyTransitions($case, [], new DateTimeImmutable());
 	}//end testExtendExceedingVerlengingstermijnRefused()
 
 	public function testSecondVerlengingRefused(): void {
 		$old = ['verlenging' => ['reden' => 'eerste', 'duur' => 'P7D']];
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'verlenging' => ['reden' => 'tweede', 'duur' => 'P7D'],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, $old, new DateTimeImmutable());
+		$this->service->applyTransitions($case, $old, new DateTimeImmutable());
 	}//end testSecondVerlengingRefused()
 
 	public function testExtendForbiddenByZaaktypeRefused(): void {
-		$this->stubZaaktype(['verlengingMogelijk' => 'false']);
+		$this->stubCaseType(['verlengingMogelijk' => 'false']);
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'verlenging' => ['reden' => 'meer tijd', 'duur' => 'P7D'],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, [], new DateTimeImmutable());
+		$this->service->applyTransitions($case, [], new DateTimeImmutable());
 	}//end testExtendForbiddenByZaaktypeRefused()
 
 	public function testExtendSuspendedZaakRefused(): void {
 		// The new state still carries opschorting.indicatie = true (unchanged from old),
 		// so the verlenging must be refused.
 		$old = ['opschorting' => ['indicatie' => true, 'reden' => 'x']];
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'zaaktype' => 'http://example/zaaktype/1',
 			'opschorting' => ['indicatie' => true, 'reden' => 'x'],
 			'verlenging' => ['reden' => 'meer tijd', 'duur' => 'P7D'],
 		]);
 
 		$this->expectException(CustomValidationException::class);
-		$this->service->applyTransitions($zaak, $old, new DateTimeImmutable());
+		$this->service->applyTransitions($case, $old, new DateTimeImmutable());
 	}//end testExtendSuspendedZaakRefused()
 
 	public function testNoTransitionLeavesZaakUntouched(): void {
 		$this->objectService->expects($this->never())->method('saveObject');
 
-		$zaak = $this->entity([
+		$case = $this->entity([
 			'einddatumGepland' => '2026-07-01',
 			'opschorting' => ['indicatie' => false, 'reden' => ''],
 		]);
 
-		$this->service->applyTransitions($zaak, ['opschorting' => ['indicatie' => false]], new DateTimeImmutable());
+		$this->service->applyTransitions($case, ['opschorting' => ['indicatie' => false]], new DateTimeImmutable());
 
-		$this->assertSame('2026-07-01', $zaak->jsonSerialize()['einddatumGepland']);
+		$this->assertSame('2026-07-01', $case->jsonSerialize()['einddatumGepland']);
 	}//end testNoTransitionLeavesZaakUntouched()
 }//end class

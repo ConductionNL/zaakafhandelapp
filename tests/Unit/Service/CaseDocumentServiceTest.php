@@ -85,16 +85,16 @@ namespace OCA\ZaakAfhandelApp\Tests\Unit\Service {
 			$file->method('getId')->willReturn(4242);
 			$file->method('getSize')->willReturn(strlen($bytes));
 
-			$zaakFolder = $this->createMock(Folder::class);
-			$zaakFolder->method('nodeExists')->with('brief.txt')->willReturn(false);
-			$zaakFolder->expects($this->once())
+			$caseFolder = $this->createMock(Folder::class);
+			$caseFolder->method('nodeExists')->with('brief.txt')->willReturn(false);
+			$caseFolder->expects($this->once())
 				->method('newFile')
 				->with('brief.txt', $bytes)
 				->willReturn($file);
 
 			$userFolder = $this->createMock(Folder::class);
 			$userFolder->method('nodeExists')->with('Zaakdocumenten/zaak-1')->willReturn(false);
-			$userFolder->method('newFolder')->with('Zaakdocumenten/zaak-1')->willReturn($zaakFolder);
+			$userFolder->method('newFolder')->with('Zaakdocumenten/zaak-1')->willReturn($caseFolder);
 
 			$this->rootFolder->method('getUserFolder')->with('alice')->willReturn($userFolder);
 

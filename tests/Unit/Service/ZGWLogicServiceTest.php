@@ -121,12 +121,12 @@ class ZGWLogicServiceTest extends TestCase {
 	public function testCreateZaakBesluitNullBesluittypenRejectsGracefully(): void {
 		$this->registry->method('getObjectIdByEndpointUrl')->willReturnArgument(0);
 
-		$zaak = $this->entity(['zaaktype' => ['besluittypen' => null]]);
+		$case = $this->entity(['zaaktype' => ['besluittypen' => null]]);
 		$besluittype = $this->entity(['omschrijving' => 'primair besluit']);
 
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id, $_extend = []) use ($zaak, $besluittype) {
-				return in_array('zaaktype', (array)$_extend, true) ? $zaak : $besluittype;
+			function ($id, $_extend = []) use ($case, $besluittype) {
+				return in_array('zaaktype', (array)$_extend, true) ? $case : $besluittype;
 			}
 		);
 
@@ -153,16 +153,16 @@ class ZGWLogicServiceTest extends TestCase {
 		$this->registry->method('getZrcRegister')->willReturn('zrc');
 		$this->registry->method('getZaakBesluitSchema')->willReturn('zaakbesluit');
 
-		$zaak = $this->entity(['zaaktype' => ['besluittypen' => ['primair besluit']]]);
+		$case = $this->entity(['zaaktype' => ['besluittypen' => ['primair besluit']]]);
 		$besluittype = $this->entity(['omschrijving' => 'primair besluit']);
 
 		// Capture _extend for the zaak lookup to lock the named-parameter usage.
-		$zaakExtend = null;
+		$caseExtend = null;
 		$this->objectService->method('find')->willReturnCallback(
-			function ($id, $_extend = []) use ($zaak, $besluittype, &$zaakExtend) {
+			function ($id, $_extend = []) use ($case, $besluittype, &$caseExtend) {
 				if (in_array('zaaktype', (array)$_extend, true) === true) {
-					$zaakExtend = $_extend;
-					return $zaak;
+					$caseExtend = $_extend;
+					return $case;
 				}
 
 				return $besluittype;
@@ -187,7 +187,7 @@ class ZGWLogicServiceTest extends TestCase {
 			)
 		);
 
-		$this->assertSame(['zaaktype'], $zaakExtend);
+		$this->assertSame(['zaaktype'], $caseExtend);
 		$this->assertInstanceOf(ObjectEntity::class, $saved);
 		$this->assertSame('http://example/zaak/1', $saved->jsonSerialize()['zaak']);
 		$this->assertSame('http://example/besluit/1', $saved->jsonSerialize()['besluit']);

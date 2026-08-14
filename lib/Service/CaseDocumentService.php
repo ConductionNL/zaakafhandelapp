@@ -38,8 +38,8 @@ class CaseDocumentService {
 	/**
 	 * Writes decoded base64 content to a file under the per-zaak folder.
 	 *
-	 * @param string $zaak The zaak identification/uuid (folder name).
-	 * @param string $bestandsnaam The file name.
+	 * @param string $case The zaak identification/uuid (folder name).
+	 * @param string $fileName The file name.
 	 * @param string $base64Inhoud The base64-encoded content.
 	 *
 	 * @return array{fileId: int, bestandsomvang: int} The stored file id and size.
@@ -48,10 +48,10 @@ class CaseDocumentService {
 	 *
 	 * @spec openspec/specs/zgw-related-resources/spec.md#REQ-004
 	 */
-	public function writeDocument(string $zaak, string $bestandsnaam, string $base64Inhoud): array {
+	public function writeDocument(string $case, string $fileName, string $base64Inhoud): array {
 		$content = $this->decode($base64Inhoud);
-		$folder = $this->resolveZaakFolder($zaak);
-		$name = $this->sanitiseName($bestandsnaam);
+		$folder = $this->resolveCaseFolder($case);
+		$name = $this->sanitiseName($fileName);
 
 		try {
 			$file = $this->putFile($folder, $name, $content);
@@ -161,20 +161,20 @@ class CaseDocumentService {
 	/**
 	 * Resolves (creating if needed) the per-zaak folder under the user's files.
 	 *
-	 * @param string $zaak The zaak identification/uuid.
+	 * @param string $case The zaak identification/uuid.
 	 *
 	 * @return Folder The per-zaak folder.
 	 *
 	 * @throws CaseDocumentException When no user is logged in or the folder cannot be created.
 	 */
-	private function resolveZaakFolder(string $zaak): Folder {
+	private function resolveCaseFolder(string $case): Folder {
 		$user = $this->userSession->getUser();
 		if ($user === null) {
 			throw new CaseDocumentException('No authenticated user to store the document for.');
 		}
 
 		$userFolder = $this->rootFolder->getUserFolder($user->getUID());
-		$path = self::ROOT_FOLDER . '/' . $this->sanitiseName($zaak);
+		$path = self::ROOT_FOLDER . '/' . $this->sanitiseName($case);
 
 		if ($userFolder->nodeExists($path) === true) {
 			$node = $userFolder->get($path);

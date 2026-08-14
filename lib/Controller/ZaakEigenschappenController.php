@@ -81,17 +81,17 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
 	 */
-	public function index(CallService $callService, string $zaakId): JSONResponse {
+	public function index(CallService $callService, string $caseId): JSONResponse {
 		if ($this->userSession->getUser() === null) {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid($zaakId, 'zaakId');
+		$uuidError = $this->assertUuid($caseId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
 
-		$results = $callService->index(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen");
+		$results = $callService->index(source: 'zrc', endpoint: "zaken/$caseId/zaakeigenschappen");
 		return new JSONResponse($results);
 	}//end index()
 
@@ -105,17 +105,17 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
 	 */
-	public function show(string $id, CallService $callService, string $zaakId): JSONResponse {
+	public function show(string $id, CallService $callService, string $caseId): JSONResponse {
 		if ($this->userSession->getUser() === null) {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid($zaakId, 'zaakId');
+		$uuidError = $this->assertUuid($caseId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
 
-		$results = $callService->show(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
+		$results = $callService->show(source: 'zrc', endpoint: "zaken/$caseId/zaakeigenschappen", id: $id);
 		return new JSONResponse($results);
 	}//end show()
 
@@ -129,19 +129,19 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
 	 */
-	public function create(CallService $callService, string $zaakId): JSONResponse {
+	public function create(CallService $callService, string $caseId): JSONResponse {
 		if ($this->userSession->getUser() === null) {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid($zaakId, 'zaakId');
+		$uuidError = $this->assertUuid($caseId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
 
 		// get post from requests
 		$body = $this->request->getParams();
-		$results = $callService->create(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body);
+		$results = $callService->create(source: 'zrc', endpoint: "zaken/$caseId/zaakeigenschappen", data: $body);
 		return new JSONResponse($results);
 	}//end create()
 
@@ -155,18 +155,18 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
 	 */
-	public function update(string $id, CallService $callService, string $zaakId): JSONResponse {
+	public function update(string $id, CallService $callService, string $caseId): JSONResponse {
 		if ($this->userSession->getUser() === null) {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid($zaakId, 'zaakId');
+		$uuidError = $this->assertUuid($caseId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
 
 		$body = $this->request->getParams();
-		$results = $callService->update(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", data: $body, id: $id);
+		$results = $callService->update(source: 'zrc', endpoint: "zaken/$caseId/zaakeigenschappen", data: $body, id: $id);
 		return new JSONResponse($results);
 	}//end update()
 
@@ -180,17 +180,17 @@ class ZaakEigenschappenController extends Controller {
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
 	 */
-	public function destroy(string $id, CallService $callService, string $zaakId): JSONResponse {
+	public function destroy(string $id, CallService $callService, string $caseId): JSONResponse {
 		if ($this->userSession->getUser() === null) {
 			return new JSONResponse(['error' => 'Not authenticated'], Http::STATUS_UNAUTHORIZED);
 		}
 
-		$uuidError = $this->assertUuid($zaakId, 'zaakId');
+		$uuidError = $this->assertUuid($caseId, 'zaakId');
 		if ($uuidError !== null) {
 			return $uuidError;
 		}
 
-		$callService->destroy(source: 'zrc', endpoint: "zaken/$zaakId/zaakeigenschappen", id: $id);
+		$callService->destroy(source: 'zrc', endpoint: "zaken/$caseId/zaakeigenschappen", id: $id);
 
 		return new JSONResponse([]);
 	}//end destroy()
