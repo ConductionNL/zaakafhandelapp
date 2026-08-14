@@ -118,6 +118,7 @@ export default {
 	flex-direction: column;
 	height: 100%;
 }
+
 .zakenContainer > .cn-table-container {
 	overflow: auto;
 }

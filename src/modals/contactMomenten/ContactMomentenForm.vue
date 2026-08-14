@@ -1767,6 +1767,7 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 	position: absolute;
 	right: 6px;
 }
+
 .contactmomentTabsContainer :deep(.nav-link) .button-vue:hover {
 	background-color: rgba(255, 255, 255, 0.045) !important;
 }

@@ -157,9 +157,11 @@ export default {
 	flex-direction: column;
 	height: 100%;
 }
+
 .openZakenContainer > .cn-table-container {
 	overflow: auto;
 }
+
 .overdueHeader {
 	color: var(--color-error);
 	font-weight: bold;

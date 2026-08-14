@@ -238,9 +238,11 @@ export default {
 	flex-direction: column;
 	height: 100%;
 }
+
 .personenContainer > .cn-table-container {
 	overflow: auto;
 }
+
 .searchButton {
 	min-width: min-content !important;
 }

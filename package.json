@@ -26,7 +26,7 @@
     "test:e2e": "playwright test",
     "test:e2e:docs": "playwright test --project docs-capture",
     "test:e2e:install": "playwright install chromium",
-    "stylelint": "stylelint \"src/**/*.{vue,scss,css}\"",
+    "stylelint": "stylelint \"{src,css}/**/*.{vue,scss,css}\"",
     "format": "prettier --check \"**/*.{js,ts,vue,css,scss}\"",
     "format:fix": "prettier --write \"**/*.{js,ts,vue,css,scss}\""
   },

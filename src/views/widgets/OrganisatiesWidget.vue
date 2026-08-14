@@ -175,18 +175,22 @@ export default {
 	flex-direction: column;
 	height: 100%;
 }
+
 .openZakenContainer > .cn-table-container {
 	overflow: auto;
 }
+
 .searchContainer {
 	display: flex;
 	align-items: end;
 	gap: 10px;
 	flex: 1;
 }
+
 .OrgSearchField {
 	width: auto;
 }
+
 .searchButton {
 	min-width: min-content !important;
 }

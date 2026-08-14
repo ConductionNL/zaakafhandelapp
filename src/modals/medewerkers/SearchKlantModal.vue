@@ -448,9 +448,11 @@ export default {
 	align-items: center;
 	gap: 10px;
 }
+
 .searchField {
 	width: auto;
 }
+
 .searchButton {
 	margin-block-start: 3px;
 	min-width: min-content !important;
