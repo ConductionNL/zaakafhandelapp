@@ -34,7 +34,7 @@
     "extends @nextcloud/browserslist-config"
   ],
   "dependencies": {
-    "@conduction/nextcloud-vue": "2.2.0-vue3.16",
+    "@conduction/nextcloud-vue": "^2.3.0",
     "@nextcloud/auth": "^2.5.0",
     "@nextcloud/axios": "~2.5.2",
     "@nextcloud/capabilities": "^1.2.1",
@@ -106,10 +106,7 @@
     "webpack-cli": "^7.0.2"
   },
   "overrides": {
-    "minimatch": "^3.1.2",
-    "@conduction/nextcloud-vue": {
-      "eslint": "$eslint"
-    }
+    "minimatch": "^3.1.2"
   },
   "prettier": "@nextcloud/prettier-config"
 }
