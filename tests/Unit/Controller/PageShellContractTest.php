@@ -109,11 +109,12 @@ class PageShellContractTest extends TestCase {
 		$session = $this->createMock(IUserSession::class);
 
 		if ($class === DashboardController::class) {
+			// DashboardController serves the SPA shell only; it injects neither
+			// IAppConfig nor IUserSession since its api/dashboard demo-stub
+			// quintet was removed.
 			$controller = new DashboardController(
 				'zaakafhandelapp',
-				$request,
-				$this->createMock(IAppConfig::class),
-				$session
+				$request
 			);
 			return $controller->page();
 		}
