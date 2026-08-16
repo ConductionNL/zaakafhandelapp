@@ -20,6 +20,17 @@ use OCP\IUserSession;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
+/**
+ * Every routed method here carries the gate-7 exemption tag for the
+ * reason set out in full in `StatusenController`'s class docblock: this
+ * controller owns no storage, each method is a thin outbound proxy to the
+ * external ZRC/DRC configured in app settings, and `CallService` authenticates
+ * with ONE instance-wide credential from `IAppConfig`. There is no
+ * zaakafhandelapp-owned object to scope to the caller.
+ *
+ * The exemption claims no per-user scoping, because there is none. ADR-085
+ * places this surface in openconnector — zaakafhandelapp#381 records the debt.
+ */
 class ZaakInformatieObjectenController extends Controller {
 	public function __construct(
 		$appName,
@@ -58,6 +69,9 @@ class ZaakInformatieObjectenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+	 *
+	 * @no-admin-idor-exempt Outbound proxy to the external ZGW source under one
+	 *   instance-wide credential; no zaakafhandelapp-owned object exists to scope.
 	 */
 	public function index(CallService $callService): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -77,6 +91,9 @@ class ZaakInformatieObjectenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+	 *
+	 * @no-admin-idor-exempt Outbound proxy to the external ZGW source under one
+	 *   instance-wide credential; no zaakafhandelapp-owned object exists to scope.
 	 */
 	public function show(string $id, CallService $callService): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -135,6 +152,9 @@ class ZaakInformatieObjectenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+	 *
+	 * @no-admin-idor-exempt Outbound proxy to the external ZGW source under one
+	 *   instance-wide credential; no zaakafhandelapp-owned object exists to scope.
 	 */
 	public function create(CallService $callService): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -167,6 +187,9 @@ class ZaakInformatieObjectenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+	 *
+	 * @no-admin-idor-exempt Outbound proxy to the external ZGW source under one
+	 *   instance-wide credential; no zaakafhandelapp-owned object exists to scope.
 	 */
 	public function update(string $id, CallService $callService): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -194,6 +217,9 @@ class ZaakInformatieObjectenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-005
+	 *
+	 * @no-admin-idor-exempt Outbound proxy to the external ZGW source under one
+	 *   instance-wide credential; no zaakafhandelapp-owned object exists to scope.
 	 */
 	public function destroy(string $id, CallService $callService): JSONResponse {
 		if ($this->userSession->getUser() === null) {

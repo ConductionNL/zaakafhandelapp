@@ -24,6 +24,7 @@ use OCA\ZaakAfhandelApp\Controller\BerichtenController;
 use OCA\ZaakAfhandelApp\Controller\ContactMomentenController;
 use OCA\ZaakAfhandelApp\Controller\DashboardController;
 use OCA\ZaakAfhandelApp\Controller\MedewerkersController;
+use OCA\ZaakAfhandelApp\Controller\ResultatenController;
 use OCA\ZaakAfhandelApp\Controller\ZaakInformatieObjectenController;
 use OCA\ZaakAfhandelApp\Service\ObjectService;
 use OCP\AppFramework\Http;
@@ -76,6 +77,13 @@ class PageShellContractTest extends TestCase {
 			'medewerkers#page' => [MedewerkersController::class],
 			'dashboard#page' => [DashboardController::class],
 			'zaakInformatieObjecten#page' => [ZaakInformatieObjectenController::class],
+			// `resultaten#pages` — note the PLURAL. It is the same shell contract
+			// as the four above, and it was the odd name that kept it out of this
+			// provider: a sweep looking for `page()` does not find `pages()`, and
+			// the route stayed untested while looking exactly like the others.
+			// Registered twice (`/resultaten` and `/resultaten/{id}` via the
+			// `postfix` entry), both served by this one method.
+			'resultaten#pages' => [ResultatenController::class],
 		];
 	}//end pageProvider()
 
@@ -117,6 +125,17 @@ class PageShellContractTest extends TestCase {
 				$request
 			);
 			return $controller->page();
+		}
+
+		if ($class === ResultatenController::class) {
+			$controller = new ResultatenController(
+				'zaakafhandelapp',
+				$request,
+				$this->createMock(IAppConfig::class),
+				$session
+			);
+			// `pages()`, not `page()` — see the provider note.
+			return $controller->pages();
 		}
 
 		if ($class === ZaakInformatieObjectenController::class) {

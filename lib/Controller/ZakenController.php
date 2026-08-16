@@ -22,6 +22,52 @@ use Psr\Log\LoggerInterface;
  * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
  * SPDX-License-Identifier: EUPL-1.2
  */
+/**
+ * ## Why the routed methods here carry the gate-7 exemption tag
+ *
+ * THIS IS THE CANONICAL NOTE for zaakafhandelapp's OpenRegister-backed
+ * controllers; the others point at it rather than repeating it.
+ *
+ * Per-object authorisation is delegated to OpenRegister's organisation
+ * multitenancy, reached four hops down:
+ *
+ *     Controller -> ZaakAfhandelApp\Service\ObjectService
+ *                -> ObjectQueryService
+ *                -> ObjectMapperService::getMapper()
+ *                -> OpenRegister\Service\ObjectService
+ *
+ * gate-7 cannot see it. Its Pattern 2b clears a leaf app only when the
+ * controller FILE imports OR's `ObjectService`; these files import
+ * zaakafhandelapp's own facade of the same name, which the pattern
+ * deliberately excludes ("a local class of that name clears nothing") because
+ * a local `ObjectService` is usually the app's own storage. Here it is not —
+ * it is a pass-through — but the gate has no way to know that.
+ *
+ * ⚠️ MEASURED, NOT ASSUMED. A claim that a guard lives further down is worth
+ * nothing until someone has watched it refuse. Probed on the shared dev
+ * instance 2026-08-16 with two real users over HTTP:
+ *
+ *   * `zaa-idor-a` created a zaak; `owner=zaa-idor-a`,
+ *     `organisation=286a9152-…` (Default Organisation).
+ *   * `zaa-idor-b` in the SAME organisation read it: **HTTP 200, full body**,
+ *     and it appeared in their list.
+ *   * `zaa-idor-b` moved to Gemeente Amsterdam and read the same id:
+ *     **HTTP 404**, and the object was **absent from the list** (0 results).
+ *
+ * So the boundary is real and it is the ORGANISATION, not the individual user
+ * — and it refuses 404-style, which gate-7's own finding text names as a
+ * legitimate guard ("chosen so a 403 cannot become an existence oracle").
+ *
+ * The exemption therefore claims exactly this and no more: cross-tenant access
+ * is refused; colleagues inside one gemeente share the caseload by design.
+ * A per-user restriction is available where a case needs one — OR's
+ * `authorization` block on the object — and is not used here.
+ *
+ * An explicit `_rbac: false` anywhere in that chain would withdraw the claim.
+ * There are two `_multitenancy: false` calls in the app, both in
+ * `ObjectMapperService` and both on register/schema METADATA (lines 198, 233),
+ * not on object data.
+ */
 class ZakenController extends Controller {
 	public function __construct(
 		$appName,
@@ -42,6 +88,9 @@ class ZakenController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. Class docblock.
 	 */
 	public function index(): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -108,6 +157,9 @@ class ZakenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. Class docblock.
 	 */
 	public function show(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -141,6 +193,9 @@ class ZakenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. Class docblock.
 	 */
 	public function create(): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -182,6 +237,9 @@ class ZakenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. Class docblock.
 	 */
 	public function update(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -219,6 +277,9 @@ class ZakenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-003
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. Class docblock.
 	 */
 	public function destroy(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -248,6 +309,9 @@ class ZakenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-004
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. Class docblock.
 	 */
 	public function getAuditTrail(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
