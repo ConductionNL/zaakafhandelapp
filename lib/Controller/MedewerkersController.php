@@ -203,7 +203,6 @@ class MedewerkersController extends Controller {
 	 * Delete an employee
 	 *
 	 * @NoAdminRequired
-	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *

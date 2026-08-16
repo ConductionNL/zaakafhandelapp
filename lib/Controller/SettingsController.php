@@ -166,7 +166,10 @@ class SettingsController extends Controller {
 	 *
 	 * @return JSONResponse JSON response containing the updated settings
 	 *
-	 * @NoCSRFRequired
+	 * @auth admin-only Writes instance-wide zaakafhandelapp configuration (the
+	 *       register/schema/source binding every ZGW route resolves its mapper
+	 *       from). Enforced by omission: with no @NoAdminRequired, Nextcloud's
+	 *       SecurityMiddleware throws NotAdminException for a non-admin caller.
 	 *
 	 * @spec openspec/specs/app-configuration/spec.md#REQ-002
 	 */

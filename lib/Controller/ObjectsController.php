@@ -351,7 +351,6 @@ class ObjectsController extends Controller {
 	 * Delete an object
 	 *
 	 * @NoAdminRequired
-	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *

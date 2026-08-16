@@ -202,8 +202,6 @@ class ZaakTypenController extends Controller {
 	/**
 	 * Delete an object. Admin-only: zaaktypen are validation master data.
 	 *
-	 * @NoCSRFRequired
-	 *
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-related-resources/spec.md#REQ-002
