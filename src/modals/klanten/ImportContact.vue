@@ -108,6 +108,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
+import { getRequestToken } from '@nextcloud/auth'
 import {
 	NcActionButton,
 	NcButton,
@@ -196,7 +197,10 @@ export default {
 			this.success = ''
 			fetch('/index.php/apps/zaakafhandelapp/api/klanten/contacts/import', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
+				},
 				body: JSON.stringify({ uid: contact.uid }),
 			})
 				.then(async (response) => {
