@@ -44,11 +44,6 @@
       "count": 1
     }
   },
-  "src/entities/index.js": {
-    "import/export": {
-      "count": 1
-    }
-  },
   "src/entities/klanten/klanten.mock.ts": {
     "import-extensions/extensions": {
       "count": 1
@@ -121,11 +116,6 @@
   },
   "src/entities/zaakTypen/zaakTypen.spec.ts": {
     "import-extensions/extensions": {
-      "count": 1
-    }
-  },
-  "src/main.js": {
-    "no-undef": {
       "count": 1
     }
   },
