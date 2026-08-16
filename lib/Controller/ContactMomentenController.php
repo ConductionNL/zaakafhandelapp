@@ -200,7 +200,6 @@ class ContactMomentenController extends Controller {
 	 * Delete a contact moment
 	 *
 	 * @NoAdminRequired
-	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *

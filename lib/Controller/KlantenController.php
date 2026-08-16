@@ -217,8 +217,6 @@ class KlantenController extends Controller {
 	/**
 	 * Delete an object. Admin-only: klanten are master data.
 	 *
-	 * @NoCSRFRequired
-	 *
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002

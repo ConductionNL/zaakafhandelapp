@@ -88,7 +88,10 @@ class KlantContactsController extends Controller {
 	 * data, mirroring KlantenController::create()/update(). Idempotent on
 	 * contactsUid.
 	 *
-	 * @NoCSRFRequired
+	 * @auth admin-only Klanten are master data, so this mirrors the posture of
+	 *       KlantenController::create()/update()/destroy(). Enforced by
+	 *       omission: with no @NoAdminRequired, Nextcloud's SecurityMiddleware
+	 *       throws NotAdminException for a non-admin caller.
 	 *
 	 * @return JSONResponse
 	 *

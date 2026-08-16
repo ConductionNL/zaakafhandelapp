@@ -200,10 +200,9 @@ class BerichtenController extends Controller {
 	}//end update()
 
 	/**
-	 * Delate an object
+	 * Delete an object
 	 *
 	 * @NoAdminRequired
-	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *

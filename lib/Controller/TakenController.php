@@ -230,7 +230,6 @@ class TakenController extends Controller {
 	 * @param string $id The object ID.
 	 *
 	 * @NoAdminRequired
-	 * @NoCSRFRequired
 	 *
 	 * @return JSONResponse
 	 *
