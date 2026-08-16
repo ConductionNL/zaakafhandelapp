@@ -42,6 +42,10 @@ class ContactMomentenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function index(): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -108,6 +112,10 @@ class ContactMomentenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-001
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function show(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -137,6 +145,10 @@ class ContactMomentenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function create(): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -170,6 +182,10 @@ class ContactMomentenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function update(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -204,6 +220,10 @@ class ContactMomentenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function destroy(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -233,6 +253,10 @@ class ContactMomentenController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-client-interaction/spec.md#REQ-004
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function getAuditTrail(string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {

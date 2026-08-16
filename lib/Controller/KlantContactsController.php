@@ -70,6 +70,10 @@ class KlantContactsController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-001
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function searchContacts(): JSONResponse {
 		if ($this->userSession->getUser() === null) {

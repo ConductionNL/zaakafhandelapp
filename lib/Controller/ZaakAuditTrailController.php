@@ -82,6 +82,10 @@ class ZaakAuditTrailController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function index(string $zaakUuid): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -120,6 +124,10 @@ class ZaakAuditTrailController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-zaak-management/spec.md#REQ-007
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function show(string $zaakUuid, string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {

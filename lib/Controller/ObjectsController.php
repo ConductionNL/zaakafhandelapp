@@ -178,6 +178,10 @@ class ObjectsController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function index(string $objectType): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -211,6 +215,10 @@ class ObjectsController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function show(string $objectType, string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -394,6 +402,10 @@ class ObjectsController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function getAuditTrail(string $objectType, string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -443,6 +455,10 @@ class ObjectsController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function getRelations(string $objectType, string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -485,6 +501,10 @@ class ObjectsController extends Controller {
 	 * @return JSONResponse
 	 *
 	 * @spec openspec/specs/zgw-object-data-access/spec.md#REQ-002
+	 *
+	 * @no-admin-idor-exempt Per-object authorisation delegated to OpenRegister's
+	 *   organisation multitenancy; cross-tenant reads measured to 404. See the
+	 *   canonical note in ZakenController's class docblock.
 	 */
 	public function getUses(string $objectType, string $id): JSONResponse {
 		if ($this->userSession->getUser() === null) {
