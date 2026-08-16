@@ -177,6 +177,7 @@
 
 <script>
 import { CnAdminSettingsShell } from '@conduction/nextcloud-vue'
+import { getRequestToken } from '@nextcloud/auth'
 import { translatePlural as n, translate as t } from '@nextcloud/l10n'
 // Components
 import {
@@ -1094,6 +1095,7 @@ export default {
 				}),
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 			})
 				.then((response) => {
@@ -1202,6 +1204,7 @@ export default {
 				}),
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 			})
 				.then((response) => {
@@ -1331,6 +1334,7 @@ export default {
 				}),
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 			})
 				.then((response) => {

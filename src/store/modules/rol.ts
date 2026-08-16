@@ -1,5 +1,6 @@
 import type { TRol } from '../../entities/index.js'
 
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Rol } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -142,6 +143,9 @@ export const useRolStore = defineStore('rollen', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -186,6 +190,7 @@ export const useRolStore = defineStore('rollen', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(rolItem),
 			})

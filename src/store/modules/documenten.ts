@@ -1,5 +1,6 @@
 import type { TDocument } from '../../entities/index.js'
 
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Document } from '../../entities/index.js'
 
@@ -164,6 +165,9 @@ export const useDocumentStore = defineStore('documenten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			this.refreshDocumentenList()
@@ -199,6 +203,7 @@ export const useDocumentStore = defineStore('documenten', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(documentItem),
 			})
