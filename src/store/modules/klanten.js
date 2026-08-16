@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Klant } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -192,6 +193,9 @@ export const useKlantStore = defineStore('klanten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -224,6 +228,7 @@ export const useKlantStore = defineStore('klanten', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(klantItem),
 			})

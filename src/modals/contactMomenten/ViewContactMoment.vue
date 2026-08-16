@@ -388,6 +388,7 @@ import {
 <script>
 // Components
 import { CnTab, CnTabs } from '@conduction/nextcloud-vue'
+import { getRequestToken } from '@nextcloud/auth'
 import {
 	NcActionButton,
 	NcActions,
@@ -650,6 +651,7 @@ export default {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify({
 					...contactMomentCopy,

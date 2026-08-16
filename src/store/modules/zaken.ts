@@ -1,5 +1,6 @@
 import type { TZaak } from '../../entities/index.js'
 
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Zaak } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -127,6 +128,9 @@ export const useZaakStore = defineStore('zaken', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -168,6 +172,7 @@ export const useZaakStore = defineStore('zaken', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(zaakItem),
 			})

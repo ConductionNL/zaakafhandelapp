@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Taak } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -128,6 +129,9 @@ export const useTaakStore = defineStore('taken', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -162,6 +166,7 @@ export const useTaakStore = defineStore('taken', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(taakItem),
 			})

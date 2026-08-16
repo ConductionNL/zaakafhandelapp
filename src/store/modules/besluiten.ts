@@ -1,5 +1,6 @@
 import type { TBesluit } from '../../entities/index.js'
 
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Besluit } from '../../entities/index.js'
 
@@ -116,6 +117,9 @@ export const useBesluitStore = defineStore('besluiten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			return { response }
@@ -149,6 +153,7 @@ export const useBesluitStore = defineStore('besluiten', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(besluitItem),
 			})

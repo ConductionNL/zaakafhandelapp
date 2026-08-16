@@ -1,5 +1,6 @@
 import type { TResultaat } from '../../entities/index.js'
 
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Resultaat } from '../../entities/index.js'
 
@@ -135,6 +136,9 @@ export const useResultaatStore = defineStore('resultaten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			this.refreshResultatenList()
@@ -170,6 +174,7 @@ export const useResultaatStore = defineStore('resultaten', {
 				method,
 				headers: {
 					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
 				body: JSON.stringify(resultaatItem),
 			})
