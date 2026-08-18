@@ -1,0 +1,8 @@
+{
+  "spec_slug": "hermiq-ai-tooling",
+  "title": "MCP tooling for every case-handling action (hermiq grant model)",
+  "app": "zaakafhandelapp",
+  "repo": "https://codeberg.org/Conduction/zaakafhandelapp",
+  "depends_on": [],
+  "issue": null
+}
