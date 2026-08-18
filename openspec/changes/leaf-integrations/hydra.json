@@ -1,0 +1,8 @@
+{
+  "spec_slug": "leaf-integrations",
+  "title": "Adopt OpenRegister integration leaves (mail, calendar, contacts, forms)",
+  "app": "zaakafhandelapp",
+  "repo": "https://codeberg.org/Conduction/zaakafhandelapp",
+  "depends_on": [],
+  "issue": null
+}
