@@ -53,6 +53,30 @@ jobs:
       # step globs `*.postman_collection.json` in — flat, not recursively.
       enable-newman: true
 
+      # `newman-seed-command` defaults to '' and this caller never set it, so
+      # the Newman job ran the collection against a Nextcloud that had neither
+      # the register the collection reads nor the appconfig that binds the app
+      # to it. Measured on run 31046181191 (development, c790bb0):
+      # 45 requests, 55 assertions, 38 passed, 17 FAILED — and every one of the
+      # 17 traced to those two absences, not to the app's HTTP behaviour.
+      #
+      # The same absence is already handled for the Playwright job below via
+      # `playwright-seed-command`; Newman was simply left behind, and its
+      # failures were the more misleading of the two. `ObjectMapperService`
+      # throws an UNCAUGHT `InvalidArgumentException("Unknown object type: …")`
+      # when `<type>_source` is still 'internal', so an unseeded instance
+      # answers with Nextcloud's HTML error page — which surfaces in the log as
+      # `JSONError  Unexpected token '<' at 1:1` and reads like a broken
+      # response contract rather than a missing fixture.
+      #
+      # The seed script imports the register (delegating to the E2E script so
+      # there is one copy of the payload), binds zaken/taken/klanten, and then
+      # verifies BOTH read and write per type before returning — a slug in
+      # `<type>_register` passes the read path and 500s the write path, so
+      # verifying only the list endpoint would let that through.
+      # cwd for this step is the Nextcloud server root.
+      newman-seed-command: 'bash apps/zaakafhandelapp/tests/integration/ci-seed.sh'
+
       # ── Coverage ratchet ─────────────────────────────────────────────────
       # `enable-coverage-guard` defaults to FALSE, which is why both
       # "Coverage Baseline Protection" (PR side) and "Coverage Baseline Check"

@@ -197,6 +197,27 @@ fi
 
 echo "[ci-seed] zaakafhandelapp register + schemas provisioned."
 
+# ── 2b. Frontend opt-out ─────────────────────────────────────────────────────
+# Everything above is about the OpenRegister register; everything below is about
+# the compiled SPA bundle. The Integration Tests (Newman) job needs the first
+# half and CANNOT satisfy the second: unlike the Playwright job, it has no
+# "Build app frontend" step at all (see ConductionNL/.github
+# `.github/workflows/quality.yml`, job `newman` — checkout, PHP, install,
+# `php -S`, seed, newman; no node build before the seed). So the bundle GATE at
+# the bottom of this script — which is a hard `exit 1` under CI, and correctly
+# so for an E2E run — would fail the Newman seed step for the absence of a
+# thing Newman never uses. `tests/integration/ci-seed.sh` therefore calls this
+# script with ZAA_SEED_SKIP_FRONTEND=1 and stops here.
+#
+# This is an opt-out for a DIFFERENT job, not a relaxation of the E2E gate: the
+# Playwright seed sets nothing and still runs the warm-up and the gate exactly
+# as before.
+if [ "${ZAA_SEED_SKIP_FRONTEND:-}" = "1" ]; then
+	echo "[ci-seed] ZAA_SEED_SKIP_FRONTEND=1 — skipping SPA warm-up and bundle gate (API-only consumer)."
+	echo "[ci-seed] done."
+	exit 0
+fi
+
 # ── 3. Warm the SPA so the first spec doesn't pay the cold start ─────────────
 # The shared workflow serves Nextcloud with `php -S 0.0.0.0:8080`. The first
 # hit pays a cold opcache and the first parse of the webpack bundle, and the
