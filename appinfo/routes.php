@@ -31,11 +31,7 @@ return [
 		'berichten' => ['url' => 'api/berichten'],
 		'contactMomenten' => ['url' => 'api/contactmomenten'],
 		'medewerkers' => ['url' => 'api/medewerkers'],
-		// `dashboard` is deliberately NOT a resource. DashboardController serves
-		// the SPA shell only (`dashboard#page` below); its api/dashboard quintet
-		// returned a hardcoded demo constant with no caller in `src/` and was
-		// removed rather than guarded — see the class docblock and
-		// ConductionNL/zaakafhandelapp#347.
+		'dashboard' => ['url' => 'api/dashboard'],
 	],
 	'routes' => [
 		// Audit trail routes

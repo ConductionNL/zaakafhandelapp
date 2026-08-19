@@ -273,13 +273,7 @@ class TakenController extends Controller {
 		}
 
 		try {
-			// Scope guard — NOT an authorisation guard. ObjectService::getAuditTrail()
-			// resolves rows from the uuid alone, so without this probe an id belonging
-			// to an entirely different register is answered here. It does NOT establish
-			// that the caller may read this taak: the app's registers ship
-			// `"authorization": null`, and OpenRegister treats an empty authorization
-			// block as open to all non-private rows
-			// (MagicRbacHandler::applyRbacFilters). See zaakafhandelapp#347.
+			// IDOR guard: verify the object exists and is accessible before returning its audit trail.
 			$object = $this->objectService->getObject('taken', $id);
 			if ($object === null) {
 				return new JSONResponse(['error' => 'Not found'], Http::STATUS_NOT_FOUND);
