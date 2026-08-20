@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Medewerker } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -14,6 +15,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 	}),
 	actions: {
 		/**
+		 * @param medewerkerItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setMedewerkerItem(medewerkerItem) {
@@ -21,6 +23,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			console.log('Active medewerker item set to ' + medewerkerItem)
 		},
 		/**
+		 * @param widgetMedewerkerId
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setWidgetMedewerkerId(widgetMedewerkerId) {
@@ -28,19 +31,23 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			console.log('Widget medewerker id set to ' + widgetMedewerkerId)
 		},
 		/**
+		 * @param medewerkersList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setMedewerkersList(medewerkersList) {
 			this.medewerkersList = medewerkersList.map(
-			    (medewerkerItem) => new Medewerker(medewerkerItem),
+				(medewerkerItem) => new Medewerker(medewerkerItem),
 			)
-			console.log('Medewerkers list set to ' + medewerkersList.length + ' items')
+			console.log(
+				'Medewerkers list set to ' + medewerkersList.length + ' items',
+			)
 		},
 		setAuditTrailItem(auditTrailItem) {
 			this.auditTrailItem = auditTrailItem
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		/**
+		 * @param search
 		 * @spec openspec/specs/state-stores/spec.md#REQ-002
 		 */
 		async refreshMedewerkersList(search = null) {
@@ -60,7 +67,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -87,7 +96,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -116,7 +127,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -145,7 +158,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 			}
 
 			const data = (await response.json()).results
-			const entities = data.map((medewerkerItem) => new Medewerker(medewerkerItem))
+			const entities = data.map(
+				(medewerkerItem) => new Medewerker(medewerkerItem),
+			)
 
 			this.setMedewerkersList(data)
 
@@ -154,6 +169,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 		// New function to get a single medewerker
 		/**
+		 * @param id
 		 * @spec openspec/specs/state-stores/spec.md#REQ-003
 		 */
 		async getMedewerker(id) {
@@ -177,6 +193,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		},
 		// Delete a medewerker
 		/**
+		 * @param medewerkerItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async deleteMedewerker(medewerkerItem) {
@@ -188,6 +205,9 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -202,6 +222,7 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 		},
 		// Create or save a medewerker from store
 		/**
+		 * @param medewerkerItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async saveMedewerker(medewerkerItem) {
@@ -215,16 +236,14 @@ export const useMedewerkerStore = defineStore('medewerkers', {
 				: `${apiEndpoint}/${medewerkerItem.id}`
 			const method = isNewMedewerker ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(medewerkerItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(medewerkerItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

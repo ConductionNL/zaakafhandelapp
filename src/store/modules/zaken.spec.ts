@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
+import { createPinia, setActivePinia } from 'pinia'
+import { mockZaak, Zaak } from '../../entities/index.js'
 import { useZaakStore } from './zaken'
-import { Zaak, mockZaak } from '../../entities/index.js'
 
 describe('Zaak Store', () => {
 	beforeEach(() => {

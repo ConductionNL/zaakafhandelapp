@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TOpschorting, TVerlenging, TZaak, zaakTypeID } from './zaak.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TOpschorting, TVerlenging, TZaak, zaakTypeID } from './zaak.types'
+
+import { z } from 'zod'
 
 export class Zaak implements TZaak {
-
 	public id: string
 	public uuid: string
 	public omschrijving: string
@@ -90,17 +91,20 @@ export class Zaak implements TZaak {
 			hoofdzaak: z.string(),
 			klant: z.string(),
 			berichten: z.array(z.string()),
-			opschorting: z.object({
-				indicatie: z.boolean(),
-				reden: z.string(),
-			}).optional(),
-			verlenging: z.object({
-				reden: z.string(),
-				duur: z.string(),
-			}).optional(),
+			opschorting: z
+				.object({
+					indicatie: z.boolean(),
+					reden: z.string(),
+				})
+				.optional(),
+			verlenging: z
+				.object({
+					reden: z.string(),
+					duur: z.string(),
+				})
+				.optional(),
 		})
 
 		return schema.safeParse(this)
 	}
-
 }

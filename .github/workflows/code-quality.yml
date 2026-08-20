@@ -2,16 +2,290 @@ name: Code Quality
 
 on:
   push:
-    branches: [main, development, feature/**, bugfix/**, hotfix/**]
+    # An ALLOW-LIST of branch prefixes is a gate with a hole in it, and the
+    # hole is SILENT: a branch matching nothing gets no CI at all, and its last
+    # visible status is whatever it inherited — indistinguishable, on every
+    # dashboard, from a branch that passed.
+    #
+    # Two live examples, both found 2026-08-14: `perf/**` was uncovered in
+    # openconnector, where a merge carrying unresolved conflict markers and 84
+    # failing tests was pushed and nothing ran; and `feat/**` was uncovered in
+    # openregister — note the list said `feature/**`, so every branch anyone
+    # named `feat/...` had been running unchecked.
+    #
+    # Prefixes are added rather than replaced with `**` because this workflow is
+    # expensive (PHPUnit matrix, Newman, Playwright). The fast structural checks
+    # DO run on `**` — see merge-hygiene.yml, added in the same change.
+    #
+    # ⚠️ Adding prefixes is not the durable fix; the next invented one is
+    # uncovered again. The durable fix is branch protection requiring a PR into
+    # development, which the pull_request trigger below already gates correctly.
+    branches:
+      - main
+      - development
+      - feature/**
+      - feat/**
+      - bugfix/**
+      - hotfix/**
+      - perf/**
+      - refactor/**
+      - chore/**
+      - fix/**
   pull_request:
     branches: [main, beta, development]
   workflow_dispatch:
 
 jobs:
   quality:
-    uses: Conduction/.github/.github/workflows/quality.yml@main
+    uses: ConductionNL/.github/.github/workflows/quality.yml@main
     with:
       app-name: zaakafhandelapp
       php-version: "8.3"
       enable-psalm: true
       enable-phpstan: true
+
+      # `enable-phpunit` defaults to FALSE in the shared workflow and this
+      # caller never set it, so the 99 unit tests under tests/Unit had never
+      # run in CI. The job still listed itself as
+      # `PHPUnit (PHP ${{ matrix.php-version }}, NC ${{ matrix.nextcloud-ref }})`
+      # and reported `skipped` — GitHub evaluates a matrix job's `if:` before
+      # expanding the matrix, so the placeholders stay literal and a disabled
+      # job looks exactly like a repo with no PHP tests.
+      #
+      # Note the callee ALSO skips this job when `php-quality` fails, which is
+      # what kept it dark in the sibling repos. zaakafhandelapp's php-quality
+      # went fully green in #312, so this boolean is the only thing left.
+      enable-phpunit: true
+
+      # ── Which Nextcloud server CI installs ───────────────────────────────
+      # This input is NOT only the PHPUnit matrix. `quality.yml` also uses
+      # `fromJSON(nextcloud-test-refs)[0]` as the server checked out for the
+      # Newman job (:1946) and the Playwright job (:2317, :3423). Leaving it
+      # unset took the callee default `'["stable31", "stable32"]'`, so both
+      # browser/API jobs installed **stable31**.
+      #
+      # OpenRegister — declared below in `additional-apps`, and a HARD
+      # dependency of this app — raised its floor to `min-version="32"` on
+      # 2026-08-08 (openregister#2384). On stable31 `occ app:enable
+      # openregister` therefore fails with:
+      #
+      #   App "Open Register" cannot be installed because it is not compatible
+      #   with this version of the server.
+      #
+      # The callee downgrades that to `::warning::Failed to enable
+      # openregister, continuing...`, so both jobs ran on to completion against
+      # a server that cannot host the app: Newman produced a full, credible
+      # 54-assertion tally in which every OpenRegister route 404'd, and the
+      # Playwright seed aborted with "Refusing to run Playwright against a
+      # half-seeded instance".
+      #
+      # stable31 is not a version this app can function on at ALL —
+      # src/manifest.json declares `dependencies: ["openregister"]` and every
+      # index/detail page reads through it. Testing on it was measuring a
+      # configuration that cannot exist. stable32/stable33 are both inside the
+      # `min-version="32" max-version="34"` window this app now declares in
+      # appinfo/info.xml (raised in the same commit), so every ref below is a
+      # version the app actually supports.
+      #
+      # THE LIST IS THE WHOLE DECLARED RANGE. appinfo/info.xml declares
+      # <nextcloud min-version="32" max-version="34"/>, so 32, 33 and 34 each get
+      # a leg. Adopting NC 34 by REPLACING the list left 32 and 33 advertised to
+      # the App Store with no job touching them — the declared floor became the
+      # untested end, which is the same drift as never testing 34, reversed.
+      nextcloud-test-refs: '["stable34", "stable32", "stable33"]'
+
+      # ── Frontend Check legs ──────────────────────────────────────────────
+      # `frontend-checks` defaults to `[]`, and an empty list means the shared
+      # workflow emits NO "Frontend Check" job at all. The repo's own
+      # validators (`check:manifest`, `test:l10n`) therefore ran nowhere in CI
+      # while the run still looked complete. Both are self-contained `node`
+      # scripts, so each is a valid standalone leg.
+      # `check:specs` is deliberately NOT listed: in this repo it is defined as
+      # `npm run check:manifest`, so it would be the same job twice.
+      # `test` / `test:unit` are also not listed — the shared "Frontend Tests
+      # (unit)" job already auto-detects and runs them.
+      #
+      # `format` (prettier --check) is listed because the shared workflow has NO
+      # prettier job of its own — `quality.yml` runs eslint and stylelint and
+      # mentions prettier ZERO times. This repo already carries
+      # `@nextcloud/prettier-config` and a `format` script, so without this leg
+      # `npm run format` never runs outside a developer's editor and the tree
+      # drifts straight back out of format between merges — the same inert-
+      # formatter failure mode that made the old `.prettierrc` worth deleting.
+      # Centralising the config never stopped drift; the gate does.
+      # Measured on this tree before enabling: PASSES, 203 of 224 tracked
+      # frontend files in scope. phpmetrics/ is the one exclusion that has to be
+      # explicit in .prettierignore: 15 of its generated report files are
+      # TRACKED, so .gitignore alone would not keep them out of `--check`.
+      frontend-checks: '["check:manifest", "test:l10n", "format"]'
+
+      # ── Integration tests ────────────────────────────────────────────────
+      # `enable-newman` defaults to FALSE and this caller never set it, so
+      # tests/integration/zaakafhandelapp.postman_collection.json had never
+      # executed in CI. The collection lives at the default
+      # `newman-collection-path` (tests/integration), which is both the
+      # directory the validator counts collections in and the directory the run
+      # step globs `*.postman_collection.json` in — flat, not recursively.
+      enable-newman: true
+
+      # The collection cannot create its own preconditions, and without a seed
+      # it was failing 17 of 55 assertions for two independent reasons — both
+      # only legible once #338 put the job on a server OpenRegister can run on:
+      #
+      #   1. NO REGISTER. `occ app:enable zaakafhandelapp` provisions nothing
+      #      (no lib/Settings/*_register.json, no IRepairStep, no import route),
+      #      so the collection's slug preflight failed and {{zaakRegister}} kept
+      #      its dev-box default of 239 — every object call 404'd.
+      #
+      #   2. NO SOURCE CONFIG. Every ZGW route then 500s with
+      #      `InvalidArgumentException: Unknown object type: zaken`
+      #      (ObjectMapperService.php:66) — getMapper() defaults `<type>_source`
+      #      to 'internal' and its match() has only a `default => throw` arm.
+      #      The collection writes one key (`zaken_register`) and no _source, so
+      #      it cannot bootstrap itself.
+      #
+      # The seed imports the register + schemas (reusing the Playwright seed's
+      # single import path and payload) and then points all twelve object types
+      # at it, verifying through the app's own endpoint rather than assuming.
+      newman-seed-command: 'bash apps/zaakafhandelapp/tests/integration/ci-seed.sh'
+
+      # ── Coverage ratchet ─────────────────────────────────────────────────
+      # `enable-coverage-guard` defaults to FALSE, which is why both
+      # "Coverage Baseline Protection" (PR side) and "Coverage Baseline Check"
+      # (push side) have only ever reported `skipped` here. Enabling it needs
+      # two inputs the repo did not have and that are added in this commit:
+      # `scripts/coverage-guard.php` (the recompute script both jobs invoke,
+      # byte-identical to the copy in openregister and procest) and
+      # `.coverage-baseline`. The baseline value is the measured coverage of
+      # this repo's own PHPUnit run — 759 of 2568 statements = 29.56% — read
+      # from the clover.xml in the `coverage-report` artifact of run
+      # 30911567714, i.e. from the same file coverage-guard.php parses.
+      enable-coverage-guard: true
+
+      # ── Hydra mechanical gates ───────────────────────────────────────────
+      # `enable-hydra-gates` defaults to FALSE, so this tier has never executed
+      # in this repository — the job reported `skipped`, which in the Quality
+      # Report is indistinguishable from having passed. Pinned to v1.0.1 so a
+      # change to the gate package cannot alter this repo's verdict without a
+      # commit here.
+      #
+      # `enable-axe` WAS deliberately not set, on the grounds that "a vanilla
+      # Nextcloud 34 already carries serious/critical violations from core's own
+      # UI". That reason was true when written and is now out of date, so it is
+      # tested rather than inherited below.
+      #
+      # An exemption's reason is a testable claim. This one names a STATE OF THE
+      # WORLD, and the world moved twice:
+      #
+      #  1. ConductionNL/.github#161 (re-landed as #168) gave the axe runner an
+      #     AxeBuilder.include SCOPE, so core's chrome is no longer in the
+      #     measurement. It is a scope, not a mute, and the runner proves that on
+      #     every run: it injects a deliberate violation INSIDE the container and
+      #     asserts axe reports it, then injects the same violation OUTSIDE and
+      #     asserts axe does not. A selector matching nothing is a hard failure,
+      #     not an empty pass.
+      #  2. ConductionNL/.github#338 fixed an axe runner that had NEVER resolved
+      #     @playwright/test in any repo — which is why nobody could have turned
+      #     this on before tonight even if they wanted to.
+      #
+      # Measured, not assumed: docudesk runs with `enable-axe: true` today and
+      # its gate run reports `[gate-33] axe-core: PASS` (run 31461514843). So the
+      # blocker is gone and the excuse no longer holds here either.
+      enable-axe: true
+
+      # NOT the `#content-vue, #content` default. This app mounts on a dedicated
+      # host element: templates/index.php:34 renders exactly
+      # `<div id="zaakafhandelapp-app"></div>` and src/main.js:151 mounts there,
+      # for a documented reason — Vue 3's mount() renders INSIDE the match, so
+      # mounting on `#content` would nest the app inside Nextcloud's own wrapper
+      # from layout.user.php and leave two `#content` elements.
+      #
+      # Core's layout wraps that div in `#content`, so the DEFAULT selector would
+      # match and would drag core's chrome (navigation, header, app menu) back
+      # into scope — re-attributing core's violations to this app, which is the
+      # very thing the old opt-out was worried about. `#zaakafhandelapp-app` is
+      # exactly this app's own rendered DOM and nothing else.
+      axe-include-selector: '#zaakafhandelapp-app'
+      #
+      # v1.0.1 -> v1.3.0 (ConductionNL/.github#159). Two defects, one bump.
+      #
+      # 1. STALE. v1.0.1 is `f4d9756` (2026-08-03) and predates three gate
+      #    fixes, so every Hydra Gates run this repo has ever made executed a
+      #    script in which 16 gates reported PASS when their helper never ran
+      #    (#147), gate-33 had no axe report to read and never said so (#148),
+      #    and gates 6 and 7 reported PASS on an EMPTY scope (#149). A gate
+      #    that reports PASS without running emits a tick identical to a real
+      #    one, which is why nothing in this repo's history shows it.
+      #
+      # 2. RED. quality.yml is referenced `@main` while this package is
+      #    PINNED, so the two can desync — and on 2026-08-05 they did. #164
+      #    flipped `hydra-gates-require-full-coverage` to default TRUE, but
+      #    the accounting that makes that flag survivable (NOT APPLICABLE, as
+      #    distinct from a structural or a wiring gap) ships in the PACKAGE.
+      #    So every pin older than `f7eaf2a` now fails the coverage assertion
+      #    for gates it has no subject matter for. Measured diff-scoped,
+      #    exactly as CI scopes it:
+      #      v1.0.1  exit 98  FAIL — "GATES THAT DID NOT RUN: 24 33"
+      #      v1.3.0  exit 0   PASS — those gates named NOT APPLICABLE
+      #    The old pin was not merely stale, it was failing this repo's CI for
+      #    a reason that had nothing to do with this repo — and it is what is
+      #    currently blocking #325.
+      #
+      # NO `hydra-gates-ref` ON PURPOSE — it defaults to `main`.
+      #
+      # This repo has now been bumped twice (v1.0.1 -> v1.3.0 -> v1.5.0), each
+      # time to clear a breakage the pin itself caused, and a third was already
+      # queued: v1.5.0 ships gate-28 reporting a `structural` coverage gap
+      # whenever the diff scope is empty — i.e. on every PR that does not touch
+      # lib/**/*.php, which is most of them. With
+      # hydra-gates-require-full-coverage defaulting TRUE that is exit 98. It is
+      # fixed in ConductionNL/.github#182, on main, and a pinned repo cannot see
+      # it because the tag will not move.
+      #
+      # That is the argument in one comment: a pin is a silent expiry date on
+      # every upstream fix, and it makes each fix a 23-PR treadmill. Tracking
+      # `main` is the fleet contract as of ConductionNL/.github#177, which also
+      # added the guard that makes it safe — `main` can no longer serve an
+      # unresolvable workflow silently, because quality-resolve-probe.yml counts
+      # the jobs a caller materialises and asserts `> 0` (an unresolvable
+      # reusable workflow produces no red check at all, just zero jobs).
+      #
+      # ROLLBACK, if a gate change ever does break this repo: set
+      # `hydra-gates-ref:` here explicitly. Still supported and still honoured —
+      # an escape hatch, not a resting state.
+      enable-hydra-gates: true
+
+      # zaakafhandelapp is a manifest-v2 (CnAppRoot) app: every index/detail
+      # page in src/manifest.json reads and writes DIRECTLY through
+      # `/apps/openregister/api/objects/zaakafhandelapp/<schema>`, and
+      # src/manifest.json declares `dependencies: ["openregister"]`. Without
+      # OpenRegister installed the SPA mounts but every data page 404s, so the
+      # E2E job needs it checked out and enabled alongside the app.
+      # `ref: development` matches the branch this app is developed against.
+      additional-apps: '[{"repo":"ConductionNL/openregister","app":"openregister","ref":"development"}]'
+
+      # ── E2E browser tests ────────────────────────────────────────────────
+      # `playwright-test-path` does double duty in the shared workflow:
+      #   1. it is the directory the "Validate Playwright tests exist" step
+      #      counts *.spec.ts in;
+      #   2. it is the FIRST place the run step looks for a config —
+      #      `${playwright-test-path}/playwright.config.ts`, falling back to
+      #      the repo root only if that file is absent.
+      # We ship tests/e2e/playwright.config.ts precisely so lookup (2) hits it.
+      # The run step passes no `--project`, so the root config would run all
+      # three of its projects — including `visual` (pixel baselines that a CI
+      # Linux runner cannot byte-match, per that project's own header) and
+      # `docs-capture` (screenshot re-shoots, which have their own dedicated
+      # job). The tests/e2e config declares only the regression project.
+      enable-playwright: true
+      playwright-test-path: tests/e2e
+      # Unlike its sibling apps, zaakafhandelapp ships NO
+      # lib/Settings/*_register.json, no IRepairStep that imports one, and no
+      # import route of its own — so `occ app:enable zaakafhandelapp`
+      # provisions NOTHING and a fresh install has no `zaakafhandelapp`
+      # register at all. The seed script imports the register + its 10 schemas
+      # over OpenRegister's admin configuration API and fails loudly if they
+      # still aren't there, instead of letting the workflow specs fail in
+      # beforeAll with a message that reads like a fixture bug.
+      # cwd for this step is the Nextcloud server root.
+      playwright-seed-command: 'bash apps/zaakafhandelapp/tests/e2e/ci-seed.sh'

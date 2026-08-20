@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Klant } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -14,6 +15,7 @@ export const useKlantStore = defineStore('klanten', {
 	}),
 	actions: {
 		/**
+		 * @param klantItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setKlantItem(klantItem) {
@@ -21,6 +23,7 @@ export const useKlantStore = defineStore('klanten', {
 			console.log('Active klant item set to ' + klantItem)
 		},
 		/**
+		 * @param widgetKlantId
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setWidgetKlantId(widgetKlantId) {
@@ -28,12 +31,11 @@ export const useKlantStore = defineStore('klanten', {
 			console.log('Widget klant id set to ' + widgetKlantId)
 		},
 		/**
+		 * @param klantenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setKlantenList(klantenList) {
-			this.klantenList = klantenList.map(
-			    (klantItem) => new Klant(klantItem),
-			)
+			this.klantenList = klantenList.map((klantItem) => new Klant(klantItem))
 			console.log('Klanten list set to ' + klantenList.length + ' items')
 		},
 		setAuditTrailItem(auditTrailItem) {
@@ -41,6 +43,7 @@ export const useKlantStore = defineStore('klanten', {
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		/**
+		 * @param search
 		 * @spec openspec/specs/state-stores/spec.md#REQ-002
 		 */
 		async refreshKlantenList(search = null) {
@@ -154,6 +157,7 @@ export const useKlantStore = defineStore('klanten', {
 
 		// New function to get a single klant
 		/**
+		 * @param id
 		 * @spec openspec/specs/state-stores/spec.md#REQ-003
 		 */
 		async getKlant(id) {
@@ -177,6 +181,7 @@ export const useKlantStore = defineStore('klanten', {
 		},
 		// Delete a klant
 		/**
+		 * @param klantItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async deleteKlant(klantItem) {
@@ -188,6 +193,9 @@ export const useKlantStore = defineStore('klanten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -202,6 +210,7 @@ export const useKlantStore = defineStore('klanten', {
 		},
 		// Create or save a klant from store
 		/**
+		 * @param klantItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async saveKlant(klantItem) {
@@ -215,16 +224,14 @@ export const useKlantStore = defineStore('klanten', {
 				: `${apiEndpoint}/${klantItem.id}`
 			const method = isNewKlant ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(klantItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(klantItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

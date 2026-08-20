@@ -14,7 +14,12 @@ const { defineStore } = require('pinia')
 
 // Stub component: minimal Vue 2 SFC-shape so any consumer can `Vue.extend()`
 // or pass it through `h(C)` without crashing.
-const stubComponent = { name: 'CnStub', render() { return null } }
+const stubComponent = {
+	name: 'CnStub',
+	render() {
+		return null
+	},
+}
 
 // `useObjectStore` / `createObjectStore` factory: merges plugin actions
 // into a single pinia store so call sites like `objectStore.configure(...)`
@@ -35,8 +40,12 @@ function createObjectStore(id, options = {}) {
 			registerObjectType(type) {
 				if (!this.objectTypes.includes(type)) this.objectTypes.push(type)
 			},
-			fetchCollection() { return [] },
-			getPagination() { return { total: 0, page: 1, pages: 0, limit: 25 } },
+			fetchCollection() {
+				return []
+			},
+			getPagination() {
+				return { total: 0, page: 1, pages: 0, limit: 25 }
+			},
 		},
 	}
 	for (const p of plugins) {
@@ -49,7 +58,12 @@ function createObjectStore(id, options = {}) {
 const useObjectStoreFactory = createObjectStore('cn-object-store')
 const useObjectStore = (...args) => useObjectStoreFactory(...args)
 
-const noopPlugin = name => () => ({ name, state: () => ({}), getters: {}, actions: {} })
+const noopPlugin = (name) => () => ({
+	name,
+	state: () => ({}),
+	getters: {},
+	actions: {},
+})
 
 // Real exports the app code reaches for. Anything not listed here is
 // returned as a stub component / no-op function via the Proxy fallback.

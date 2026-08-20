@@ -31,7 +31,11 @@ return [
 		'berichten' => ['url' => 'api/berichten'],
 		'contactMomenten' => ['url' => 'api/contactmomenten'],
 		'medewerkers' => ['url' => 'api/medewerkers'],
-		'dashboard' => ['url' => 'api/dashboard'],
+		// `dashboard` is deliberately NOT a resource. DashboardController serves
+		// the SPA shell only (`dashboard#page` below); its api/dashboard quintet
+		// returned a hardcoded demo constant with no caller in `src/` and was
+		// removed rather than guarded — see the class docblock and
+		// ConductionNL/zaakafhandelapp#347.
 	],
 	'routes' => [
 		// Audit trail routes
@@ -46,11 +50,14 @@ return [
 		['name' => 'klanten#getBerichten', 'url' => '/api/klanten/{id}/berichten', 'verb' => 'GET'],
 		['name' => 'klanten#getZaken', 'url' => '/api/klanten/{id}/zaken', 'verb' => 'GET'],
 
-		// Addressbook integration routes (klanten-addressbook-sync)
-		['name' => 'klanten#contactsStatus', 'url' => '/api/klanten/contacts/status', 'verb' => 'GET'],
-		['name' => 'klanten#searchContacts', 'url' => '/api/klanten/contacts/search', 'verb' => 'GET'],
-		['name' => 'klanten#importContact', 'url' => '/api/klanten/contacts/import', 'verb' => 'POST'],
-		['name' => 'klanten#exportContact', 'url' => '/api/klanten/{id}/contacts/export', 'verb' => 'POST'],
+		// Addressbook integration routes (klanten-addressbook-sync).
+		// Served by KlantContactsController — split out of KlantenController so
+		// klant CRUD and the addressbook surface stay separate concerns. The URLs
+		// are unchanged; only the controller half of the route name moved.
+		['name' => 'klantContacts#contactsStatus', 'url' => '/api/klanten/contacts/status', 'verb' => 'GET'],
+		['name' => 'klantContacts#searchContacts', 'url' => '/api/klanten/contacts/search', 'verb' => 'GET'],
+		['name' => 'klantContacts#importContact', 'url' => '/api/klanten/contacts/import', 'verb' => 'POST'],
+		['name' => 'klantContacts#exportContact', 'url' => '/api/klanten/{id}/contacts/export', 'verb' => 'POST'],
 
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],

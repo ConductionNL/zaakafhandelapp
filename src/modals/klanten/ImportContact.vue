@@ -1,17 +1,19 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, klantStore } from '../../store/store.js'
+import { klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Import from contacts')"
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Import from contacts')"
 		size="normal"
-		label-id="importContactModal"
-		dialog-classes="importContactModal"
-		:close-on-click-outside="false"
+		labelId="importContactModal"
+		dialogClasses="importContactModal"
+		:closeOnClickOutside="false"
 		@closing="closeModal">
 		<div class="searchContainer">
-			<NcTextField :value.sync="query"
+			<NcTextField
+				v-model="query"
 				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Search contacts')"
 				maxlength="255"
@@ -19,7 +21,8 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				@keydown.enter="search">
 				<Magnify :size="20" />
 			</NcTextField>
-			<NcButton type="primary"
+			<NcButton
+				variant="primary"
 				:disabled="loading || !query"
 				class="searchButton"
 				@click="search">
@@ -40,25 +43,42 @@ import { navigationStore, klantStore } from '../../store/store.js'
 
 		<div class="resultsContainer">
 			<div v-if="results.length && !loading">
-				<NcListItem v-for="(contact, i) in results"
+				<NcListItem
+					v-for="(contact, i) in results"
 					:key="`${contact.uid}${i}`"
-					:name="contact.name || contact.org || contact.email || contact.uid"
-					:force-display-actions="true"
-					:details="contact.alreadyLinked ? t('zaakafhandelapp', 'Linked') : ''">
+					:name="
+						contact.name || contact.org || contact.email || contact.uid
+					"
+					:forceDisplayActions="true"
+					:details="
+						contact.alreadyLinked ? t('zaakafhandelapp', 'Linked') : ''
+					">
 					<template #icon>
-						<OfficeBuildingOutline v-if="contact.org" disable-menu :size="44" />
-						<AccountOutline v-else disable-menu :size="44" />
+						<OfficeBuildingOutline
+							v-if="contact.org"
+							disableMenu
+							:size="44" />
+						<AccountOutline v-else disableMenu :size="44" />
 					</template>
 					<template #subname>
-						{{ [contact.email, contact.phone].filter(Boolean).join(' · ') }}
+						{{
+							[contact.email, contact.phone]
+								.filter(Boolean)
+								.join(' · ')
+						}}
 					</template>
 					<template #actions>
-						<NcActionButton :disabled="contact.alreadyLinked || importing"
+						<NcActionButton
+							:disabled="contact.alreadyLinked || importing"
 							@click="importContact(contact)">
 							<template #icon>
 								<Import :size="20" />
 							</template>
-							{{ contact.alreadyLinked ? t('zaakafhandelapp', 'Already linked') : t('zaakafhandelapp', 'Import as customer') }}
+							{{
+								contact.alreadyLinked
+									? t('zaakafhandelapp', 'Already linked')
+									: t('zaakafhandelapp', 'Import as customer')
+							}}
 						</NcActionButton>
 					</template>
 				</NcListItem>
@@ -68,7 +88,8 @@ import { navigationStore, klantStore } from '../../store/store.js'
 				{{ t('zaakafhandelapp', 'No contacts found.') }}
 			</div>
 
-			<NcLoadingIcon v-if="loading"
+			<NcLoadingIcon
+				v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
@@ -76,7 +97,7 @@ import { navigationStore, klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal">
+			<NcButton variant="secondary" @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
@@ -87,13 +108,21 @@ import { navigationStore, klantStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcTextField, NcDialog, NcListItem, NcActionButton, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
-
-import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
+import { getRequestToken } from '@nextcloud/auth'
+import {
+	NcActionButton,
+	NcButton,
+	NcDialog,
+	NcListItem,
+	NcLoadingIcon,
+	NcNoteCard,
+	NcTextField,
+} from '@nextcloud/vue'
 import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-import Magnify from 'vue-material-design-icons/Magnify.vue'
-import Import from 'vue-material-design-icons/Import.vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Import from 'vue-material-design-icons/Import.vue'
+import Magnify from 'vue-material-design-icons/Magnify.vue'
+import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
 
 export default {
 	name: 'ImportContact',
@@ -111,6 +140,7 @@ export default {
 		Import,
 		Cancel,
 	},
+
 	data() {
 		return {
 			query: '',
@@ -122,6 +152,7 @@ export default {
 			success: '',
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-001
@@ -133,10 +164,13 @@ export default {
 			this.loading = true
 			this.error = ''
 			this.success = ''
-			fetch(`/index.php/apps/zaakafhandelapp/api/klanten/contacts/search?query=${encodeURIComponent(this.query)}`, {
-				method: 'GET',
-			})
-				.then(response => response.json())
+			fetch(
+				`/index.php/apps/zaakafhandelapp/api/klanten/contacts/search?query=${encodeURIComponent(this.query)}`,
+				{
+					method: 'GET',
+				},
+			)
+				.then((response) => response.json())
 				.then((data) => {
 					this.results = Array.isArray(data) ? data : []
 					this.searched = true
@@ -149,7 +183,9 @@ export default {
 					this.loading = false
 				})
 		},
+
 		/**
+		 * @param contact
 		 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
 		 */
 		importContact(contact) {
@@ -161,19 +197,27 @@ export default {
 			this.success = ''
 			fetch('/index.php/apps/zaakafhandelapp/api/klanten/contacts/import', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
+				},
 				body: JSON.stringify({ uid: contact.uid }),
 			})
 				.then(async (response) => {
 					const data = await response.json()
 					if (!response.ok) {
-						throw new Error(data?.error || t('zaakafhandelapp', 'Import failed'))
+						throw new Error(
+							data?.error || t('zaakafhandelapp', 'Import failed'),
+						)
 					}
 					return data
 				})
 				.then(() => {
 					contact.alreadyLinked = true
-					this.success = t('zaakafhandelapp', 'Contact imported as customer.')
+					this.success = t(
+						'zaakafhandelapp',
+						'Contact imported as customer.',
+					)
 					klantStore.refreshKlantenList()
 				})
 				.catch((err) => {
@@ -184,6 +228,7 @@ export default {
 					this.importing = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */

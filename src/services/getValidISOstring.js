@@ -8,8 +8,8 @@
  *
  * @param { string | Date } dateString The date string or Date object to be converted.
  * @return { string | null } The ISO string representation of the date or null.
-  *
-  * @spec openspec/specs/ui-search-navigation/spec.md#REQ-004
+ *
+ * @spec openspec/specs/ui-search-navigation/spec.md#REQ-004
  */
 export default function getValidISOstring(dateString) {
 	const date = new Date(dateString)

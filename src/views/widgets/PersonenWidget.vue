@@ -1,108 +1,148 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { contactMomentStore, klantStore, navigationStore, taakStore, zaakStore } from '../../store/store.js'
+import {
+	contactMomentStore,
+	klantStore,
+	navigationStore,
+	taakStore,
+	zaakStore,
+} from '../../store/store.js'
 </script>
 
 <template>
 	<div class="personenContainer">
-		<div class="itemContainer">
-			<NcDashboardWidget :items="personenItems"
-				:item-menu="itemMenu"
-				@show="onShow"
-				@startZaak="() => (zaakFormModalOpen = true)"
-				@startContactmoment="() => (contactmomentModalOpen = true)"
-				@startTaak="() => (taakModalOpen = true)">
-				<template #empty-content>
-					<div>
-						<NcEmptyContent v-if="loading" :name="t('zaakafhandelapp', 'Loading person...')">
-							<template #icon>
-								<NcLoadingIcon />
-							</template>
-						</NcEmptyContent>
-						<NcEmptyContent v-if="!loading" :name="t('zaakafhandelapp', 'No persons found')">
-							<template #icon>
-								<AccountOutline />
-							</template>
-						</NcEmptyContent>
-					</div>
-				</template>
-			</NcDashboardWidget>
-		</div>
+		<CnDataTable
+			:rows="personenItems"
+			:columns="columns"
+			:loading="loading"
+			:loadingText="t('zaakafhandelapp', 'Loading person...')"
+			hideHeader
+			borderless
+			rowIcon="AccountOutline"
+			:emptyText="t('zaakafhandelapp', 'No persons found')"
+			@rowClick="onShow">
+			<template #empty>
+				<NcEmptyContent :name="t('zaakafhandelapp', 'No persons found')">
+					<template #icon>
+						<AccountOutline />
+					</template>
+				</NcEmptyContent>
+			</template>
+			<template #row-actions="{ row }">
+				<NcActions>
+					<NcActionButton
+						icon="icon-toggle"
+						closeAfterClick
+						@click="onShow(row)">
+						{{ t('zaakafhandelapp', 'View') }}
+					</NcActionButton>
+					<NcActionButton
+						:icon="iconBriefcaseAccountOutline"
+						closeAfterClick
+						@click="() => (zaakFormModalOpen = true)">
+						{{ t('zaakafhandelapp', 'Start case') }}
+					</NcActionButton>
+					<NcActionButton
+						:icon="iconCardAccountPhoneOutline"
+						closeAfterClick
+						@click="() => (contactmomentModalOpen = true)">
+						{{ t('zaakafhandelapp', 'Start contact moment') }}
+					</NcActionButton>
+					<NcActionButton
+						:icon="iconCalendarMonthOutline"
+						closeAfterClick
+						@click="() => (taakModalOpen = true)">
+						{{ t('zaakafhandelapp', 'Start task') }}
+					</NcActionButton>
+				</NcActions>
+			</template>
+			<template #footer>
+				<NcButton
+					variant="primary"
+					:disabled="loading"
+					class="searchButton"
+					@click="() => (searchKlantModalOpen = true)">
+					<template #icon>
+						<Search :size="20" />
+					</template>
+					{{ t('zaakafhandelapp', 'Search') }}
+				</NcButton>
+			</template>
+		</CnDataTable>
 
-		<div class="searchContainer">
-			<NcButton type="primary"
-				:disabled="loading"
-				class="searchButton"
-				@click="() => (searchKlantModalOpen = true)">
-				<template #icon>
-					<Search :size="20" />
-				</template>
-				{{ t('zaakafhandelapp', 'Search') }}
-			</NcButton>
+		<SearchKlantModal
+			v-if="searchKlantModalOpen"
+			:dashboardWidget="true"
+			startingType="persoon"
+			@selectedKlant="createKlantItems($event)"
+			@closeModal="() => (searchKlantModalOpen = false)" />
 
-			<SearchKlantModal v-if="searchKlantModalOpen"
-				:dashboard-widget="true"
-				starting-type="persoon"
-				@selected-klant="createKlantItems($event)"
-				@close-modal="() => (searchKlantModalOpen = false)" />
+		<ViewKlant
+			v-if="isModalOpen"
+			:dashboardWidget="true"
+			:klantId="selectedKlantId"
+			@closeModal="() => (isModalOpen = false)" />
 
-			<ViewKlant v-if="isModalOpen"
-				:dashboard-widget="true"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (isModalOpen = false)" />
+		<ZaakForm
+			v-if="zaakFormModalOpen"
+			:dashboardWidget="true"
+			:klantId="selectedKlantId"
+			@closeModal="() => (zaakFormModalOpen = false)"
+			@saveSuccess="fetchZaakItems" />
 
-			<ZaakForm v-if="zaakFormModalOpen"
-				:dashboard-widget="true"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (zaakFormModalOpen = false)"
-				@save-success="fetchZaakItems" />
+		<ContactMomentenForm
+			v-if="contactmomentModalOpen"
+			:dashboardWidget="true"
+			:klantId="selectedKlantId"
+			@closeModal="() => (contactmomentModalOpen = false)"
+			@saveSuccess="fetchContactMomentenItems" />
 
-			<ContactMomentenForm v-if="contactmomentModalOpen"
-				:dashboard-widget="true"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (contactmomentModalOpen = false)"
-				@save-success="fetchContactMomentenItems" />
-
-			<EditTaak v-if="taakModalOpen"
-				:dashboard-widget="true"
-				client-type="klant"
-				:klant-id="selectedKlantId"
-				@close-modal="() => (taakModalOpen = false)"
-				@save-success="fetchTaakItems" />
-		</div>
+		<EditTaak
+			v-if="taakModalOpen"
+			:dashboardWidget="true"
+			clientType="klant"
+			:klantId="selectedKlantId"
+			@closeModal="() => (taakModalOpen = false)"
+			@saveSuccess="fetchTaakItems" />
 	</div>
 </template>
 
 <script>
 // Components
-import { NcDashboardWidget, NcEmptyContent, NcButton, NcLoadingIcon } from '@nextcloud/vue'
-
-import { getTheme } from '../../services/getTheme.js'
-import { iconCalendarMonthOutline, iconCardAccountPhoneOutline, iconBriefcaseAccountOutline } from '../../services/icons/index.js'
-
+import { CnDataTable } from '@conduction/nextcloud-vue'
+import { NcActionButton, NcActions, NcButton, NcEmptyContent } from '@nextcloud/vue'
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 // icons
 import Search from 'vue-material-design-icons/Magnify.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
-
+import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
+import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
 // Modals
 import ViewKlant from '../../modals/klanten/ViewKlant.vue'
-import SearchKlantModal from '../../modals/klanten/SearchKlantModal.vue'
-import ZaakForm from '../../modals/zaken/ZaakForm.vue'
-import ContactMomentenForm from '../../modals/contactMomenten/ContactMomentenForm.vue'
 import EditTaak from '../../modals/taken/EditTaak.vue'
+import ZaakForm from '../../modals/zaken/ZaakForm.vue'
+import {
+	iconBriefcaseAccountOutline,
+	iconCalendarMonthOutline,
+	iconCardAccountPhoneOutline,
+} from '../../services/icons/index.js'
+import { WIDGET_COLUMNS } from './widgetTable.js'
 
 export default {
 	name: 'PersonenWidget',
 
 	components: {
-		NcDashboardWidget,
+		CnDataTable,
 		NcEmptyContent,
 		NcButton,
+		NcActions,
+		NcActionButton,
 		Search,
 		AccountOutline,
 		ViewKlant,
 		SearchKlantModal,
-		NcLoadingIcon,
+		ZaakForm,
+		ContactMomentenForm,
+		EditTaak,
 	},
 
 	data() {
@@ -116,76 +156,46 @@ export default {
 			zaakFormModalOpen: false,
 			contactmomentModalOpen: false,
 			taakModalOpen: false,
+			columns: WIDGET_COLUMNS,
+			iconCalendarMonthOutline,
+			iconCardAccountPhoneOutline,
+			iconBriefcaseAccountOutline,
 		}
-	},
-
-	computed: {
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		itemMenu() {
-			return {
-				show: {
-					text: t('zaakafhandelapp', 'View'),
-					icon: 'icon-toggle',
-				},
-				startZaak: {
-					text: t('zaakafhandelapp', 'Start case'),
-					icon: iconBriefcaseAccountOutline,
-				},
-				startContactmoment: {
-					text: t('zaakafhandelapp', 'Start contact moment'),
-					icon: iconCardAccountPhoneOutline,
-				},
-				startTaak: {
-					text: t('zaakafhandelapp', 'Start task'),
-					icon: iconCalendarMonthOutline,
-				},
-			}
-		},
 	},
 
 	methods: {
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		createKlantItems(klant) {
 			this.selectedKlantId = klant.id
 
-			this.personenItems = [{
-				id: klant.id,
-				mainText: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
-				subText: klant.emailadres,
-				avatarUrl: this.getItemIcon(),
-			}]
+			this.personenItems = [
+				{
+					id: klant.id,
+					mainText: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
+					subText: klant.emailadres,
+				},
+			]
 		},
-		/**
-		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-003
-		 */
-		getItemIcon() {
-			const theme = getTheme()
 
-			let appLocation = '/custom_apps'
-
-			if (window.location.hostname === 'nextcloud.local') {
-				appLocation = '/apps-extra'
-			}
-
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/account-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/account-outline.svg`
-		},
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		openSearchKlantModal() {
 			this.searchKlantModalOpen = true
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-005
 		 */
 		closeSearchKlantModal() {
 			this.searchKlantModalOpen = false
 		},
+
 		/**
+		 * @param item
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-004
 		 */
 		onShow(item) {
@@ -193,60 +203,53 @@ export default {
 			this.isModalOpen = true
 			navigationStore.setModal('viewKlant')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
 		fetchZaakItems() {
 			this.loading = true
-			zaakStore.refreshZakenList()
-				.then(() => {
-					this.loading = false
-				})
+			zaakStore.refreshZakenList().then(() => {
+				this.loading = false
+			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
 		fetchContactMomentenItems() {
 			this.loading = true
-			contactMomentStore.refreshContactMomentenList()
-				.then(() => {
-					this.loading = false
-				})
+			contactMomentStore.refreshContactMomentenList().then(() => {
+				this.loading = false
+			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-dashboard-widgets/spec.md#REQ-001
 		 */
 		fetchTaakItems() {
 			this.loading = true
-			taakStore.refreshTakenList()
-				.then(() => {
-					this.loading = false
-				})
+			taakStore.refreshTakenList().then(() => {
+				this.loading = false
+			})
 		},
 	},
-
 }
 </script>
+
 <style scoped>
 .personenContainer {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  height: 100%;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
-.itemContainer {
-  overflow: auto;
-  margin-block-end: var(--zaa-margin-10);
+
+.personenContainer > .cn-table-container {
+	overflow: auto;
 }
-.searchContainer {
-  display: flex;
-  align-items: end;
-  gap: 10px;
-}
-.searchField {
-  width: auto;
-}
+
 .searchButton {
-  min-width: min-content !important;
+	min-width: min-content !important;
 }
 </style>

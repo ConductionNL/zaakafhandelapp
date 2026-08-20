@@ -24,8 +24,13 @@
 import { test, expect } from '@playwright/test'
 import { WorkflowFixtures } from './fixtures'
 import {
-	openIndex, openCreateModal, fillField, submitModal, useTableView,
-	rowFor, rowAction,
+	openIndex,
+	openCreateModal,
+	fillField,
+	submitModal,
+	useTableView,
+	rowFor,
+	rowAction,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -50,7 +55,9 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 
 	let klantId = ''
 
-	test('create via UI form — a new customer row appears with the real values', async ({ page }) => {
+	test('create via UI form — a new customer row appears with the real values', async ({
+		page,
+	}) => {
 		const index = await openIndex(page, 'klanten')
 
 		const dialog = await openCreateModal(page)
@@ -58,7 +65,9 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 		await fillField(dialog, 'email', email())
 		await fillField(dialog, 'telefoon', '0612345678')
 		await submitModal(dialog)
-		await expect(dialog.getByRole('heading', { name: /^Create /i })).not.toBeVisible({ timeout: 8_000 })
+		await expect(
+			dialog.getByRole('heading', { name: /^Create /i }),
+		).not.toBeVisible({ timeout: 8_000 })
 
 		// NOT the empty-state, and the row carries the persisted values.
 		await useTableView(page)
@@ -73,11 +82,15 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 		const persisted = rows.find((r) => String(r.naam ?? '').includes(RUN))
 		expect(persisted, 'customer must be persisted in OpenRegister').toBeTruthy()
 		expect(String(persisted!.email)).toBe(email())
-		klantId = String((persisted!['@self'] as Record<string, unknown>)?.id ?? persisted!.id)
+		klantId = String(
+			(persisted!['@self'] as Record<string, unknown>)?.id ?? persisted!.id,
+		)
 		expect(klantId).toBeTruthy()
 	})
 
-	test('read — the persisted values render in the list row (data binding, not a shell)', async ({ page }) => {
+	test('read — the persisted values render in the list row (data binding, not a shell)', async ({
+		page,
+	}) => {
 		const index = await openIndex(page, 'klanten')
 		const row = await rowFor(page, index, RUN)
 		await expect(row).toContainText(naam())
@@ -85,23 +98,34 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 		await expect(row).toContainText('0612345678')
 	})
 
-	test('edit — changing the name persists and re-renders in the row', async ({ page }) => {
+	test('edit — changing the name persists and re-renders in the row', async ({
+		page,
+	}) => {
 		expect(klantId, 'precondition: created in the create leg').toBeTruthy()
 		const index = await openIndex(page, 'klanten')
 		const row = await rowFor(page, index, RUN)
 
 		await rowAction(page, row, 'Edit')
 		const dialog = page.getByRole('dialog').first()
-		await expect(dialog.getByRole('heading', { name: /Edit/i })).toBeVisible({ timeout: 8_000 })
+		await expect(dialog.getByRole('heading', { name: /Edit/i })).toBeVisible({
+			timeout: 8_000,
+		})
 		await fillField(dialog, 'naam', naamEdited())
 		await submitModal(dialog)
-		await expect(dialog.getByRole('heading', { name: /Edit/i })).not.toBeVisible({ timeout: 8_000 })
+		await expect(dialog.getByRole('heading', { name: /Edit/i })).not.toBeVisible(
+			{ timeout: 8_000 },
+		)
 
 		// Persistence at the data layer.
-		await expect.poll(async () => {
-			const rec = await fx.get('klant', klantId)
-			return String(rec?.naam ?? '')
-		}, { timeout: 10_000 }).toBe(naamEdited())
+		await expect
+			.poll(
+				async () => {
+					const rec = await fx.get('klant', klantId)
+					return String(rec?.naam ?? '')
+				},
+				{ timeout: 10_000 },
+			)
+			.toBe(naamEdited())
 
 		// And re-rendered in the UI row.
 		const index2 = await openIndex(page, 'klanten')
@@ -109,21 +133,31 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 		await expect(row2).toContainText(naamEdited())
 	})
 
-	test('delete — removing the customer takes it out of the list and the data store', async ({ page }) => {
+	test('delete — removing the customer takes it out of the list and the data store', async ({
+		page,
+	}) => {
 		test.setTimeout(60_000)
 		expect(klantId, 'precondition: created in the create leg').toBeTruthy()
 		const index = await openIndex(page, 'klanten')
 		const row = await rowFor(page, index, RUN)
 
 		await rowAction(page, row, 'Delete')
-		const confirm = page.getByRole('dialog').filter({ hasText: /Delete item|permanently delete/i }).first()
+		const confirm = page
+			.getByRole('dialog')
+			.filter({ hasText: /Delete item|permanently delete/i })
+			.first()
 		await expect(confirm).toBeVisible({ timeout: 8_000 })
-		await confirm.getByRole('button', { name: 'Delete', exact: true }).first().click()
+		await confirm
+			.getByRole('button', { name: 'Delete', exact: true })
+			.first()
+			.click()
 		// Confirmation dialog closes once the delete is dispatched.
 		await expect(confirm).not.toBeVisible({ timeout: 10_000 })
 
 		// Gone from the data store (the authoritative assertion).
-		await expect.poll(async () => fx.get('klant', klantId), { timeout: 15_000 }).toBeNull()
+		await expect
+			.poll(async () => fx.get('klant', klantId), { timeout: 15_000 })
+			.toBeNull()
 
 		// Gone from the list: the row no longer exists.
 		const index2 = await openIndex(page, 'klanten')

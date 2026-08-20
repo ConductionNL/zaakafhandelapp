@@ -4,27 +4,48 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="rolForm" @close="closeModal">
+	<NcModal ref="modalRef" labelId="rolForm" @close="closeModal">
 		<div class="modal__content">
-			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Role {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Role {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
+			<h2>
+				{{
+					IS_EDIT
+						? t('zaakafhandelapp', 'Role {action}', {
+								action: t('zaakafhandelapp', 'edit'),
+							})
+						: t('zaakafhandelapp', 'Role {action}', {
+								action: t('zaakafhandelapp', 'create'),
+							})
+				}}
+			</h2>
 
 			<NcNoteCard v-if="success" type="success">
-				<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Role successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Role successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+				<p>
+					{{
+						IS_EDIT
+							? t('zaakafhandelapp', 'Role successfully {action}', {
+									action: t('zaakafhandelapp', 'updated'),
+								})
+							: t('zaakafhandelapp', 'Role successfully {action}', {
+									action: t('zaakafhandelapp', 'created'),
+								})
+					}}
+				</p>
 			</NcNoteCard>
 			<NcNoteCard v-if="error" type="error">
 				<p>{{ error }}</p>
 			</NcNoteCard>
 
 			<div v-if="success === null" class="form-group">
-				<NcSelect v-bind="zaakOptions"
+				<NcSelect
+					v-bind="zaakOptions"
 					v-model="zaakOptions.value"
 					:disabled="loading"
-					:input-label="t('zaakafhandelapp', 'Case')"
+					:inputLabel="t('zaakafhandelapp', 'Case')"
 					required />
 
 				<NcTextField
+					v-model="rolItem.betrokkene"
 					:disabled="loading"
-					:value.sync="rolItem.betrokkene"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Involved party (URL)')" />
 
@@ -33,25 +54,25 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					v-model="betrokkeneTypeOptions.value"
 					:disabled="loading"
 					:clearable="false"
-					:input-label="t('zaakafhandelapp', 'Involved party type')"
+					:inputLabel="t('zaakafhandelapp', 'Involved party type')"
 					required />
 
 				<NcTextField
+					v-model="rolItem.afwijkendeNaamBetrokkene"
 					:disabled="loading"
-					:value.sync="rolItem.afwijkendeNaamBetrokkene"
 					maxlength="625"
 					:label="t('zaakafhandelapp', 'Deviating name involved party')" />
 
 				<NcTextField
+					v-model="rolItem.roltype"
 					:disabled="loading"
-					:value.sync="rolItem.roltype"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Role type')"
 					required />
 
 				<NcTextArea
+					v-model="rolItem.roltoelichting"
 					:disabled="loading"
-					:value.sync="rolItem.roltoelichting"
 					maxlength="1000"
 					:label="t('zaakafhandelapp', 'Role explanation')"
 					:error="!rolItem.roltoelichting" />
@@ -60,16 +81,19 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 					v-bind="indicatieMachtigingOptions"
 					v-model="indicatieMachtigingOptions.value"
 					:disabled="loading"
-					:input-label="t('zaakafhandelapp', 'Authorization indication')" />
+					:inputLabel="t('zaakafhandelapp', 'Authorization indication')" />
 			</div>
 
-			<NcButton v-if="success === null"
-				:disabled="loading
+			<NcButton
+				v-if="success === null"
+				:disabled="
+					loading
 					|| !zaakOptions.value?.id
 					|| !betrokkeneTypeOptions.value?.id
 					|| !rolItem.roltype
-					|| !rolItem.roltoelichting"
-				type="primary"
+					|| !rolItem.roltoelichting
+				"
+				variant="primary"
 				@click="editRol()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
@@ -82,7 +106,15 @@ import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcLoadingIcon, NcModal, NcTextField, NcSelect, NcTextArea, NcNoteCard } from '@nextcloud/vue'
+import {
+	NcButton,
+	NcLoadingIcon,
+	NcModal,
+	NcNoteCard,
+	NcSelect,
+	NcTextArea,
+	NcTextField,
+} from '@nextcloud/vue'
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 
 export default {
@@ -98,14 +130,17 @@ export default {
 		// Icons
 		ContentSaveOutline,
 	},
+
 	props: {
 		zaakId: {
 			type: String,
 			required: false,
 			default: null,
 		},
+
 		/**
 		 * indicates if the modal should redirect the user to the detail page after saving
+		 *
 		 * @default true
 		 */
 		redirect: {
@@ -114,6 +149,7 @@ export default {
 			default: true,
 		},
 	},
+
 	data() {
 		return {
 			rolItem: {
@@ -133,30 +169,58 @@ export default {
 					telefoonnummer: '',
 					naam: '',
 				},
+
 				statussen: [],
 			},
+
 			zaakOptionsLoading: false,
 			zaakOptions: {
 				options: [],
 				value: null,
 			},
+
 			betrokkeneTypeOptions: {
 				options: [
-					{ label: t('zaakafhandelapp', 'Natural person'), id: 'natuurlijk_persoon' },
-					{ label: t('zaakafhandelapp', 'Non-natural person'), id: 'niet_natuurlijk_persoon' },
-					{ label: t('zaakafhandelapp', 'Establishment'), id: 'vestiging' },
-					{ label: t('zaakafhandelapp', 'Organisational unit'), id: 'organisatorische_eenheid' },
+					{
+						label: t('zaakafhandelapp', 'Natural person'),
+						id: 'natuurlijk_persoon',
+					},
+					{
+						label: t('zaakafhandelapp', 'Non-natural person'),
+						id: 'niet_natuurlijk_persoon',
+					},
+					{
+						label: t('zaakafhandelapp', 'Establishment'),
+						id: 'vestiging',
+					},
+					{
+						label: t('zaakafhandelapp', 'Organisational unit'),
+						id: 'organisatorische_eenheid',
+					},
 					{ label: t('zaakafhandelapp', 'Employee'), id: 'medewerker' },
 				],
-				value: { label: t('zaakafhandelapp', 'Natural person'), id: 'natuurlijk_persoon' },
+
+				value: {
+					label: t('zaakafhandelapp', 'Natural person'),
+					id: 'natuurlijk_persoon',
+				},
 			},
+
 			indicatieMachtigingOptions: {
 				options: [
-					{ label: t('zaakafhandelapp', 'Authorized representative'), id: 'gemachtigde' },
-					{ label: t('zaakafhandelapp', 'Authorizer'), id: 'machtiginggever' },
+					{
+						label: t('zaakafhandelapp', 'Authorized representative'),
+						id: 'gemachtigde',
+					},
+					{
+						label: t('zaakafhandelapp', 'Authorizer'),
+						id: 'machtiginggever',
+					},
 				],
+
 				value: null,
 			},
+
 			// =======
 			success: null,
 			loading: false,
@@ -164,6 +228,7 @@ export default {
 			IS_EDIT: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -176,12 +241,16 @@ export default {
 				...rolStore.rolItem,
 			}
 
-			this.indicatieMachtigingOptions.value = this.indicatieMachtigingOptions.options.find(option => option.id === this.rolItem.indicatieMachtiging)
+			this.indicatieMachtigingOptions.value =
+				this.indicatieMachtigingOptions.options.find(
+					(option) => option.id === this.rolItem.indicatieMachtiging,
+				)
 			this.fetchData(rolStore.rolItem?.id)
 		}
 
 		this.fetchZaak(rolStore.rolItem?.zaak || this.zaakId)
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -191,13 +260,16 @@ export default {
 			rolStore.setZaakId(null)
 			delete rolStore.extraData?.redirect
 		},
+
 		/**
+		 * @param id
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchData(id) {
 			this.rolLoading = true
 
-			rolStore.getRol(id)
+			rolStore
+				.getRol(id)
 				.then(({ data }) => {
 					this.rolItem = {
 						...this.rolItem,
@@ -210,44 +282,53 @@ export default {
 					this.rolLoading = false
 				})
 		},
+
 		/**
+		 * @param zaakId
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchZaak(zaakId) {
 			this.zaakOptionsLoading = true
 
-			zaakStore.refreshZakenList()
+			zaakStore
+				.refreshZakenList()
 				.then(({ data }) => {
-					const selectedZaak = data.find(zaak => zaak.id === zaakId)
+					const selectedZaak = data.find((zaak) => zaak.id === zaakId)
 
-					this.zaakOptions.options = data.map(zaak => ({
+					this.zaakOptions.options = data.map((zaak) => ({
 						label: zaak.identificatie,
 						id: zaak.id,
 					}))
 
 					this.zaakOptions.value = selectedZaak
 						? {
-							label: selectedZaak.identificatie,
-							id: selectedZaak.id,
-						}
+								label: selectedZaak.identificatie,
+								id: selectedZaak.id,
+							}
 						: null
 				})
 				.finally(() => {
 					this.zaakOptionsLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
 		editRol() {
 			this.loading = true
 
-			rolStore.saveRol({
-				...this.rolItem,
-				zaak: this.zaakOptions.value.id,
-				betrokkeneType: this.betrokkeneTypeOptions.value.id,
-				indicatieMachtiging: this.indicatieMachtigingOptions.value?.id || '',
-			}, { redirect: this.redirect })
+			rolStore
+				.saveRol(
+					{
+						...this.rolItem,
+						zaak: this.zaakOptions.value.id,
+						betrokkeneType: this.betrokkeneTypeOptions.value.id,
+						indicatieMachtiging:
+							this.indicatieMachtigingOptions.value?.id || '',
+					},
+					{ redirect: this.redirect },
+				)
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -255,7 +336,12 @@ export default {
 				})
 				.catch((e) => {
 					this.success = false
-					this.error = e.message || t('zaakafhandelapp', 'Something went wrong while saving the role')
+					this.error =
+						e.message
+						|| t(
+							'zaakafhandelapp',
+							'Something went wrong while saving the role',
+						)
 				})
 				.finally(() => {
 					this.loading = false
@@ -267,7 +353,7 @@ export default {
 
 <style scoped>
 .modalContent {
-    margin: var(--zaa-margin-50, 12px);
-    text-align: center;
+	margin: var(--zaa-margin-50, 12px);
+	text-align: center;
 }
 </style>

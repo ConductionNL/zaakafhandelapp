@@ -30,138 +30,127 @@ use Psr\Log\LoggerInterface;
  * and servicenorm → einddatumGepland, explicit-value respect, startdatum →
  * registratiedatum fallback, and skip-on-missing-zaaktype/term.
  */
-final class ZaakTermijnServiceTest extends TestCase
-{
-    /** @var ObjectService&\PHPUnit\Framework\MockObject\MockObject */
-    private $objectService;
+final class ZaakTermijnServiceTest extends TestCase {
+	/** @var ObjectService&\PHPUnit\Framework\MockObject\MockObject */
+	private $objectService;
 
-    /** @var ZGWRegistryService&\PHPUnit\Framework\MockObject\MockObject */
-    private $registry;
+	/** @var ZGWRegistryService&\PHPUnit\Framework\MockObject\MockObject */
+	private $registry;
 
-    private ZaakTermijnService $service;
+	private ZaakTermijnService $service;
 
-    protected function setUp(): void
-    {
-        $this->objectService = $this->createMock(ObjectService::class);
-        $this->registry = $this->createMock(ZGWRegistryService::class);
+	protected function setUp(): void {
+		$this->objectService = $this->createMock(ObjectService::class);
+		$this->registry = $this->createMock(ZGWRegistryService::class);
 
-        $mapperService = $this->createMock(ObjectMapperService::class);
-        $mapperService->method('getOpenRegisters')->willReturn($this->objectService);
+		$mapperService = $this->createMock(ObjectMapperService::class);
+		$mapperService->method('getOpenRegisters')->willReturn($this->objectService);
 
-        $this->service = new ZaakTermijnService($mapperService, $this->registry, $this->createMock(LoggerInterface::class));
-    }//end setUp()
+		$this->service = new ZaakTermijnService($mapperService, $this->registry, $this->createMock(LoggerInterface::class));
+	}//end setUp()
 
-    private function entity(array $data): ObjectEntity
-    {
-        $e = new ObjectEntity();
-        $e->setObject($data);
-        return $e;
-    }//end entity()
+	private function entity(array $data): ObjectEntity {
+		$e = new ObjectEntity();
+		$e->setObject($data);
+		return $e;
+	}//end entity()
 
-    private function stubZaaktype(array $zaaktype): void
-    {
-        $this->registry->method('getObjectIdByEndpointUrl')->willReturn('zt-uuid');
-        $this->objectService->method('find')->willReturn($this->entity($zaaktype));
-    }//end stubZaaktype()
+	private function stubCaseType(array $caseType): void {
+		$this->registry->method('getObjectIdByEndpointUrl')->willReturn('zt-uuid');
+		$this->objectService->method('find')->willReturn($this->entity($caseType));
+	}//end stubZaaktype()
 
-    public function testDerivesUiterlijkeEinddatumFromDoorlooptijd(): void
-    {
-        $this->stubZaaktype(['doorlooptijd' => 'P56D']);
+	public function testDerivesUiterlijkeEinddatumFromDoorlooptijd(): void {
+		$this->stubCaseType(['doorlooptijd' => 'P56D']);
 
-        $zaak = $this->entity([
-            'zaaktype'   => 'http://example/zaaktype/1',
-            'startdatum' => '2026-06-01',
-        ]);
+		$case = $this->entity([
+			'zaaktype' => 'http://example/zaaktype/1',
+			'startdatum' => '2026-06-01',
+		]);
 
-        $this->service->deriveTermijnen($zaak);
+		$this->service->deriveTermijnen($case);
 
-        $this->assertSame('2026-07-27', $zaak->jsonSerialize()['uiterlijkeEinddatumAfdoening']);
-    }//end testDerivesUiterlijkeEinddatumFromDoorlooptijd()
+		$this->assertSame('2026-07-27', $case->jsonSerialize()['uiterlijkeEinddatumAfdoening']);
+	}//end testDerivesUiterlijkeEinddatumFromDoorlooptijd()
 
-    public function testDerivesEinddatumGeplandFromServicenorm(): void
-    {
-        $this->stubZaaktype(['servicenorm' => '14']);
+	public function testDerivesEinddatumGeplandFromServicenorm(): void {
+		$this->stubCaseType(['servicenorm' => '14']);
 
-        $zaak = $this->entity([
-            'zaaktype'   => 'http://example/zaaktype/1',
-            'startdatum' => '2026-06-01',
-        ]);
+		$case = $this->entity([
+			'zaaktype' => 'http://example/zaaktype/1',
+			'startdatum' => '2026-06-01',
+		]);
 
-        $this->service->deriveTermijnen($zaak);
+		$this->service->deriveTermijnen($case);
 
-        $this->assertSame('2026-06-15', $zaak->jsonSerialize()['einddatumGepland']);
-    }//end testDerivesEinddatumGeplandFromServicenorm()
+		$this->assertSame('2026-06-15', $case->jsonSerialize()['einddatumGepland']);
+	}//end testDerivesEinddatumGeplandFromServicenorm()
 
-    public function testExplicitValuesAreNeverOverridden(): void
-    {
-        // The service must not even resolve the zaaktype when both are supplied.
-        $this->objectService->expects($this->never())->method('find');
+	public function testExplicitValuesAreNeverOverridden(): void {
+		// The service must not even resolve the zaaktype when both are supplied.
+		$this->objectService->expects($this->never())->method('find');
 
-        $zaak = $this->entity([
-            'zaaktype'                     => 'http://example/zaaktype/1',
-            'startdatum'                   => '2026-06-01',
-            'uiterlijkeEinddatumAfdoening' => '2026-09-09',
-            'einddatumGepland'             => '2026-08-08',
-        ]);
+		$case = $this->entity([
+			'zaaktype' => 'http://example/zaaktype/1',
+			'startdatum' => '2026-06-01',
+			'uiterlijkeEinddatumAfdoening' => '2026-09-09',
+			'einddatumGepland' => '2026-08-08',
+		]);
 
-        $this->service->deriveTermijnen($zaak);
+		$this->service->deriveTermijnen($case);
 
-        $out = $zaak->jsonSerialize();
-        $this->assertSame('2026-09-09', $out['uiterlijkeEinddatumAfdoening']);
-        $this->assertSame('2026-08-08', $out['einddatumGepland']);
-    }//end testExplicitValuesAreNeverOverridden()
+		$out = $case->jsonSerialize();
+		$this->assertSame('2026-09-09', $out['uiterlijkeEinddatumAfdoening']);
+		$this->assertSame('2026-08-08', $out['einddatumGepland']);
+	}//end testExplicitValuesAreNeverOverridden()
 
-    public function testFallsBackToRegistratiedatumWhenNoStartdatum(): void
-    {
-        $this->stubZaaktype(['doorlooptijd' => 'P7D']);
+	public function testFallsBackToRegistratiedatumWhenNoStartdatum(): void {
+		$this->stubCaseType(['doorlooptijd' => 'P7D']);
 
-        $zaak = $this->entity([
-            'zaaktype'         => 'http://example/zaaktype/1',
-            'registratiedatum' => '2026-06-10',
-        ]);
+		$case = $this->entity([
+			'zaaktype' => 'http://example/zaaktype/1',
+			'registratiedatum' => '2026-06-10',
+		]);
 
-        $this->service->deriveTermijnen($zaak);
+		$this->service->deriveTermijnen($case);
 
-        $this->assertSame('2026-06-17', $zaak->jsonSerialize()['uiterlijkeEinddatumAfdoening']);
-    }//end testFallsBackToRegistratiedatumWhenNoStartdatum()
+		$this->assertSame('2026-06-17', $case->jsonSerialize()['uiterlijkeEinddatumAfdoening']);
+	}//end testFallsBackToRegistratiedatumWhenNoStartdatum()
 
-    public function testZaaktypeWithoutTermsLeavesFieldsEmpty(): void
-    {
-        $this->stubZaaktype(['doorlooptijd' => '', 'servicenorm' => '']);
+	public function testZaaktypeWithoutTermsLeavesFieldsEmpty(): void {
+		$this->stubCaseType(['doorlooptijd' => '', 'servicenorm' => '']);
 
-        $zaak = $this->entity([
-            'zaaktype'   => 'http://example/zaaktype/1',
-            'startdatum' => '2026-06-01',
-        ]);
+		$case = $this->entity([
+			'zaaktype' => 'http://example/zaaktype/1',
+			'startdatum' => '2026-06-01',
+		]);
 
-        $this->service->deriveTermijnen($zaak);
+		$this->service->deriveTermijnen($case);
 
-        $out = $zaak->jsonSerialize();
-        $this->assertArrayNotHasKey('uiterlijkeEinddatumAfdoening', $out);
-        $this->assertArrayNotHasKey('einddatumGepland', $out);
-    }//end testZaaktypeWithoutTermsLeavesFieldsEmpty()
+		$out = $case->jsonSerialize();
+		$this->assertArrayNotHasKey('uiterlijkeEinddatumAfdoening', $out);
+		$this->assertArrayNotHasKey('einddatumGepland', $out);
+	}//end testZaaktypeWithoutTermsLeavesFieldsEmpty()
 
-    public function testNoZaaktypeIsNoop(): void
-    {
-        $this->objectService->expects($this->never())->method('find');
+	public function testNoZaaktypeIsNoop(): void {
+		$this->objectService->expects($this->never())->method('find');
 
-        $zaak = $this->entity(['startdatum' => '2026-06-01']);
-        $this->service->deriveTermijnen($zaak);
+		$case = $this->entity(['startdatum' => '2026-06-01']);
+		$this->service->deriveTermijnen($case);
 
-        $this->assertArrayNotHasKey('uiterlijkeEinddatumAfdoening', $zaak->jsonSerialize());
-    }//end testNoZaaktypeIsNoop()
+		$this->assertArrayNotHasKey('uiterlijkeEinddatumAfdoening', $case->jsonSerialize());
+	}//end testNoZaaktypeIsNoop()
 
-    public function testUnparsableDurationIsSkipped(): void
-    {
-        $this->stubZaaktype(['doorlooptijd' => 'not-a-duration']);
+	public function testUnparsableDurationIsSkipped(): void {
+		$this->stubCaseType(['doorlooptijd' => 'not-a-duration']);
 
-        $zaak = $this->entity([
-            'zaaktype'   => 'http://example/zaaktype/1',
-            'startdatum' => '2026-06-01',
-        ]);
+		$case = $this->entity([
+			'zaaktype' => 'http://example/zaaktype/1',
+			'startdatum' => '2026-06-01',
+		]);
 
-        $this->service->deriveTermijnen($zaak);
+		$this->service->deriveTermijnen($case);
 
-        $this->assertArrayNotHasKey('uiterlijkeEinddatumAfdoening', $zaak->jsonSerialize());
-    }//end testUnparsableDurationIsSkipped()
+		$this->assertArrayNotHasKey('uiterlijkeEinddatumAfdoening', $case->jsonSerialize());
+	}//end testUnparsableDurationIsSkipped()
 }//end class

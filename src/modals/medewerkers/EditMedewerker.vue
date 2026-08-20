@@ -4,7 +4,10 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="t('zaakafhandelapp', 'Employee')" size="normal" :can-close="false">
+	<NcDialog
+		:name="t('zaakafhandelapp', 'Employee')"
+		size="normal"
+		:canClose="false">
 		<NcNoteCard v-if="success" type="success">
 			<p>{{ t('zaakafhandelapp', 'Employee successfully updated') }}</p>
 		</NcNoteCard>
@@ -13,32 +16,37 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<div v-if="!success" class="form-group">
-			<NcTextField :disabled="loading"
+			<NcTextField
+				v-model="medewerkerItem.voornaam"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'First name')"
-				maxlength="255"
-				:value.sync="medewerkerItem.voornaam" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField
+				v-model="medewerkerItem.tussenvoegsel"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Middle name')"
-				maxlength="255"
-				:value.sync="medewerkerItem.tussenvoegsel" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField
+				v-model="medewerkerItem.achternaam"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Last name')"
-				maxlength="255"
-				:value.sync="medewerkerItem.achternaam" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField
+				v-model="medewerkerItem.email"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Email address')"
-				maxlength="255"
-				:value.sync="medewerkerItem.email" />
+				maxlength="255" />
 
-			<NcTextField :disabled="loading"
+			<NcTextField
+				v-model="medewerkerItem.telefoonnummer"
+				:disabled="loading"
 				:label="t('zaakafhandelapp', 'Phone number')"
 				minlength="10"
 				maxlength="11"
-				placeholder="06 12345678"
-				:value.sync="medewerkerItem.telefoonnummer" />
+				placeholder="06 12345678" />
 		</div>
 
 		<template #actions>
@@ -46,25 +54,43 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+				{{
+					success
+						? t('zaakafhandelapp', 'Close')
+						: t('zaakafhandelapp', 'Cancel')
+				}}
 			</NcButton>
 			<NcButton
-				@click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+				@click="
+					openLink(
+						'https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties',
+						'_blank',
+					)
+				">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
+			<NcButton
+				v-if="!success"
 				:disabled="loading"
-				type="primary"
+				variant="primary"
 				@click="editMedewerker()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading && medewerkerStore.medewerkerItem?.id" :size="20" />
-					<Plus v-if="!loading && !medewerkerStore.medewerkerItem?.id" :size="20" />
+					<ContentSaveOutline
+						v-if="!loading && medewerkerStore.medewerkerItem?.id"
+						:size="20" />
+					<Plus
+						v-if="!loading && !medewerkerStore.medewerkerItem?.id"
+						:size="20" />
 				</template>
-				{{ medewerkerStore.medewerkerItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					medewerkerStore.medewerkerItem?.id
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</template>
 	</NcDialog>
@@ -74,17 +100,16 @@ import { medewerkerStore, navigationStore } from '../../store/store.js'
 import {
 	NcButton,
 	NcDialog,
-	NcTextField,
 	NcLoadingIcon,
 	NcNoteCard,
+	NcTextField,
 } from '@nextcloud/vue'
-import { countries } from '../../data/countries.js'
-
+import Cancel from 'vue-material-design-icons/Cancel.vue'
 // Icons
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
 import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import { countries } from '../../data/countries.js'
 
 export default {
 	name: 'EditMedewerker',
@@ -100,6 +125,7 @@ export default {
 		Plus,
 		Help,
 	},
+
 	data() {
 		return {
 			success: false,
@@ -111,6 +137,7 @@ export default {
 					label: country.name,
 				})),
 			},
+
 			medewerkerItem: {
 				voornaam: '',
 				tussenvoegsel: '',
@@ -120,6 +147,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -135,6 +163,7 @@ export default {
 			}
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -142,6 +171,7 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -158,10 +188,14 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while saving the medewerker'
+				this.error =
+					error.message || 'An error occurred while saving the medewerker'
 			}
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {

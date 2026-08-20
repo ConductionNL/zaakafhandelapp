@@ -90,13 +90,13 @@ export function deriveZaakUrgency(zaak, today = new Date(), leadDays = 7) {
  */
 export function urgencyLabel(urgency) {
 	switch (urgency) {
-	case 'verlopen':
-		return 'Overdue'
-	case 'bijna-verlopen':
-		return 'Deadline approaching'
-	case 'op-tijd':
-		return 'On time'
-	default:
-		return ''
+		case 'verlopen':
+			return 'Overdue'
+		case 'bijna-verlopen':
+			return 'Deadline approaching'
+		case 'op-tijd':
+			return 'On time'
+		default:
+			return ''
 	}
 }

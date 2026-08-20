@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TKlant, TKlantType } from './klanten.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TKlant, TKlantType } from './klanten.types'
+
+import { z } from 'zod'
 
 export class Klant implements TKlant {
-
 	public id: string
 	public type: TKlantType
 
@@ -104,5 +105,4 @@ export class Klant implements TKlant {
 
 		return schema.safeParse(this)
 	}
-
 }

@@ -4,55 +4,67 @@ import { klantStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="startingType === 'persoon' ? t('zaakafhandelapp', 'Search person') : t('zaakafhandelapp', 'Search organisation')"
+	<NcDialog
+		:name="
+			startingType === 'persoon'
+				? t('zaakafhandelapp', 'Search person')
+				: t('zaakafhandelapp', 'Search organisation')
+		"
 		size="normal"
-		label-id="searchKlantModal"
-		dialog-classes="SearchKlantModal"
-		:close-on-click-outside="false"
+		labelId="searchKlantModal"
+		dialogClasses="SearchKlantModal"
+		:closeOnClickOutside="false"
 		@closing="closeModalFromButton()">
 		<div class="listContainer">
 			<div class="filtersContainer">
-				<NcCheckboxRadioSwitch v-if="startingType === 'persoon' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-if="startingType === 'persoon' || startingType === 'all'"
+					v-model="klantenSearchType"
 					value="geboortedatum_achternaam"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Date of birth + last name') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch v-if="startingType === 'persoon' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-if="startingType === 'persoon' || startingType === 'all'"
+					v-model="klantenSearchType"
 					value="bsn"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'BSN') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-if="startingType === 'organisatie' || startingType === 'all'"
+					v-model="klantenSearchType"
 					value="bedrijfsnaam"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Company name') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch v-if="startingType === 'organisatie' || startingType === 'all'"
-					:checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-if="startingType === 'organisatie' || startingType === 'all'"
+					v-model="klantenSearchType"
 					value="kvkNummer"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Chamber of commerce number') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-model="klantenSearchType"
 					value="postcode_huisnummer"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Postal code + house number') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-model="klantenSearchType"
 					value="emailadres"
 					name="klantenSearchType"
 					type="radio">
 					{{ t('zaakafhandelapp', 'Email address') }}
 				</NcCheckboxRadioSwitch>
-				<NcCheckboxRadioSwitch :checked.sync="klantenSearchType"
+				<NcCheckboxRadioSwitch
+					v-model="klantenSearchType"
 					value="telefoonnummer"
 					name="klantenSearchType"
 					type="radio">
@@ -64,39 +76,58 @@ import { klantStore } from '../../store/store.js'
 		<div class="searchContainer">
 			<div class="searchInputContainer">
 				<p>{{ searchLabel }}</p>
-				<div v-if="klantenSearchType === 'geboortedatum_achternaam'" class="flex">
-					<NcDateTimePicker v-model="searchQuery[0]" :disabled="loading" class="date-picker" />
+				<div
+					v-if="klantenSearchType === 'geboortedatum_achternaam'"
+					class="flex">
+					<NcDateTimePicker
+						v-model="searchQuery[0]"
+						:disabled="loading"
+						class="date-picker" />
 
-					<NcTextField :disabled="loading"
+					<NcTextField
+						v-model="searchQuery[1]"
+						:disabled="loading"
 						:label="t('zaakafhandelapp', 'Last name')"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[1]" />
+						class="klantSearchField" />
 				</div>
-				<div v-else-if="klantenSearchType === 'postcode_huisnummer'" class="flex">
-					<NcTextField :disabled="loading"
+				<div
+					v-else-if="klantenSearchType === 'postcode_huisnummer'"
+					class="flex">
+					<NcTextField
+						v-model="searchQuery[0]"
+						:disabled="loading"
+						:label="t('zaakafhandelapp', 'Postal code')"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[0]" />
+						class="klantSearchField" />
 
-					<NcTextField :disabled="loading"
+					<NcTextField
+						v-model="searchQuery[1]"
+						:disabled="loading"
+						:label="t('zaakafhandelapp', 'House number')"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[1]" />
+						class="klantSearchField" />
 				</div>
 				<div v-else>
-					<NcTextField :disabled="loading"
+					<NcTextField
+						v-model="searchQuery[0]"
+						:disabled="loading"
+						:label="searchLabel"
 						maxlength="255"
-						class="klantSearchField"
-						:value.sync="searchQuery[0]" />
+						class="klantSearchField" />
 				</div>
 			</div>
 
-			<NcButton type="primary"
-				:disabled="loading
+			<NcButton
+				variant="primary"
+				:disabled="
+					loading
 					|| !searchQuery[0]
-					|| klantenSearchType === 'geboortedatum_achternaam' && !searchQuery[1]
-					|| klantenSearchType === 'postcode_huisnummer' && !searchQuery[1]"
+					|| (klantenSearchType === 'geboortedatum_achternaam'
+						&& !searchQuery[1])
+					|| (klantenSearchType === 'postcode_huisnummer'
+						&& !searchQuery[1])
+				"
 				class="searchButton"
 				@click="search">
 				<template #icon>
@@ -108,21 +139,28 @@ import { klantStore } from '../../store/store.js'
 
 		<div class="searchResultsContainer">
 			<div v-if="klanten?.length && !loading">
-				<NcListItem v-for="(klant, i) in klanten"
+				<NcListItem
+					v-for="(klant, i) in klanten"
 					:key="`${klant}${i}`"
 					:name="`${getSex(klant)} ${getName(klant)} ${getSubname(klant)}`"
 					:active="selectedKlant?.id === klant?.id"
-					:force-display-actions="true"
+					:forceDisplayActions="true"
 					:details="_.upperFirst(klant.type)"
 					@click="setActive(klant)">
 					<template #icon>
-						<OfficeBuildingOutline v-if="klant.type === 'organisatie'"
-							:class="selectedKlant?.id === klant?.id && 'selectedZaakIcon'"
-							disable-menu
+						<OfficeBuildingOutline
+							v-if="klant.type === 'organisatie'"
+							:class="
+								selectedKlant?.id === klant?.id && 'selectedZaakIcon'
+							"
+							disableMenu
 							:size="44" />
-						<AccountOutline v-if="klant.type === 'persoon'"
-							:class="selectedKlant?.id === klant?.id && 'selectedZaakIcon'"
-							disable-menu
+						<AccountOutline
+							v-if="klant.type === 'persoon'"
+							:class="
+								selectedKlant?.id === klant?.id && 'selectedZaakIcon'
+							"
+							disableMenu
 							:size="44" />
 					</template>
 					<template #subname>
@@ -132,10 +170,15 @@ import { klantStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="!klanten?.length && !loading">
-				{{ t('zaakafhandelapp', 'No {type} found.', { type: modalType.plural }) }}
+				{{
+					t('zaakafhandelapp', 'No {type} found.', {
+						type: modalType.plural,
+					})
+				}}
 			</div>
 
-			<NcLoadingIcon v-if="loading"
+			<NcLoadingIcon
+				v-if="loading"
 				class="loadingIcon"
 				:size="64"
 				appearance="dark"
@@ -143,14 +186,14 @@ import { klantStore } from '../../store/store.js'
 		</div>
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal()">
+			<NcButton variant="secondary" @click="closeModal()">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
 			<NcButton
-				type="primary"
+				variant="primary"
 				:disabled="!selectedKlant"
 				@click="selectKlant()">
 				<template #icon>
@@ -164,16 +207,23 @@ import { klantStore } from '../../store/store.js'
 
 <script>
 // Components
-import { NcButton, NcTextField, NcDialog, NcListItem, NcLoadingIcon, NcCheckboxRadioSwitch, NcDateTimePicker } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
+import {
+	NcButton,
+	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
+	NcDialog,
+	NcListItem,
+	NcLoadingIcon,
+	NcTextField,
+} from '@nextcloud/vue'
 import _ from 'lodash'
-
+import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import Search from 'vue-material-design-icons/Magnify.vue'
 // Icons
 import OfficeBuildingOutline from 'vue-material-design-icons/OfficeBuildingOutline.vue'
-import AccountOutline from 'vue-material-design-icons/AccountOutline.vue'
 import Plus from 'vue-material-design-icons/Plus.vue'
-import Search from 'vue-material-design-icons/Magnify.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
+import { getTheme } from '../../services/getTheme.js'
 import getValidISOstring from '../../services/getValidISOstring.js'
 export default {
 	name: 'SearchKlantModal',
@@ -188,9 +238,11 @@ export default {
 		NcDateTimePicker,
 		NcLoadingIcon,
 	},
+
 	props: {
 		/**
 		 * Determines the initial type of customer search to display
+		 *
 		 * @param { "persoon" | "organisatie" | "all" } startingType - The type of customer search to display
 		 * @default 'all'
 		 *
@@ -206,14 +258,17 @@ export default {
 			type: String,
 			required: true, // required is set to true as I want developers to be aware of the functionality they're adding / using
 			/**
+			 * @param value
 			 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 			 */
 			validator(value) {
 				return ['persoon', 'organisatie', 'all'].includes(value)
 			},
 		},
+
 		/**
 		 * The label of the select button
+		 *
 		 * @param {string} selectButtonLabel - The label of the select button
 		 * @default Select
 		 */
@@ -223,6 +278,7 @@ export default {
 			default: 'Select',
 		},
 	},
+
 	data() {
 		return {
 			modalType: (() => {
@@ -233,6 +289,7 @@ export default {
 				}
 				return typeMap[this.startingType] || typeMap.all
 			})(),
+
 			succes: false,
 			loading: false,
 			error: false,
@@ -243,6 +300,7 @@ export default {
 			klantenSearchType: 'emailadres',
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -251,37 +309,65 @@ export default {
 			const typeLabels = {
 				persoon: {
 					default: t('zaakafhandelapp', 'person'),
-					geboortedatum_achternaam: t('zaakafhandelapp', 'with date of birth and last name'),
+					geboortedatum_achternaam: t(
+						'zaakafhandelapp',
+						'with date of birth and last name',
+					),
+
 					bsn: t('zaakafhandelapp', 'with BSN'),
 				},
+
 				organisatie: {
 					default: t('zaakafhandelapp', 'organisation'),
 					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
-					kvkNummer: t('zaakafhandelapp', 'with chamber of commerce number'),
+					kvkNummer: t(
+						'zaakafhandelapp',
+						'with chamber of commerce number',
+					),
 				},
+
 				all: {
 					default: t('zaakafhandelapp', 'customer'),
-					geboortedatum_achternaam: t('zaakafhandelapp', 'with date of birth and last name'),
+					geboortedatum_achternaam: t(
+						'zaakafhandelapp',
+						'with date of birth and last name',
+					),
+
 					bsn: t('zaakafhandelapp', 'with BSN'),
 					bedrijfsnaam: t('zaakafhandelapp', 'with company name'),
-					kvkNummer: t('zaakafhandelapp', 'with chamber of commerce number'),
+					kvkNummer: t(
+						'zaakafhandelapp',
+						'with chamber of commerce number',
+					),
 				},
 			}
 			const commonLabels = {
-				postcode_huisnummer: t('zaakafhandelapp', 'with postal code and house number'),
+				postcode_huisnummer: t(
+					'zaakafhandelapp',
+					'with postal code and house number',
+				),
+
 				emailadres: t('zaakafhandelapp', 'with email address'),
 				telefoonnummer: t('zaakafhandelapp', 'with phone number'),
 			}
 
-			let label = t('zaakafhandelapp', 'Search for a') + ' ' + (typeLabels[this.startingType]?.default || '')
-			const modifier = typeLabels[this.startingType]?.[this.klantenSearchType] || commonLabels[this.klantenSearchType] || ''
+			let label =
+				t('zaakafhandelapp', 'Search for a')
+				+ ' '
+				+ (typeLabels[this.startingType]?.default || '')
+			const modifier =
+				typeLabels[this.startingType]?.[this.klantenSearchType]
+				|| commonLabels[this.klantenSearchType]
+				|| ''
 			if (modifier) label += ' ' + modifier
 
 			return label
 		},
 	},
+
 	watch: {
 		/**
+		 * @param newVal
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		klantenSearchType(newVal) {
@@ -292,6 +378,7 @@ export default {
 			}
 		},
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -301,13 +388,14 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
 		closeModal() {
 			this.$emit('close-modal')
-
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -326,20 +414,28 @@ export default {
 			this.selectedKlant = null
 
 			let queryParams = { [this.klantenSearchType]: this.searchQuery[0] }
-			const refinedQuery = this.searchQuery.map(item => typeof item === 'string' ? item.trim() : item)
+			const refinedQuery = this.searchQuery.map((item) =>
+				typeof item === 'string' ? item.trim() : item,
+			)
 
 			switch (this.klantenSearchType) {
-			case 'postcode_huisnummer':
-				queryParams = { postcode: refinedQuery[0], huisnummer: refinedQuery[1] }
-				break
-			case 'geboortedatum_achternaam':
-				queryParams = {
-					geboortedatum: refinedQuery[0].toISOString() ? refinedQuery[0].toISOString() : '',
-					achternaam: refinedQuery[1],
-				}
-				break
-			default:
-				break
+				case 'postcode_huisnummer':
+					queryParams = {
+						postcode: refinedQuery[0],
+						huisnummer: refinedQuery[1],
+					}
+					break
+				case 'geboortedatum_achternaam':
+					queryParams = {
+						geboortedatum: refinedQuery[0].toISOString()
+							? refinedQuery[0].toISOString()
+							: '',
+
+						achternaam: refinedQuery[1],
+					}
+					break
+				default:
+					break
 			}
 
 			const searchParams = new URLSearchParams({
@@ -347,12 +443,12 @@ export default {
 				...(this.startingType !== 'all' && { type: this.startingType }),
 			}).toString()
 
-			klantStore.searchKlanten(searchParams)
-				.then(() => {
-					this.klanten = klantStore.klantenList
-					this.loading = false
-				})
+			klantStore.searchKlanten(searchParams).then(() => {
+				this.klanten = klantStore.klantenList
+				this.loading = false
+			})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -365,7 +461,9 @@ export default {
 				appLocation = '/apps-extra'
 			}
 
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/office-building-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/office-building-outline.svg`
+			return theme === 'light'
+				? `${appLocation}/zaakafhandelapp/img/office-building-outline-dark.svg`
+				: `${appLocation}/zaakafhandelapp/img/office-building-outline.svg`
 		},
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
@@ -380,24 +478,34 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSubname(klant) {
 			if (klant.type === 'persoon') {
-				return klant?.tussenvoegsel ? `${klant.tussenvoegsel} ${klant.achternaam}` : klant?.achternaam ? `${klant.achternaam}` : 'onbekend'
+				return klant?.tussenvoegsel
+					? `${klant.tussenvoegsel} ${klant.achternaam}`
+					: klant?.achternaam
+						? `${klant.achternaam}`
+						: 'onbekend'
 			}
 			if (klant.type === 'organisatie') {
 				return ''
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSummary(klant) {
 			if (klant.type === 'persoon') {
-				const geboortedatum = getValidISOstring(klant.geboortedatum) ? new Date(klant.geboortedatum).toLocaleDateString() : 'onbekend'
+				const geboortedatum = getValidISOstring(klant.geboortedatum)
+					? new Date(klant.geboortedatum).toLocaleDateString()
+					: 'onbekend'
 				const geboortestad = klant.plaats ? `${klant.plaats}` : 'onbekend'
 				return `${geboortedatum} - ${geboortestad}`
 			}
@@ -406,7 +514,9 @@ export default {
 			}
 			return 'onbekend'
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		getSex(klant) {
@@ -415,19 +525,21 @@ export default {
 			}
 			return ''
 		},
+
 		/**
+		 * @param klant
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
 		setActive(klant) {
 			if (this.selectedKlant?.id === (klant?.id || Symbol('default id'))) {
 				this.selectedKlant = null
-			} else { this.selectedKlant = klant }
+			} else {
+				this.selectedKlant = klant
+			}
 		},
 	},
 }
 </script>
-
-<style></style>
 
 <style scoped>
 .listContainer {

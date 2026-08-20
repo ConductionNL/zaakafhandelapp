@@ -24,33 +24,30 @@ namespace OCA\OpenRegister\Db;
 /**
  * Stub for Schema supporting the slug accessor the tests use.
  */
-class Schema
-{
+class Schema {
 
-    /**
-     * @var string|null The schema slug.
-     */
-    private ?string $slug = null;
+	/**
+	 * @var string|null The schema slug.
+	 */
+	private ?string $slug = null;
 
-    /**
-     * Set the schema slug.
-     *
-     * @param string|null $slug The slug.
-     *
-     * @return void
-     */
-    public function setSlug(?string $slug): void
-    {
-        $this->slug = $slug;
-    }//end setSlug()
+	/**
+	 * Set the schema slug.
+	 *
+	 * @param string|null $slug The slug.
+	 *
+	 * @return void
+	 */
+	public function setSlug(?string $slug): void {
+		$this->slug = $slug;
+	}//end setSlug()
 
-    /**
-     * Get the schema slug.
-     *
-     * @return string|null
-     */
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }//end getSlug()
+	/**
+	 * Get the schema slug.
+	 *
+	 * @return string|null
+	 */
+	public function getSlug(): ?string {
+		return $this->slug;
+	}//end getSlug()
 }//end class

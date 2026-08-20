@@ -29,8 +29,7 @@
 
 import { test, expect, type Page } from '@playwright/test'
 import { dismissSupportModal } from './helpers'
-
-const APP = '/apps/zaakafhandelapp'
+import { APP } from '../app-path'
 
 // A syntactically-valid-but-nonexistent id. The detail page resolves no
 // record and renders its header chrome + empty body, which is the stable,
@@ -44,82 +43,129 @@ const NO_SUCH = 'e2e-no-such-record-0000'
  * with the record identifier once a real record loads.
  */
 async function assertDetailChrome(page: Page, entityLabel: string): Promise<void> {
-	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({ timeout: 15_000 })
+	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
+		timeout: 15_000,
+	})
 	// The detail page host confirms the manifest detail page mounted.
-	await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 10_000 })
+	await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({
+		timeout: 10_000,
+	})
 	// The detail header is the deterministic, data-independent surface.
-	await expect(page.locator('[data-testid="cn-detail-page-header"]')).toBeVisible({ timeout: 10_000 })
+	await expect(page.locator('[data-testid="cn-detail-page-header"]')).toBeVisible({
+		timeout: 10_000,
+	})
 	// The header title carries the singular entity label even with no record.
 	await expect(
-		page.locator('[data-testid="cn-detail-page"]').getByRole('heading', { name: entityLabel }).first(),
+		page
+			.locator('[data-testid="cn-detail-page"]')
+			.getByRole('heading', { name: entityLabel })
+			.first(),
 	).toBeVisible({ timeout: 10_000 })
 }
 
 /** Server-routed detail page: reachable via a hard goto to /<plural>/:id. */
-async function gotoDetail(page: Page, plural: string, entityLabel: string): Promise<void> {
+async function gotoDetail(
+	page: Page,
+	plural: string,
+	entityLabel: string,
+): Promise<void> {
 	await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
 	await dismissSupportModal(page)
 	await assertDetailChrome(page, entityLabel)
 }
 
 test.describe('ui-detail-views — generic detail pages render shared header chrome', () => {
-
 	// @e2e openspec/specs/domain-entities/spec.md#zaak
-	test('zaken detail — case detail page renders header chrome', async ({ page }) => {
+	test('zaken detail — case detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'zaken', 'Case')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#taak
-	test('taken detail — task detail page renders header chrome', async ({ page }) => {
+	test('taken detail — task detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'taken', 'Task')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#klant
-	test('klanten detail — customer detail page renders header chrome', async ({ page }) => {
+	test('klanten detail — customer detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'klanten', 'Customer')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#medewerker
-	test('medewerkers detail — employee detail page renders header chrome', async ({ page }) => {
+	test('medewerkers detail — employee detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'medewerkers', 'Employee')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#bericht
-	test('berichten detail — message detail page renders header chrome', async ({ page }) => {
+	test('berichten detail — message detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'berichten', 'Message')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#contactmoment
-	test('contactmomenten detail — contact-moment detail page renders header chrome', async ({ page }) => {
+	test('contactmomenten detail — contact-moment detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'contactmomenten', 'Contact moment')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#rol
-	test('rollen detail — role detail page renders header chrome', async ({ page }) => {
+	test('rollen detail — role detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'rollen', 'Role')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#zaaktype
-	test('zaaktypen detail — case-type detail page renders header chrome', async ({ page }) => {
+	test('zaaktypen detail — case-type detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'zaaktypen', 'Case type')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#besluit
 	// BUG-1 (FIXED): besluiten/{id} now has a server-side route — hard goto.
-	test('besluiten detail — decision detail page renders header chrome', async ({ page }) => {
+	test('besluiten detail — decision detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'besluiten', 'Decision')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#document
 	// BUG-1 (FIXED): documenten/{id} now has a server-side route — hard goto.
-	test('documenten detail — document detail page renders header chrome', async ({ page }) => {
+	test('documenten detail — document detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'documenten', 'Document')
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#resultaat
 	// BUG-1 (FIXED): resultaten/{id} now has a server-side route — hard goto.
-	test('resultaten detail — result detail page renders header chrome', async ({ page }) => {
+	test('resultaten detail — result detail page renders header chrome', async ({
+		page,
+	}) => {
 		await gotoDetail(page, 'resultaten', 'Result')
+	})
+
+	// @e2e openspec/specs/domain-entities/spec.md#status
+	// StatusDetail (`/statussen/:id`) was the ONE manifest detail page with no
+	// test in this suite: the eleven above plus this one are the twelve
+	// `type: "detail"` entries in src/manifest.json, and `appinfo/routes.php`
+	// has registered `statusen#page` for `/statussen/{id}` since BUG-1. The gap
+	// was invisible because the index page (`/statussen`) IS covered by
+	// ui-record-views, so the entity looked exercised.
+	test('statussen detail — status detail page renders header chrome', async ({
+		page,
+	}) => {
+		await gotoDetail(page, 'statussen', 'Status')
 	})
 
 	// @e2e openspec/specs/ui-case-views/spec.md#detail-from-list
@@ -127,17 +173,31 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 	// list row, and confirm the detail surface for that row opens. Guarded by
 	// a seed check so the suite stays green on a seedless instance — the
 	// data-independent detail chrome is already covered by the tests above.
-	test('zaken detail from list — clicking a list row opens the detail surface', async ({ page }) => {
+	test('zaken detail from list — clicking a list row opens the detail surface', async ({
+		page,
+	}) => {
 		await page.goto(`${APP}/#/zaken`)
 		await dismissSupportModal(page)
-		await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({ timeout: 15_000 })
+		await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({
+			timeout: 15_000,
+		})
 		// First clickable list row in the index master list, if any seed exists.
-		const firstRow = page.locator('[data-testid="cn-index-page"]').locator('tr[tabindex], [role="row"] a, .list-item, article a').first()
-		const hasRow = await firstRow.isVisible({ timeout: 5_000 }).catch(() => false)
-		test.skip(!hasRow, 'No seed records on the zaken list — data-independent detail chrome is covered above')
+		const firstRow = page
+			.locator('[data-testid="cn-index-page"]')
+			.locator('tr[tabindex], [role="row"] a, .list-item, article a')
+			.first()
+		const hasRow = await firstRow
+			.isVisible({ timeout: 5_000 })
+			.catch(() => false)
+		test.skip(
+			!hasRow,
+			'No seed records on the zaken list — data-independent detail chrome is covered above',
+		)
 		await firstRow.click()
 		// Either the URL advances to a detail route or the detail host mounts.
-		await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 10_000 })
+		await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({
+			timeout: 10_000,
+		})
 	})
 
 	// @e2e openspec/specs/domain-entities/spec.md#no-console-errors
@@ -150,12 +210,28 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Server-routed detail pages via hard goto (all have routes now).
-		for (const plural of ['zaken', 'taken', 'klanten', 'medewerkers', 'berichten', 'contactmomenten', 'rollen', 'zaaktypen', 'besluiten', 'documenten', 'resultaten']) {
+		for (const plural of [
+			'zaken',
+			'taken',
+			'klanten',
+			'medewerkers',
+			'berichten',
+			'contactmomenten',
+			'rollen',
+			'zaaktypen',
+			'besluiten',
+			'documenten',
+			'resultaten',
+			'statussen',
+		]) {
 			await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
 			await dismissSupportModal(page)
-			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible({ timeout: 15_000 })
+			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible(
+				{ timeout: 15_000 },
+			)
 		}
-		expect(errors, `Uncaught JS exceptions: ${errors.join(' | ')}`).toHaveLength(0)
+		expect(errors, `Uncaught JS exceptions: ${errors.join(' | ')}`).toHaveLength(
+			0,
+		)
 	})
-
 })

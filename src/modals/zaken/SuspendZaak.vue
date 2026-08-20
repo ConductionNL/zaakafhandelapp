@@ -4,10 +4,15 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog :name="isSuspended ? t('zaakafhandelapp', 'Resume case') : t('zaakafhandelapp', 'Suspend case')"
+	<NcDialog
+		:name="
+			isSuspended
+				? t('zaakafhandelapp', 'Resume case')
+				: t('zaakafhandelapp', 'Suspend case')
+		"
 		size="normal"
-		label-id="suspendZaakModal"
-		:close-on-click-outside="false"
+		labelId="suspendZaakModal"
+		:closeOnClickOutside="false"
 		@closing="closeModal">
 		<NcNoteCard v-if="error" type="error">
 			{{ error }}
@@ -18,26 +23,38 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<p v-if="isSuspended" class="explanation">
-			{{ t('zaakafhandelapp', 'Resuming the case shifts its planned and statutory deadlines forward by the elapsed suspension period (Awb art. 4:15).') }}
+			{{
+				t(
+					'zaakafhandelapp',
+					'Resuming the case shifts its planned and statutory deadlines forward by the elapsed suspension period (Awb art. 4:15).',
+				)
+			}}
 		</p>
 		<p v-else class="explanation">
-			{{ t('zaakafhandelapp', 'Suspending the case pauses its beslistermijn. A reason is required.') }}
+			{{
+				t(
+					'zaakafhandelapp',
+					'Suspending the case pauses its beslistermijn. A reason is required.',
+				)
+			}}
 		</p>
 
-		<NcTextArea v-if="!isSuspended"
-			:value.sync="reden"
+		<NcTextArea
+			v-if="!isSuspended"
+			v-model="reden"
 			:label="t('zaakafhandelapp', 'Reason for suspension')"
 			:disabled="loading"
 			required />
 
 		<template #actions>
-			<NcButton type="secondary" @click="closeModal">
+			<NcButton variant="secondary" @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
 				{{ t('zaakafhandelapp', 'Cancel') }}
 			</NcButton>
-			<NcButton type="primary"
+			<NcButton
+				variant="primary"
 				:disabled="loading || (!isSuspended && !reden.trim())"
 				@click="submit">
 				<template #icon>
@@ -45,15 +62,24 @@ import { navigationStore, zaakStore } from '../../store/store.js'
 					<PlayOutline v-else-if="isSuspended" :size="20" />
 					<PauseOutline v-else :size="20" />
 				</template>
-				{{ isSuspended ? t('zaakafhandelapp', 'Resume') : t('zaakafhandelapp', 'Suspend') }}
+				{{
+					isSuspended
+						? t('zaakafhandelapp', 'Resume')
+						: t('zaakafhandelapp', 'Suspend')
+				}}
 			</NcButton>
 		</template>
 	</NcDialog>
 </template>
 
 <script>
-import { NcButton, NcDialog, NcTextArea, NcNoteCard, NcLoadingIcon } from '@nextcloud/vue'
-
+import {
+	NcButton,
+	NcDialog,
+	NcLoadingIcon,
+	NcNoteCard,
+	NcTextArea,
+} from '@nextcloud/vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import PauseOutline from 'vue-material-design-icons/PauseCircleOutline.vue'
 import PlayOutline from 'vue-material-design-icons/PlayCircleOutline.vue'
@@ -70,6 +96,7 @@ export default {
 		PauseOutline,
 		PlayOutline,
 	},
+
 	data() {
 		return {
 			reden: '',
@@ -78,6 +105,7 @@ export default {
 			success: '',
 		}
 	},
+
 	computed: {
 		/**
 		 * @spec openspec/specs/ui-case-views/spec.md#REQ-007
@@ -86,6 +114,7 @@ export default {
 			return zaakStore.zaakItem?.opschorting?.indicatie === true
 		},
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-006
@@ -108,11 +137,15 @@ export default {
 				setTimeout(() => this.closeModal(), 800)
 			} catch (err) {
 				console.error(err)
-				this.error = t('zaakafhandelapp', 'The operation was refused. The case type may not allow this, or the case is closed.')
+				this.error = t(
+					'zaakafhandelapp',
+					'The operation was refused. The case type may not allow this, or the case is closed.',
+				)
 			} finally {
 				this.loading = false
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */

@@ -1,5 +1,8 @@
+import type { TDocument } from '../../entities/index.js'
+
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
-import { TDocument, Document } from '../../entities/index.js'
+import { Document } from '../../entities/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/documenten'
 
@@ -12,15 +15,16 @@ type TOptions = {
 
 export const useDocumentStore = defineStore('documenten', {
 	state: () => ({
-		documentItem: null,
-		documentenList: [],
+		documentItem: null as Document | null,
+		documentenList: [] as Document[],
 		/**
 		 * Set the zaakId, used when creating a new document on a zaak.
 		 */
-		zaakId: null,
+		zaakId: null as string | null,
 	}),
 	actions: {
 		/**
+		 * @param documentItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setDocumentItem(documentItem: Document | TDocument) {
@@ -28,22 +32,27 @@ export const useDocumentStore = defineStore('documenten', {
 			console.info('Active document item set to ' + documentItem)
 		},
 		/**
+		 * @param documentenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setDocumentenList(documentenList: Document[] | TDocument[]) {
 			this.documentenList = documentenList.map(
-			    (documentItem) => new Document(documentItem),
+				(documentItem) => new Document(documentItem),
 			)
-			console.info('Documenten list set to ' + documentenList.length + ' items')
+			console.info(
+				'Documenten list set to ' + documentenList.length + ' items',
+			)
 		},
 		/**
 		 * Refresh the list of documenten items.
 		 *
 		 * @param search - Optional search query to filter the documenten list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TDocument[], entities: Document[] }> } The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
-		async refreshDocumentenList(search: string = null): Promise<{ response: Response, data: TDocument[], entities: Document[] }> {
+		async refreshDocumentenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TDocument[]; entities: Document[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -62,7 +71,9 @@ export const useDocumentStore = defineStore('documenten', {
 			}
 
 			const data = (await response.json()).results as TDocument[]
-			const entities = data.map((documentItem: TDocument) => new Document(documentItem))
+			const entities = data.map(
+				(documentItem: TDocument) => new Document(documentItem),
+			)
 
 			this.setDocumentenList(data)
 
@@ -74,12 +85,12 @@ export const useDocumentStore = defineStore('documenten', {
 		 * @param id - The ID of the document item to fetch.
 		 * @param options - Options for fetching the document item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TDocument, entity: Document }> } The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getDocument(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TDocument, entity: Document }> {
+		): Promise<{ response: Response; data: TDocument; entity: Document }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching document item with id: ' + id)
@@ -105,9 +116,11 @@ export const useDocumentStore = defineStore('documenten', {
 		 *
 		 * @param zaakId - Optional ID of the zaak to filter documenten by
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TDocument[], entities: Document[] }> } The response, raw data array, and entity array.
+		 * @return The response, raw data array, and entity array.
 		 */
-		async getDocumenten(zaakId: string = null): Promise<{ response: Response, data: TDocument[], entities: Document[] }> {
+		async getDocumenten(
+			zaakId: string = null,
+		): Promise<{ response: Response; data: TDocument[]; entities: Document[] }> {
 			const params = new URLSearchParams()
 			if (zaakId) {
 				params.append('zaak', zaakId)
@@ -139,7 +152,7 @@ export const useDocumentStore = defineStore('documenten', {
 		 *
 		 * @param id - The ID of the document item to delete.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteDocument(id: string): Promise<{ response: Response }> {
 			if (!id) {
@@ -152,6 +165,9 @@ export const useDocumentStore = defineStore('documenten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			this.refreshDocumentenList()
@@ -165,12 +181,12 @@ export const useDocumentStore = defineStore('documenten', {
 		 * @param documentItem - The document item to save.
 		 * @param options - Options for saving the document item. (default: `{ setItem: true }`)
 		 * @throws If there is no document item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TDocument, entity: Document }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveDocument(
 			documentItem: Document | TDocument,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TDocument, entity: Document }> {
+		): Promise<{ response: Response; data: TDocument; entity: Document }> {
 			if (!documentItem) {
 				throw new Error('No document item to save')
 			}
@@ -183,23 +199,21 @@ export const useDocumentStore = defineStore('documenten', {
 
 			console.info('Saving document item with id: ' + documentItem?.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(documentItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(documentItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(response.statusText || 'Failed to save document')
 			}
 
-			const data = await response.json() as TDocument
+			const data = (await response.json()) as TDocument
 			const entity = new Document(data)
 
 			options.setItem && this.setDocumentItem(data)

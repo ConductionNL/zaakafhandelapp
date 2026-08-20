@@ -1,11 +1,13 @@
-import Vue from 'vue'
-import { translate as t, translatePlural as n } from '@nextcloud/l10n'
+import { translatePlural as n, translate as t } from '@nextcloud/l10n'
+import { createApp } from 'vue'
 import Settings from './views/settings/Settings.vue'
 
-Vue.mixin({ methods: { t, n } })
+// Library CSS — the settings bundle loads standalone, without main.js.
+import '@conduction/nextcloud-vue/css/index.css'
 
-new Vue(
-	{
-		render: h => h(Settings),
-	},
-).$mount('#zaakafhandelapp-settings')
+const app = createApp(Settings)
+
+// Vue 3 has no global `Vue.mixin` — it is per-app-instance.
+app.mixin({ methods: { t, n } })
+
+app.mount('#zaakafhandelapp-settings')

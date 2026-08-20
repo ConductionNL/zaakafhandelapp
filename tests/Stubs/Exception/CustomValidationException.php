@@ -26,33 +26,30 @@ use Exception;
 /**
  * Stub for CustomValidationException.
  */
-class CustomValidationException extends Exception
-{
+class CustomValidationException extends Exception {
 
-    /**
-     * @var array<int,array<string,mixed>> The validation errors.
-     */
-    private array $errors;
+	/**
+	 * @var array<int,array<string,mixed>> The validation errors.
+	 */
+	private array $errors;
 
-    /**
-     * Constructor.
-     *
-     * @param string                         $message The error message.
-     * @param array<int,array<string,mixed>> $errors  The validation errors.
-     */
-    public function __construct(string $message, array $errors)
-    {
-        parent::__construct($message);
-        $this->errors = $errors;
-    }//end __construct()
+	/**
+	 * Constructor.
+	 *
+	 * @param string $message The error message.
+	 * @param array<int,array<string,mixed>> $errors The validation errors.
+	 */
+	public function __construct(string $message, array $errors) {
+		parent::__construct($message);
+		$this->errors = $errors;
+	}//end __construct()
 
-    /**
-     * Return the validation errors.
-     *
-     * @return array<int,array<string,mixed>>
-     */
-    public function getErrors(): array
-    {
-        return $this->errors;
-    }//end getErrors()
+	/**
+	 * Return the validation errors.
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function getErrors(): array {
+		return $this->errors;
+	}//end getErrors()
 }//end class
