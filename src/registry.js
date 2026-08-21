@@ -25,14 +25,16 @@
 
 import { CnStatsBlockWidget } from '@conduction/nextcloud-vue'
 import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
-// ── kind: "widget" (dashboard stats-block) ──────────────────────────────────
-// The dashboard manifest places `widgetKey: "stats-block"` cards in the "body"
-// slot, but `stats-block` is NOT one of CnWidgetGrid's built-in widget keys
-// (object-table, form-renderer, map-viewer, card-grid, data, metadata,
-// integration). Without registering it here CnWidgetGrid logs "Unknown
-// widgetKey" and skips every card, leaving the dashboard body empty.
-// CnStatsBlockWidget reads the manifest `dataSource` block
-// ({ register, schema, aggregate: "count" }) and renders CnStatsBlock.
+// ── kind: "widget" (stats-block) ────────────────────────────────────────────
+// `stats-block` is NOT one of CnWidgetGrid's built-in widget keys (object-table,
+// form-renderer, map-viewer, card-grid, data, metadata, integration), so a page
+// that places `widgetKey: "stats-block"` in a widget SLOT needs this entry or
+// CnWidgetGrid logs "Unknown widgetKey" and skips the card.
+// The in-app Dashboard no longer takes that path: its six KPI cards live in
+// `config.widgets[]` + `config.layout[]`, which CnDashboardPage dispatches to
+// CnStatsBlockWidget itself (see the page's `_note` in src/manifest.json for
+// why they must stay there). This entry remains as the slot-path resolver and
+// as the widget picker's size/slot metadata.
 import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
 // NOTE: the `audit-trail` widget key is a library built-in (CnAuditTrailWidget).
 // The former app-local adapter registry entry was removed in ADR-049 Phase-4 —
@@ -62,11 +64,12 @@ export default {
 		_note: 'Hybrid ZGW-API data path; fetches audit events from ZGW-API audittrail endpoint, not OR; no current typed-page analogue',
 	},
 
-	// ── kind: "widget" (dashboard stats-block) ─────────────────────────────
-	// Resolved by CnWidgetGrid via the manifest `widgetKey: "stats-block"`.
-	// Reads the manifest `dataSource` block ({ register, schema, aggregate })
-	// and renders a count KPI card. Without this entry the dashboard body is
-	// empty (every stats-block card is skipped as an unknown widgetKey).
+	// ── kind: "widget" (stats-block) ───────────────────────────────────────
+	// Resolved by CnWidgetGrid for any manifest `widgetKey: "stats-block"`
+	// placed in a widget slot. Reads the manifest `dataSource` block
+	// ({ register, schema, aggregate }) and renders a count KPI card.
+	// The Dashboard's own KPI cards do not come through here — see the note
+	// above the imports.
 	'stats-block': {
 		kind: 'widget',
 		component: CnStatsBlockWidget,
