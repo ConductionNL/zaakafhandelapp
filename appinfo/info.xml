@@ -43,6 +43,17 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
         <owncloud max-version="0" min-version="0"/>
 		<nextcloud min-version="28" max-version="34"/>
 	</dependencies>
+	<!--
+		info.xsd declares the app element as an ordered <xs:sequence>, and
+		<settings> comes before <navigations> in it. Both elements are valid;
+		only their order was wrong, which is why the error pointed at
+		<settings> ("not expected") rather than at anything being missing.
+	-->
+	<settings>
+		<admin>OCA\ZaakAfhandelApp\Settings\ZaakAfhandelAppAdmin</admin>
+		<admin-section>OCA\ZaakAfhandelApp\Sections\ZaakAfhandelAppAdmin</admin-section>
+	</settings>
+
 	<navigations>
 		<navigation>
 			<id>zaakafhandelapp</id>
@@ -50,9 +61,4 @@ Create a [feature request](https://github.com/OpenCatalogi/.github/issues/new/ch
 			<route>zaakafhandelapp.dashboard.page</route>
 		</navigation>
 	</navigations>
-
-	<settings>
-		<admin>OCA\ZaakAfhandelApp\Settings\ZaakAfhandelAppAdmin</admin>
-		<admin-section>OCA\ZaakAfhandelApp\Sections\ZaakAfhandelAppAdmin</admin-section>
-	</settings>
 </info>

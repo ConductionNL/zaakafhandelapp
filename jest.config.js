@@ -6,6 +6,14 @@ module.exports = {
 		'.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
 	},
 	moduleFileExtensions: ['js', 'json', 'vue', 'ts'],
+	// Jest's default testMatch sweeps the whole tree, which includes
+	// Playwright's own directory — playwright.config.js sets
+	// `testDir: './tests/e2e'`. Those six specs import `@playwright/test`,
+	// whose base classes do not exist under Jest, so each one died at the
+	// import line with "Class extends value undefined is not a constructor
+	// or null" and the unit job failed on six suites it was never meant to
+	// run. The pointer is the import, not any code this app owns.
+	testPathIgnorePatterns: ['/node_modules/', '<rootDir>/tests/e2e/'],
 	testEnvironment: 'jest-environment-jsdom',
 	// Several @nextcloud/* and @conduction/* packages ship pure ESM (or
 	// CJS chunks that `require('....css')`), which Jest cannot parse out

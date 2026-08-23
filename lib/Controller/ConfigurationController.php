@@ -136,9 +136,7 @@ class ConfigurationController extends Controller
             }
 
             $this->config->setValueString('zaakafhandelapp', $key, (string) $requestData[$key]);
-            $data[$key] = in_array($key, self::CREDENTIAL_KEYS, true)
-                ? '***'
-                : $this->config->getValueString('zaakafhandelapp', $key);
+            $data[$key] = in_array($key, self::CREDENTIAL_KEYS, true) ? '***' : $this->config->getValueString('zaakafhandelapp', $key);
         }
 
         return new JSONResponse($data);
