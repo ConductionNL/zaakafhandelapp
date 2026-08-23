@@ -107,14 +107,14 @@ class ZGWZaakLifecycleService
      * A zaak may only have a classification equal to or more restrictive than its zaaktype.
      */
     private const VERTROUWELIJKHEID_ORDER = [
-        'openbaar'             => 0,
-        'beperkt_openbaar'     => 1,
-        'intern'               => 2,
-        'zaakvertrouwelijk'    => 3,
-        'vertrouwelijk'        => 4,
-        'confidentieel'        => 5,
-        'geheim'               => 6,
-        'zeer_geheim'          => 7,
+        'openbaar'          => 0,
+        'beperkt_openbaar'  => 1,
+        'intern'            => 2,
+        'zaakvertrouwelijk' => 3,
+        'vertrouwelijk'     => 4,
+        'confidentieel'     => 5,
+        'geheim'            => 6,
+        'zeer_geheim'       => 7,
     ];
 
     /**
@@ -129,9 +129,9 @@ class ZGWZaakLifecycleService
      */
     public function setVertrouwelijkheidaanduiding(ObjectEntity $zaak): void
     {
-        $zaakArray   = $zaak->jsonSerialize();
-        $zaaktype    = $this->find($zaakArray['zaaktype']);
-        $ztMinimum   = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
+        $zaakArray = $zaak->jsonSerialize();
+        $zaaktype  = $this->find($zaakArray['zaaktype']);
+        $ztMinimum = $zaaktype->jsonSerialize()['vertrouwelijkheidaanduiding'] ?? null;
 
         if ($ztMinimum === null) {
             // Zaaktype has no classification configured; nothing to enforce.
