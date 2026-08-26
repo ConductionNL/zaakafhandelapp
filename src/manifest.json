@@ -20,7 +20,7 @@
 						"sinceVersion": "0.2.7",
 						"placement": "center",
 						"title": "Welcome to ZaakAfhandelApp",
-						"body": "Let's take a quick spin through your case handling — we'll create a case together so you can see how the pieces fit. You'll add the record yourself.",
+						"body": "Let's take a quick spin through your case handling. We'll create a case together so you can see how the pieces fit. You'll add the record yourself.",
 						"target": {
 							"kind": "page",
 							"ref": "Dashboard"
@@ -33,7 +33,7 @@
 						"id": "go-zaken",
 						"sinceVersion": "0.2.7",
 						"placement": "right",
-						"body": "Cases are the heart of the app — every task, document and decision hangs off a case. Open Cases from the menu to get started.",
+						"body": "Cases are the heart of the app: every task, document and decision hangs off a case. Open Cases from the menu to get started.",
 						"task": "Click Cases in the menu",
 						"target": {
 							"kind": "nav-item",
@@ -49,7 +49,7 @@
 						"sinceVersion": "0.2.7",
 						"placement": "bottom",
 						"allowManualNext": true,
-						"body": "Add your first case — give it a case type and save. You can attach tasks, documents and decisions to it afterwards.",
+						"body": "Add your first case: give it a case type and save. You can attach tasks, documents and decisions to it afterwards.",
 						"task": "Click New and save a case",
 						"target": {
 							"kind": "element",
@@ -84,7 +84,7 @@
 						"sinceVersion": "0.2.7",
 						"placement": "center",
 						"title": "You're all set",
-						"body": "Nicely done — your case handling has its first case. Head back to the Dashboard to watch it grow, and reopen this tour anytime from the … menu.",
+						"body": "Nicely done. Your case handling has its first case. Head back to the Dashboard to watch it grow, and reopen this tour anytime from the … menu.",
 						"target": {
 							"kind": "page",
 							"ref": "Dashboard"
