@@ -20,7 +20,7 @@
 						"sinceVersion": "0.2.7",
 						"placement": "center",
 						"title": "Welcome to ZaakAfhandelApp",
-						"body": "Let's take a quick spin through your case handling — we'll create a case together so you can see how the pieces fit. You'll add the record yourself.",
+						"body": "Let's take a quick spin through your case handling. We'll create a case together so you can see how the pieces fit. You'll add the record yourself.",
 						"target": {
 							"kind": "page",
 							"ref": "Dashboard"
@@ -33,7 +33,7 @@
 						"id": "go-zaken",
 						"sinceVersion": "0.2.7",
 						"placement": "right",
-						"body": "Cases are the heart of the app — every task, document and decision hangs off a case. Open Cases from the menu to get started.",
+						"body": "Cases are the heart of the app: every task, document and decision hangs off a case. Open Cases from the menu to get started.",
 						"task": "Click Cases in the menu",
 						"target": {
 							"kind": "nav-item",
@@ -49,7 +49,7 @@
 						"sinceVersion": "0.2.7",
 						"placement": "bottom",
 						"allowManualNext": true,
-						"body": "Add your first case — give it a case type and save. You can attach tasks, documents and decisions to it afterwards.",
+						"body": "Add your first case: give it a case type and save. You can attach tasks, documents and decisions to it afterwards.",
 						"task": "Click New and save a case",
 						"target": {
 							"kind": "element",
@@ -84,7 +84,7 @@
 						"sinceVersion": "0.2.7",
 						"placement": "center",
 						"title": "You're all set",
-						"body": "Nicely done — your case handling has its first case. Head back to the Dashboard to watch it grow, and reopen this tour anytime from the … menu.",
+						"body": "Nicely done. Your case handling has its first case. Head back to the Dashboard to watch it grow, and reopen this tour anytime from the … menu.",
 						"target": {
 							"kind": "page",
 							"ref": "Dashboard"
@@ -163,6 +163,7 @@
 			"route": "/",
 			"type": "dashboard",
 			"title": "Dashboard",
+			"_note": "The six KPI cards live in `config.widgets[]` + `config.layout[]`, NOT in page-level `widgets[]`. CnPageRenderer renders a bare CnWidgetGrid for any page carrying body-slot page-level widgets and skips the typed page component entirely, so a `type:\"dashboard\"` page authored that way never mounts CnDashboardPage and silently loses its header, max-width, padding, sidebar and grid discipline (ConductionNL/hrmq#112). The v2 schema documents page-level `widgets[]` as preferred and calls `config.widgets` legacy — for a typed page that guidance is inverted, so please do not migrate these back.",
 			"config": {
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl",
 				"dateRange": {
@@ -178,108 +179,66 @@
 						{ "id": "year",    "label": "Jaar",    "days": 365 },
 						{ "id": "all",     "label": "Alles",   "days": null }
 					]
-				}
-			},
-			"widgets": [
-				{
-					"widgetKey": "stats-block",
-					"slot": "body",
-					"gridX": 0,
-					"gridY": 0,
-					"gridWidth": 4,
-					"gridHeight": 2,
-					"dataSource": {
-						"register": "zaakafhandelapp",
-						"schema": "zaak",
-						"aggregate": "count"
-					},
-					"props": {
+				},
+				"widgets": [
+					{
+						"id": "kpi-open-cases",
+						"type": "stats-block",
 						"title": "Open cases",
-						"iconClass": "icon-category-organization",
-						"countLabel": "cases",
-						"variant": "primary",
-						"route": { "name": "Zaken" },
+						"props": {
+							"iconClass": "icon-category-organization",
+							"countLabel": "cases",
+							"variant": "primary",
+							"route": { "name": "Zaken" }
+						},
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "zaak",
 							"aggregate": "count"
 						}
-					}
-				},
-				{
-					"widgetKey": "stats-block",
-					"slot": "body",
-					"gridX": 4,
-					"gridY": 0,
-					"gridWidth": 4,
-					"gridHeight": 2,
-					"dataSource": {
-						"register": "zaakafhandelapp",
-						"schema": "taak",
-						"aggregate": "count"
 					},
-					"props": {
+					{
+						"id": "kpi-open-tasks",
+						"type": "stats-block",
 						"title": "Open tasks",
-						"iconClass": "icon-checkmark",
-						"countLabel": "tasks",
-						"variant": "warning",
-						"route": { "name": "Taken" },
+						"props": {
+							"iconClass": "icon-checkmark",
+							"countLabel": "tasks",
+							"variant": "warning",
+							"route": { "name": "Taken" }
+						},
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "taak",
 							"aggregate": "count"
 						}
-					}
-				},
-				{
-					"widgetKey": "stats-block",
-					"slot": "body",
-					"gridX": 8,
-					"gridY": 0,
-					"gridWidth": 4,
-					"gridHeight": 2,
-					"dataSource": {
-						"register": "zaakafhandelapp",
-						"schema": "zaak",
-						"aggregate": "count"
 					},
-					"props": {
+					{
+						"id": "kpi-active-cases",
+						"type": "stats-block",
 						"title": "Active cases",
-						"iconClass": "icon-category-organization",
-						"countLabel": "cases",
-						"variant": "success",
-						"route": { "name": "Zaken" },
+						"props": {
+							"iconClass": "icon-category-organization",
+							"countLabel": "cases",
+							"variant": "success",
+							"route": { "name": "Zaken" }
+						},
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "zaak",
 							"aggregate": "count"
 						}
-					}
-				},
-				{
-					"widgetKey": "stats-block",
-					"slot": "body",
-					"gridX": 0,
-					"gridY": 2,
-					"gridWidth": 4,
-					"gridHeight": 2,
-					"dataSource": {
-						"register": "zaakafhandelapp",
-						"schema": "contactmoment",
-						"aggregate": "count",
-						"filter": {
-							"startDate": {
-								"gte": "@workspace.dateFrom?",
-								"lte": "@workspace.dateTo?"
-							}
-						}
 					},
-					"props": {
+					{
+						"id": "kpi-contact-moments",
+						"type": "stats-block",
 						"title": "Contact moments",
-						"iconClass": "icon-comment",
-						"countLabel": "contacts",
-						"variant": "primary",
-						"route": { "name": "Contactmomenten" },
+						"props": {
+							"iconClass": "icon-comment",
+							"countLabel": "contacts",
+							"variant": "primary",
+							"route": { "name": "Contactmomenten" }
+						},
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "contactmoment",
@@ -291,29 +250,17 @@
 								}
 							}
 						}
-					}
-				},
-				{
-					"widgetKey": "stats-block",
-					"slot": "body",
-					"gridX": 4,
-					"gridY": 2,
-					"gridWidth": 4,
-					"gridHeight": 2,
-					"dataSource": {
-						"register": "zaakafhandelapp",
-						"schema": "klant",
-						"aggregate": "count",
-						"filter": {
-							"subjectType": "natuurlijk_persoon"
-						}
 					},
-					"props": {
+					{
+						"id": "kpi-persons",
+						"type": "stats-block",
 						"title": "Persons",
-						"iconClass": "icon-user",
-						"countLabel": "persons",
-						"variant": "primary",
-						"route": { "name": "Klanten", "query": { "subjectType": "natuurlijk_persoon" } },
+						"props": {
+							"iconClass": "icon-user",
+							"countLabel": "persons",
+							"variant": "primary",
+							"route": { "name": "Klanten", "query": { "subjectType": "natuurlijk_persoon" } }
+						},
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "klant",
@@ -322,29 +269,17 @@
 								"subjectType": "natuurlijk_persoon"
 							}
 						}
-					}
-				},
-				{
-					"widgetKey": "stats-block",
-					"slot": "body",
-					"gridX": 8,
-					"gridY": 2,
-					"gridWidth": 4,
-					"gridHeight": 2,
-					"dataSource": {
-						"register": "zaakafhandelapp",
-						"schema": "klant",
-						"aggregate": "count",
-						"filter": {
-							"subjectType": "niet_natuurlijk_persoon"
-						}
 					},
-					"props": {
+					{
+						"id": "kpi-organisations",
+						"type": "stats-block",
 						"title": "Organisations",
-						"iconClass": "icon-group",
-						"countLabel": "organisations",
-						"variant": "primary",
-						"route": { "name": "Klanten", "query": { "subjectType": "niet_natuurlijk_persoon" } },
+						"props": {
+							"iconClass": "icon-group",
+							"countLabel": "organisations",
+							"variant": "primary",
+							"route": { "name": "Klanten", "query": { "subjectType": "niet_natuurlijk_persoon" } }
+						},
 						"dataSource": {
 							"register": "zaakafhandelapp",
 							"schema": "klant",
@@ -354,8 +289,16 @@
 							}
 						}
 					}
-				}
-			]
+				],
+				"layout": [
+					{ "id": "1", "widgetId": "kpi-open-cases",      "gridX": 0, "gridY": 0, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "2", "widgetId": "kpi-open-tasks",      "gridX": 4, "gridY": 0, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "3", "widgetId": "kpi-active-cases",    "gridX": 8, "gridY": 0, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "4", "widgetId": "kpi-contact-moments", "gridX": 0, "gridY": 2, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "5", "widgetId": "kpi-persons",         "gridX": 4, "gridY": 2, "gridWidth": 4, "gridHeight": 2 },
+					{ "id": "6", "widgetId": "kpi-organisations",   "gridX": 8, "gridY": 2, "gridWidth": 4, "gridHeight": 2 }
+				]
+			}
 		},
 		{
 			"id": "Zaken",

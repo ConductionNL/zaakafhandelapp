@@ -19,10 +19,15 @@
  *     hard `page.goto` resolves (200) instead of 404. features-roadmap /
  *     auditTrail are still reached client-side via `spaNavigate`.
  *   - BUG-2 (FIXED): the in-app Dashboard's six manifest stats-block widgets
- *     now mount — the app registers `stats-block` (CnStatsBlockWidget) in
- *     src/registry.js and each widget carries an in-`props` `dataSource`
- *     block (CnWidgetGrid does not forward the top-level `dataSource`, a
- *     known nc-vue lib gap). The dashboard-content assertions are live again.
+ *     now mount. They live in `config.widgets[]` + `config.layout[]`, so the
+ *     page mounts CnDashboardPage, which dispatches each `type: "stats-block"`
+ *     definition to CnStatsBlockWidget with the widget-def's top-level
+ *     `dataSource`. (They previously sat in page-level `widgets[]` targeting
+ *     the `body` slot, which made CnPageRenderer render a bare CnWidgetGrid
+ *     INSTEAD of CnDashboardPage — the page silently lost its header,
+ *     max-width, padding, sidebar and grid discipline. Hydra gate-69
+ *     page-type-discipline catches that shape; see hrmq#112.) The
+ *     dashboard-content assertions are live again.
  *   - BUG-3 (FIXED): SettingsController::index no longer calls the
  *     non-existent ObjectService::getRegisters(); it uses
  *     ObjectMapperService::getRegisters() (RegisterMapper::findAll + schema
