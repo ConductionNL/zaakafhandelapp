@@ -1,0 +1,3 @@
+devDependencies	node-polyfill-webpack-plugin	^3.0.0	4.0.0
+devDependencies	sass-loader	^16.0.8	^17.0.0
+devDependencies	webpack-cli	^7.0.2	^6.0.1

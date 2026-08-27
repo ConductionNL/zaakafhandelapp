@@ -1,0 +1,370 @@
+
+> zaakafhandelapp@1.0.0 lint
+> eslint src
+
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/bericht/bericht.mock.ts
+  34:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/besluit/besluit.mock.ts
+  21:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/contactmoment/contactmoment.mock.ts
+  29:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/document/document.mock.ts
+  87:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/klanten/klanten.mock.ts
+  45:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/medewerkers/medewerkers.mock.ts
+  23:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/resultaat/resultaat.mock.ts
+  23:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/rol/rol.mock.ts
+  47:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/taak/taak.mock.ts
+  31:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/taak/taak.ts
+  21:1  warning  Missing JSDoc @param "source" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/zaak/zaak.mock.ts
+  43:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/entities/zaakTypen/zaakTypen.mock.ts
+  45:1  warning  Missing JSDoc @param "data" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/berichten/EditBericht.vue
+  269:15  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  287:17  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  298:1   warning  Missing JSDoc @param "url" description                                          jsdoc/require-param-description
+  299:1   warning  Missing JSDoc @param "target" description                                       jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/besluiten/BesluitForm.vue
+    7:15  warning  'modalRef' is defined as ref, but never used                                    vue/no-unused-refs
+  163:39  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  217:41  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/contactMomenten/ContactMomentenForm.vue
+   861:3   warning  The '<EditTaakForm>' component has been used, but not defined                   vue/no-undef-components
+  1250:15  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  1255:1   warning  Missing JSDoc @param "i" description                                            jsdoc/require-param-description
+  1306:19  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  1323:44  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  1333:1   warning  Missing JSDoc @param "type" description                                         jsdoc/require-param-description
+  1475:18  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  1666:1   warning  Missing JSDoc @param "klant" description                                        jsdoc/require-param-description
+  1678:1   warning  Missing JSDoc @param "id" description                                           jsdoc/require-param-description
+  1679:1   warning  Missing JSDoc @param "contactMoment" description                                jsdoc/require-param-description
+  1693:1   warning  Missing JSDoc @param "id" description                                           jsdoc/require-param-description
+  1694:1   warning  Missing JSDoc @param "zaak" description                                         jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/contactMomenten/ViewContactMoment.vue
+  623:15  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  628:1   warning  Missing JSDoc @param "i" description                                            jsdoc/require-param-description
+  678:19  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  704:19  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  718:1   warning  Missing JSDoc @param "type" description                                         jsdoc/require-param-description
+  804:18  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  975:1   warning  Missing JSDoc @param "klant" description                                        jsdoc/require-param-description
+  987:1   warning  Missing JSDoc @param "id" description                                           jsdoc/require-param-description
+  988:1   warning  Missing JSDoc @param "zaak" description                                         jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/documenten/DocumentForm.vue
+    7:15  warning  'modalRef' is defined as ref, but never used                                    vue/no-unused-refs
+  351:39  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  426:41  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/klanten/EditKlant.vue
+  465:1  warning  Missing JSDoc @param "url" description     jsdoc/require-param-description
+  466:1  warning  Missing JSDoc @param "target" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/klanten/ImportContact.vue
+  188:1  warning  Missing JSDoc @param "contact" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/klanten/SearchKlantModal.vue
+  261:1   warning  Missing JSDoc @param "value" description                                          jsdoc/require-param-description
+  370:1   warning  Missing JSDoc @param "newVal" description                                         jsdoc/require-param-description
+  396:15  warning  The "close-modal" event has been triggered but not declared on `emits` option     vue/require-explicit-emits
+  404:15  warning  The "selected-klant" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  483:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+  501:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+  519:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+  530:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/klanten/ViewKlant.vue
+  280:3   warning  The '<EditTaakForm>' component has been used, but not defined                  vue/no-undef-components
+  504:41  warning  The "close-modal" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  508:1   warning  Missing JSDoc @param "url" description                                         jsdoc/require-param-description
+  509:1   warning  Missing JSDoc @param "target" description                                      jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/medewerkers/EditMedewerker.vue
+  197:1  warning  Missing JSDoc @param "url" description     jsdoc/require-param-description
+  198:1  warning  Missing JSDoc @param "target" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/medewerkers/SearchKlantModal.vue
+  302:15  warning  The "close-modal" event has been triggered but not declared on `emits` option     vue/require-explicit-emits
+  311:15  warning  The "selected-klant" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  394:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+  412:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+  430:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+  441:1   warning  Missing JSDoc @param "klant" description                                          jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/resultaten/ResultaatForm.vue
+    7:15  warning  'modalRef' is defined as ref, but never used                                    vue/no-unused-refs
+  169:39  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  226:41  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/rollen/RolForm.vue
+    7:15  warning  'modalRef' is defined as ref, but never used    vue/no-unused-refs
+  149:13  warning  Boolean prop should only be defaulted to false  vue/no-boolean-default
+  265:1   warning  Missing JSDoc @param "id" description           jsdoc/require-param-description
+  287:1   warning  Missing JSDoc @param "zaakId" description       jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/taken/EditTaak.vue
+  334:3   warning  'isView' of property found, but never used                                      vue/no-unused-properties
+  444:16  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  714:19  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  731:1   warning  Missing JSDoc @param "url" description                                          jsdoc/require-param-description
+  732:1   warning  Missing JSDoc @param "target" description                                       jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaakTypen/ZaaktypeForm.vue
+  7:15  warning  'modalRef' is defined as ref, but never used  vue/no-unused-refs
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/AddBerichtToZaak.vue
+  7:15  warning  'modalRef' is defined as ref, but never used  vue/no-unused-refs
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/AddRolToZaak.vue
+  7:15  warning  'modalRef' is defined as ref, but never used  vue/no-unused-refs
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/AddTaakToZaak.vue
+  7:15  warning  'modalRef' is defined as ref, but never used  vue/no-unused-refs
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/ExtendZaak.vue
+  134:1  warning  Missing JSDoc @param "value" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/ViewZaakAuditTrail.vue
+  114:1  warning  Missing JSDoc @param "value" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/WidgetZaakForm.vue
+   12:15  warning  'modalRef' is defined as ref, but never used                                    vue/no-unused-refs
+  261:40  warning  The "close" event has been triggered but not declared on `emits` option         vue/require-explicit-emits
+  277:16  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+  280:16  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  404:42  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/modals/zaken/ZaakForm.vue
+    7:15  warning  'modalRef' is defined as ref, but never used                                    vue/no-unused-refs
+  265:40  warning  The "close-modal" event has been triggered but not declared on `emits` option   vue/require-explicit-emits
+  341:43  warning  The "save-success" event has been triggered but not declared on `emits` option  vue/require-explicit-emits
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/router/index.js
+  78:1  warning  Prefer a more specific type to `any`  jsdoc/reject-any-type
+  96:1  warning  Prefer a more specific type to `any`  jsdoc/reject-any-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/sidebars/search/SearchSideBar.vue
+  397:1  warning  Missing JSDoc @param "func" description     jsdoc/require-param-description
+  398:1  warning  Missing JSDoc @param "timeout" description  jsdoc/require-param-description
+  412:1  warning  Missing JSDoc @param "klant" description    jsdoc/require-param-description
+  426:1  warning  Missing JSDoc @param "klant" description    jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/berichten.js
+   17:1  warning  Missing JSDoc @param "berichtItem" description    jsdoc/require-param-description
+   17:1  warning  Missing JSDoc @param "berichtItem" type           jsdoc/require-param-type
+   25:1  warning  Missing JSDoc @param "berichtenList" description  jsdoc/require-param-description
+   25:1  warning  Missing JSDoc @param "berichtenList" type         jsdoc/require-param-type
+   39:1  warning  Missing JSDoc @param "search" description         jsdoc/require-param-description
+   39:1  warning  Missing JSDoc @param "search" type                jsdoc/require-param-type
+   67:1  warning  Missing JSDoc @param "id" description             jsdoc/require-param-description
+   67:1  warning  Missing JSDoc @param "id" type                    jsdoc/require-param-type
+   91:1  warning  Missing JSDoc @param "berichtItem" description    jsdoc/require-param-description
+   91:1  warning  Missing JSDoc @param "berichtItem" type           jsdoc/require-param-type
+  120:1  warning  Missing JSDoc @param "berichtItem" description    jsdoc/require-param-description
+  120:1  warning  Missing JSDoc @param "berichtItem" type           jsdoc/require-param-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/besluiten.ts
+   23:1  warning  Missing JSDoc @param "besluitItem" description  jsdoc/require-param-description
+   30:3  warning  @throws should have a type                      jsdoc/require-throws-type
+   66:3  warning  @throws should have a type                      jsdoc/require-throws-type
+  102:3  warning  @throws should have a type                      jsdoc/require-throws-type
+  127:3  warning  @throws should have a type                      jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/contactmoment.ts
+   48:3  warning  @throws should have a type  jsdoc/require-throws-type
+  101:3  warning  @throws should have a type  jsdoc/require-throws-type
+  139:3  warning  @throws should have a type  jsdoc/require-throws-type
+  173:3  warning  @throws should have a type  jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/documenten.ts
+   27:1  warning  Missing JSDoc @param "documentItem" description    jsdoc/require-param-description
+   35:1  warning  Missing JSDoc @param "documentenList" description  jsdoc/require-param-description
+   46:3  warning  @throws should have a type                         jsdoc/require-throws-type
+   82:3  warning  @throws should have a type                         jsdoc/require-throws-type
+  114:3  warning  @throws should have a type                         jsdoc/require-throws-type
+  150:3  warning  @throws should have a type                         jsdoc/require-throws-type
+  177:3  warning  @throws should have a type                         jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/klanten.js
+   18:1  warning  Missing JSDoc @param "klantItem" description      jsdoc/require-param-description
+   18:1  warning  Missing JSDoc @param "klantItem" type             jsdoc/require-param-type
+   26:1  warning  Missing JSDoc @param "widgetKlantId" description  jsdoc/require-param-description
+   26:1  warning  Missing JSDoc @param "widgetKlantId" type         jsdoc/require-param-type
+   34:1  warning  Missing JSDoc @param "klantenList" description    jsdoc/require-param-description
+   34:1  warning  Missing JSDoc @param "klantenList" type           jsdoc/require-param-type
+   46:1  warning  Missing JSDoc @param "search" description         jsdoc/require-param-description
+   46:1  warning  Missing JSDoc @param "search" type                jsdoc/require-param-type
+  160:1  warning  Missing JSDoc @param "id" description             jsdoc/require-param-description
+  160:1  warning  Missing JSDoc @param "id" type                    jsdoc/require-param-type
+  184:1  warning  Missing JSDoc @param "klantItem" description      jsdoc/require-param-description
+  184:1  warning  Missing JSDoc @param "klantItem" type             jsdoc/require-param-type
+  213:1  warning  Missing JSDoc @param "klantItem" description      jsdoc/require-param-description
+  213:1  warning  Missing JSDoc @param "klantItem" type             jsdoc/require-param-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/medewerkers.js
+   18:1  warning  Missing JSDoc @param "medewerkerItem" description      jsdoc/require-param-description
+   18:1  warning  Missing JSDoc @param "medewerkerItem" type             jsdoc/require-param-type
+   26:1  warning  Missing JSDoc @param "widgetMedewerkerId" description  jsdoc/require-param-description
+   26:1  warning  Missing JSDoc @param "widgetMedewerkerId" type         jsdoc/require-param-type
+   34:1  warning  Missing JSDoc @param "medewerkersList" description     jsdoc/require-param-description
+   34:1  warning  Missing JSDoc @param "medewerkersList" type            jsdoc/require-param-type
+   50:1  warning  Missing JSDoc @param "search" description              jsdoc/require-param-description
+   50:1  warning  Missing JSDoc @param "search" type                     jsdoc/require-param-type
+  172:1  warning  Missing JSDoc @param "id" description                  jsdoc/require-param-description
+  172:1  warning  Missing JSDoc @param "id" type                         jsdoc/require-param-type
+  196:1  warning  Missing JSDoc @param "medewerkerItem" description      jsdoc/require-param-description
+  196:1  warning  Missing JSDoc @param "medewerkerItem" type             jsdoc/require-param-type
+  225:1  warning  Missing JSDoc @param "medewerkerItem" description      jsdoc/require-param-description
+  225:1  warning  Missing JSDoc @param "medewerkerItem" type             jsdoc/require-param-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/navigation.ts
+  49:1  warning  Missing JSDoc @param "modal" description      jsdoc/require-param-description
+  57:1  warning  Missing JSDoc @param "viewModal" description  jsdoc/require-param-description
+  65:1  warning  Missing JSDoc @param "dialog" description     jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/resultaten.ts
+   27:1  warning  Missing JSDoc @param "resultaatItem" description   jsdoc/require-param-description
+   35:1  warning  Missing JSDoc @param "resultatenList" description  jsdoc/require-param-description
+   46:3  warning  @throws should have a type                         jsdoc/require-throws-type
+   84:3  warning  @throws should have a type                         jsdoc/require-throws-type
+  116:3  warning  @throws should have a type                         jsdoc/require-throws-type
+  148:3  warning  @throws should have a type                         jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/rol.ts
+   43:1  warning  Missing JSDoc @param "rolItem" description     jsdoc/require-param-description
+   51:1  warning  Missing JSDoc @param "rollenList" description  jsdoc/require-param-description
+   61:3  warning  @throws should have a type                     jsdoc/require-throws-type
+   95:3  warning  @throws should have a type                     jsdoc/require-throws-type
+  127:3  warning  @throws should have a type                     jsdoc/require-throws-type
+  161:3  warning  @throws should have a type                     jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/search.ts
+  14:1  warning  Missing JSDoc @param "search" description         jsdoc/require-param-description
+  22:1  warning  Missing JSDoc @param "searchResults" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/taak.js
+   19:1  warning  Missing JSDoc @param "taakItem" description      jsdoc/require-param-description
+   19:1  warning  Missing JSDoc @param "taakItem" type             jsdoc/require-param-type
+   27:1  warning  Missing JSDoc @param "takenList" description     jsdoc/require-param-description
+   27:1  warning  Missing JSDoc @param "takenList" type            jsdoc/require-param-type
+   35:1  warning  Missing JSDoc @param "taakZaakId" description    jsdoc/require-param-description
+   35:1  warning  Missing JSDoc @param "taakZaakId" type           jsdoc/require-param-type
+   46:1  warning  Missing JSDoc @param "widgetTaakId" description  jsdoc/require-param-description
+   46:1  warning  Missing JSDoc @param "widgetTaakId" type         jsdoc/require-param-type
+   55:1  warning  Missing JSDoc @param "search" description        jsdoc/require-param-description
+   55:1  warning  Missing JSDoc @param "search" type               jsdoc/require-param-type
+   56:1  warning  Missing JSDoc @param "notClosed" description     jsdoc/require-param-description
+   56:1  warning  Missing JSDoc @param "notClosed" type            jsdoc/require-param-type
+   57:1  warning  Missing JSDoc @param "user" description          jsdoc/require-param-description
+   57:1  warning  Missing JSDoc @param "user" type                 jsdoc/require-param-type
+   96:1  warning  Missing JSDoc @param "id" description            jsdoc/require-param-description
+   96:1  warning  Missing JSDoc @param "id" type                   jsdoc/require-param-type
+  120:1  warning  Missing JSDoc @param "taakItem" description      jsdoc/require-param-description
+  120:1  warning  Missing JSDoc @param "taakItem" type             jsdoc/require-param-type
+  150:1  warning  Missing JSDoc @param "taakItem" description      jsdoc/require-param-description
+  150:1  warning  Missing JSDoc @param "taakItem" type             jsdoc/require-param-type
+  151:1  warning  Missing JSDoc @param "options" description       jsdoc/require-param-description
+  151:1  warning  Missing JSDoc @param "options" type              jsdoc/require-param-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/zaakTypen.ts
+   24:1  warning  Missing JSDoc @param "zaakTypeItem" description  jsdoc/require-param-description
+   32:1  warning  Missing JSDoc @param "zaakTypeList" description  jsdoc/require-param-description
+   41:3  warning  @throws should have a type                       jsdoc/require-throws-type
+   77:3  warning  @throws should have a type                       jsdoc/require-throws-type
+  113:3  warning  @throws should have a type                       jsdoc/require-throws-type
+  148:3  warning  @throws should have a type                       jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/store/modules/zaken.ts
+   25:1  warning  Missing JSDoc @param "zaakItem" description   jsdoc/require-param-description
+   33:1  warning  Missing JSDoc @param "zakenList" description  jsdoc/require-param-description
+   43:3  warning  @throws should have a type                    jsdoc/require-throws-type
+   77:3  warning  @throws should have a type                    jsdoc/require-throws-type
+  109:3  warning  @throws should have a type                    jsdoc/require-throws-type
+  146:3  warning  @throws should have a type                    jsdoc/require-throws-type
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/views/settings/Settings.vue
+   494:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   509:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   510:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   528:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   543:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   544:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   562:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   577:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   578:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   596:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   611:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   612:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   630:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   645:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   646:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   664:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   679:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   680:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   698:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   713:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   714:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   735:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   750:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   751:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   769:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   784:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   785:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   803:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   818:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   819:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   837:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   852:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   853:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   871:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   886:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   887:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   905:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   920:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   921:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   939:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   954:1  warning  Missing JSDoc @param "newValue" description    jsdoc/require-param-description
+   955:1  warning  Missing JSDoc @param "oldValue" description    jsdoc/require-param-description
+   984:1  warning  Missing JSDoc @param "registerId" description  jsdoc/require-param-description
+   985:1  warning  Missing JSDoc @param "property" description    jsdoc/require-param-description
+  1071:1  warning  Missing JSDoc @param "configId" description    jsdoc/require-param-description
+  1354:1  warning  Missing JSDoc @param "url" description         jsdoc/require-param-description
+  1355:1  warning  Missing JSDoc @param "type" description        jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/views/widgets/OrganisatiesWidget.vue
+  163:1  warning  Missing JSDoc @param "item" description  jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/views/widgets/PersonenWidget.vue
+  168:1  warning  Missing JSDoc @param "klant" description  jsdoc/require-param-description
+  198:1  warning  Missing JSDoc @param "item" description   jsdoc/require-param-description
+
+/home/rubenlinde/fleet-work/fx/zaakafhandelapp/src/views/widgets/TakenWidget.vue
+   64:3  warning  The '<EditTaakForm>' component has been used, but not defined  vue/no-undef-components
+  235:1  warning  Missing JSDoc @param "event" description                       jsdoc/require-param-description
+
+✖ 257 problems (0 errors, 257 warnings)
+
