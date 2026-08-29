@@ -177,3 +177,41 @@ export async function rowAction(
 	})
 	await item.first().click()
 }
+
+/**
+ * Edit one field on a record's DETAIL page and commit it.
+ *
+ * The row's Edit action no longer opens a form dialog. `@conduction/
+ * nextcloud-vue` turns `editOpensDetail` on by itself for any index that has a
+ * matching detail page, and says why in its own source: the modal renders the
+ * schema's flat scalars only, so on a record that composes anything — a case
+ * type's statuses, results, roles — it is "not merely a duplicate surface but
+ * one that cannot express the record". So Edit navigates, and the record is
+ * edited in place.
+ *
+ * CnObjectDataWidget renders each editable value as
+ * `role="button"` + `aria-label="Click to edit <label>"`; clicking swaps it for
+ * an NcTextField bound to `commitEdit` on Enter and `cancelEdit` on Escape.
+ * Enter is used here rather than the commit tick, which is an icon-only button
+ * with no accessible name.
+ */
+export async function editFieldOnDetail(
+	page: Page,
+	label: string,
+	value: string,
+): Promise<void> {
+	const trigger = page.getByRole('button', { name: `Click to edit ${label}` })
+	await expect(
+		trigger,
+		`no inline editor for "${label}" — did Edit land on the detail page?`,
+	).toBeVisible({ timeout: 10_000 })
+	await trigger.click()
+
+	// The field swaps to an input in place; it is the one now focused.
+	const input = page.locator('input:focus, textarea:focus').first()
+	await expect(input, `inline editor for "${label}" did not open`).toBeVisible({
+		timeout: 5_000,
+	})
+	await input.fill(value)
+	await input.press('Enter')
+}

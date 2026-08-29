@@ -40,6 +40,7 @@ import {
 	useTableView,
 	rowFor,
 	rowAction,
+	editFieldOnDetail,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -128,13 +129,10 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 				&& r.request().method() === 'PUT',
 			{ timeout: 15_000 },
 		)
+		// Edit opens the record's DETAIL page, not a modal — the library sets
+		// `editOpensDetail` itself once an index has a matching detail page.
 		await rowAction(page, row, 'Edit')
-		const dialog = page.getByRole('dialog').first()
-		await expect(dialog.getByRole('heading', { name: /^Edit/i })).toBeVisible({
-			timeout: 8_000,
-		})
-		await fillField(dialog, 'omschrijving', newOmschrijving)
-		await submitModal(dialog)
+		await editFieldOnDetail(page, 'omschrijving', newOmschrijving)
 
 		const put = await putPromise
 		expect(
@@ -142,9 +140,6 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 			'zaak update PUT must succeed (BUG-1 fixed)',
 		).toBeGreaterThanOrEqual(200)
 		expect(put.status()).toBeLessThan(300)
-		await expect(
-			dialog.getByRole('heading', { name: /^Edit/i }),
-		).not.toBeVisible({ timeout: 8_000 })
 
 		// Persisted at the data layer.
 		const reread = await fx.get('zaak', zaakId)

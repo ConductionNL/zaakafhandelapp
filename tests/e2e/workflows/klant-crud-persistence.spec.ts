@@ -31,6 +31,7 @@ import {
 	useTableView,
 	rowFor,
 	rowAction,
+	editFieldOnDetail,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -105,16 +106,10 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 		const index = await openIndex(page, 'klanten')
 		const row = await rowFor(page, index, RUN)
 
+		// Edit opens the record's DETAIL page, not a modal — the library sets
+		// `editOpensDetail` itself once an index has a matching detail page.
 		await rowAction(page, row, 'Edit')
-		const dialog = page.getByRole('dialog').first()
-		await expect(dialog.getByRole('heading', { name: /Edit/i })).toBeVisible({
-			timeout: 8_000,
-		})
-		await fillField(dialog, 'naam', naamEdited())
-		await submitModal(dialog)
-		await expect(dialog.getByRole('heading', { name: /Edit/i })).not.toBeVisible(
-			{ timeout: 8_000 },
-		)
+		await editFieldOnDetail(page, 'naam', naamEdited())
 
 		// Persistence at the data layer.
 		await expect
