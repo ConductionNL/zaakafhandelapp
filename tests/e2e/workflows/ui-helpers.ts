@@ -155,16 +155,25 @@ export async function rowAction(
 	row: Locator,
 	action: 'View' | 'Edit' | 'Copy' | 'Delete',
 ): Promise<void> {
-	await row
-		.locator(
-			'[data-testid="cn-row-actions"] button, [data-testid="cn-row-actions"]',
-		)
-		.first()
-		.click()
-	await page.waitForTimeout(400)
-	await page
-		.getByRole('menuitem', { name: action, exact: true })
-		.or(page.getByRole('button', { name: action, exact: true }))
-		.first()
-		.click()
+	// The selector list used to be `... button, [data-testid="cn-row-actions"]`
+	// with `.first()`. A CSS list resolves in document order, and the container
+	// is the button's ancestor — so `.first()` always picked the CONTAINER, and
+	// clicking its box could land on the row instead of the toggle. That
+	// navigated to the record's detail page, where a second "Edit" button
+	// exists; the old fallback `.or(getByRole('button'))` then clicked THAT and
+	// the spec waited for a form dialog that was never going to open.
+	await row.locator('[data-testid="cn-row-actions"] button').first().click()
+
+	// CnRowActions renders one NcActionButton per action, each carrying a
+	// stable `cn-action-item-<slug>` testid, in a popover teleported to <body> —
+	// so it is addressed from `page`, not from `row`. Asserting it is visible
+	// before clicking is what makes a menu that failed to open fail HERE,
+	// naming the toggle, instead of surfacing later as a missing dialog.
+	const item = page.locator(
+		`[data-testid="cn-action-item-${action.toLowerCase()}"]`,
+	)
+	await expect(item, `row actions menu did not open for "${action}"`).toBeVisible({
+		timeout: 5_000,
+	})
+	await item.first().click()
 }
