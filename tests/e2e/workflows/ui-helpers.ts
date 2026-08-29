@@ -168,3 +168,43 @@ export async function rowAction(
 		.first()
 		.click()
 }
+
+/**
+ * Trigger a row's Edit and return the edit dialog, wherever it now opens.
+ *
+ * ADR-062 moved the edit surface. `CnIndexPage` grew an `editOpensDetail`
+ * mode, and `CnPageRenderer` turns it on for every schema-bound `type:"detail"`
+ * page — so on those pages the row's Edit action NAVIGATES to the record
+ * instead of opening a modal over the table, and the same schema-driven
+ * `CnFormDialog` is launched from the detail header's own Edit button
+ * (`data-testid="cn-detail-page-edit"`) instead. The library's own note calls
+ * the two halves "one rule": an index that stops offering the modal and a
+ * detail page that starts offering it.
+ *
+ * Both shapes are handled rather than the new one alone, because which applies
+ * is a property of the PAGE, not of the app: an index whose schema has no
+ * detail page still opens the modal directly, and hard-coding either shape would
+ * make this helper wrong for half the suite.
+ *
+ * @param page The page under test.
+ * @param row The row locator to edit.
+ * @return The visible edit dialog.
+ */
+export async function openEditDialog(page: Page, row: Locator): Promise<Locator> {
+	await rowAction(page, row, 'Edit')
+
+	const dialog = page.getByRole('dialog').first()
+	const heading = dialog.getByRole('heading', { name: /Edit/i })
+	if (await heading.isVisible({ timeout: 4_000 }).catch(() => false)) {
+		return dialog
+	}
+
+	// Edit opened the record instead: finish the trip from its detail header.
+	const detailEdit = page.locator('[data-testid="cn-detail-page-edit"]')
+	await detailEdit.first().waitFor({ state: 'visible', timeout: 15_000 })
+	await detailEdit.first().click()
+	await expect(dialog.getByRole('heading', { name: /Edit/i })).toBeVisible({
+		timeout: 8_000,
+	})
+	return dialog
+}
