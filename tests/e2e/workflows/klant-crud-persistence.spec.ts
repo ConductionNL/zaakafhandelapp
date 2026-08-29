@@ -31,6 +31,7 @@ import {
 	useTableView,
 	rowFor,
 	rowAction,
+	openEditDialog,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -105,11 +106,7 @@ test.describe('klant CRUD-persistence — create, read, edit, delete a customer 
 		const index = await openIndex(page, 'klanten')
 		const row = await rowFor(page, index, RUN)
 
-		await rowAction(page, row, 'Edit')
-		const dialog = page.getByRole('dialog').first()
-		await expect(dialog.getByRole('heading', { name: /Edit/i })).toBeVisible({
-			timeout: 8_000,
-		})
+		const dialog = await openEditDialog(page, row)
 		await fillField(dialog, 'naam', naamEdited())
 		await submitModal(dialog)
 		await expect(dialog.getByRole('heading', { name: /Edit/i })).not.toBeVisible(

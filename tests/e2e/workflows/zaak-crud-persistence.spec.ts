@@ -40,6 +40,7 @@ import {
 	useTableView,
 	rowFor,
 	rowAction,
+	openEditDialog,
 } from './ui-helpers'
 
 const fx = new WorkflowFixtures()
@@ -128,11 +129,7 @@ test.describe('zaak CRUD-persistence — case lifecycle through the manifest UI'
 				&& r.request().method() === 'PUT',
 			{ timeout: 15_000 },
 		)
-		await rowAction(page, row, 'Edit')
-		const dialog = page.getByRole('dialog').first()
-		await expect(dialog.getByRole('heading', { name: /^Edit/i })).toBeVisible({
-			timeout: 8_000,
-		})
+		const dialog = await openEditDialog(page, row)
 		await fillField(dialog, 'omschrijving', newOmschrijving)
 		await submitModal(dialog)
 
