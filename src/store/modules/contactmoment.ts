@@ -1,13 +1,16 @@
 /* eslint-disable no-console */
+import type { TContactMoment } from '../../entities/index.js'
+
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
-import { ContactMoment, TContactMoment } from '../../entities/index.js'
+import { ContactMoment } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/contactmomenten'
 
 export const useContactMomentStore = defineStore('contactmomenten', {
 	state: () => ({
-		contactMomentItem: null as ContactMoment,
+		contactMomentItem: null as ContactMoment | null,
 		contactMomentenList: [] as ContactMoment[],
 	}),
 	actions: {
@@ -15,25 +18,32 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * Set the active contact moment item.
 		 *
 		 * @param contactMomentItem - The contact moment item to set.
-		  *
-		  * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 *
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setContactMomentItem(contactMomentItem: TContactMoment | ContactMoment) {
-			this.contactMomentItem = contactMomentItem && new ContactMoment(contactMomentItem)
+			this.contactMomentItem =
+				contactMomentItem && new ContactMoment(contactMomentItem)
 			console.info('Active contactmoment item set to ' + contactMomentItem)
 		},
 		/**
 		 * Set the list of contact moments.
 		 *
 		 * @param contactMomentenList - The list of contact moments to set.
-		  *
-		  * @spec openspec/specs/state-stores/spec.md#REQ-001
+		 *
+		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
-		setContactMomentenList(contactMomentenList: TContactMoment[] | ContactMoment[]) {
+		setContactMomentenList(
+			contactMomentenList: TContactMoment[] | ContactMoment[],
+		) {
 			this.contactMomentenList = contactMomentenList.map(
 				(contactMomentItem) => new ContactMoment(contactMomentItem),
 			)
-			console.info('Contactmomenten list set to ' + contactMomentenList.length + ' items')
+			console.info(
+				'Contactmomenten list set to '
+					+ contactMomentenList.length
+					+ ' items',
+			)
 		},
 		/**
 		 * Refresh the list of contact moments.
@@ -42,9 +52,17 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * @param notClosed - Optional boolean to filter out closed contact moments from the contact moments list. (default: `false`)
 		 * @param user - Optional user ID to filter the contact moments list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
-		async refreshContactMomentenList(search: string = null, notClosed: boolean = false, user: string = null): Promise<{ response: Response, data: TContactMoment[], entities: ContactMoment[] }> {
+		async refreshContactMomentenList(
+			search: string = null,
+			notClosed: boolean = false,
+			user: string = null,
+		): Promise<{
+			response: Response
+			data: TContactMoment[]
+			entities: ContactMoment[]
+		}> {
 			let endpoint = apiEndpoint
 
 			const params = new URLSearchParams()
@@ -72,7 +90,9 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 			}
 
 			const data = (await response.json()).results as TContactMoment[]
-			const entities = data.map((contactMomentItem) => new ContactMoment(contactMomentItem))
+			const entities = data.map(
+				(contactMomentItem) => new ContactMoment(contactMomentItem),
+			)
 
 			this.setContactMomentenList(data)
 
@@ -83,10 +103,18 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 *
 		 * @param id - The ID of the contact moment to fetch.
 		 * @throws If the ID is invalid or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
-		async getContactMoment(id: string | number): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
-			if (!id || (typeof id !== 'string' && typeof id !== 'number') || (typeof id === 'string' && id.trim() === '')) {
+		async getContactMoment(id: string | number): Promise<{
+			response: Response
+			data: TContactMoment
+			entity: ContactMoment
+		}> {
+			if (
+				!id
+				|| (typeof id !== 'string' && typeof id !== 'number')
+				|| (typeof id === 'string' && id.trim() === '')
+			) {
 				throw new Error('Invalid ID provided for fetching contact moment')
 			}
 
@@ -101,7 +129,7 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TContactMoment
+			const data = (await response.json()) as TContactMoment
 			const entity = new ContactMoment(data)
 
 			this.setContactMomentItem(data)
@@ -114,9 +142,11 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * @param contactMomentItem - The contact moment item to delete.
 		 * @throws If there is no contact moment item to delete or if the contact moment item does not have an id.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
-		async deleteContactMoment(contactMomentItem: ContactMoment): Promise<{ response: Response }> {
+		async deleteContactMoment(
+			contactMomentItem: ContactMoment,
+		): Promise<{ response: Response }> {
 			if (!contactMomentItem || !contactMomentItem.id) {
 				throw new Error('No contactmoment item to delete')
 			}
@@ -125,6 +155,9 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -145,12 +178,16 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 		 * @param options - The options to save the contact moment.
 		 * @param options.redirect - Whether to redirect to the contact moment after saving. (default: `true`)
 		 * @throws If there is no contact moment item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveContactMoment(
 			contactMomentItem: TContactMoment | ContactMoment,
 			options: { redirect?: boolean } = { redirect: true },
-		): Promise<{ response: Response, data: TContactMoment, entity: ContactMoment }> {
+		): Promise<{
+			response: Response
+			data: TContactMoment
+			entity: ContactMoment
+		}> {
 			if (!contactMomentItem) {
 				throw new Error('No contactmoment item to save')
 			}
@@ -161,29 +198,30 @@ export const useContactMomentStore = defineStore('contactmomenten', {
 				: `${apiEndpoint}/${contactMomentItem.id}`
 			const method = isNewContactMoment ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ ...contactMomentItem }),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify({ ...contactMomentItem }),
+			})
 
 			if (!response.ok) {
 				console.info(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TContactMoment
+			const data = (await response.json()) as TContactMoment
 			const entity = new ContactMoment(data)
 
 			this.setContactMomentItem(data)
 			this.refreshContactMomentenList()
 			if (options.redirect) {
-				router.push({ name: 'ContactmomentDetail', params: { id: entity.id } })
+				router.push({
+					name: 'ContactmomentDetail',
+					params: { id: entity.id },
+				})
 			}
 
 			return { response, data, entity }

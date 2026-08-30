@@ -10,124 +10,115 @@ namespace OCA\ZaakAfhandelApp\Service;
  *
  * @copyright 2024 Conduction B.V. <info@conduction.nl>
  * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ *
+ * SPDX-FileCopyrightText: Conduction B.V. <info@conduction.nl>
+ * SPDX-License-Identifier: EUPL-1.2
  */
-class ZGWRegistryService
-{
+class ZGWRegistryService {
 
-    /**
-     * Register slug mappings.
-     */
-    private const REGISTERS = [
-        'drc' => 'documenten',
-        'brc' => 'besluiten',
-        'zrc' => 'zaken',
-        'ztc' => 'catalogi',
-    ];
+	/**
+	 * Register slug mappings.
+	 */
+	private const REGISTERS = [
+		'drc' => 'documenten',
+		'brc' => 'besluiten',
+		'zrc' => 'zaken',
+		'ztc' => 'catalogi',
+	];
 
-    /**
-     * Schema slug mappings.
-     */
-    private const SCHEMAS = [
-        'zio'                           => 'zaakinformatieobject',
-        'bio'                           => 'besluitinformatieobject',
-        'oio'                           => 'objectinformatieobject',
-        'besluit'                       => 'besluit',
-        'zaak'                          => 'zaak',
-        'status'                        => 'status',
-        'gebruiksrechten'               => 'gebruiksrechten',
-        'zaakbesluit'                   => 'zaakbesluit',
-        'informatieobjecttype'          => 'informatieobjecttype',
-        'zaaktype-informatieobjecttype' => 'zaaktypeinformatieobjecttype',
-        'zaaktype'                      => 'zaaktype',
-    ];
+	/**
+	 * Schema slug mappings.
+	 */
+	private const SCHEMAS = [
+		'zio' => 'zaakinformatieobject',
+		'bio' => 'besluitinformatieobject',
+		'oio' => 'objectinformatieobject',
+		'besluit' => 'besluit',
+		'zaak' => 'zaak',
+		'status' => 'status',
+		'gebruiksrechten' => 'gebruiksrechten',
+		'zaakbesluit' => 'zaakbesluit',
+		'enkelvoudiginformatieobject' => 'enkelvoudiginformatieobject',
+		'informatieobjecttype' => 'informatieobjecttype',
+		'zaaktype-informatieobjecttype' => 'zaaktypeinformatieobjecttype',
+		'zaaktype' => 'zaaktype',
+	];
 
-    public function getDrcRegister(): string
-    {
-        return self::REGISTERS['drc'];
-    }//end getDrcRegister()
+	public function getDrcRegister(): string {
+		return self::REGISTERS['drc'];
+	}//end getDrcRegister()
 
-    public function getBrcRegister(): string
-    {
-        return self::REGISTERS['brc'];
-    }//end getBrcRegister()
+	public function getBrcRegister(): string {
+		return self::REGISTERS['brc'];
+	}//end getBrcRegister()
 
-    public function getZrcRegister(): string
-    {
-        return self::REGISTERS['zrc'];
-    }//end getZrcRegister()
+	public function getZrcRegister(): string {
+		return self::REGISTERS['zrc'];
+	}//end getZrcRegister()
 
-    public function getZtcRegister(): string
-    {
-        return self::REGISTERS['ztc'];
-    }//end getZtcRegister()
+	public function getZtcRegister(): string {
+		return self::REGISTERS['ztc'];
+	}//end getZtcRegister()
 
-    public function getGebruiksrechtenSchema(): string
-    {
-        return self::SCHEMAS['gebruiksrechten'];
-    }//end getGebruiksrechtenSchema()
+	public function getGebruiksrechtenSchema(): string {
+		return self::SCHEMAS['gebruiksrechten'];
+	}//end getGebruiksrechtenSchema()
 
-    public function getZioSchema(): string
-    {
-        return self::SCHEMAS['zio'];
-    }//end getZioSchema()
+	public function getZioSchema(): string {
+		return self::SCHEMAS['zio'];
+	}//end getZioSchema()
 
-    public function getBioSchema(): string
-    {
-        return self::SCHEMAS['bio'];
-    }//end getBioSchema()
+	public function getBioSchema(): string {
+		return self::SCHEMAS['bio'];
+	}//end getBioSchema()
 
-    public function getOioSchema(): string
-    {
-        return self::SCHEMAS['oio'];
-    }//end getOioSchema()
+	public function getOioSchema(): string {
+		return self::SCHEMAS['oio'];
+	}//end getOioSchema()
 
-    public function getBesluitSchema(): string
-    {
-        return self::SCHEMAS['besluit'];
-    }//end getBesluitSchema()
+	public function getBesluitSchema(): string {
+		return self::SCHEMAS['besluit'];
+	}//end getBesluitSchema()
 
-    public function getZaakSchema(): string
-    {
-        return self::SCHEMAS['zaak'];
-    }//end getZaakSchema()
+	public function getZaakSchema(): string {
+		return self::SCHEMAS['zaak'];
+	}//end getZaakSchema()
 
-    public function getStatusSchema(): string
-    {
-        return self::SCHEMAS['status'];
-    }//end getStatusSchema()
+	public function getStatusSchema(): string {
+		return self::SCHEMAS['status'];
+	}//end getStatusSchema()
 
-    public function getZaakBesluitSchema(): string
-    {
-        return self::SCHEMAS['zaakbesluit'];
-    }//end getZaakBesluitSchema()
+	public function getZaakBesluitSchema(): string {
+		return self::SCHEMAS['zaakbesluit'];
+	}//end getZaakBesluitSchema()
 
-    public function getIOTSchema(): string
-    {
-        return self::SCHEMAS['informatieobjecttype'];
-    }//end getIOTSchema()
+	public function getEnkelvoudigInformatieObjectSchema(): string {
+		return self::SCHEMAS['enkelvoudiginformatieobject'];
+	}//end getEnkelvoudigInformatieObjectSchema()
 
-    public function getZTIOTSchema(): string
-    {
-        return self::SCHEMAS['zaaktype-informatieobjecttype'];
-    }//end getZTIOTSchema()
+	public function getIOTSchema(): string {
+		return self::SCHEMAS['informatieobjecttype'];
+	}//end getIOTSchema()
 
-    public function getZaakTypeSchema(): string
-    {
-        return self::SCHEMAS['zaaktype'];
-    }//end getZaakTypeSchema()
+	public function getZTIOTSchema(): string {
+		return self::SCHEMAS['zaaktype-informatieobjecttype'];
+	}//end getZTIOTSchema()
 
-    /**
-     * Extract an object ID from an endpoint URL.
-     *
-     * @param string $url The endpoint URL
-     *
-     * @return string The extracted object ID
-     *
-     * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
-     */
-    public function getObjectIdByEndpointUrl(string $url): string
-    {
-        $explodedUrl = explode('/', $url);
-        return end($explodedUrl);
-    }//end getObjectIdByEndpointUrl()
+	public function getZaakTypeSchema(): string {
+		return self::SCHEMAS['zaaktype'];
+	}//end getZaakTypeSchema()
+
+	/**
+	 * Extract an object ID from an endpoint URL.
+	 *
+	 * @param string $url The endpoint URL
+	 *
+	 * @return string The extracted object ID
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
+	 */
+	public function getObjectIdByEndpointUrl(string $url): string {
+		$explodedUrl = explode('/', $url);
+		return end($explodedUrl);
+	}//end getObjectIdByEndpointUrl()
 }//end class

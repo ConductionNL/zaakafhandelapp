@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TKlant, TKlantType } from './klanten.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TKlant, TKlantType } from './klanten.types'
+
+import { z } from 'zod'
 
 export class Klant implements TKlant {
-
 	public id: string
 	public type: TKlantType
 
@@ -34,8 +35,10 @@ export class Klant implements TKlant {
 	public subject: string
 	public subjectIdentificatie: string
 	public subjectType: string
+	public contactsUid: string
 	/**
 	 * @spec openspec/specs/domain-entities/spec.md#REQ-001
+	 * @spec openspec/specs/klanten-addressbook-sync/spec.md#REQ-002
 	 */
 
 	constructor(source: TKlant) {
@@ -66,6 +69,7 @@ export class Klant implements TKlant {
 		this.subject = source.subject || ''
 		this.subjectIdentificatie = source.subjectIdentificatie || ''
 		this.subjectType = source.subjectType || ''
+		this.contactsUid = source.contactsUid || ''
 	}
 
 	public validate(): SafeParseReturnType<TKlant, unknown> {
@@ -96,9 +100,9 @@ export class Klant implements TKlant {
 			subject: z.string(),
 			subjectIdentificatie: z.string(),
 			subjectType: z.string(),
+			contactsUid: z.string().optional(),
 		})
 
 		return schema.safeParse(this)
 	}
-
 }

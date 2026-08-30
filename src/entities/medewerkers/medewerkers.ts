@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TMedewerker } from './medewerkers.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TMedewerker } from './medewerkers.types'
+
+import { z } from 'zod'
 
 export class Medewerker implements TMedewerker {
-
 	public id: string
 	public voornaam: string
 	public tussenvoegsel: string
@@ -34,5 +35,4 @@ export class Medewerker implements TMedewerker {
 
 		return schema.safeParse(this)
 	}
-
 }

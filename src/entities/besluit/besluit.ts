@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TBesluit } from './besluit.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TBesluit } from './besluit.types'
+
+import { z } from 'zod'
 
 export class Besluit implements TBesluit {
-
 	public id: string
 	public url: string
 	public besluit: string
@@ -28,5 +29,4 @@ export class Besluit implements TBesluit {
 
 		return schema.safeParse(this)
 	}
-
 }

@@ -15,7 +15,12 @@
 -->
 <template>
 	<CnNoteCard type="info" :title="t('zaakafhandelapp', 'Messages')">
-		{{ t('zaakafhandelapp', 'Message list for this case will appear here once the manifest renderer is wired to the existing berichtStore.') }}
+		{{
+			t(
+				'zaakafhandelapp',
+				'Message list for this case will appear here once the manifest renderer is wired to the existing berichtStore.',
+			)
+		}}
 	</CnNoteCard>
 </template>
 

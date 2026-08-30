@@ -1,10 +1,11 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
+import { berichtStore, klantStore, navigationStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcDialog v-if="navigationStore.modal === 'editBericht'"
+	<NcDialog
+		v-if="navigationStore.modal === 'editBericht'"
 		:name="t('zaakafhandelapp', 'Message')"
 		size="normal"
 		@closing="closeModalFromButton()">
@@ -17,73 +18,73 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 
 		<div v-if="!success" class="form-group">
 			<NcTextField
+				v-model="berichtItem.title"
 				:disabled="loading"
-				:value.sync="berichtItem.title"
 				:label="t('zaakafhandelapp', 'Title')" />
 
 			<NcTextField
+				v-model="berichtItem.onderwerp"
 				:disabled="loading"
-				:value.sync="berichtItem.onderwerp"
 				:label="t('zaakafhandelapp', 'Subject')" />
 
 			<NcTextArea
+				v-model="berichtItem.berichttekst"
 				:disabled="loading"
-				:value.sync="berichtItem.berichttekst"
 				:label="t('zaakafhandelapp', 'Message text')" />
 
 			<NcTextArea
+				v-model="berichtItem.inhoud"
 				:disabled="loading"
-				:value.sync="berichtItem.inhoud"
 				:label="t('zaakafhandelapp', 'Content (base64)')" />
 
 			<NcTextField
+				v-model="berichtItem.bijlageType"
 				:disabled="loading"
-				:value.sync="berichtItem.bijlageType"
 				:label="t('zaakafhandelapp', 'Attachment type')" />
 
 			<NcTextField
+				v-model="berichtItem.soortGebruiker"
 				:disabled="loading"
-				:value.sync="berichtItem.soortGebruiker"
 				:label="t('zaakafhandelapp', 'User type')" />
 
 			<NcTextField
+				v-model="berichtItem.publicatieDatum"
 				:disabled="loading"
-				:value.sync="berichtItem.publicatieDatum"
 				:label="t('zaakafhandelapp', 'Publication date')" />
 
 			<NcTextField
+				v-model="berichtItem.aanmaakDatum"
 				:disabled="loading"
-				:value.sync="berichtItem.aanmaakDatum"
 				:label="t('zaakafhandelapp', 'Creation date')" />
 
 			<NcTextField
+				v-model="berichtItem.berichtType"
 				:disabled="loading"
-				:value.sync="berichtItem.berichtType"
 				:label="t('zaakafhandelapp', 'Message type')" />
 
 			<NcTextField
+				v-model="berichtItem.referentie"
 				:disabled="loading"
-				:value.sync="berichtItem.referentie"
 				:label="t('zaakafhandelapp', 'Reference')" />
 
 			<NcTextField
+				v-model="berichtItem.berichtID"
 				:disabled="loading"
-				:value.sync="berichtItem.berichtID"
 				:label="t('zaakafhandelapp', 'Message ID')" />
 
 			<NcTextField
+				v-model="berichtItem.batchID"
 				:disabled="loading"
-				:value.sync="berichtItem.batchID"
 				:label="t('zaakafhandelapp', 'Batch ID')" />
 
 			<NcTextField
 				:disabled="true"
-				:value="klantStore.klantItem?.id || berichtItem.gebruikerID"
+				:modelValue="klantStore.klantItem?.id || berichtItem.gebruikerID"
 				:label="t('zaakafhandelapp', 'User ID')" />
 
 			<NcTextField
+				v-model="berichtItem.onderwerp"
 				:disabled="loading"
-				:value.sync="berichtItem.onderwerp"
 				:label="t('zaakafhandelapp', 'Order')" />
 		</div>
 
@@ -92,35 +93,61 @@ import { berichtStore, navigationStore, klantStore } from '../../store/store.js'
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+				{{
+					success
+						? t('zaakafhandelapp', 'Close')
+						: t('zaakafhandelapp', 'Cancel')
+				}}
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="
+					openLink(
+						'https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties',
+						'_blank',
+					)
+				">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
+			<NcButton
+				v-if="!success"
 				:disabled="loading"
-				type="primary"
+				variant="primary"
 				@click="editBericht()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading && berichtStore.berichtItem?.id" :size="20" />
-					<Plus v-if="!loading && !berichtStore.berichtItem?.id" :size="20" />
+					<ContentSaveOutline
+						v-if="!loading && berichtStore.berichtItem?.id"
+						:size="20" />
+					<Plus
+						v-if="!loading && !berichtStore.berichtItem?.id"
+						:size="20" />
 				</template>
-				{{ berichtStore.berichtItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					berichtStore.berichtItem?.id
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</template>
 	</NcDialog>
 </template>
 
 <script>
-import { NcButton, NcLoadingIcon, NcDialog, NcTextField, NcTextArea, NcNoteCard } from '@nextcloud/vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
+import {
+	NcButton,
+	NcDialog,
+	NcLoadingIcon,
+	NcNoteCard,
+	NcTextArea,
+	NcTextField,
+} from '@nextcloud/vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
 
 export default {
 	name: 'EditBericht',
@@ -137,12 +164,14 @@ export default {
 		Plus,
 		Help,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			required: false,
 		},
 	},
+
 	data() {
 		return {
 			success: false,
@@ -167,6 +196,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 	 */
@@ -187,7 +217,11 @@ export default {
 					referentie: berichtStore.berichtItem.referentie || '',
 					berichtID: berichtStore.berichtItem.berichtID || '',
 					batchID: berichtStore.berichtItem.batchID || '',
-					gebruikerID: klantStore.klantItem?.id || berichtStore.berichtItem.gebruikerID || '',
+					gebruikerID:
+						klantStore.klantItem?.id
+						|| berichtStore.berichtItem.gebruikerID
+						|| '',
+
 					volgorde: berichtStore.berichtItem.volgorde || '',
 				}
 			} else if (klantStore.klantItem?.id) {
@@ -196,6 +230,7 @@ export default {
 			this.hasUpdated = true
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -205,6 +240,7 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -231,8 +267,8 @@ export default {
 				volgorde: '',
 			}
 			this.$emit('close-modal')
-
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -241,7 +277,8 @@ export default {
 			try {
 				await berichtStore.saveBericht({
 					...this.berichtItem,
-					gebruikerID: klantStore.klantItem?.id || this.berichtItem.gebruikerID,
+					gebruikerID:
+						klantStore.klantItem?.id || this.berichtItem.gebruikerID,
 				})
 				this.success = true
 				this.loading = false
@@ -249,14 +286,17 @@ export default {
 				if (this.dashboardWidget === true) {
 					this.$emit('save-success')
 				}
-
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while saving the bericht'
+				this.error =
+					error.message || 'An error occurred while saving the bericht'
 			}
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {
@@ -268,17 +308,17 @@ export default {
 
 <style>
 .modal__content {
-    margin: var(--zaa-margin-50);
-    text-align: center;
+	margin: var(--zaa-margin-50);
+	text-align: center;
 }
 
 .berichtDetailsContainer {
-    margin-block-start: var(--zaa-margin-20);
-    margin-inline-start: var(--zaa-margin-20);
-    margin-inline-end: var(--zaa-margin-20);
+	margin-block-start: var(--zaa-margin-20);
+	margin-inline-start: var(--zaa-margin-20);
+	margin-inline-end: var(--zaa-margin-20);
 }
 
 .success {
-    color: green;
+	color: green;
 }
 </style>

@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
-import { useContactMomentStore } from './contactmoment.js'
+import { createPinia, setActivePinia } from 'pinia'
 import { ContactMoment, mockContactMoment } from '../../entities/index.js'
+import { useContactMomentStore } from './contactmoment.js'
 
 describe('Contact Moment Store', () => {
 	beforeEach(() => {

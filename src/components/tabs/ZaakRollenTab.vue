@@ -15,7 +15,12 @@
 -->
 <template>
 	<CnNoteCard type="info" :title="t('zaakafhandelapp', 'Roles')">
-		{{ t('zaakafhandelapp', 'Role list for this case will appear here once the manifest renderer is wired to the existing rolStore.') }}
+		{{
+			t(
+				'zaakafhandelapp',
+				'Role list for this case will appear here once the manifest renderer is wired to the existing rolStore.',
+			)
+		}}
 	</CnNoteCard>
 </template>
 

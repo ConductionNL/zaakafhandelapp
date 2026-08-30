@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TResultaat } from './resultaat.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TResultaat } from './resultaat.types'
+
+import { z } from 'zod'
 
 export class Resultaat implements TResultaat {
-
 	public id: string
 	public url: string
 	public zaak: string
@@ -31,5 +32,4 @@ export class Resultaat implements TResultaat {
 
 		return schema.safeParse(this)
 	}
-
 }

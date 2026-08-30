@@ -15,7 +15,12 @@
 -->
 <template>
 	<CnNoteCard type="info" :title="t('zaakafhandelapp', 'Documents')">
-		{{ t('zaakafhandelapp', 'Document list for this case will appear here once the manifest renderer is wired to the existing documentStore.') }}
+		{{
+			t(
+				'zaakafhandelapp',
+				'Document list for this case will appear here once the manifest renderer is wired to the existing documentStore.',
+			)
+		}}
 	</CnNoteCard>
 </template>
 

@@ -1,0 +1,23 @@
+# NOTE: prettier 3 reads `.gitignore` as an ignore path too, so anything already
+# gitignored (js/, coverage/) is excluded even without an entry here. The
+# entries below are kept explicit anyway — an ignore that depends on another
+# file's contents is one refactor away from silently switching off.
+
+# Build output, vendored trees and the separate Docusaurus site.
+js/
+dist/
+build/
+node_modules/
+vendor/
+coverage/
+coverage-frontend/
+coverage-vitest/
+phpmetrics/
+docs/
+*.min.*
+
+# Owned by the translation workflow. This app's l10n/ is JSON-only today, so
+# nothing here currently matches the format glob — the entry is deliberate
+# cover for the day the Nextcloud l10n tooling starts emitting `l10n/*.js`
+# bundles here, as it already does in six of the other apps in this rollout.
+l10n/

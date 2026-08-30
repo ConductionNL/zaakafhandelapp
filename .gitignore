@@ -3,10 +3,18 @@
 
 /vendor/
 /vendor-bin/*/vendor/
-/composer.lock
+
+# composer.lock is COMMITTED on purpose. It used to be ignored here, and that
+# made hydra gate-4 (composer-audit) structurally blind in this repository:
+# with no lock and no installed packages, `composer audit` has nothing to read,
+# so the gate reported "audit COULD NOT RUN — audited NOTHING", which is not a
+# clean audit. Every CI run also resolved its own dependency set, so no two
+# runs were guaranteed to test the same versions. This app is a deployable
+# Nextcloud app, not a library, so the lock belongs in the tree.
 
 /.php-cs-fixer.cache
 /tests/.phpunit.cache
+/.phpunit.cache/
 
 /node_modules/
 
@@ -31,3 +39,18 @@ coverage/
 /tests/e2e/.auth/
 /tests/e2e/playwright-report/
 /tests/e2e/test-results/
+# The CI config (tests/e2e/playwright.config.ts) writes to the app root
+# instead, because that is where the shared workflow's upload-artifact steps
+# look: server/apps/<app>/playwright-report/ and .../test-results/.
+/playwright-report/
+/test-results/
+/coverage-vitest/
+/coverage/
+
+# Build and test transcripts written at the repo ROOT by local tooling. These
+# were tracked, so every local build produced a commit-shaped diff, and every
+# such commit triggered the full Code Quality suite — 34 jobs deciding a
+# changed log file. Root-anchored on purpose: .claude/skills/*/examples/*.log
+# are gate FIXTURES, not artefacts, and must stay tracked.
+/*.log
+/changed.tsv

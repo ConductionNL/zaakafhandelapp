@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TDocument } from './document.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TDocument } from './document.types'
+
+import { z } from 'zod'
 
 export class Document implements TDocument {
-
 	public id: string
 	public zaak?: string
 	public url: string
@@ -10,9 +11,20 @@ export class Document implements TDocument {
 	public bronorganisatie: string
 	public creatiedatum: string
 	public titel: string
-	public vertrouwelijkheidaanduiding?: 'openbaar' | 'beperkt_openbaar' | 'intern' | 'zaakvertrouwelijk' | 'vertrouwelijk' | 'confidentieel' | 'geheim' | 'zeer_geheim'
+	public vertrouwelijkheidaanduiding?:
+		| 'openbaar'
+		| 'beperkt_openbaar'
+		| 'intern'
+		| 'zaakvertrouwelijk'
+		| 'vertrouwelijk'
+		| 'confidentieel'
+		| 'geheim'
+		| 'zeer_geheim'
+
 	public auteur: string
-	public status?: 'in_bewerking' | 'ter_vaststelling' | 'definitief' | 'gearchiveerd'
+	public status?:
+		'in_bewerking' | 'ter_vaststelling' | 'definitief' | 'gearchiveerd'
+
 	public inhoudIsVervallen?: boolean
 	public formaat?: string
 	public taal: string
@@ -33,7 +45,20 @@ export class Document implements TDocument {
 	}
 
 	public integriteit?: {
-		algoritme: 'crc_16' | 'crc_32' | 'crc_64' | 'fletcher_4' | 'fletcher_8' | 'fletcher_16' | 'fletcher_32' | 'hmac' | 'md5' | 'sha_1' | 'sha_256' | 'sha_512' | 'sha_3'
+		algoritme:
+			| 'crc_16'
+			| 'crc_32'
+			| 'crc_64'
+			| 'fletcher_4'
+			| 'fletcher_8'
+			| 'fletcher_16'
+			| 'fletcher_32'
+			| 'hmac'
+			| 'md5'
+			| 'sha_1'
+			| 'sha_256'
+			| 'sha_512'
+			| 'sha_3'
 		waarde: string
 		datum: string
 	}
@@ -54,7 +79,15 @@ export class Document implements TDocument {
 			url: string
 			catalogus: string
 			omschrijving: string
-			vertrouwelijkheidaanduiding: 'openbaar' | 'beperkt_openbaar' | 'intern' | 'zaakvertrouwelijk' | 'vertrouwelijk' | 'confidentieel' | 'geheim' | 'zeer_geheim'
+			vertrouwelijkheidaanduiding:
+				| 'openbaar'
+				| 'beperkt_openbaar'
+				| 'intern'
+				| 'zaakvertrouwelijk'
+				| 'vertrouwelijk'
+				| 'confidentieel'
+				| 'geheim'
+				| 'zeer_geheim'
 			beginGeldigheid: string
 			eindeGeldigheid?: string
 			beginObject?: string
@@ -120,9 +153,27 @@ export class Document implements TDocument {
 			bronorganisatie: z.string().max(9),
 			creatiedatum: z.string(),
 			titel: z.string().max(200),
-			vertrouwelijkheidaanduiding: z.enum(['openbaar', 'beperkt_openbaar', 'intern', 'zaakvertrouwelijk', 'vertrouwelijk', 'confidentieel', 'geheim', 'zeer_geheim']).nullable(),
+			vertrouwelijkheidaanduiding: z
+				.enum([
+					'openbaar',
+					'beperkt_openbaar',
+					'intern',
+					'zaakvertrouwelijk',
+					'vertrouwelijk',
+					'confidentieel',
+					'geheim',
+					'zeer_geheim',
+				])
+				.nullable(),
 			auteur: z.string().max(200),
-			status: z.enum(['in_bewerking', 'ter_vaststelling', 'definitief', 'gearchiveerd']).nullable(),
+			status: z
+				.enum([
+					'in_bewerking',
+					'ter_vaststelling',
+					'definitief',
+					'gearchiveerd',
+				])
+				.nullable(),
 			inhoudIsVervallen: z.boolean().nullable(),
 			formaat: z.string().max(255).nullable(),
 			taal: z.string().length(3),
@@ -137,52 +188,93 @@ export class Document implements TDocument {
 			verzenddatum: z.string().nullable(),
 			indicatieGebruiksrecht: z.boolean().nullable(),
 			verschijningsvorm: z.string().nullable(),
-			ondertekening: z.object({
-				soort: z.enum(['analoog', 'digitaal', 'pki']),
-				datum: z.string(),
-			}).nullable(),
-			integriteit: z.object({
-				algoritme: z.enum(['crc_16', 'crc_32', 'crc_64', 'fletcher_4', 'fletcher_8', 'fletcher_16', 'fletcher_32', 'hmac', 'md5', 'sha_1', 'sha_256', 'sha_512', 'sha_3']),
-				waarde: z.string().max(128),
-				datum: z.string(),
-			}).nullable(),
+			ondertekening: z
+				.object({
+					soort: z.enum(['analoog', 'digitaal', 'pki']),
+					datum: z.string(),
+				})
+				.nullable(),
+			integriteit: z
+				.object({
+					algoritme: z.enum([
+						'crc_16',
+						'crc_32',
+						'crc_64',
+						'fletcher_4',
+						'fletcher_8',
+						'fletcher_16',
+						'fletcher_32',
+						'hmac',
+						'md5',
+						'sha_1',
+						'sha_256',
+						'sha_512',
+						'sha_3',
+					]),
+					waarde: z.string().max(128),
+					datum: z.string(),
+				})
+				.nullable(),
 			informatieobjecttype: z.string().max(200),
 			locked: z.boolean(),
-			bestandsdelen: z.array(z.object({
-				url: z.string().min(1).max(1000).url(),
-				volgnummer: z.number(),
-				omvang: z.number(),
-				voltooid: z.boolean(),
-				lock: z.string(),
-			})),
-			trefwoorden: z.array(z.string()).nullable(),
-			_expand: z.object({
-				informatieobjecttype: z.object({
+			bestandsdelen: z.array(
+				z.object({
 					url: z.string().min(1).max(1000).url(),
-					catalogus: z.string(),
-					omschrijving: z.string().max(80),
-					vertrouwelijkheidaanduiding: z.enum(['openbaar', 'beperkt_openbaar', 'intern', 'zaakvertrouwelijk', 'vertrouwelijk', 'confidentieel', 'geheim', 'zeer_geheim']),
-					beginGeldigheid: z.string(),
-					eindeGeldigheid: z.string().nullable(),
-					beginObject: z.string().nullable(),
-					eindeObject: z.string().nullable(),
-					concept: z.boolean(),
-					zaaktypen: z.string(),
-					besluittypen: z.array(z.string()),
-					informatieobjectcategorie: z.string().max(80),
-					trefwoorden: z.array(z.string().max(30)).nullable(),
-					omschrijvingGeneriek: z.object({
-						informatieobjecttypeOmschrijvingGeneriek: z.string().max(80),
-						definitieInformatieobjecttypeOmschrijvingGeneriek: z.string().max(255),
-						herkomstInformatieobjecttypeOmschrijvingGeneriek: z.string().max(12),
-						hierarchieInformatieobjecttypeOmschrijvingGeneriek: z.string().max(80),
-						opmerkingInformatieobjecttypeOmschrijvingGeneriek: z.string().max(255).nullable(),
-					}),
+					volgnummer: z.number(),
+					omvang: z.number(),
+					voltooid: z.boolean(),
+					lock: z.string(),
 				}),
-			}).nullable(),
+			),
+			trefwoorden: z.array(z.string()).nullable(),
+			_expand: z
+				.object({
+					informatieobjecttype: z.object({
+						url: z.string().min(1).max(1000).url(),
+						catalogus: z.string(),
+						omschrijving: z.string().max(80),
+						vertrouwelijkheidaanduiding: z.enum([
+							'openbaar',
+							'beperkt_openbaar',
+							'intern',
+							'zaakvertrouwelijk',
+							'vertrouwelijk',
+							'confidentieel',
+							'geheim',
+							'zeer_geheim',
+						]),
+						beginGeldigheid: z.string(),
+						eindeGeldigheid: z.string().nullable(),
+						beginObject: z.string().nullable(),
+						eindeObject: z.string().nullable(),
+						concept: z.boolean(),
+						zaaktypen: z.string(),
+						besluittypen: z.array(z.string()),
+						informatieobjectcategorie: z.string().max(80),
+						trefwoorden: z.array(z.string().max(30)).nullable(),
+						omschrijvingGeneriek: z.object({
+							informatieobjecttypeOmschrijvingGeneriek: z
+								.string()
+								.max(80),
+							definitieInformatieobjecttypeOmschrijvingGeneriek: z
+								.string()
+								.max(255),
+							herkomstInformatieobjecttypeOmschrijvingGeneriek: z
+								.string()
+								.max(12),
+							hierarchieInformatieobjecttypeOmschrijvingGeneriek: z
+								.string()
+								.max(80),
+							opmerkingInformatieobjecttypeOmschrijvingGeneriek: z
+								.string()
+								.max(255)
+								.nullable(),
+						}),
+					}),
+				})
+				.nullable(),
 		})
 
 		return schema.safeParse(this)
 	}
-
 }

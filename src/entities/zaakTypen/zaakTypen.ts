@@ -1,8 +1,9 @@
-import { SafeParseReturnType, z } from 'zod'
-import { TZaakType } from './zaakTypen.types'
+import type { SafeParseReturnType } from 'zod'
+import type { TZaakType } from './zaakTypen.types'
+
+import { z } from 'zod'
 
 export class ZaakType implements TZaakType {
-
 	public id: string
 	public identificatie: string
 	public omschrijving: string
@@ -50,7 +51,8 @@ export class ZaakType implements TZaakType {
 		this.handelingBehandelaar = source.handelingBehandelaar || ''
 		this.doorlooptijd = source.doorlooptijd || ''
 		this.servicenorm = source.servicenorm || ''
-		this.opschortingEnAanhoudingMogelijk = source.opschortingEnAanhoudingMogelijk || ''
+		this.opschortingEnAanhoudingMogelijk =
+			source.opschortingEnAanhoudingMogelijk || ''
 		this.verlengingMogelijk = source.verlengingMogelijk || ''
 		this.verlengingstermijn = source.verlengingstermijn || ''
 		this.publicatieIndicatie = source.publicatieIndicatie || ''
@@ -100,5 +102,4 @@ export class ZaakType implements TZaakType {
 
 		return schema.safeParse(this)
 	}
-
 }

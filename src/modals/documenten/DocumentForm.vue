@@ -1,18 +1,40 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
+import { documentStore, navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef"
-		label-id="documentForm"
-		@close="closeModal">
+	<NcModal ref="modalRef" labelId="documentForm" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ IS_EDIT ? t('zaakafhandelapp', 'Document {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Document {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
+			<h2>
+				{{
+					IS_EDIT
+						? t('zaakafhandelapp', 'Document {action}', {
+								action: t('zaakafhandelapp', 'edit'),
+							})
+						: t('zaakafhandelapp', 'Document {action}', {
+								action: t('zaakafhandelapp', 'create'),
+							})
+				}}
+			</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ IS_EDIT ? t('zaakafhandelapp', 'Document successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Document successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+					<p>
+						{{
+							IS_EDIT
+								? t(
+										'zaakafhandelapp',
+										'Document successfully {action}',
+										{ action: t('zaakafhandelapp', 'updated') },
+									)
+								: t(
+										'zaakafhandelapp',
+										'Document successfully {action}',
+										{ action: t('zaakafhandelapp', 'created') },
+									)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -20,108 +42,132 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null">
-				<p>{{ t('zaakafhandelapp', 'Select a case to create the document.') }}</p>
-				<NcSelect v-bind="zaak"
+				<p>
+					{{
+						t('zaakafhandelapp', 'Select a case to create the document.')
+					}}
+				</p>
+				<NcSelect
+					v-bind="zaak"
 					v-model="zaak.value"
-					:input-label="t('zaakafhandelapp', 'Case')"
+					:inputLabel="t('zaakafhandelapp', 'Case')"
 					:loading="zaakLoading"
 					:disabled="zaakLoading" />
 
 				<div class="form-group">
-					<NcTextField :label="t('zaakafhandelapp', 'Identification')"
+					<NcTextField
+						v-model="document.identificatie"
+						:label="t('zaakafhandelapp', 'Identification')"
 						maxlength="40"
-						:value.sync="document.identificatie"
 						required />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Source organisation')"
+					<NcTextField
+						v-model="document.bronorganisatie"
+						:label="t('zaakafhandelapp', 'Source organisation')"
 						minlength="1"
 						maxlength="9"
-						:value.sync="document.bronorganisatie"
 						required />
 
 					<div>
 						{{ t('zaakafhandelapp', 'Creation date') }}
-						<NcDateTimePicker v-model="document.creatiedatum"
+						<NcDateTimePicker
+							v-model="document.creatiedatum"
 							type="date"
 							required
 							confirm />
 					</div>
 
-					<NcTextField :label="t('zaakafhandelapp', 'Title')"
+					<NcTextField
+						v-model="document.titel"
+						:label="t('zaakafhandelapp', 'Title')"
 						maxlength="200"
-						:value.sync="document.titel"
 						required />
 
-					<NcSelect v-bind="vertrouwelijkheidaanduidingOptions"
+					<NcSelect
+						v-bind="vertrouwelijkheidaanduidingOptions"
 						v-model="vertrouwelijkheidaanduidingOptions.value"
-						:input-label="t('zaakafhandelapp', 'Confidentiality indication')" />
+						:inputLabel="
+							t('zaakafhandelapp', 'Confidentiality indication')
+						" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Author')"
+					<NcTextField
+						v-model="document.auteur"
+						:label="t('zaakafhandelapp', 'Author')"
 						minlength="1"
 						maxlength="200"
-						:value.sync="document.auteur"
 						required />
 
-					<NcSelect v-bind="statusOptions"
+					<NcSelect
+						v-bind="statusOptions"
 						v-model="statusOptions.value"
-						:input-label="t('zaakafhandelapp', 'Status')" />
+						:inputLabel="t('zaakafhandelapp', 'Status')" />
 
-					<NcCheckboxRadioSwitch :checked.sync="document.inhoudIsVervallen">
+					<NcCheckboxRadioSwitch v-model="document.inhoudIsVervallen">
 						{{ t('zaakafhandelapp', 'Content expired') }}
 					</NcCheckboxRadioSwitch>
 
-					<NcTextField :label="t('zaakafhandelapp', 'Format')"
-						maxlength="255"
-						:value.sync="document.formaat" />
+					<NcTextField
+						v-model="document.formaat"
+						:label="t('zaakafhandelapp', 'Format')"
+						maxlength="255" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Language')"
+					<NcTextField
+						v-model="document.taal"
+						:label="t('zaakafhandelapp', 'Language')"
 						minlength="3"
 						maxlength="3"
-						:value.sync="document.taal"
 						required />
 
-					<NcTextField :label="t('zaakafhandelapp', 'File name')"
-						maxlength="255"
-						:value.sync="document.bestandsnaam" />
+					<NcTextField
+						v-model="document.bestandsnaam"
+						:label="t('zaakafhandelapp', 'File name')"
+						maxlength="255" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Content')"
-						maxlength="255"
-						:value.sync="document.inhoud" />
+					<NcTextField
+						v-model="document.inhoud"
+						:label="t('zaakafhandelapp', 'Content')"
+						maxlength="255" />
 
-					<NcInputField :label="t('zaakafhandelapp', 'File size')"
+					<NcInputField
+						v-model="document.bestandsomvang"
+						:label="t('zaakafhandelapp', 'File size')"
 						type="number"
 						min="0"
-						max="9223372036854776000"
-						:value.sync="document.bestandsomvang" />
+						max="9223372036854776000" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Link')"
-						maxlength="200"
-						:value.sync="document.link" />
+					<NcTextField
+						v-model="document.link"
+						:label="t('zaakafhandelapp', 'Link')"
+						maxlength="200" />
 
-					<NcTextField :label="t('zaakafhandelapp', 'Description')"
-						maxlength="1000"
-						:value.sync="document.beschrijving" />
+					<NcTextField
+						v-model="document.beschrijving"
+						:label="t('zaakafhandelapp', 'Description')"
+						maxlength="1000" />
 
 					<div>
 						{{ t('zaakafhandelapp', 'Receipt date') }}
-						<NcDateTimePicker v-model="document.ontvangstdatum"
+						<NcDateTimePicker
+							v-model="document.ontvangstdatum"
 							type="date"
 							confirm />
 					</div>
 
 					<div>
 						{{ t('zaakafhandelapp', 'Send date') }}
-						<NcDateTimePicker v-model="document.verzenddatum"
+						<NcDateTimePicker
+							v-model="document.verzenddatum"
 							type="date"
 							confirm />
 					</div>
 
-					<NcCheckboxRadioSwitch :checked.sync="document.indicatieGebruiksrecht">
+					<NcCheckboxRadioSwitch v-model="document.indicatieGebruiksrecht">
 						{{ t('zaakafhandelapp', 'Rights indication') }}
 					</NcCheckboxRadioSwitch>
 
-					<NcTextField :label="t('zaakafhandelapp', 'Appearance')"
-						:value.sync="document.verschijningsvorm" />
+					<NcTextField
+						v-model="document.verschijningsvorm"
+						:label="t('zaakafhandelapp', 'Appearance')" />
 
 					<!--
                         TODO:
@@ -129,27 +175,33 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
                         ondertekening and integriteit zou hier nog moeten komen
                     -->
 
-					<NcTextField :label="t('zaakafhandelapp', 'Information object type')"
+					<NcTextField
+						v-model="document.informatieobjecttype"
+						:label="t('zaakafhandelapp', 'Information object type')"
 						minlength="1"
 						maxlength="200"
-						required
-						:value.sync="document.informatieobjecttype" />
+						required />
 
 					<!-- <NcTextField label="trefwoorden"
-						:value.sync="document.trefwoorden" /> -->
+						v-model="document.trefwoorden" /> -->
 				</div>
 			</div>
 
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="loading || !isValid()"
-				type="primary"
+				variant="primary"
 				@click="saveDocument()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else-if="!loading && IS_EDIT" :size="20" />
 					<Plus v-else-if="!loading && !IS_EDIT" :size="20" />
 				</template>
-				{{ IS_EDIT ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					IS_EDIT
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -157,21 +209,19 @@ import { navigationStore, documentStore, zaakStore } from '../../store/store.js'
 
 <script>
 import {
-	NcModal,
-	NcInputField,
-	NcNoteCard,
 	NcButton,
-	NcTextField,
-	NcLoadingIcon,
-	NcSelect,
-	NcDateTimePicker,
 	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
+	NcInputField,
+	NcLoadingIcon,
+	NcModal,
+	NcNoteCard,
+	NcSelect,
+	NcTextField,
 } from '@nextcloud/vue'
-
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-
 // entities
 import { Document } from '../../entities/index.js'
 
@@ -190,6 +240,7 @@ export default {
 		Plus,
 		ContentSaveOutline,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
@@ -197,6 +248,7 @@ export default {
 			required: false,
 		},
 	},
+
 	data() {
 		return {
 			document: {
@@ -222,6 +274,7 @@ export default {
 				informatieobjecttype: '',
 				trefwoorden: '',
 			},
+
 			vertrouwelijkheidaanduidingOptions: {
 				options: [
 					{ label: 'Openbaar', value: 'openbaar' },
@@ -233,8 +286,10 @@ export default {
 					{ label: 'Geheim', value: 'geheim' },
 					{ label: 'Zeer geheim', value: 'zeer_geheim' },
 				],
+
 				value: null,
 			},
+
 			statusOptions: {
 				options: [
 					{ label: 'In bewerking', value: 'in_bewerking' },
@@ -242,8 +297,10 @@ export default {
 					{ label: 'Definitief', value: 'definitief' },
 					{ label: 'Gearchiveerd', value: 'gearchiveerd' },
 				],
+
 				value: null,
 			},
+
 			IS_EDIT: false,
 			loading: false,
 			success: null,
@@ -255,6 +312,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -269,12 +327,20 @@ export default {
 				verzenddatum: new Date(documentStore.documentItem.verzenddatum),
 			}
 
-			this.vertrouwelijkheidaanduidingOptions.value = this.vertrouwelijkheidaanduidingOptions.options.find((option) => option.value === documentStore.documentItem.vertrouwelijkheidaanduiding)
-			this.statusOptions.value = this.statusOptions.options.find((option) => option.value === documentStore.documentItem.status)
+			this.vertrouwelijkheidaanduidingOptions.value =
+				this.vertrouwelijkheidaanduidingOptions.options.find(
+					(option) =>
+						option.value
+						=== documentStore.documentItem.vertrouwelijkheidaanduiding,
+				)
+			this.statusOptions.value = this.statusOptions.options.find(
+				(option) => option.value === documentStore.documentItem.status,
+			)
 		}
 
 		this.fetchZaak()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -284,16 +350,20 @@ export default {
 			documentStore.zaakId = null
 			this.dashboardWidget && this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchZaak() {
 			this.zaakLoading = true
 
-			zaakStore.refreshZakenList()
+			zaakStore
+				.refreshZakenList()
 				.then(({ entities }) => {
 					const compareId = this.document?.zaak || documentStore.zaakId
-					const selectedZaak = entities.find((zaak) => zaak.id === compareId)
+					const selectedZaak = entities.find(
+						(zaak) => zaak.id === compareId,
+					)
 
 					this.zaak = {
 						options: entities.map((zaak) => ({
@@ -302,9 +372,9 @@ export default {
 						})),
 						value: selectedZaak
 							? {
-								label: selectedZaak.identificatie,
-								id: selectedZaak.id,
-							}
+									label: selectedZaak.identificatie,
+									id: selectedZaak.id,
+								}
 							: null,
 					}
 				})
@@ -312,17 +382,21 @@ export default {
 					this.zaakLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		isValid() {
-			return this.document.bronorganisatie
+			return (
+				this.document.bronorganisatie
 				&& this.document.creatiedatum
 				&& this.document.titel
 				&& this.document.auteur
 				&& this.document.taal
 				&& this.document.informatieobjecttype
+			)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -332,16 +406,19 @@ export default {
 			const newDocument = new Document({
 				...this.document,
 				zaak: this.zaak.value?.id,
-				vertrouwelijkheidaanduiding: this.vertrouwelijkheidaanduidingOptions.value?.value ?? null,
+				vertrouwelijkheidaanduiding:
+					this.vertrouwelijkheidaanduidingOptions.value?.value ?? null,
+
 				status: this.statusOptions.value?.value ?? null,
 				creatiedatum: this.document.creatiedatum.toISOString(),
 				ontvangstdatum: this.document.ontvangstdatum.toISOString(),
 				verzenddatum: this.document.verzenddatum.toISOString(),
 			})
 
-			documentStore.saveDocument({
-				...newDocument,
-			})
+			documentStore
+				.saveDocument({
+					...newDocument,
+				})
 				.then(({ response }) => {
 					this.success = response.ok
 					setTimeout(this.closeModal, 2500)
@@ -350,7 +427,9 @@ export default {
 				})
 				.catch((err) => {
 					console.error(err)
-					this.error = err.message || 'Er is iets fout gegaan bij het opslaan van het document.'
+					this.error =
+						err.message
+						|| 'Er is iets fout gegaan bij het opslaan van het document.'
 					this.success = false
 				})
 				.finally(() => {
@@ -363,7 +442,7 @@ export default {
 
 <style scoped>
 .modalContent {
-    margin: var(--zaa-margin-50, 12px);
-    text-align: center;
+	margin: var(--zaa-margin-50, 12px);
+	text-align: center;
 }
 </style>

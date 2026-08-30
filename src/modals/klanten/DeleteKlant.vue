@@ -7,9 +7,20 @@ import { klantStore, navigationStore } from '../../store/store.js'
 	<NcDialog
 		:name="t('zaakafhandelapp', 'Delete customer')"
 		size="normal"
-		:can-close="false">
+		:canClose="false">
 		<p v-if="!success">
-			{{ t('zaakafhandelapp', 'Do you want to delete {name}? This action cannot be undone.', { name: klantStore.klantItem.type === 'persoon' ? `${klantStore.klantItem.voornaam} ${klantStore.klantItem.tussenvoegsel} ${klantStore.klantItem.achternaam}` : klantStore.klantItem.bedrijfsnaam }) }}
+			{{
+				t(
+					'zaakafhandelapp',
+					'Do you want to delete {name}? This action cannot be undone.',
+					{
+						name:
+							klantStore.klantItem.type === 'persoon'
+								? `${klantStore.klantItem.voornaam} ${klantStore.klantItem.tussenvoegsel} ${klantStore.klantItem.achternaam}`
+								: klantStore.klantItem.bedrijfsnaam,
+					},
+				)
+			}}
 		</p>
 
 		<NcNoteCard v-if="success" type="success">
@@ -20,17 +31,20 @@ import { klantStore, navigationStore } from '../../store/store.js'
 		</NcNoteCard>
 
 		<template #actions>
-			<NcButton
-				@click="closeModal">
+			<NcButton @click="closeModal">
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+				{{
+					success
+						? t('zaakafhandelapp', 'Close')
+						: t('zaakafhandelapp', 'Cancel')
+				}}
 			</NcButton>
 			<NcButton
 				v-if="!success"
 				:disabled="loading"
-				type="error"
+				variant="error"
 				@click="deleteKlant()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
@@ -43,13 +57,7 @@ import { klantStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import {
-	NcButton,
-	NcDialog,
-	NcLoadingIcon,
-	NcNoteCard,
-} from '@nextcloud/vue'
-
+import { NcButton, NcDialog, NcLoadingIcon, NcNoteCard } from '@nextcloud/vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 
@@ -64,6 +72,7 @@ export default {
 		TrashCanOutline,
 		Cancel,
 	},
+
 	data() {
 		return {
 			success: false,
@@ -72,6 +81,7 @@ export default {
 			closeTimeoutFunc: null,
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -81,6 +91,7 @@ export default {
 			clearTimeout(this.closeTimeoutFunc)
 			this.success = null
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -98,7 +109,8 @@ export default {
 			} catch (error) {
 				this.loading = false
 				this.success = false
-				this.error = error.message || 'An error occurred while deleting the klant'
+				this.error =
+					error.message || 'An error occurred while deleting the klant'
 			}
 		},
 	},

@@ -13,22 +13,22 @@
 // See openspec/changes/zaakafhandelapp-store-migration/design.md for the
 // pattern rationale and the Phase 2 cutover triggers.
 
-import { generateUrl } from '@nextcloud/router'
 import { useObjectStore } from '@conduction/nextcloud-vue'
+import { generateUrl } from '@nextcloud/router'
 import pinia from '../pinia.js'
-import { useNavigationStore } from './modules/navigation.ts'
-import { useZaakStore } from './modules/zaken.ts'
-import { useZaakTypeStore } from './modules/zaakTypen.ts'
 import { useBerichtStore } from './modules/berichten.js'
-import { useKlantStore } from './modules/klanten.js'
-import { useRolStore } from './modules/rol.ts'
-import { useTaakStore } from './modules/taak.js'
-import { useSearchStore } from './modules/search.ts'
-import { useContactMomentStore } from './modules/contactmoment.ts'
-import { useMedewerkerStore } from './modules/medewerkers.js'
-import { useResultaatStore } from './modules/resultaten.ts'
 import { useBesluitStore } from './modules/besluiten.ts'
+import { useContactMomentStore } from './modules/contactmoment.ts'
 import { useDocumentStore } from './modules/documenten.ts'
+import { useKlantStore } from './modules/klanten.js'
+import { useMedewerkerStore } from './modules/medewerkers.js'
+import { useNavigationStore } from './modules/navigation.ts'
+import { useResultaatStore } from './modules/resultaten.ts'
+import { useRolStore } from './modules/rol.ts'
+import { useSearchStore } from './modules/search.ts'
+import { useTaakStore } from './modules/taak.js'
+import { useZaakTypeStore } from './modules/zaakTypen.ts'
+import { useZaakStore } from './modules/zaken.ts'
 
 // Legacy controller-backed stores — preserved verbatim for every existing
 // Vue consumer. These talk to flat in-app PHP controllers and do NOT match
@@ -77,8 +77,8 @@ let initialized = false
  * resolution will live here.
  *
  * @return {Promise<ReturnType<typeof useObjectStore>>} The configured lib store.
-  *
-  * @spec openspec/specs/state-stores/spec.md#REQ-005
+ *
+ * @spec openspec/specs/state-stores/spec.md#REQ-005
  */
 export async function initializeStores() {
 	const objectStore = useObjectStore(pinia)
@@ -100,21 +100,21 @@ export async function initializeStores() {
 }
 
 export {
+	// Legacy controller-backed stores — preserved for Phase 1 compatibility.
+	berichtStore,
+	besluitStore,
+	contactMomentStore,
+	documentStore,
+	klantStore,
+	medewerkerStore,
+	navigationStore,
+	resultaatStore,
+	rolStore,
+	searchStore,
+	taakStore,
 	// Lib store — adopt for new code, manifest pages, and any consumer
 	// needing the lib's sub-resource plugins.
 	useObjectStore,
-	// Legacy controller-backed stores — preserved for Phase 1 compatibility.
-	berichtStore,
-	klantStore,
-	navigationStore,
-	rolStore,
-	taakStore,
 	zaakStore,
 	zaakTypeStore,
-	searchStore,
-	contactMomentStore,
-	medewerkerStore,
-	resultaatStore,
-	besluitStore,
-	documentStore,
 }

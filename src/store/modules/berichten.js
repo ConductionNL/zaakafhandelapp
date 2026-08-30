@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Bericht } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -13,6 +14,7 @@ export const useBerichtStore = defineStore('berichten', {
 	}),
 	actions: {
 		/**
+		 * @param berichtItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setBerichtItem(berichtItem) {
@@ -20,11 +22,12 @@ export const useBerichtStore = defineStore('berichten', {
 			console.log('Active bericht item set to ' + berichtItem)
 		},
 		/**
+		 * @param berichtenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setBerichtenList(berichtenList) {
 			this.berichtenList = berichtenList.map(
-			    (berichtItem) => new Bericht(berichtItem),
+				(berichtItem) => new Bericht(berichtItem),
 			)
 			console.log('Berichten list set to ' + berichtenList.length + ' items')
 		},
@@ -33,6 +36,7 @@ export const useBerichtStore = defineStore('berichten', {
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		/**
+		 * @param search
 		 * @spec openspec/specs/state-stores/spec.md#REQ-002
 		 */
 		async refreshBerichtenList(search = null) {
@@ -60,6 +64,7 @@ export const useBerichtStore = defineStore('berichten', {
 		},
 		// New function to get a single bericht
 		/**
+		 * @param id
 		 * @spec openspec/specs/state-stores/spec.md#REQ-003
 		 */
 		async getBericht(id) {
@@ -83,6 +88,7 @@ export const useBerichtStore = defineStore('berichten', {
 		},
 		// Delete a bericht
 		/**
+		 * @param berichtItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async deleteBericht(berichtItem) {
@@ -94,6 +100,9 @@ export const useBerichtStore = defineStore('berichten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -108,6 +117,7 @@ export const useBerichtStore = defineStore('berichten', {
 		},
 		// Create or save a bericht from store
 		/**
+		 * @param berichtItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async saveBericht(berichtItem) {
@@ -121,16 +131,14 @@ export const useBerichtStore = defineStore('berichten', {
 				: `${apiEndpoint}/${berichtItem.id}`
 			const method = isNewBericht ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(berichtItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(berichtItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

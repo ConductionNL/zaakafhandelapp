@@ -1,16 +1,21 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
+import { navigationStore, taakStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="addTaakToZaak" @close="closeModal">
+	<NcModal ref="modalRef" labelId="addTaakToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ t('zaakafhandelapp', 'Add task') }}: {{ zaakStore.zaakItem.title }}</h2>
+			<h2>
+				{{ t('zaakafhandelapp', 'Add task') }}:
+				{{ zaakStore.zaakItem.title }}
+			</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ t('zaakafhandelapp', 'Task successfully added to case') }}</p>
+					<p>
+						{{ t('zaakafhandelapp', 'Task successfully added to case') }}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -18,17 +23,19 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcSelect v-bind="taken"
+				<NcSelect
+					v-bind="taken"
 					v-model="taken.value"
-					:input-label="t('zaakafhandelapp', 'Task')"
+					:inputLabel="t('zaakafhandelapp', 'Task')"
 					:loading="takenLoading"
 					:disabled="loading"
 					required />
 			</div>
 
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="!taken?.value || loading"
-				type="primary"
+				variant="primary"
 				@click="addTaakToZaak">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
@@ -41,11 +48,16 @@ import { zaakStore, navigationStore, taakStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcLoadingIcon, NcNoteCard, NcSelect } from '@nextcloud/vue'
-import { Taak } from '../../entities/index.js'
-
+import {
+	NcButton,
+	NcLoadingIcon,
+	NcModal,
+	NcNoteCard,
+	NcSelect,
+} from '@nextcloud/vue'
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import { Taak } from '../../entities/index.js'
 
 export default {
 	name: 'AddTaakToZaak',
@@ -58,6 +70,7 @@ export default {
 		// Icons
 		Plus,
 	},
+
 	data() {
 		return {
 			takenLoading: false,
@@ -69,6 +82,7 @@ export default {
 			hasUpdated: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -76,6 +90,7 @@ export default {
 		this.zaakItem = zaakStore.zaakItem
 		this.fetchTakenData()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -83,13 +98,15 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchTakenData() {
 			this.takenLoading = true
 
-			taakStore.refreshTakenList()
+			taakStore
+				.refreshTakenList()
 				.then(({ data }) => {
 					this.taken = {
 						options: data
@@ -108,6 +125,7 @@ export default {
 					this.takenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -115,7 +133,9 @@ export default {
 			this.loading = true
 			this.error = false
 
-			const taakItem = taakStore.takenList.find((taak) => taak.id === this.taken.value.id)
+			const taakItem = taakStore.takenList.find(
+				(taak) => taak.id === this.taken.value.id,
+			)
 			if (!taakItem) {
 				this.error = 'something went majorly wrong'
 				this.loading = false
@@ -128,7 +148,8 @@ export default {
 
 			const newTaakItem = new Taak(taakItemCopy)
 
-			taakStore.saveTaak(newTaakItem)
+			taakStore
+				.saveTaak(newTaakItem)
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -137,7 +158,7 @@ export default {
 					/**
 					 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 					 */
-					setTimeout(function() {
+					setTimeout(function () {
 						self.success = null
 						self.closeModal()
 					}, 2000)

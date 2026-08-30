@@ -18,43 +18,30 @@
 //   - openspec/changes/zaakafhandelapp-manifest-v1/design.md
 //   - @conduction/nextcloud-vue → docs/migrating-to-manifest.md
 
+import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
+import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
+import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
+import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
+import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
+// --- Detail-tab custom components for ZaakDetail ---
+// Each remaining tab references a thin stub today (`<CnNoteCard>` placeholder
+// pointing at the existing modal-based UI). The besluiten tab was dissolved to
+// a built-in object-table sidebar-tab widget (nextcloud-vue #89), so it no
+// longer needs a component entry here.
+import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
+import AuditTrailView from './views/audit/AuditTrailView.vue'
 // --- Custom-fallback page components (referenced by `pages[].component`) ---
 import SearchView from './views/search/SearchIndex.vue'
-import AuditTrailView from './views/audit/AuditTrailView.vue'
-
-// --- Settings section component (referenced by settings page sections[]). ---
-// `manifest-settings-rich-sections` lets each section declare a custom
-// component that renders the entire section body. We wrap the legacy
-// settings page so the migration happens incrementally; future rounds
-// can split this into per-section widgets.
-import SettingsForm from './views/settings/Settings.vue'
-
-// --- Detail-tab custom components for ZaakDetail ---
-// Each tab references a thin stub today (`<CnNoteCard>` placeholder
-// pointing at the existing modal-based UI). Implementations land in
-// a follow-up sibling change once runtime regression confirms the
-// dispatcher.
-import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
-import ZaakRollenTab from './components/tabs/ZaakRollenTab.vue'
-import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
-import ZaakBesluitenTab from './components/tabs/ZaakBesluitenTab.vue'
-import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
-import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
-import ZaakStatussenTab from './components/tabs/ZaakStatussenTab.vue'
 
 export default {
 	// --- Genuine exception: multi-store search; no abstract analogue. ---
 	SearchView,
 	// --- Migration cost: placeholder navigation entry. ---
 	AuditTrailView,
-	// --- Settings wrapper (lib gap). ---
-	SettingsForm,
-
 	// --- ZaakDetail sidebar tabs (cross-schema relations). ---
 	ZaakTakenTab,
 	ZaakRollenTab,
 	ZaakDocumentenTab,
-	ZaakBesluitenTab,
 	ZaakBerichtenTab,
 	ZaakResultatenTab,
 	ZaakStatussenTab,
