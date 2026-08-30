@@ -9,14 +9,20 @@ return [
 		'statusen' => ['url' => 'api/zrc/statussen'],
 		'zaakInformatieObjecten' => ['url' => 'api/zrc/zaakinformatieobjecten'],
 		'zaakObjecten' => ['url' => 'api/zrc/zaakobjecten'],
-		// zaakBesluiten and zaakAuditTrail resource routes removed (issue #268):
-		// controllers return 501 until a real OR-backed implementation is in place.
-		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaak_uuid}/eigenschappen'],
+		// Route placeholders MUST match the controller method parameter names
+		// exactly — NC's dispatcher binds route params to method args by name,
+		// so a `{zaak_uuid}` placeholder against a `$zaakUuid`/`$zaakId` arg
+		// binds null and the typed arg throws a TypeError (HTTP 500) before the
+		// method body runs. ZaakBesluiten/ZaakAuditTrail take $zaakUuid;
+		// ZaakEigenschappen takes $zaakId.
+		'zaakBesluiten' => ['url' => 'api/zrc/zaken/{zaakUuid}/besluiten'],
+		'zaakEigenschappen' => ['url' => 'api/zrc/zaken/{zaakId}/eigenschappen'],
+		// zaakAuditTrail is read-only per ZRC; the resource quintet stays registered for gate-14, write verbs return 405.
+		'zaakAuditTrail' => ['url' => 'api/zrc/zaken/{zaakUuid}/audit_trail'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/redoc-1.3.1
 		'zaakTypen' => ['url' => 'api/ztc/zaaktypen'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/redoc-1.5.0
-		// documenten resource route removed (issue #268): controller returns 501 until real DRC
-		// implementation is in place.
+		'documenten' => ['url' => 'api/drc/enkelvoudiginformatieobjecten'],
 		// Conform https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/redoc-1.0.2
 		'besluiten' => ['url' => 'api/brc'],
 		// Conform ???
@@ -25,7 +31,11 @@ return [
 		'berichten' => ['url' => 'api/berichten'],
 		'contactMomenten' => ['url' => 'api/contactmomenten'],
 		'medewerkers' => ['url' => 'api/medewerkers'],
-		'dashboard' => ['url' => 'api/dashboard'],
+		// `dashboard` is deliberately NOT a resource. DashboardController serves
+		// the SPA shell only (`dashboard#page` below); its api/dashboard quintet
+		// returned a hardcoded demo constant with no caller in `src/` and was
+		// removed rather than guarded — see the class docblock and
+		// ConductionNL/zaakafhandelapp#347.
 	],
 	'routes' => [
 		// Audit trail routes
@@ -40,6 +50,15 @@ return [
 		['name' => 'klanten#getBerichten', 'url' => '/api/klanten/{id}/berichten', 'verb' => 'GET'],
 		['name' => 'klanten#getZaken', 'url' => '/api/klanten/{id}/zaken', 'verb' => 'GET'],
 
+		// Addressbook integration routes (klanten-addressbook-sync).
+		// Served by KlantContactsController — split out of KlantenController so
+		// klant CRUD and the addressbook surface stay separate concerns. The URLs
+		// are unchanged; only the controller half of the route name moved.
+		['name' => 'klantContacts#contactsStatus', 'url' => '/api/klanten/contacts/status', 'verb' => 'GET'],
+		['name' => 'klantContacts#searchContacts', 'url' => '/api/klanten/contacts/search', 'verb' => 'GET'],
+		['name' => 'klantContacts#importContact', 'url' => '/api/klanten/contacts/import', 'verb' => 'POST'],
+		['name' => 'klantContacts#exportContact', 'url' => '/api/klanten/{id}/contacts/export', 'verb' => 'POST'],
+
 		// Page routes
 		['name' => 'dashboard#page', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'configuration#index', 'url' => '/api/configuration', 'verb' => 'GET'],
@@ -51,6 +70,15 @@ return [
 		['name' => 'rollen#page', 'url' => '/rollen', 'verb' => 'GET'],
 		['name' => 'rollen#page', 'postfix'  => 'details', 'url' => '/rollen/{id}', 'verb' => 'GET'],
 		['name' => 'statusen#page', 'url' => '/statussen', 'verb' => 'GET'],
+		['name' => 'statusen#page', 'postfix' => 'details', 'url' => '/statussen/{id}', 'verb' => 'GET'],
+		['name' => 'besluiten#page', 'url' => '/besluiten', 'verb' => 'GET'],
+		['name' => 'besluiten#page', 'postfix' => 'details', 'url' => '/besluiten/{id}', 'verb' => 'GET'],
+		['name' => 'documenten#page', 'url' => '/documenten', 'verb' => 'GET'],
+		['name' => 'documenten#page', 'postfix' => 'details', 'url' => '/documenten/{id}', 'verb' => 'GET'],
+		// DRC enkelvoudiginformatieobject content download (streams the backing Nextcloud file).
+		['name' => 'documenten#download', 'url' => '/api/drc/enkelvoudiginformatieobjecten/{id}/download', 'verb' => 'GET'],
+		['name' => 'resultaten#pages', 'url' => '/resultaten', 'verb' => 'GET'],
+		['name' => 'resultaten#pages', 'postfix' => 'details', 'url' => '/resultaten/{id}', 'verb' => 'GET'],
 		['name' => 'zaakInformatieObjecten#page', 'url' => '/zaakinformatieobjecten', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','url' => '/zaaktypen', 'verb' => 'GET'],
 		['name' => 'zaakTypen#page','postfix' => 'details', 'url' => '/zaaktypen/{id}', 'verb' => 'GET'],

@@ -1,16 +1,21 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
+import { navigationStore, rolStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef" label-id="addRolToZaak" @close="closeModal">
+	<NcModal ref="modalRef" labelId="addRolToZaak" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ t('zaakafhandelapp', 'Add role') }}: {{ zaakStore.zaakItem.title }}</h2>
+			<h2>
+				{{ t('zaakafhandelapp', 'Add role') }}:
+				{{ zaakStore.zaakItem.title }}
+			</h2>
 
 			<div v-if="success !== null || error">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ t('zaakafhandelapp', 'Role successfully added to case') }}</p>
+					<p>
+						{{ t('zaakafhandelapp', 'Role successfully added to case') }}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -18,17 +23,19 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcSelect v-bind="rollen"
+				<NcSelect
+					v-bind="rollen"
 					v-model="rollen.value"
-					:input-label="t('zaakafhandelapp', 'Role')"
+					:inputLabel="t('zaakafhandelapp', 'Role')"
 					:loading="rollenLoading"
 					:disabled="loading"
 					required />
 			</div>
 
-			<NcButton v-if="success === null"
+			<NcButton
+				v-if="success === null"
 				:disabled="!rollen?.value || loading"
-				type="primary"
+				variant="primary"
 				@click="addRolToZaak">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
@@ -41,11 +48,16 @@ import { zaakStore, navigationStore, rolStore } from '../../store/store.js'
 </template>
 
 <script>
-import { NcButton, NcModal, NcLoadingIcon, NcNoteCard, NcSelect } from '@nextcloud/vue'
-import { Rol } from '../../entities/index.js'
-
+import {
+	NcButton,
+	NcLoadingIcon,
+	NcModal,
+	NcNoteCard,
+	NcSelect,
+} from '@nextcloud/vue'
 import _ from 'lodash'
 import Plus from 'vue-material-design-icons/Plus.vue'
+import { Rol } from '../../entities/index.js'
 
 export default {
 	name: 'AddRolToZaak',
@@ -58,6 +70,7 @@ export default {
 		// Icons
 		Plus,
 	},
+
 	data() {
 		return {
 			rollenLoading: false,
@@ -69,9 +82,11 @@ export default {
 			hasUpdated: false,
 		}
 	},
+
 	mounted() {
 		this.fetchRollenData()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -79,13 +94,15 @@ export default {
 		closeModal() {
 			navigationStore.setModal(false)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchRollenData() {
 			this.rollenLoading = true
 
-			rolStore.refreshRollenList()
+			rolStore
+				.refreshRollenList()
 				.then(({ data }) => {
 					this.rollen = {
 						options: data
@@ -104,6 +121,7 @@ export default {
 					this.rollenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
@@ -111,7 +129,9 @@ export default {
 			this.loading = true
 			this.error = false
 
-			const rolItem = rolStore.rollenList.find((rol) => rol.id === this.rollen.value.id)
+			const rolItem = rolStore.rollenList.find(
+				(rol) => rol.id === this.rollen.value.id,
+			)
 			if (!rolItem) {
 				this.error = 'something went majorly wrong'
 				this.loading = false
@@ -124,7 +144,8 @@ export default {
 
 			const newRolItem = new Rol(rolItemCopy)
 
-			rolStore.saveRol(newRolItem)
+			rolStore
+				.saveRol(newRolItem)
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -133,7 +154,7 @@ export default {
 					/**
 					 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 					 */
-					setTimeout(function() {
+					setTimeout(function () {
 						self.success = null
 						self.closeModal()
 					}, 2000)

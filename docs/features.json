@@ -1,1 +1,129 @@
-[]
+[
+  {
+    "slug": "zgw-zaak-management",
+    "title": "ZGW case management",
+    "summary": "Handle cases the VNG GEMMA way, from intake to closure.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/zgw-zaak-management/spec.md",
+    "title_nl": "ZGW-zaakbeheer",
+    "summary_nl": "Behandel zaken volgens de VNG GEMMA-standaard, van intake tot afsluiting."
+  },
+  {
+    "slug": "zgw-related-resources",
+    "title": "ZGW API (ZRC, ZTC, DRC, BRC)",
+    "summary": "Other systems read and write your cases over the standard ZGW interfaces.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/zgw-related-resources/spec.md",
+    "title_nl": "ZGW-API (ZRC, ZTC, DRC, BRC)",
+    "summary_nl": "Andere systemen lezen en schrijven je zaken via de standaard ZGW-koppelvlakken."
+  },
+  {
+    "slug": "zgw-case-lifecycle",
+    "title": "Case lifecycle",
+    "summary": "Open, close and reopen a case with automatic end-status detection.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/zgw-case-lifecycle/spec.md",
+    "title_nl": "Zaaklevenscyclus",
+    "summary_nl": "Open, sluit en heropen een zaak, met automatische eindstatus-detectie."
+  },
+  {
+    "slug": "ui-client-views",
+    "title": "Customer contact",
+    "summary": "Record contact moments and messages per case against the right customer.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/ui-client-views/spec.md",
+    "title_nl": "Klantcontact",
+    "summary_nl": "Leg contactmomenten en berichten per zaak vast bij de juiste klant."
+  },
+  {
+    "slug": "klanten-addressbook-sync",
+    "title": "Customer contacts in Nextcloud",
+    "summary": "Link customers to your Nextcloud address book and keep vCards in sync.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/klanten-addressbook-sync/spec.md",
+    "title_nl": "Klantcontacten in Nextcloud",
+    "summary_nl": "Koppel klanten aan je Nextcloud-adresboek en houd vCards in sync."
+  },
+  {
+    "slug": "tasks-per-case",
+    "title": "Tasks per case",
+    "summary": "Assign tasks inside a case and track who handles what.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/ui-client-views/spec.md",
+    "title_nl": "Taken per zaak",
+    "summary_nl": "Wijs taken toe binnen een zaak en volg wie wat afhandelt."
+  },
+  {
+    "slug": "ui-dashboard-widgets",
+    "title": "Personal work queue",
+    "summary": "See your open cases and tasks straight on your Nextcloud dashboard.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/ui-dashboard-widgets/spec.md",
+    "title_nl": "Persoonlijke werkvoorraad",
+    "summary_nl": "Zie je open zaken en taken direct op je Nextcloud-dashboard."
+  },
+  {
+    "slug": "zgw-zaak-management-audit",
+    "title": "Audit trail",
+    "summary": "Read back per case who changed what and when.",
+    "status": "stable",
+    "docsUrl": "openspec/specs/zgw-zaak-management/spec.md",
+    "providedBy": "openregister",
+    "title_nl": "Auditlog",
+    "summary_nl": "Lees per zaak terug wie wat wanneer wijzigde."
+  },
+  {
+    "slug": "zaak-termijn-monitoring",
+    "title": "Term tracking (termijnbewaking)",
+    "summary": "Compute handling terms from the case type and see what is expiring.",
+    "status": "beta",
+    "docsUrl": "openspec/specs/zaak-termijn-monitoring/spec.md",
+    "title_nl": "Termijnbewaking",
+    "summary_nl": "Bereken behandeltermijnen uit het zaaktype en zie wat verloopt."
+  },
+  {
+    "slug": "suspension-and-extension",
+    "title": "Suspension and extension",
+    "summary": "Suspend a case or extend its term with recalculated dates.",
+    "status": "beta",
+    "docsUrl": "openspec/specs/zaak-termijn-monitoring/spec.md",
+    "title_nl": "Opschorting en verlenging",
+    "summary_nl": "Schort een zaak op of verleng de termijn met herberekende datums."
+  },
+  {
+    "slug": "document-management",
+    "title": "Document management",
+    "summary": "Link documents to a case through the DRC interface.",
+    "status": "beta",
+    "docsUrl": "openspec/specs/zgw-related-resources/spec.md",
+    "title_nl": "Documentbeheer",
+    "summary_nl": "Koppel documenten aan een zaak via het DRC-koppelvlak."
+  },
+  {
+    "slug": "archiving-dates",
+    "title": "Archiving dates",
+    "summary": "Compute archive dates when you close a case.",
+    "status": "beta",
+    "docsUrl": "openspec/specs/zgw-case-lifecycle/spec.md",
+    "title_nl": "Archiveringsdatums",
+    "summary_nl": "Bereken archiefdatums bij het afsluiten van een zaak."
+  },
+  {
+    "slug": "stuf-coupling",
+    "title": "StUF coupling",
+    "summary": "Exchange cases with existing midoffice systems over StUF.",
+    "status": "soon",
+    "docsUrl": "openspec/specs/stuf-coupling/spec.md",
+    "title_nl": "StUF-koppeling",
+    "summary_nl": "Wissel zaken uit met bestaande midoffice-systemen via StUF."
+  },
+  {
+    "slug": "base-register-lookups",
+    "title": "Base-register lookups (Haal Centraal, BRP)",
+    "summary": "Fetch person and organisation data from national registers.",
+    "status": "soon",
+    "docsUrl": "openspec/specs/base-register-lookups/spec.md",
+    "title_nl": "Basisregister-bevragingen (Haal Centraal, BRP)",
+    "summary_nl": "Haal persoons- en organisatiegegevens op uit landelijke registers."
+  }
+]

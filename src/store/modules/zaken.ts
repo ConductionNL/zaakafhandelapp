@@ -1,5 +1,8 @@
+import type { TZaak } from '../../entities/index.js'
+
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
-import { TZaak, Zaak } from '../../entities/index.js'
+import { Zaak } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/zrc/zaken'
@@ -13,12 +16,13 @@ type TOptions = {
 
 export const useZaakStore = defineStore('zaken', {
 	state: () => ({
-		zaakItem: null,
-		zakenList: [],
-		auditTrailItem: null,
+		zaakItem: null as Zaak | null,
+		zakenList: [] as Zaak[],
+		auditTrailItem: null as Record<string, unknown> | null,
 	}),
 	actions: {
 		/**
+		 * @param zaakItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZaakItem(zaakItem: Zaak | TZaak) {
@@ -26,15 +30,14 @@ export const useZaakStore = defineStore('zaken', {
 			console.info('Active zaak item set to ' + zaakItem)
 		},
 		/**
+		 * @param zakenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZakenList(zakenList: Zaak[] | TZaak[]) {
-			this.zakenList = zakenList.map(
-			    (zaakItem) => new Zaak(zaakItem),
-			)
+			this.zakenList = zakenList.map((zaakItem) => new Zaak(zaakItem))
 			console.info('Zaken list set to ' + zakenList.length + ' items')
 		},
-		setAuditTrailItem(auditTrailItem: unknown) {
+		setAuditTrailItem(auditTrailItem: Record<string, unknown>) {
 			this.auditTrailItem = auditTrailItem
 		},
 		/**
@@ -42,9 +45,11 @@ export const useZaakStore = defineStore('zaken', {
 		 *
 		 * @param search - Optional search query to filter the zaken list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaak[], entities: Zaak[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
-		async refreshZakenList(search: string = null): Promise<{ response: Response, data: TZaak[], entities: Zaak[] }> {
+		async refreshZakenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TZaak[]; entities: Zaak[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -75,12 +80,12 @@ export const useZaakStore = defineStore('zaken', {
 		 * @param id - The ID of the zaak item to fetch.
 		 * @param options - Options for fetching the zaak item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaak, entity: Zaak }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getZaak(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TZaak, entity: Zaak }> {
+		): Promise<{ response: Response; data: TZaak; entity: Zaak }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching zaak item with id: ' + id)
@@ -107,7 +112,7 @@ export const useZaakStore = defineStore('zaken', {
 		 * @param zaakItem - The zaak item to delete.
 		 * @throws If there is no zaak item to delete or if the zaak item does not have a uuid.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteZaak(zaakItem: Zaak | TZaak): Promise<{ response: Response }> {
 			if (!zaakItem) {
@@ -123,6 +128,9 @@ export const useZaakStore = defineStore('zaken', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -142,12 +150,12 @@ export const useZaakStore = defineStore('zaken', {
 		 * @param zaakItem - The zaak item to save.
 		 * @param options - Options for saving the zaak item. (default: `{ setZaakItem: true }`)
 		 * @throws If there is no zaak item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaak, entity: Zaak }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveZaak(
 			zaakItem: Zaak | TZaak,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TZaak, entity: Zaak }> {
+		): Promise<{ response: Response; data: TZaak; entity: Zaak }> {
 			if (!zaakItem) {
 				throw new Error('No zaak item to save')
 			}
@@ -160,23 +168,21 @@ export const useZaakStore = defineStore('zaken', {
 
 			console.info('Saving zaak item with id: ' + zaakItem.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(zaakItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(zaakItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TZaak
+			const data = (await response.json()) as TZaak
 			const entity = new Zaak(data)
 
 			options.setItem && this.setZaakItem(data)

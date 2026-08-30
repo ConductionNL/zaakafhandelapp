@@ -1,21 +1,35 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { zaakStore, navigationStore } from '../../store/store.js'
+import { navigationStore, zaakStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal label-id="View Zaak Audit Trail modal"
-		@close="closeDialog">
+	<NcModal labelId="View Zaak Audit Trail modal" @close="closeDialog">
 		<div class="modal__content">
 			<div class="audit-item">
 				<h3>Audit Trail ID: {{ auditTrail.id }}</h3>
 
 				<div class="audit-item-details">
-					<p><strong>{{ t('zaakafhandelapp', 'Action:') }}</strong> {{ auditTrail.action }}</p>
-					<p><strong>{{ t('zaakafhandelapp', 'User:') }}</strong> {{ auditTrail.userName }} ({{ auditTrail.user }})</p>
-					<p><strong>{{ t('zaakafhandelapp', 'Session:') }}</strong> {{ auditTrail.session }}</p>
-					<p><strong>{{ t('zaakafhandelapp', 'IP Address:') }}</strong> {{ auditTrail.ipAddress }}</p>
-					<p><strong>{{ t('zaakafhandelapp', 'Created:') }}</strong> {{ new Date(auditTrail.created).toLocaleString() }}</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'Action:') }}</strong>
+						{{ auditTrail.action }}
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'User:') }}</strong>
+						{{ auditTrail.userName }} ({{ auditTrail.user }})
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'Session:') }}</strong>
+						{{ auditTrail.session }}
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'IP Address:') }}</strong>
+						{{ auditTrail.ipAddress }}
+					</p>
+					<p>
+						<strong>{{ t('zaakafhandelapp', 'Created:') }}</strong>
+						{{ new Date(auditTrail.created).toLocaleString() }}
+					</p>
 				</div>
 
 				<div v-if="auditTrail.changed" class="audit-trail-changes">
@@ -24,14 +38,24 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 						<table class="audit-trail-table">
 							<thead>
 								<tr>
-									<th>{{ t('zaakafhandelapp', 'Field') }}</th>
-									<th>{{ t('zaakafhandelapp', 'Old value') }}</th>
-									<th>{{ t('zaakafhandelapp', 'New value') }}</th>
+									<th scope="col">
+										{{ t('zaakafhandelapp', 'Field') }}
+									</th>
+									<th scope="col">
+										{{ t('zaakafhandelapp', 'Old value') }}
+									</th>
+									<th scope="col">
+										{{ t('zaakafhandelapp', 'New value') }}
+									</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="(change, key) in auditTrail.changed" :key="key">
-									<td><strong>{{ key }}</strong></td>
+								<tr
+									v-for="(change, key) in auditTrail.changed"
+									:key="key">
+									<td>
+										<strong>{{ key }}</strong>
+									</td>
 									<td>{{ formatValue(change.old) }}</td>
 									<td>{{ formatValue(change.new) }}</td>
 								</tr>
@@ -52,11 +76,7 @@ import { zaakStore, navigationStore } from '../../store/store.js'
 </template>
 
 <script>
-import {
-	NcModal,
-	NcButton,
-} from '@nextcloud/vue'
-
+import { NcButton, NcModal } from '@nextcloud/vue'
 import Cancel from 'vue-material-design-icons/Cancel.vue'
 
 export default {
@@ -66,11 +86,13 @@ export default {
 		NcButton,
 		Cancel,
 	},
+
 	data() {
 		return {
 			auditTrail: {}, // Initialize with an empty object
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -78,6 +100,7 @@ export default {
 		// Assuming zaakStore.auditTrailItem is a single audit trail object
 		this.auditTrail = zaakStore.auditTrailItem || {}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
@@ -86,7 +109,9 @@ export default {
 			navigationStore.setModal(null)
 			zaakStore.setAuditTrailItem(null)
 		},
+
 		/**
+		 * @param value
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		formatValue(value) {
@@ -113,6 +138,7 @@ export default {
 	padding: 0 0 10px 0;
 	margin: 0 0 10px 0;
 }
+
 .audit-item > *:not(:last-child) {
 	margin-bottom: 1rem;
 }

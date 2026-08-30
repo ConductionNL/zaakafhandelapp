@@ -1,5 +1,8 @@
+import type { TRol } from '../../entities/index.js'
+
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
-import { TRol, Rol } from '../../entities/index.js'
+import { Rol } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/rollen'
@@ -17,10 +20,10 @@ type TOptions = {
 
 export const useRolStore = defineStore('rollen', {
 	state: () => ({
-		rolItem: null as Rol,
+		rolItem: null as Rol | null,
 		rollenList: [] as Rol[],
-		zaakId: null as string,
-		zaakUrl: null as string,
+		zaakId: null as string | null,
+		zaakUrl: null as string | null,
 		/**
 		 * Extra data to pass through the application.
 		 *
@@ -37,6 +40,7 @@ export const useRolStore = defineStore('rollen', {
 	}),
 	actions: {
 		/**
+		 * @param rolItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setRolItem(rolItem: Rol | TRol) {
@@ -44,12 +48,11 @@ export const useRolStore = defineStore('rollen', {
 			console.info('Active rol item set to ' + rolItem)
 		},
 		/**
+		 * @param rollenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setRollenList(rollenList: Rol[] | TRol[]) {
-			this.rollenList = rollenList.map(
-			    (rolItem) => new Rol(rolItem),
-			)
+			this.rollenList = rollenList.map((rolItem) => new Rol(rolItem))
 			console.info('Rollen list set to ' + rollenList.length + ' items')
 		},
 		setZaakId(zaakId: string) {
@@ -60,9 +63,11 @@ export const useRolStore = defineStore('rollen', {
 		 *
 		 * @param search - Optional search query to filter the rollen list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TRol[], entities: Rol[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
-		async refreshRollenList(search: string = null): Promise<{ response: Response, data: TRol[], entities: Rol[] }> {
+		async refreshRollenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TRol[]; entities: Rol[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -93,12 +98,12 @@ export const useRolStore = defineStore('rollen', {
 		 * @param id - The ID of the rol item to fetch.
 		 * @param options - Options for fetching the rol item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TRol, entity: Rol }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getRol(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TRol, entity: Rol }> {
+		): Promise<{ response: Response; data: TRol; entity: Rol }> {
 			const endpoint = `${apiEndpoint}/${id}`
 
 			console.info('Fetching rol item with id: ' + id)
@@ -125,7 +130,7 @@ export const useRolStore = defineStore('rollen', {
 		 * @param rolId - The id of the rol item to delete.
 		 * @throws If there is no rol item to delete or if the rol item does not have an id.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteRol(rolId: string): Promise<{ response: Response }> {
 			if (!rolId) {
@@ -138,6 +143,9 @@ export const useRolStore = defineStore('rollen', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -157,12 +165,12 @@ export const useRolStore = defineStore('rollen', {
 		 * @param rolItem - The rol item to save.
 		 * @param options - Options for saving the rol item. (default: `{ setItem: true }`)
 		 * @throws If there is no rol item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TRol, entity: Rol }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveRol(
 			rolItem: Rol | TRol,
 			options: TOptions = { setItem: true, redirect: true },
-		): Promise<{ response: Response, data: TRol, entity: Rol }> {
+		): Promise<{ response: Response; data: TRol; entity: Rol }> {
 			if (!rolItem) {
 				throw new Error('No rol item to save')
 			}
@@ -178,28 +186,27 @@ export const useRolStore = defineStore('rollen', {
 
 			console.info('Saving rol item with id: ' + rolItem.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(rolItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(rolItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TRol
+			const data = (await response.json()) as TRol
 			const entity = new Rol(data)
 
 			options.setItem && this.setRolItem(data)
 			this.refreshRollenList()
-			if (options.redirect) router.push({ name: 'RolDetail', params: { id: entity.id } })
+			if (options.redirect)
+				router.push({ name: 'RolDetail', params: { id: entity.id } })
 
 			return { response, data, entity }
 		},

@@ -43,15 +43,26 @@ response with HTTP 500 on failure.
 - **WHEN** an admin reads settings and OpenRegister is installed
 - **THEN** the system returns the available registers and object-type settings
 
-### REQ-003: Serve dashboard data
+### REQ-003: Serve the dashboard page shell
 
-The system SHALL provide the dashboard endpoints (page render plus list/read/
-create/update/delete of dashboard objects) returning JSON.
+The system SHALL render the SPA page shell for the dashboard and search routes.
+
+This requirement previously also demanded `list/read/create/update/delete of
+dashboard objects` over `api/dashboard`. Those five endpoints never read or
+wrote any data: they returned a hardcoded four-row demo constant, they had no
+caller anywhere in `src/`, and — being `@NoAdminRequired` with a caller-supplied
+id — three of them were counted by gate-7 as unguarded direct object
+references. The requirement described stub scaffolding rather than intended
+behaviour, so the endpoints and this half of the requirement are both removed.
+Dashboard *content* is supplied by the manifest widgets specified in
+`openspec/specs/ui-dashboard-widgets/spec.md`, which read real objects through
+`ObjectService`.
 
 #### Scenario: Loading the dashboard
 
-- **WHEN** a client requests the dashboard index
-- **THEN** the system returns the dashboard result set as JSON
+- **WHEN** a client requests the dashboard route
+- **THEN** the system returns the SPA page shell, into which the manifest
+  dashboard widgets mount
 
 ### REQ-004: Return the current user profile
 

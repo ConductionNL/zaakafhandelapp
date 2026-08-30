@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
 import { Taak } from '../../entities/index.js'
 import router from '../../router/index.js'
@@ -15,6 +16,7 @@ export const useTaakStore = defineStore('taken', {
 	}),
 	actions: {
 		/**
+		 * @param taakItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setTaakItem(taakItem) {
@@ -22,15 +24,15 @@ export const useTaakStore = defineStore('taken', {
 			console.log('Active taak item set to ' + taakItem)
 		},
 		/**
+		 * @param takenList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setTakenList(takenList) {
-			this.takenList = takenList.map(
-				(taakItem) => new Taak(taakItem),
-			)
+			this.takenList = takenList.map((taakItem) => new Taak(taakItem))
 			console.log('Taken list set to ' + takenList.length + ' items')
 		},
 		/**
+		 * @param taakZaakId
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setTaakZaakId(taakZaakId) {
@@ -41,6 +43,7 @@ export const useTaakStore = defineStore('taken', {
 			this.auditTrailItem = auditTrailItem
 		},
 		/**
+		 * @param widgetTaakId
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setWidgetTaakId(widgetTaakId) {
@@ -49,6 +52,9 @@ export const useTaakStore = defineStore('taken', {
 		},
 		/* istanbul ignore next */ // ignore this for Jest until moved into a service
 		/**
+		 * @param search
+		 * @param notClosed
+		 * @param user
 		 * @spec openspec/specs/state-stores/spec.md#REQ-002
 		 */
 		async refreshTakenList(search = null, notClosed = false, user = null) {
@@ -87,6 +93,7 @@ export const useTaakStore = defineStore('taken', {
 		},
 		// Function to get a single taak
 		/**
+		 * @param id
 		 * @spec openspec/specs/state-stores/spec.md#REQ-003
 		 */
 		async getTaak(id) {
@@ -110,6 +117,7 @@ export const useTaakStore = defineStore('taken', {
 		},
 		// Delete a taak
 		/**
+		 * @param taakItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async deleteTaak(taakItem) {
@@ -121,6 +129,9 @@ export const useTaakStore = defineStore('taken', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			if (!response.ok) {
@@ -136,6 +147,8 @@ export const useTaakStore = defineStore('taken', {
 		},
 		// Create or save a taak from store
 		/**
+		 * @param taakItem
+		 * @param options
 		 * @spec openspec/specs/state-stores/spec.md#REQ-004
 		 */
 		async saveTaak(taakItem, options = { redirect: true }) {
@@ -149,16 +162,14 @@ export const useTaakStore = defineStore('taken', {
 				: `${apiEndpoint}/${taakItem.id}`
 			const method = isNewTaak ? 'POST' : 'PUT'
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(taakItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(taakItem),
+			})
 
 			if (!response.ok) {
 				console.log(response)

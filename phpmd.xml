@@ -1,107 +1,32 @@
 <?xml version="1.0"?>
-<ruleset name="ZaakafhandelApp Nextcloud Rules"
+<ruleset name="zaakafhandelapp"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
-                        http://pmd.sourceforge.net/ruleset_xml_schema.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_xml_schema.xsd">
+    <description>zaakafhandelapp — Conduction PHPMD ruleset (single source: conduction/hydra-gates).</description>
 
-    <description>
-        This is a custom ruleset for ZaakafhandelApp Nextcloud.
-    </description>
+    <!-- No deviations. The two things this app's old ruleset carried on top of
+         the central one were both INERT, and dropping them changes nothing:
 
-    <!-- Clean Code Rules -->
-    <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag"/>
-    <rule ref="rulesets/cleancode.xml/ElseExpression"/>
-    <!-- StaticAccess: OCP\Util::addScript/addStyle is Nextcloud convention in Dashboard widgets;
-         suppress for the Dashboard directory (NC-standard pattern, not an architecture smell). -->
-    <rule ref="rulesets/cleancode.xml/StaticAccess">
-        <exclude-pattern>*/Dashboard/*</exclude-pattern>
-    </rule>
-    <rule ref="rulesets/cleancode.xml/IfStatementAssignment"/>
-    <rule ref="rulesets/cleancode.xml/DuplicatedArrayKey"/>
-    <rule ref="rulesets/cleancode.xml/MissingImport"/>
-    <rule ref="rulesets/cleancode.xml/UndefinedVariable"/>
-    <rule ref="rulesets/cleancode.xml/ErrorControlOperator"/>
+         1. Four code-size rules (CyclomaticComplexity, NPathComplexity,
+            ExcessiveMethodLength, ExcessiveClassLength) were declared a SECOND
+            time with looser thresholds as "legacy debt" for
+            ConductionNL/zaakafhandelapp#201. PHPMD's RuleSet::addRule() APPENDS
+            - it does not replace by name - so the strict declarations stayed
+            active and the loose ones ran alongside them. They could never relax
+            anything; the effective floor was always the strict threshold.
+            Measured: 47 rules resolved, 0 findings, exit 0 - identical to the
+            43 rules resolved here.
 
-    <!-- Code Size Rules -->
-    <rule ref="rulesets/codesize.xml/CyclomaticComplexity"/>
-    <rule ref="rulesets/codesize.xml/NPathComplexity"/>
-    <rule ref="rulesets/codesize.xml/ExcessiveMethodLength"/>
-    <rule ref="rulesets/codesize.xml/ExcessiveClassLength"/>
-    <rule ref="rulesets/codesize.xml/ExcessiveParameterList"/>
-    <rule ref="rulesets/codesize.xml/ExcessivePublicCount"/>
-    <rule ref="rulesets/codesize.xml/TooManyFields"/>
-    <rule ref="rulesets/codesize.xml/TooManyMethods"/>
-    <rule ref="rulesets/codesize.xml/TooManyPublicMethods"/>
-    <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity"/>
+         2. StaticAccess carried a NESTED
+            <exclude-pattern>*/Dashboard/*</exclude-pattern>. PHPMD reads
+            exclude-patterns only as direct children of <ruleset> and silently
+            discards nested ones (ConductionNL/.github#155), so it suppressed
+            nothing - confirmed by resolving the rule set: that StaticAccess
+            instance carried no exceptions and the run's only effective
+            ignore-pattern came from phpmd-unusedparams.xml.
 
-    <!-- Controversial Rules -->
-    <rule ref="rulesets/controversial.xml/Superglobals"/>
-    <rule ref="rulesets/controversial.xml/CamelCaseClassName"/>
-    <rule ref="rulesets/controversial.xml/CamelCasePropertyName"/>
-    <rule ref="rulesets/controversial.xml/CamelCaseMethodName"/>
-    <!-- CamelCaseParameterName removed - we allow leading underscores on parameters (convention for unused/config params) -->
-    <!-- <rule ref="rulesets/controversial.xml/CamelCaseParameterName"/> -->
-    <!-- CamelCaseVariableName removed - we allow leading underscores on variables (convention for unused loop vars) -->
-    <!-- <rule ref="rulesets/controversial.xml/CamelCaseVariableName"/> -->
-
-    <!-- Design Rules -->
-    <rule ref="rulesets/design.xml/ExitExpression"/>
-    <rule ref="rulesets/design.xml/EvalExpression"/>
-    <rule ref="rulesets/design.xml/GotoStatement"/>
-    <rule ref="rulesets/design.xml/NumberOfChildren"/>
-    <rule ref="rulesets/design.xml/DepthOfInheritance"/>
-    <rule ref="rulesets/design.xml/CouplingBetweenObjects"/>
-    <rule ref="rulesets/design.xml/DevelopmentCodeFragment"/>
-    <rule ref="rulesets/design.xml/EmptyCatchBlock"/>
-    <rule ref="rulesets/design.xml/CountInLoopExpression"/>
-
-    <!-- Naming Rules -->
-    <rule ref="rulesets/naming.xml/LongClassName"/>
-    <rule ref="rulesets/naming.xml/ShortClassName"/>
-    <!-- ShortVariable configured with allowlist of idiomatic short names -->
-    <rule ref="rulesets/naming.xml/ShortVariable">
-        <properties>
-            <property name="minimum" value="3" />
-            <property name="exceptions" value="id,db,qb,op,ui,io,gc,tz,pk,fk,to,ch,a,b,l,v,c,t,r,f,n,k,e" />
-        </properties>
-    </rule>
-    <rule ref="rulesets/naming.xml/LongVariable"/>
-    <rule ref="rulesets/naming.xml/ShortMethodName"/>
-    <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass"/>
-    <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
-    <rule ref="rulesets/naming.xml/BooleanGetMethodName"/>
-
-    <!-- Unused Code Rules -->
-    <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
-    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
-    <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod"/>
-    <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
-        <exclude-pattern>*Migration*</exclude-pattern>
-    </rule>
-
-    <!-- LEGACY DEBT (tracked in ConductionNL/zaakafhandelapp#201): this app pre-dates the
-         tightened Conduction PHPMD code-size thresholds. The relaxations below match the
-         pre-canonical-sync ruleset so CI doesn't go red across the existing legacy code.
-         Promote these back to canonical defaults after #201 closes per-area. -->
-    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
-        <properties>
-            <property name="reportLevel" value="15"/>
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml/NPathComplexity">
-        <properties>
-            <property name="minimum" value="5000"/>
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
-        <properties>
-            <property name="minimum" value="200"/>
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
-        <properties>
-            <property name="minimum" value="1500"/>
-        </properties>
-    </rule>
+         Neither was paid off or re-expressed here: there was no live relaxation
+         to preserve. #201 remains open against the underlying code. -->
+    <rule ref="vendor/conduction/hydra-gates/quality-config/phpmd.xml"/>
 </ruleset>

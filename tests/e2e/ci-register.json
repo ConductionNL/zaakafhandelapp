@@ -1,0 +1,1191 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Zaakafhandelapp Register",
+    "description": "OpenRegister register + schemas backing the zaakafhandelapp manifest-v2 UI. Imported by tests/e2e/ci-seed.sh for the shared E2E Tests (Playwright) job.",
+    "version": "0.0.5"
+  },
+  "x-openregister": {
+    "type": "register",
+    "app": "zaakafhandelapp"
+  },
+  "components": {
+    "registers": {
+      "zaakafhandelapp": {
+        "slug": "zaakafhandelapp",
+        "title": "Zaakafhandelapp Register",
+        "version": "0.0.5",
+        "description": "Register backing zaakafhandelapp",
+        "schemas": [
+          "zaak",
+          "taak",
+          "klant",
+          "status",
+          "zaaktype",
+          "medewerker",
+          "bericht",
+          "besluit",
+          "resultaat",
+          "rol",
+          "contactmoment",
+          "document"
+        ],
+        "source": "internal",
+        "tablePrefix": "",
+        "groups": [],
+        "configuration": [],
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      }
+    },
+    "schemas": {
+      "zaak": {
+        "slug": "zaak",
+        "title": "Zaak",
+        "description": "E2E case schema",
+        "version": "0.0.66",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "identificatie": {
+            "type": "string",
+            "title": "identificatie"
+          },
+          "omschrijving": {
+            "type": "string",
+            "title": "omschrijving"
+          },
+          "zaaktype": {
+            "type": "string",
+            "title": "zaaktype"
+          },
+          "status": {
+            "type": "string",
+            "title": "status"
+          },
+          "uiterlijkeEinddatumAfdoening": {
+            "type": "string",
+            "title": "uiterlijkeEinddatumAfdoening"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectDescriptionField": "omschrijving"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": {
+            "status": {
+              "type": "terms"
+            }
+          }
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "taak": {
+        "slug": "taak",
+        "title": "taak",
+        "description": "E2E task schema",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "title"
+          },
+          "status": {
+            "type": "string",
+            "title": "status"
+          },
+          "priority": {
+            "type": "string",
+            "title": "priority"
+          },
+          "dueDate": {
+            "type": "string",
+            "title": "dueDate"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "title"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": {
+            "status": {
+              "type": "terms"
+            },
+            "priority": {
+              "type": "terms"
+            },
+            "dueDate": {
+              "type": "date_histogram",
+              "interval": "month"
+            }
+          }
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "klant": {
+        "slug": "klant",
+        "title": "Klant",
+        "description": "Klantgegevens (personen en organisaties)",
+        "version": "0.0.2",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "naam": {
+            "type": "string",
+            "title": "naam"
+          },
+          "email": {
+            "type": "string",
+            "title": "email"
+          },
+          "telefoon": {
+            "type": "string",
+            "title": "telefoon"
+          },
+          "type": {
+            "type": "string",
+            "title": "type"
+          },
+          "subjectType": {
+            "type": "string",
+            "title": "subjectType"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "naam"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": {
+            "type": {
+              "type": "terms"
+            }
+          }
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "status": {
+        "slug": "status",
+        "title": "status",
+        "description": "E2E status schema",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "statustype": {
+            "type": "string",
+            "title": "statustype"
+          },
+          "datum": {
+            "type": "string",
+            "title": "datum"
+          },
+          "statustoelichting": {
+            "type": "string",
+            "title": "statustoelichting"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": null,
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "zaaktype": {
+        "slug": "zaaktype",
+        "title": "Zaaktype",
+        "description": null,
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "identificatie": {
+            "type": "string",
+            "title": "identificatie"
+          },
+          "omschrijving": {
+            "type": "string",
+            "title": "omschrijving"
+          },
+          "vertrouwelijkheidaanduiding": {
+            "type": "string",
+            "title": "vertrouwelijkheidaanduiding"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": false,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectDescriptionField": "omschrijving"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "medewerker": {
+        "slug": "medewerker",
+        "title": "Medewerker",
+        "description": "Medewerkers van de gemeente",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "naam": {
+            "type": "string",
+            "title": "naam"
+          },
+          "email": {
+            "type": "string",
+            "title": "email"
+          },
+          "afdeling": {
+            "type": "string",
+            "title": "afdeling"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "naam"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "bericht": {
+        "slug": "bericht",
+        "title": "Bericht",
+        "description": "Provisioned live in OR register 239 (zaakafhandelapp) — no register JSON yet.",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "title"
+          },
+          "batchID": {
+            "type": "string",
+            "title": "batchID"
+          },
+          "aanmaakDatum": {
+            "type": "string",
+            "title": "aanmaakDatum",
+            "format": "date-time"
+          },
+          "berichtLeverancierID": {
+            "type": "string",
+            "title": "berichtLeverancierID"
+          },
+          "berichtID": {
+            "type": "string",
+            "title": "berichtID"
+          },
+          "berichtType": {
+            "type": "string",
+            "title": "berichtType"
+          },
+          "publicatieDatum": {
+            "type": "string",
+            "title": "publicatieDatum",
+            "format": "date-time"
+          },
+          "onderwerp": {
+            "type": "string",
+            "title": "onderwerp"
+          },
+          "berichttekst": {
+            "type": "string",
+            "title": "berichttekst"
+          },
+          "referentie": {
+            "type": "string",
+            "title": "referentie"
+          },
+          "gebruikerID": {
+            "type": "string",
+            "title": "gebruikerID"
+          },
+          "soortGebruiker": {
+            "type": "string",
+            "title": "soortGebruiker"
+          },
+          "inhoud": {
+            "type": "string",
+            "title": "inhoud"
+          },
+          "bijlageType": {
+            "type": "string",
+            "title": "bijlageType"
+          },
+          "omschrijving": {
+            "type": "string",
+            "title": "omschrijving"
+          },
+          "volgorde": {
+            "type": "string",
+            "title": "volgorde"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "onderwerp",
+          "objectDescriptionField": "omschrijving"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "besluit": {
+        "slug": "besluit",
+        "title": "Besluit",
+        "description": "Provisioned live in OR register 239 (zaakafhandelapp) — no register JSON yet.",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [
+          "zaak"
+        ],
+        "properties": {
+          "besluit": {
+            "type": "string",
+            "title": "besluit"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          },
+          "url": {
+            "type": "string",
+            "title": "url"
+          },
+          "besluittype": {
+            "type": "string",
+            "title": "besluittype"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "besluit"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "resultaat": {
+        "slug": "resultaat",
+        "title": "Resultaat",
+        "description": "Provisioned live in OR register 239 (zaakafhandelapp) — no register JSON yet.",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "resultaattype": {
+            "type": "string",
+            "title": "resultaattype"
+          },
+          "toelichting": {
+            "type": "string",
+            "title": "toelichting"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "resultaattype"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "rol": {
+        "slug": "rol",
+        "title": "Rol",
+        "description": "Provisioned live in OR register 239 (zaakafhandelapp) — no register JSON yet.",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [
+          "zaak",
+          "roltype",
+          "betrokkeneType",
+          "omschrijvingGeneriek"
+        ],
+        "properties": {
+          "betrokkene": {
+            "type": "string",
+            "title": "betrokkene"
+          },
+          "betrokkeneType": {
+            "type": "string",
+            "title": "betrokkeneType",
+            "enum": [
+              "natuurlijk_persoon",
+              "niet_natuurlijk_persoon",
+              "vestiging",
+              "organisatorische_eenheid",
+              "medewerker"
+            ]
+          },
+          "afwijkendeNaamBetrokkene": {
+            "type": "string",
+            "title": "afwijkendeNaamBetrokkene"
+          },
+          "roltype": {
+            "type": "string",
+            "title": "roltype"
+          },
+          "omschrijving": {
+            "type": "string",
+            "title": "omschrijving"
+          },
+          "omschrijvingGeneriek": {
+            "type": "string",
+            "title": "omschrijvingGeneriek",
+            "enum": [
+              "adviseur",
+              "behandelaar",
+              "belanghebbende",
+              "beslisser",
+              "initiator",
+              "klantcontacter",
+              "zaakcoordinator",
+              "mede_initiator"
+            ]
+          },
+          "roltoelichting": {
+            "type": "string",
+            "title": "roltoelichting"
+          },
+          "registratiedatum": {
+            "type": "string",
+            "title": "registratiedatum",
+            "format": "date-time"
+          },
+          "indicatieMachtiging": {
+            "type": "string",
+            "title": "indicatieMachtiging",
+            "enum": [
+              "gemachtigde",
+              "machtiginggever",
+              ""
+            ]
+          },
+          "contactpersoonRol": {
+            "type": "object",
+            "title": "contactpersoonRol",
+            "properties": {
+              "emailadres": {
+                "type": "string",
+                "title": "emailadres"
+              },
+              "functie": {
+                "type": "string",
+                "title": "functie"
+              },
+              "telefoonnummer": {
+                "type": "string",
+                "title": "telefoonnummer"
+              },
+              "naam": {
+                "type": "string",
+                "title": "naam"
+              }
+            }
+          },
+          "statussen": {
+            "type": "array",
+            "title": "statussen",
+            "items": {
+              "type": "string"
+            }
+          },
+          "betrokkeneIdentificatie": {
+            "type": "object",
+            "title": "betrokkeneIdentificatie",
+            "properties": {
+              "identificatie": {
+                "type": "string",
+                "title": "identificatie"
+              },
+              "achternaam": {
+                "type": "string",
+                "title": "achternaam"
+              },
+              "voorletters": {
+                "type": "string",
+                "title": "voorletters"
+              },
+              "voorvoegselAchternaam": {
+                "type": "string",
+                "title": "voorvoegselAchternaam"
+              }
+            }
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": {
+          "objectNameField": "roltype",
+          "objectDescriptionField": "omschrijving"
+        },
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": {
+            "betrokkeneType": {
+              "type": "terms"
+            },
+            "omschrijvingGeneriek": {
+              "type": "terms"
+            },
+            "indicatieMachtiging": {
+              "type": "terms"
+            }
+          }
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "contactmoment": {
+        "slug": "contactmoment",
+        "title": "Contactmoment",
+        "description": "Contact moment (interaction log) — schema declared by the zaakafhandelapp manifest.",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "onderwerp": {
+            "type": "string",
+            "title": "onderwerp"
+          },
+          "kanaal": {
+            "type": "string",
+            "title": "kanaal"
+          },
+          "datum": {
+            "type": "string",
+            "title": "datum"
+          },
+          "startDate": {
+            "type": "string",
+            "title": "startDate"
+          },
+          "notitie": {
+            "type": "string",
+            "title": "notitie"
+          },
+          "status": {
+            "type": "string",
+            "title": "status"
+          },
+          "klant": {
+            "type": "string",
+            "title": "klant",
+            "format": "uuid",
+            "$ref": "klant"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          },
+          "taak": {
+            "type": "string",
+            "title": "taak",
+            "format": "uuid",
+            "$ref": "taak"
+          },
+          "medewerker": {
+            "type": "string",
+            "title": "medewerker",
+            "format": "uuid",
+            "$ref": "medewerker"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": null,
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      },
+      "document": {
+        "slug": "document",
+        "title": "Document",
+        "description": "Document (ZGW enkelvoudig informatieobject) — schema declared by the zaakafhandelapp manifest.",
+        "version": "0.0.1",
+        "summary": null,
+        "icon": null,
+        "required": [],
+        "properties": {
+          "titel": {
+            "type": "string",
+            "title": "titel"
+          },
+          "type": {
+            "type": "string",
+            "title": "type"
+          },
+          "datum": {
+            "type": "string",
+            "title": "datum"
+          },
+          "creatiedatum": {
+            "type": "string",
+            "title": "creatiedatum"
+          },
+          "auteur": {
+            "type": "string",
+            "title": "auteur"
+          },
+          "status": {
+            "type": "string",
+            "title": "status"
+          },
+          "vertrouwelijkheidaanduiding": {
+            "type": "string",
+            "title": "vertrouwelijkheidaanduiding"
+          },
+          "versie": {
+            "type": "string",
+            "title": "versie"
+          },
+          "informatieobjecttype": {
+            "type": "string",
+            "title": "informatieobjecttype"
+          },
+          "zaak": {
+            "type": "string",
+            "title": "zaak",
+            "format": "uuid",
+            "$ref": "zaak"
+          }
+        },
+        "archive": [],
+        "source": "internal",
+        "hardValidation": true,
+        "immutable": false,
+        "appendOnly": false,
+        "searchable": true,
+        "maxDepth": 0,
+        "configuration": null,
+        "allOf": null,
+        "oneOf": null,
+        "anyOf": null,
+        "facets": {
+          "@self": {
+            "register": {
+              "type": "terms"
+            },
+            "schema": {
+              "type": "terms"
+            },
+            "created": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "updated": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "published": {
+              "type": "date_histogram",
+              "interval": "month"
+            },
+            "owner": {
+              "type": "terms"
+            }
+          },
+          "object_fields": []
+        },
+        "hooks": null,
+        "_mail": null,
+        "_contacts": null,
+        "_notes": null,
+        "_todos": null,
+        "_calendar": null,
+        "_talk": null,
+        "_deck": null
+      }
+    }
+  }
+}

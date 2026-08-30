@@ -1,5 +1,8 @@
+import type { TZaakType } from '../../entities/index.js'
+
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
-import { TZaakType, ZaakType } from '../../entities/index.js'
+import { ZaakType } from '../../entities/index.js'
 import router from '../../router/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/ztc/zaaktypen'
@@ -13,11 +16,12 @@ type TOptions = {
 
 export const useZaakTypeStore = defineStore('zaakTypen', {
 	state: () => ({
-		zaakTypeItem: null,
-		zaakTypeList: [],
+		zaakTypeItem: null as ZaakType | null,
+		zaakTypeList: [] as ZaakType[],
 	}),
 	actions: {
 		/**
+		 * @param zaakTypeItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZaakTypeItem(zaakTypeItem: ZaakType | TZaakType) {
@@ -25,11 +29,12 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 			console.info('Active zaaktype item set to ' + zaakTypeItem)
 		},
 		/**
+		 * @param zaakTypeList
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setZaakTypeList(zaakTypeList: ZaakType[] | TZaakType[]) {
 			this.zaakTypeList = zaakTypeList.map(
-			    (zaakTypeItem) => new ZaakType(zaakTypeItem),
+				(zaakTypeItem) => new ZaakType(zaakTypeItem),
 			)
 			console.info('Zaaktypen list set to ' + zaakTypeList.length + ' items')
 		},
@@ -38,9 +43,11 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 		 *
 		 * @param search - Optional search query to filter the zaaktypen list. (default: `null`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaakType[], entities: ZaakType[] }>} The response, raw data, and entities.
+		 * @return The response, raw data, and entities.
 		 */
-		async refreshZaakTypenList(search: string = null): Promise<{ response: Response, data: TZaakType[], entities: ZaakType[] }> {
+		async refreshZaakTypenList(
+			search: string = null,
+		): Promise<{ response: Response; data: TZaakType[]; entities: ZaakType[] }> {
 			let endpoint = apiEndpoint
 
 			if (search !== null && search !== '') {
@@ -59,7 +66,9 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 			}
 
 			const data = (await response.json()).results as TZaakType[]
-			const entities = data.map((zaakTypeItem: TZaakType) => new ZaakType(zaakTypeItem))
+			const entities = data.map(
+				(zaakTypeItem: TZaakType) => new ZaakType(zaakTypeItem),
+			)
 
 			this.setZaakTypeList(data)
 
@@ -71,12 +80,12 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 		 * @param id - The ID of the zaaktype item to fetch.
 		 * @param options - Options for fetching the zaaktype item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaakType, entity: ZaakType }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getZaakType(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TZaakType, entity: ZaakType }> {
+		): Promise<{ response: Response; data: TZaakType; entity: ZaakType }> {
 			if (!id || typeof id !== 'string' || id.trim() === '') {
 				throw new Error('Invalid or missing id for fetching zaaktype item')
 			}
@@ -107,9 +116,11 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 		 * @param zaakTypeItem - The zaaktype item to delete.
 		 * @throws If there is no zaaktype item to delete or if the zaaktype item does not have an id.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
-		async deleteZaakType(zaakTypeItem: ZaakType | TZaakType): Promise<{ response: Response }> {
+		async deleteZaakType(
+			zaakTypeItem: ZaakType | TZaakType,
+		): Promise<{ response: Response }> {
 			if (!zaakTypeItem) {
 				throw new Error('No zaaktype item to delete')
 			}
@@ -123,6 +134,9 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			this.setZaakTypeItem(null)
@@ -138,12 +152,12 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 		 * @param zaakTypeItem - The zaaktype item to save.
 		 * @param options - Options for saving the zaaktype item. (default: `{ setItem: true }`)
 		 * @throws If there is no zaaktype item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TZaakType, entity: ZaakType }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveZaakType(
 			zaakTypeItem: ZaakType | TZaakType,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TZaakType, entity: ZaakType }> {
+		): Promise<{ response: Response; data: TZaakType; entity: ZaakType }> {
 			if (!zaakTypeItem) {
 				throw new Error('No zaaktype item to save')
 			}
@@ -156,23 +170,21 @@ export const useZaakTypeStore = defineStore('zaakTypen', {
 
 			console.info('Saving zaaktype item with id: ' + zaakTypeItem.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(zaakTypeItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(zaakTypeItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
 
-			const data = await response.json() as TZaakType
+			const data = (await response.json()) as TZaakType
 			const entity = new ZaakType(data)
 
 			options.setItem && this.setZaakTypeItem(data)

@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
-import { useBesluitStore } from './besluiten.js'
+import { createPinia, setActivePinia } from 'pinia'
 import { Besluit, mockBesluit } from '../../entities/index.js'
+import { useBesluitStore } from './besluiten.js'
 
 describe('Besluit Store', () => {
 	beforeEach(() => {

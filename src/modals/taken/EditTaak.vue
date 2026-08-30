@@ -1,6 +1,11 @@
 <script setup>
 import { translate as t } from '@nextcloud/l10n'
-import { taakStore, navigationStore, klantStore, contactMomentStore } from '../../store/store.js'
+import {
+	contactMomentStore,
+	klantStore,
+	navigationStore,
+	taakStore,
+} from '../../store/store.js'
 </script>
 
 <template>
@@ -9,7 +14,13 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 		size="normal"
 		@closing="closeModalFromButton()">
 		<NcNoteCard v-if="success" type="success">
-			<p>{{ taakItem.id ? t('zaakafhandelapp', 'Task successfully updated') : t('zaakafhandelapp', 'Task successfully created') }}</p>
+			<p>
+				{{
+					taakItem.id
+						? t('zaakafhandelapp', 'Task successfully updated')
+						: t('zaakafhandelapp', 'Task successfully created')
+				}}
+			</p>
 		</NcNoteCard>
 		<NcNoteCard v-if="error" type="error">
 			<p>{{ error }}</p>
@@ -17,15 +28,16 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 
 		<div v-if="!success" class="form-group">
 			<NcTextField
+				v-model="taakItem.title"
 				:disabled="loading"
-				:value.sync="taakItem.title"
 				required
 				:label="t('zaakafhandelapp', 'Title')"
 				maxlength="255" />
 
-			<NcSelect v-bind="taakType"
+			<NcSelect
+				v-bind="taakType"
 				v-model="taakType.value"
-				:input-label="t('zaakafhandelapp', 'Type')"
+				:inputLabel="t('zaakafhandelapp', 'Type')"
 				:clearable="false"
 				:loading="klantenLoading"
 				:disabled="loading" />
@@ -39,35 +51,48 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 			</div>
 
 			<NcTextField
+				v-model="taakItem.onderwerp"
 				:disabled="loading"
-				:value.sync="taakItem.onderwerp"
 				:label="t('zaakafhandelapp', 'Subject')"
 				maxlength="255" />
 
 			<NcTextArea
+				v-model="taakItem.toelichting"
 				:disabled="loading"
-				:value.sync="taakItem.toelichting"
 				:label="t('zaakafhandelapp', 'Explanation')" />
 
 			<div>
-				<NcCheckboxRadioSwitch v-if="clientType === 'both'"
-					:checked.sync="useMedewerkerInsteadOfKlant"
+				<NcCheckboxRadioSwitch
+					v-if="clientType === 'both'"
+					v-model="useMedewerkerInsteadOfKlant"
 					type="switch">
 					{{ t('zaakafhandelapp', 'Customer / employee') }}
 				</NcCheckboxRadioSwitch>
 
 				<div>
-					<NcSelect v-if="(clientType !== 'medewerker' && (clientType !== 'both' || clientType === 'both' && !useMedewerkerInsteadOfKlant))"
+					<NcSelect
+						v-if="
+							clientType !== 'medewerker'
+							&& (clientType !== 'both'
+								|| (clientType === 'both'
+									&& !useMedewerkerInsteadOfKlant))
+						"
 						v-bind="klanten"
 						v-model="klanten.value"
-						:input-label="t('zaakafhandelapp', 'Customer*')"
+						:inputLabel="t('zaakafhandelapp', 'Customer*')"
 						:loading="klantenLoading"
 						:disabled="loading" />
 
-					<NcSelect v-if="(clientType !== 'klant' && (clientType !== 'both' || clientType === 'both' && useMedewerkerInsteadOfKlant))"
+					<NcSelect
+						v-if="
+							clientType !== 'klant'
+							&& (clientType !== 'both'
+								|| (clientType === 'both'
+									&& useMedewerkerInsteadOfKlant))
+						"
 						v-bind="medewerkers"
 						v-model="medewerkers.value"
-						:input-label="t('zaakafhandelapp', 'Employee*')"
+						:inputLabel="t('zaakafhandelapp', 'Employee*')"
 						:loading="medewerkersLoading"
 						:disabled="loading" />
 				</div>
@@ -75,13 +100,14 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 			<div v-if="taakItem.id">
 				<span>{{ t('zaakafhandelapp', 'Contact moment') }}</span>
 				<div v-if="taakItem.contactmoment">
-					<NcListItem v-for="(contactMoment, key) in contactMomentItems"
+					<NcListItem
+						v-for="(contactMoment, key) in contactMomentItems"
 						:key="key"
 						:name="contactMoment.mainText"
 						:bold="false"
 						:details="contactMoment.subText"
 						:disabled="loading"
-						:force-display-actions="true">
+						:forceDisplayActions="true">
 						<template #icon>
 							<BriefcaseAccountOutline :size="44" />
 						</template>
@@ -106,65 +132,87 @@ import { taakStore, navigationStore, klantStore, contactMomentStore } from '../.
 				<template #icon>
 					<Cancel :size="20" />
 				</template>
-				{{ success ? t('zaakafhandelapp', 'Close') : t('zaakafhandelapp', 'Cancel') }}
+				{{
+					success
+						? t('zaakafhandelapp', 'Close')
+						: t('zaakafhandelapp', 'Cancel')
+				}}
 			</NcButton>
-			<NcButton @click="openLink('https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties', '_blank')">
+			<NcButton
+				@click="
+					openLink(
+						'https://conduction.gitbook.io/opencatalogi-nextcloud/gebruikers/publicaties',
+						'_blank',
+					)
+				">
 				<template #icon>
 					<Help :size="20" />
 				</template>
 				Help
 			</NcButton>
-			<NcButton v-if="!success"
-				:disabled="loading
+			<NcButton
+				v-if="!success"
+				:disabled="
+					loading
 					|| medewerkersLoading
 					|| !taakItem.title
 					|| !taakItem.deadline
-					|| (clientType === 'both' && !useMedewerkerInsteadOfKlant && !klanten.value?.id)
-					|| (clientType === 'both' && useMedewerkerInsteadOfKlant && !medewerkers.value?.id)
+					|| (clientType === 'both'
+						&& !useMedewerkerInsteadOfKlant
+						&& !klanten.value?.id)
+					|| (clientType === 'both'
+						&& useMedewerkerInsteadOfKlant
+						&& !medewerkers.value?.id)
 					|| (clientType === 'klant' && !klanten.value?.id)
-					|| (clientType === 'medewerker' && !medewerkers.value?.id)"
-				type="primary"
+					|| (clientType === 'medewerker' && !medewerkers.value?.id)
+				"
+				variant="primary"
 				@click="editTaak()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
-					<ContentSaveOutline v-if="!loading && taakStore.taakItem?.id" :size="20" />
+					<ContentSaveOutline
+						v-if="!loading && taakStore.taakItem?.id"
+						:size="20" />
 					<Plus v-if="!loading && !taakStore.taakItem?.id" :size="20" />
 				</template>
-				{{ taakStore.taakItem?.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					taakStore.taakItem?.id
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</template>
 
-		<ViewContactMoment v-if="isContactMomentFormOpen"
-			:dashboard-widget="true"
-			:contact-moment-id="viewContactMomentId"
-			:is-view="viewContactMomentIsView"
-			@close-modal="closeViewContactMomentModal" />
+		<ViewContactMoment
+			v-if="isContactMomentFormOpen"
+			:dashboardWidget="true"
+			:contactMomentId="viewContactMomentId"
+			:isView="viewContactMomentIsView"
+			@closeModal="closeViewContactMomentModal" />
 	</NcDialog>
 </template>
 
 <script>
 import {
 	NcButton,
-	NcDialog,
-	NcTextField,
-	NcTextArea,
-	NcDateTimePicker,
-	NcSelect,
 	NcCheckboxRadioSwitch,
+	NcDateTimePicker,
+	NcDialog,
+	NcListItem,
 	NcLoadingIcon,
 	NcNoteCard,
-	NcListItem,
+	NcSelect,
+	NcTextArea,
+	NcTextField,
 } from '@nextcloud/vue'
-import { getTheme } from '../../services/getTheme.js'
-
-import ViewContactMoment from '../contactMomenten/ViewContactMoment.vue'
-
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-import Cancel from 'vue-material-design-icons/Cancel.vue'
-import Plus from 'vue-material-design-icons/Plus.vue'
-import Help from 'vue-material-design-icons/Help.vue'
 import BriefcaseAccountOutline from 'vue-material-design-icons/BriefcaseAccountOutline.vue'
+import Cancel from 'vue-material-design-icons/Cancel.vue'
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 import Eye from 'vue-material-design-icons/Eye.vue'
+import Help from 'vue-material-design-icons/Help.vue'
+import Plus from 'vue-material-design-icons/Plus.vue'
+import ViewContactMoment from '../contactMomenten/ViewContactMoment.vue'
+import { getTheme } from '../../services/getTheme.js'
 
 /**
  * EditTaak component
@@ -200,6 +248,7 @@ export default {
 		Help,
 		BriefcaseAccountOutline,
 	},
+
 	props: {
 		/**
 		 * Whether the modal is being used within a dashboard widget.
@@ -210,6 +259,7 @@ export default {
 			type: Boolean,
 			required: false,
 		},
+
 		/**
 		 * ID of the taak (task) to load and edit.
 		 *
@@ -227,6 +277,7 @@ export default {
 			type: String,
 			default: null,
 		},
+
 		/**
 		 * Determines which client type to use for the taak.
 		 *
@@ -249,6 +300,7 @@ export default {
 			 */
 			validator: (value) => ['klant', 'medewerker', 'both'].includes(value),
 		},
+
 		/**
 		 * ID of the klant (client) to pre-select in the klanten dropdown.
 		 *
@@ -263,6 +315,7 @@ export default {
 			type: String,
 			default: null,
 		},
+
 		/**
 		 * ID of the medewerker (employee) to pre-select in the medewerkers dropdown.
 		 *
@@ -283,6 +336,7 @@ export default {
 			default: false,
 		},
 	},
+
 	data() {
 		return {
 			// state
@@ -306,6 +360,7 @@ export default {
 				toelichting: '',
 				contactmoment: null,
 			},
+
 			executorOptions: {
 				options: [
 					{
@@ -317,11 +372,13 @@ export default {
 						label: 'Medewerker',
 					},
 				],
+
 				value: {
 					id: 'klant',
 					label: 'Klant',
 				},
 			},
+
 			statusOptions: {
 				options: [
 					{
@@ -338,17 +395,27 @@ export default {
 					},
 				],
 			},
+
 			taakType: {
 				options: [
-					{ id: 'terugbel', label: t('zaakafhandelapp', 'Callback request') },
+					{
+						id: 'terugbel',
+						label: t('zaakafhandelapp', 'Callback request'),
+					},
 				],
-				value: { id: 'terugbel', label: t('zaakafhandelapp', 'Callback request') },
+
+				value: {
+					id: 'terugbel',
+					label: t('zaakafhandelapp', 'Callback request'),
+				},
 			},
+
 			viewContactMomentIsView: false,
 			viewContactMomentId: null,
 			isContactMomentFormOpen: false,
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -356,6 +423,7 @@ export default {
 		this.fetchData()
 		this.fetchMedewerkers()
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -365,6 +433,7 @@ export default {
 				this.closeModal()
 			}, 300)
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
 		 */
@@ -375,6 +444,7 @@ export default {
 				this.$emit('close-modal')
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -408,28 +478,38 @@ export default {
 					this.useMedewerkerInsteadOfKlant = !!taakEntity?.medewerker
 				}
 
-				this.taakType.value = this.taakType.options.find(type => type.id === taakEntity.type || 'terugbel')
+				this.taakType.value = this.taakType.options.find(
+					(type) => type.id === taakEntity.type || 'terugbel',
+				)
 			}
 
-			if (this.clientType !== 'medewerker') this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
+			if (this.clientType !== 'medewerker')
+				this.fetchKlanten(taakEntity?.klant) // will either pass a id or undefined
 			this.fetchContactMomentItems()
 		},
+
 		/**
 		 * @param {string} klantId - Optional ID of the klant to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                           If none are provided the default selected klant will be `null`.
-		  *
-		  * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 *
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchKlanten(klantId = null) {
 			this.klantenLoading = true
 
-			klantStore.refreshKlantenList()
+			klantStore
+				.refreshKlantenList()
 				.then(({ data }) => {
-
 					const taakKlantId = taakStore.taakItem?.klant
-					const searchId = (this.klantId ?? klantId ?? taakKlantId)?.toString()
+					const searchId = (
+						this.klantId
+						?? klantId
+						?? taakKlantId
+					)?.toString()
 
-					const selectedKlant = data.find((klant) => klant?.id.toString() === searchId) || null
+					const selectedKlant =
+						data.find((klant) => klant?.id.toString() === searchId)
+						|| null
 
 					this.klanten = {
 						userSelect: true,
@@ -438,15 +518,14 @@ export default {
 							displayName: `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`,
 							subName: klant.email,
 							icon: klant.icon ?? '',
-
 						})),
 						value: selectedKlant
 							? {
-								id: selectedKlant?.id,
-								displayName: `${selectedKlant.voornaam} ${selectedKlant.tussenvoegsel} ${selectedKlant.achternaam}`,
-								subName: selectedKlant.email,
-								icon: selectedKlant.icon ?? '',
-							}
+									id: selectedKlant?.id,
+									displayName: `${selectedKlant.voornaam} ${selectedKlant.tussenvoegsel} ${selectedKlant.achternaam}`,
+									subName: selectedKlant.email,
+									icon: selectedKlant.icon ?? '',
+								}
 							: null,
 					}
 				})
@@ -457,6 +536,7 @@ export default {
 					this.klantenLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
@@ -468,20 +548,32 @@ export default {
 				klantStore.refreshKlantenList(),
 			])
 				.then(([contactMomentResponse, klantResponse]) => {
-					const test = contactMomentResponse.entities.map(contactMoment => ({
-						id: contactMoment.id,
-						mainText: (() => { // this is a self calling function to get the klant name, which is why you don't see it being called anywhere
-							const klant = klantResponse.entities.find(klant => klant.id === contactMoment.klant)
-							if (klant) {
-								return klant.type === 'persoon' ? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}` : `${klant.bedrijfsnaam}`
-							}
-							return ''
-						})(),
-						subText: new Date(contactMoment.startDate).toLocaleString(),
-						avatarUrl: this.getItemIcon(),
-					}))
+					const test = contactMomentResponse.entities.map(
+						(contactMoment) => ({
+							id: contactMoment.id,
+							mainText: (() => {
+								// this is a self calling function to get the klant name, which is why you don't see it being called anywhere
+								const klant = klantResponse.entities.find(
+									(klant) => klant.id === contactMoment.klant,
+								)
+								if (klant) {
+									return klant.type === 'persoon'
+										? `${klant.voornaam} ${klant.tussenvoegsel} ${klant.achternaam}`
+										: `${klant.bedrijfsnaam}`
+								}
+								return ''
+							})(),
+							subText: new Date(
+								contactMoment.startDate,
+							).toLocaleString(),
+							avatarUrl: this.getItemIcon(),
+						}),
+					)
 
-					this.contactMomentItems = test.filter(contactMoment => contactMoment.id === this.taakItem.contactmoment)
+					this.contactMomentItems = test.filter(
+						(contactMoment) =>
+							contactMoment.id === this.taakItem.contactmoment,
+					)
 				})
 				.finally(() => {
 					this.loading = false
@@ -505,6 +597,7 @@ export default {
 			this.isContactMomentFormOpen = false
 			navigationStore.setViewModal(null)
 		},
+
 		// === ICONS ===
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
@@ -518,13 +611,16 @@ export default {
 				appLocation = '/apps-extra'
 			}
 
-			return theme === 'light' ? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg` : `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
+			return theme === 'light'
+				? `${appLocation}/zaakafhandelapp/img/chat-outline-dark.svg`
+				: `${appLocation}/zaakafhandelapp/img/chat-outline.svg`
 		},
+
 		/**
 		 * @param {string} medewerkerId - Optional ID of the medewerker to select. Will take precedence over the ID present in `taakStore.taakItem`.
 		 *                                If none are provided the default selected medewerker will be `null`.
-		  *
-		  * @spec openspec/specs/ui-modals/spec.md#REQ-005
+		 *
+		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchMedewerkers(medewerkerId = null) {
 			fetch('/ocs/v1.php/cloud/users/details', {
@@ -533,37 +629,44 @@ export default {
 					Accept: 'application/json',
 					'OCS-APIRequest': 'true',
 				},
-			}).then(response => response.json()).then(data => {
-
-				const userData = data.ocs.data.users
-
-				const taakMedewerkerId = taakStore.taakItem?.medewerker
-				const searchId = (this.medewerkerId ?? medewerkerId ?? taakMedewerkerId)?.toString()
-
-				const selectedMedewerker = Object.values(userData).find((medewerker) => medewerker?.email?.toString() === searchId) || null
-
-				this.medewerkers = {
-					userSelect: true,
-					options: Object.values(userData).map((medewerker) => ({
-						id: medewerker.email,
-						displayName: medewerker.displayname,
-						subname: medewerker.email,
-						user: medewerker.id,
-
-					})),
-					value: selectedMedewerker
-						? {
-							id: selectedMedewerker?.email,
-							displayName: selectedMedewerker.displayname,
-							subname: selectedMedewerker.email,
-							user: selectedMedewerker.id,
-						}
-						: null,
-				}
-
 			})
+				.then((response) => response.json())
+				.then((data) => {
+					const userData = data.ocs.data.users
 
+					const taakMedewerkerId = taakStore.taakItem?.medewerker
+					const searchId = (
+						this.medewerkerId
+						?? medewerkerId
+						?? taakMedewerkerId
+					)?.toString()
+
+					const selectedMedewerker =
+						Object.values(userData).find(
+							(medewerker) =>
+								medewerker?.email?.toString() === searchId,
+						) || null
+
+					this.medewerkers = {
+						userSelect: true,
+						options: Object.values(userData).map((medewerker) => ({
+							id: medewerker.email,
+							displayName: medewerker.displayname,
+							subname: medewerker.email,
+							user: medewerker.id,
+						})),
+						value: selectedMedewerker
+							? {
+									id: selectedMedewerker?.email,
+									displayName: selectedMedewerker.displayname,
+									subname: selectedMedewerker.email,
+									user: selectedMedewerker.id,
+								}
+							: null,
+					}
+				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -571,23 +674,38 @@ export default {
 			this.loading = true
 
 			let klantId
-			if (this.clientType !== 'medewerker' && (this.clientType !== 'both' || !this.useMedewerkerInsteadOfKlant)) {
+			if (
+				this.clientType !== 'medewerker'
+				&& (this.clientType !== 'both' || !this.useMedewerkerInsteadOfKlant)
+			) {
 				klantId = this.klanten.value?.id
 			}
 
 			let medewerkerId
-			if (this.clientType !== 'klant' && (this.clientType !== 'both' || this.useMedewerkerInsteadOfKlant)) {
+			if (
+				this.clientType !== 'klant'
+				&& (this.clientType !== 'both' || this.useMedewerkerInsteadOfKlant)
+			) {
 				medewerkerId = this.medewerkers.value?.id
 			}
 
-			taakStore.saveTaak({
-				...this.taakItem,
-				type: this.taakType.value.id,
-				klant: klantId || null,
-				medewerker: medewerkerId || null,
-				status: this.taakItem.status === 'gesloten' ? 'gesloten' : 'open',
-				deadline: this.taakItem.deadline ? this.taakItem.deadline.toISOString() : null,
-			}, { redirect: !this.dashboardWidget })
+			taakStore
+				.saveTaak(
+					{
+						...this.taakItem,
+						type: this.taakType.value.id,
+						klant: klantId || null,
+						medewerker: medewerkerId || null,
+						status:
+							this.taakItem.status === 'gesloten'
+								? 'gesloten'
+								: 'open',
+						deadline: this.taakItem.deadline
+							? this.taakItem.deadline.toISOString()
+							: null,
+					},
+					{ redirect: !this.dashboardWidget },
+				)
 				.then((response) => {
 					this.success = response.response.ok
 
@@ -599,16 +717,19 @@ export default {
 					setTimeout(() => {
 						this.closeModal()
 					}, 2500)
-
 				})
 				.catch((err) => {
-					this.error = err.message || 'An error occurred while saving the taak'
+					this.error =
+						err.message || 'An error occurred while saving the taak'
 				})
 				.finally(() => {
 					this.loading = false
 				})
 		},
+
 		/**
+		 * @param url
+		 * @param target
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 		 */
 		openLink(url, target) {

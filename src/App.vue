@@ -16,11 +16,12 @@
 <template>
 	<div class="zaa-app-root">
 		<CnAppRoot
+			:aiCompanion="true"
 			:manifest="manifest"
-			:custom-components="customComponents"
-			:page-types="pageTypes"
+			:customComponents="customComponents"
+			:pageTypes="pageTypes"
 			:registry="registry"
-			app-id="zaakafhandelapp"
+			appId="zaakafhandelapp"
 			:translate="translateForApp"
 			:permissions="permissions">
 			<template #sidebar>
@@ -28,11 +29,11 @@
 					v-if="objectSidebarState.active"
 					:title="objectSidebarState.title"
 					:subtitle="objectSidebarState.subtitle"
-					:object-type="objectSidebarState.objectType"
-					:object-id="objectSidebarState.objectId"
+					:objectType="objectSidebarState.objectType"
+					:objectId="objectSidebarState.objectId"
 					:register="objectSidebarState.register"
 					:schema="objectSidebarState.schema"
-					:hidden-tabs="objectSidebarState.hiddenTabs"
+					:hiddenTabs="objectSidebarState.hiddenTabs"
 					:tabs="objectSidebarState.tabs"
 					:open="objectSidebarState.open"
 					@update:open="objectSidebarState.open = $event" />
@@ -46,11 +47,11 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { translate as ncT } from '@nextcloud/l10n'
 import { CnAppRoot, CnObjectSidebar } from '@conduction/nextcloud-vue'
-import Modals from './modals/Modals.vue'
+import { translate as ncT } from '@nextcloud/l10n'
+import { reactive } from 'vue'
 import Dialogs from './dialogs/Dialogs.vue'
+import Modals from './modals/Modals.vue'
 
 export default {
 	name: 'App',
@@ -68,7 +69,7 @@ export default {
 	provide() {
 		return {
 			// Channel for CnDetailPage → host-rendered CnObjectSidebar.
-			// Vue.observable makes the plain object reactive for Vue 2.
+			// `reactive()` is Vue 3's replacement for `Vue.observable()`.
 			objectSidebarState: this.objectSidebarState,
 		}
 	},
@@ -85,6 +86,7 @@ export default {
 			type: Object,
 			required: true,
 		},
+
 		/**
 		 * Registry of consumer-injected components used by:
 		 *   - `type: "custom"` pages (`page.component`)
@@ -98,6 +100,7 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
+
 		/**
 		 * Page-type registry — `{ index, detail, dashboard, settings, ... }`.
 		 * Wired through to descendant `CnPageRenderer` instances via
@@ -109,6 +112,7 @@ export default {
 			type: Object,
 			default: null,
 		},
+
 		/**
 		 * V2 component registry. Map of registry key →
 		 * `{ kind, component, ...kindMetadata }`. Passed to CnAppRoot
@@ -125,7 +129,7 @@ export default {
 
 	data() {
 		return {
-			objectSidebarState: Vue.observable({
+			objectSidebarState: reactive({
 				active: false,
 				open: true,
 				objectType: '',
@@ -157,8 +161,8 @@ export default {
 		 *
 		 * @param {string} key Translation key.
 		 * @return {string} Translated string (or the key on miss).
-		  *
-		  * @spec exclude i18n wrapper around Nextcloud t()
+		 *
+		 * @spec exclude i18n wrapper around Nextcloud t()
 		 */
 		translateForApp(key) {
 			return ncT('zaakafhandelapp', key)

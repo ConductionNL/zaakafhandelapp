@@ -13,12 +13,12 @@
  * light/dark theme variants.
  */
 
-import { iconProgressClose as _iconProgressClose } from './icon/icon-progress-close.js'
-import { iconPencil as _iconPencil } from './icon/icon-pencil.js'
+import { iconBriefcaseAccountOutline as _iconBriefcaseAccountOutline } from './icon/icon-briefcase-account-outline.js'
 import { iconCalendarCheckOutline as _iconCalendarCheckOutline } from './icon/icon-calendar-check-outline.js'
 import { iconCalendarMonthOutline as _iconCalendarMonthOutline } from './icon/icon-calendar-month-outline.js'
 import { iconCardAccountPhoneOutline as _iconCardAccountPhoneOutline } from './icon/icon-card-account-phone-outline.js'
-import { iconBriefcaseAccountOutline as _iconBriefcaseAccountOutline } from './icon/icon-briefcase-account-outline.js'
+import { iconPencil as _iconPencil } from './icon/icon-pencil.js'
+import { iconProgressClose as _iconProgressClose } from './icon/icon-progress-close.js'
 
 export const iconProgressClose = _iconProgressClose()
 export const iconPencil = _iconPencil()

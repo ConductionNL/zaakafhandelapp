@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-import { setActivePinia, createPinia } from 'pinia'
-
-import { useKlantStore } from './klanten.js'
+import { createPinia, setActivePinia } from 'pinia'
 import { Klant, mockKlant } from '../../entities/index.js'
+import { useKlantStore } from './klanten.js'
 
 describe('Klant Store', () => {
 	beforeEach(() => {

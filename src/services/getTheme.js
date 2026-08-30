@@ -8,10 +8,10 @@
  * accordingly. If neither attribute is present, it defaults to 'dark'.
  *
  * @return { 'light' | 'dark' } The current theme, either 'light' or 'dark'.
-  *
-  * @spec openspec/specs/ui-search-navigation/spec.md#REQ-004
+ *
+ * @spec openspec/specs/ui-search-navigation/spec.md#REQ-004
  */
-export const getTheme = () => {
+export function getTheme() {
 	if (document.body.hasAttribute('data-theme-light')) {
 		return 'light'
 	} else if (document.body.hasAttribute('data-theme-dark')) {

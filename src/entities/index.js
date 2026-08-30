@@ -1,4 +1,6 @@
-/* eslint-disable import/export */
+// No `eslint-disable import/export`: the flat config does not register that
+// rule, so the comment was ITSELF the error ("Definition for rule
+// 'import/export' was not found").
 export * from './zaak/index.js'
 export * from './zaakTypen/index.js'
 export * from './klanten/index.js'

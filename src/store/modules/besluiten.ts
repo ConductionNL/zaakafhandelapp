@@ -1,5 +1,8 @@
+import type { TBesluit } from '../../entities/index.js'
+
+import { getRequestToken } from '@nextcloud/auth'
 import { defineStore } from 'pinia'
-import { TBesluit, Besluit } from '../../entities/index.js'
+import { Besluit } from '../../entities/index.js'
 
 const apiEndpoint = '/index.php/apps/zaakafhandelapp/api/objects/besluiten'
 
@@ -12,11 +15,12 @@ type TOptions = {
 
 export const useBesluitStore = defineStore('besluiten', {
 	state: () => ({
-		besluitItem: null,
-		zaakId: null,
+		besluitItem: null as Besluit | null,
+		zaakId: null as string | null,
 	}),
 	actions: {
 		/**
+		 * @param besluitItem
 		 * @spec openspec/specs/state-stores/spec.md#REQ-001
 		 */
 		setBesluitItem(besluitItem: Besluit | TBesluit) {
@@ -29,12 +33,12 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * @param id - The ID of the besluit item to fetch.
 		 * @param options - Options for fetching the besluit item. (default: `{}`)
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TBesluit, entity: Besluit }> } The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async getBesluit(
 			id: string,
 			options: TOptions = {},
-		): Promise<{ response: Response, data: TBesluit, entity: Besluit }> {
+		): Promise<{ response: Response; data: TBesluit; entity: Besluit }> {
 			if (!id) {
 				throw new Error('No besluit item to fetch')
 			}
@@ -64,9 +68,11 @@ export const useBesluitStore = defineStore('besluiten', {
 		 *
 		 * @param zaakId - Optional ID of the zaak to filter besluiten by
 		 * @throws If the HTTP request fails.
-		 * @return { Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> } The response, raw data array, and entity array.
+		 * @return The response, raw data array, and entity array.
 		 */
-		async getBesluiten(zaakId: string = null): Promise<{ response: Response, data: TBesluit[], entities: Besluit[] }> {
+		async getBesluiten(
+			zaakId: string = null,
+		): Promise<{ response: Response; data: TBesluit[]; entities: Besluit[] }> {
 			const params = new URLSearchParams()
 			if (zaakId) {
 				params.append('zaak', zaakId)
@@ -98,7 +104,7 @@ export const useBesluitStore = defineStore('besluiten', {
 		 *
 		 * @param besluitId - The ID of the besluit item to delete.
 		 * @throws If the HTTP request fails.
-		 * @return {Promise<{ response: Response }>} The response from the delete request.
+		 * @return The response from the delete request.
 		 */
 		async deleteBesluit(besluitId: string): Promise<{ response: Response }> {
 			if (!besluitId) {
@@ -111,6 +117,9 @@ export const useBesluitStore = defineStore('besluiten', {
 
 			const response = await fetch(endpoint, {
 				method: 'DELETE',
+				headers: {
+					requesttoken: getRequestToken() ?? '',
+				},
 			})
 
 			return { response }
@@ -122,12 +131,12 @@ export const useBesluitStore = defineStore('besluiten', {
 		 * @param besluitItem - The besluit item to save.
 		 * @param options - Options for saving the besluit item. (default: `{ setItem: true }`)
 		 * @throws If there is no besluit item to save or if the HTTP request fails.
-		 * @return {Promise<{ response: Response, data: TBesluit, entity: Besluit }>} The response, raw data, and entity.
+		 * @return The response, raw data, and entity.
 		 */
 		async saveBesluit(
 			besluitItem: Besluit | TBesluit,
 			options: TOptions = { setItem: true },
-		): Promise<{ response: Response, data: TBesluit, entity: Besluit }> {
+		): Promise<{ response: Response; data: TBesluit; entity: Besluit }> {
 			if (!besluitItem) {
 				throw new Error('No besluit item to save')
 			}
@@ -140,23 +149,21 @@ export const useBesluitStore = defineStore('besluiten', {
 
 			console.info('Saving besluit item with id: ' + besluitItem?.id)
 
-			const response = await fetch(
-				endpoint,
-				{
-					method,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(besluitItem),
+			const response = await fetch(endpoint, {
+				method,
+				headers: {
+					'Content-Type': 'application/json',
+					requesttoken: getRequestToken() ?? '',
 				},
-			)
+				body: JSON.stringify(besluitItem),
+			})
 
 			if (!response.ok) {
 				console.error(response)
 				throw new Error(response.statusText || 'Failed to save besluit')
 			}
 
-			const data = await response.json() as TBesluit
+			const data = (await response.json()) as TBesluit
 			const entity = new Besluit(data)
 
 			options.setItem && this.setBesluitItem(data)

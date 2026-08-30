@@ -4,18 +4,54 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 </script>
 
 <template>
-	<NcModal ref="modalRef"
-		label-id="zaakForm"
-		@close="closeModal">
+	<NcModal ref="modalRef" labelId="zaakForm" @close="closeModal">
 		<div class="modalContent">
-			<h2>{{ zaakStore.zaakItem?.id ? t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'edit') }) : t('zaakafhandelapp', 'Case {action}', { action: t('zaakafhandelapp', 'create') }) }}</h2>
+			<h2>
+				{{
+					zaakStore.zaakItem?.id
+						? t('zaakafhandelapp', 'Case {action}', {
+								action: t('zaakafhandelapp', 'edit'),
+							})
+						: t('zaakafhandelapp', 'Case {action}', {
+								action: t('zaakafhandelapp', 'create'),
+							})
+				}}
+			</h2>
 
 			<div v-if="success !== null">
 				<NcNoteCard v-if="success" type="success">
-					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+					<p>
+						{{
+							zaak.id
+								? t(
+										'zaakafhandelapp',
+										'Case successfully {action}',
+										{ action: t('zaakafhandelapp', 'updated') },
+									)
+								: t(
+										'zaakafhandelapp',
+										'Case successfully {action}',
+										{ action: t('zaakafhandelapp', 'created') },
+									)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="!success" type="error">
-					<p>{{ zaak.id ? t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'updated') }) : t('zaakafhandelapp', 'Case not successfully {action}', { action: t('zaakafhandelapp', 'created') }) }}</p>
+					<p>
+						{{
+							zaak.id
+								? t(
+										'zaakafhandelapp',
+										'Case not successfully {action}',
+										{ action: t('zaakafhandelapp', 'updated') },
+									)
+								: t(
+										'zaakafhandelapp',
+										'Case not successfully {action}',
+										{ action: t('zaakafhandelapp', 'created') },
+									)
+						}}
+					</p>
 				</NcNoteCard>
 				<NcNoteCard v-if="error" type="error">
 					<p>{{ error }}</p>
@@ -23,39 +59,46 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 			</div>
 
 			<div v-if="success === null" class="form-group">
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					v-model="zaak.identificatie"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Identification')"
 					maxlength="255"
-					:value.sync="zaak.identificatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					v-model="zaak.omschrijving"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Description')"
-					maxlength="255"
-					:value.sync="zaak.omschrijving" />
-				<NcTextField :disabled="zaakLoading"
+					maxlength="255" />
+				<NcTextField
+					v-model="zaak.bronorganisatie"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Source organisation')"
 					maxlength="9"
-					:value.sync="zaak.bronorganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					v-model="zaak.verantwoordelijkeOrganisatie"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Responsible organisation')"
 					maxlength="9"
-					:value.sync="zaak.verantwoordelijkeOrganisatie"
 					required />
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					v-model="zaak.startdatum"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Start date')"
 					maxlength="9"
-					:value.sync="zaak.startdatum"
 					required />
-				<NcSelect v-bind="zaakType"
+				<NcSelect
+					v-bind="zaakType"
 					v-model="zaakType.value"
-					:input-label="t('zaakafhandelapp', 'Case type')"
+					:inputLabel="t('zaakafhandelapp', 'Case type')"
 					:loading="zaakTypeLoading"
 					:disabled="zaakLoading || zaakTypeLoading"
 					required />
-				<NcSelect v-bind="archiefstatus"
+				<NcSelect
+					v-bind="archiefstatus"
 					v-model="archiefstatus.value"
-					:input-label="t('zaakafhandelapp', 'Archive status')"
+					:inputLabel="t('zaakafhandelapp', 'Archive status')"
 					:disabled="zaakLoading"
 					required />
 				<div>
@@ -65,25 +108,39 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 						:disabled="zaakLoading"
 						required />
 				</div>
-				<NcTextField :disabled="zaakLoading"
+				<NcTextField
+					v-model="zaak.registratiedatum"
+					:disabled="zaakLoading"
 					:label="t('zaakafhandelapp', 'Registration date')"
-					maxlength="255"
-					:value.sync="zaak.registratiedatum" />
-				<NcTextArea :disabled="zaakLoading"
-					:label="t('zaakafhandelapp', 'Explanation')"
-					:value.sync="zaak.toelichting" />
+					maxlength="255" />
+				<NcTextArea
+					v-model="zaak.toelichting"
+					:disabled="zaakLoading"
+					:label="t('zaakafhandelapp', 'Explanation')" />
 			</div>
 
-			<NcButton v-if="success === null"
-				:disabled="loading || !zaak.identificatie || zaakTypeLoading || !zaak.bronorganisatie || !zaak.verantwoordelijkeOrganisatie || !zaak.startdatum"
-				type="primary"
+			<NcButton
+				v-if="success === null"
+				:disabled="
+					loading
+					|| !zaak.identificatie
+					|| zaakTypeLoading
+					|| !zaak.bronorganisatie
+					|| !zaak.verantwoordelijkeOrganisatie
+					|| !zaak.startdatum
+				"
+				variant="primary"
 				@click="saveZaak()">
 				<template #icon>
 					<NcLoadingIcon v-if="loading" :size="20" />
 					<ContentSaveOutline v-else-if="!loading && zaak.id" :size="20" />
 					<Plus v-else-if="!loading && !zaak.id" :size="20" />
 				</template>
-				{{ zaak.id ? t('zaakafhandelapp', 'Save') : t('zaakafhandelapp', 'Create') }}
+				{{
+					zaak.id
+						? t('zaakafhandelapp', 'Save')
+						: t('zaakafhandelapp', 'Create')
+				}}
 			</NcButton>
 		</div>
 	</NcModal>
@@ -91,20 +148,18 @@ import { navigationStore, zaakStore, zaakTypeStore } from '../../store/store.js'
 
 <script>
 import {
+	NcButton,
+	NcDateTimePicker,
+	NcLoadingIcon,
 	NcModal,
 	NcNoteCard,
-	NcButton,
-	NcTextField,
 	NcSelect,
 	NcTextArea,
-	NcLoadingIcon,
-	NcDateTimePicker,
+	NcTextField,
 } from '@nextcloud/vue'
-
+import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
 // icons
 import Plus from 'vue-material-design-icons/Plus.vue'
-import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
-
 // entities
 import { Zaak } from '../../entities/index.js'
 
@@ -118,12 +173,14 @@ export default {
 		NcTextArea,
 		NcDateTimePicker,
 	},
+
 	props: {
 		dashboardWidget: {
 			type: Boolean,
 			default: false,
 			required: false,
 		},
+
 		/**
 		 * The id of the klant that the zaak is for.
 		 * Currently there is no dropdown for selecting a klant.
@@ -134,6 +191,7 @@ export default {
 			default: null,
 		},
 	},
+
 	data() {
 		return {
 			zaak: {
@@ -148,6 +206,7 @@ export default {
 				archiefstatus: '',
 				uiterlijkeEinddatumAfdoening: null,
 			},
+
 			loading: false,
 			success: null,
 			error: null,
@@ -176,6 +235,7 @@ export default {
 			},
 		}
 	},
+
 	/**
 	 * @spec openspec/specs/ui-modals/spec.md#REQ-004
 	 */
@@ -188,10 +248,14 @@ export default {
 			this.zaak = {
 				...this.zaak,
 				...zaakStore.zaakItem,
-				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem.uiterlijkeEinddatumAfdoening ? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening) : null,
+				uiterlijkeEinddatumAfdoening: zaakStore.zaakItem
+					.uiterlijkeEinddatumAfdoening
+					? new Date(zaakStore.zaakItem.uiterlijkeEinddatumAfdoening)
+					: null,
 			}
 		}
 	},
+
 	methods: {
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-001
@@ -200,15 +264,19 @@ export default {
 			navigationStore.setModal(null)
 			this?.dashboardWidget && this.$emit('close-modal')
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-005
 		 */
 		fetchZaakType() {
 			this.zaakTypeLoading = true
 
-			zaakTypeStore.refreshZaakTypenList()
+			zaakTypeStore
+				.refreshZaakTypenList()
 				.then(({ entities }) => {
-					const selectedZaakType = entities.find((zaakType) => zaakType.id === this.zaak.zaaktype.id)
+					const selectedZaakType = entities.find(
+						(zaakType) => zaakType.id === this.zaak.zaaktype.id,
+					)
 
 					this.zaakType = {
 						options: entities.map((zaakType) => ({
@@ -217,9 +285,9 @@ export default {
 						})),
 						value: selectedZaakType
 							? {
-								id: selectedZaakType.id,
-								label: selectedZaakType.identificatie,
-							  }
+									id: selectedZaakType.id,
+									label: selectedZaakType.identificatie,
+								}
 							: null,
 					}
 				})
@@ -230,11 +298,14 @@ export default {
 					this.zaakTypeLoading = false
 				})
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-002
 		 */
 		setArchiefStatusOptions() {
-			const selectedArchiefStatusOption = this.archiefstatus.options.find((options) => options.id === this.zaak.archiefstatus)
+			const selectedArchiefStatusOption = this.archiefstatus.options.find(
+				(options) => options.id === this.zaak.archiefstatus,
+			)
 
 			if (selectedArchiefStatusOption) {
 				this.archiefstatus.value = {
@@ -243,6 +314,7 @@ export default {
 				}
 			}
 		},
+
 		/**
 		 * @spec openspec/specs/ui-modals/spec.md#REQ-003
 		 */
@@ -253,11 +325,15 @@ export default {
 				...this.zaak,
 				archiefstatus: this.archiefstatus.value?.id || '',
 				zaaktype: this.zaakType.value?.id || '',
-				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening ? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString() : null,
+				uiterlijkeEinddatumAfdoening: this.zaak.uiterlijkeEinddatumAfdoening
+					? new Date(this.zaak.uiterlijkeEinddatumAfdoening).toISOString()
+					: null,
+
 				klant: this.klantId,
 			})
 
-			zaakStore.saveZaak(newZaak, { redirect: !this.dashboardWidget })
+			zaakStore
+				.saveZaak(newZaak, { redirect: !this.dashboardWidget })
 				.then(({ response }) => {
 					this.success = response.ok
 
@@ -267,7 +343,6 @@ export default {
 					setTimeout(() => {
 						this.closeModal()
 					}, 2500)
-
 				})
 				.catch((err) => {
 					console.error(err)
@@ -282,7 +357,7 @@ export default {
 
 <style scoped>
 .modalContent {
-    margin: var(--zaa-margin-50, 12px);
-    text-align: center;
+	margin: var(--zaa-margin-50, 12px);
+	text-align: center;
 }
 </style>
