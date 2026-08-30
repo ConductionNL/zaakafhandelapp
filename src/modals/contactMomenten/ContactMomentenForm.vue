@@ -1786,7 +1786,7 @@ div[class='modal-container']:has(.ContactMomentenForm) {
 
 .contactmomentTabsContainer :deep(.nav-link) .button-vue {
 	position: absolute;
-	right: 6px;
+	inset-inline-end: 6px;
 }
 
 .contactmomentTabsContainer :deep(.nav-link) .button-vue:hover {
