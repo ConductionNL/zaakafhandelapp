@@ -71,7 +71,7 @@
     "@playwright/test": "^1.49.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.12",
-    "@typescript-eslint/parser": "^8.67.0",
+    "@typescript-eslint/parser": "^8.68.0",
     "@vitest/coverage-v8": "^1.6.1",
     "@vue/compiler-sfc": "^3.5.18",
     "@vue/test-utils": "^2.4.6",
