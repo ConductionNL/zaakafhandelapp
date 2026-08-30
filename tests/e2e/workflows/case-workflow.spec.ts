@@ -221,7 +221,11 @@ test.describe('case-workflow — task creation, case linkage, and status transit
 	// seeding a zaaktype with a declared status set and a zaaktype-status link
 	// model, then asserting only allowed statuses can be applied. That is a new
 	// capability to build out, not the OR-API drift this batch repaired.
-	test.fixme('zaaktype status set — a case follows its zaaktype allowed statuses', async () => {
+	test('zaaktype status set — a case follows its zaaktype allowed statuses', async () => {
+		test.fixme(
+			true,
+			'fixture provisioning, not a bug: BUG-1 (status create returning 500) is fixed. What remains is seeding a zaaktype with a declared status set plus a zaaktype-status link model, then asserting only allowed statuses can be applied — a new capability to build out, not the OR-API drift this batch repaired.',
+		)
 		// Would seed a zaaktype with a status set, create a case of that type,
 		// and assert only allowed statuses can be applied.
 		expect(true).toBe(true)
