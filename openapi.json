@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "zaakafhandelapp",
-        "version": "0.2.9-unstable.20260831013703",
+        "version": "0.2.11-unstable.20260831095102",
         "description": "Zaak Afhandel App",
         "license": {
             "name": "EUPL-1.2"
