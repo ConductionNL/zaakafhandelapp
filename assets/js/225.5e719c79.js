@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkzaakafhandelapp_docs=globalThis.webpackChunkzaakafhandelapp_docs||[]).push([[225],{225(a,e,c){c.d(e,{createArchitectureServices:()=>h.S});var h=c(7713);c(808)}}]);

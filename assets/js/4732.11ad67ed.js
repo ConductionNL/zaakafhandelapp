@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkzaakafhandelapp_docs=globalThis.webpackChunkzaakafhandelapp_docs||[]).push([[4732],{4732(a,e,p){p.d(e,{createTreemapServices:()=>s.d});var s=p(8562);p(808)}}]);
