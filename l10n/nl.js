@@ -637,7 +637,10 @@ OC.L10N.register(
         "Usage": "Gebruik",
         "Week": "Week",
         "Welcome to ZaakAfhandelApp": "Welkom bij ZaakAfhandelApp",
-        "You're all set": "U bent klaar om te beginnen"
+        "You're all set": "U bent klaar om te beginnen",
+        "cases": "zaken",
+        "tasks": "taken",
+        "contacts": "contacten"
     },
     "nplurals=2; plural=(n != 1);"
 )
