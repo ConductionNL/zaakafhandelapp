@@ -13,9 +13,9 @@
  * presentation structure — not data presence.
  */
 
-import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers.ts'
 
 // Front-controller form for the same reason as APP — see tests/e2e/app-path.ts.
 // `php -S` applies no rewrite, so a bare `/apps/dashboard` 404s there.

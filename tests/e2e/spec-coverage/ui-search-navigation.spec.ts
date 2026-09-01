@@ -6,14 +6,14 @@
  * @see openspec/specs/ui-search-navigation/spec.md
  */
 
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
 import {
 	dismissSupportModal,
 	expandNav,
 	navEntryByLabel,
 	openIndexSidebar,
-} from './helpers'
-import { APP } from '../app-path'
+} from './helpers.ts'
 
 test.describe('ui-search-navigation — search sidebar, config nav, permissions, utilities', () => {
 	// @e2e openspec/specs/ui-search-navigation/spec.md#searching-from-the-sidebar

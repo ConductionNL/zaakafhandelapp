@@ -35,9 +35,11 @@
  * stands.
  */
 
-import { request, type APIRequestContext } from '@playwright/test'
+import type { APIRequestContext } from '@playwright/test'
+
+import { request } from '@playwright/test'
 import * as path from 'path'
-import { resolveBaseUrl } from '../base-url'
+import { resolveBaseUrl } from '../base-url.ts'
 
 const STORAGE_STATE = path.resolve(__dirname, '..', '.auth', 'admin.json')
 // ⚠️ No `|| 'http://localhost:8080'` fallback. THIS module writes: it creates
@@ -175,7 +177,7 @@ export class WorkflowFixtures {
 		if (!sid) return false
 		const tmp = `${schema}-e2e-tmp-${Date.now().toString(36)}`
 		await this.ctx.put(`${OR}/schemas/${sid}`, { data: { slug: tmp } })
-		let ok = false
+		let ok
 		try {
 			const del = await this.ctx.delete(
 				`${OR}/objects/${REGISTER}/${tmp}/${id}`,

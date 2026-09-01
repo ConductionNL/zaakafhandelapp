@@ -37,9 +37,9 @@
  * @see openspec/specs/app-configuration/spec.md
  */
 
-import { test, expect } from '@playwright/test'
-import { dismissSupportModal, spaNavigate, navEntryByLabel } from './helpers'
-import { APP } from '../app-path'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, navEntryByLabel, spaNavigate } from './helpers.ts'
 
 test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', () => {
 	// @e2e openspec/specs/ui-dashboard-widgets/spec.md#in-app-dashboard

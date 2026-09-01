@@ -24,9 +24,11 @@
  * @see openspec/specs/domain-entities/spec.md
  */
 
-import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import type { Page } from '@playwright/test'
+
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, openIndexSidebar } from './helpers.ts'
 
 /**
  * Assert the shared index-view chrome on the page currently loaded.
@@ -65,7 +67,7 @@ async function assertIndexChrome(page: Page, title: string): Promise<void> {
 
 /** Server-routed index page: reachable via a hard goto. */
 async function gotoIndex(page: Page, route: string, title: string): Promise<void> {
-	await page.goto(`${APP}/#${route}`)
+	await page.goto(`${APP}${route}`)
 	await dismissSupportModal(page)
 	await assertIndexChrome(page, title)
 }
@@ -171,7 +173,12 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	test('no uncaught JS exceptions across the record index pages', async ({
 		page,
 	}) => {
-		test.setTimeout(90_000)
+		// 8 hard gotos. Under hash routing these were SAME-DOCUMENT navigations
+		// (the shell stayed mounted and only the fragment changed); under
+		// history routing each one is a full page load, so the walk costs
+		// roughly an order of magnitude more wall-clock. The assertion is
+		// unchanged — only the budget for doing it honestly.
+		test.setTimeout(240_000)
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Server-routed pages via hard goto (all index pages have routes now).
@@ -185,7 +192,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 			'/documenten',
 			'/resultaten',
 		]) {
-			await page.goto(`${APP}/#${route}`)
+			await page.goto(`${APP}${route}`)
 			await dismissSupportModal(page)
 			await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({
 				timeout: 15_000,

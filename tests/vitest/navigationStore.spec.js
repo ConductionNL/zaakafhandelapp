@@ -8,8 +8,8 @@
  * the two suites are complementary rather than duplicative.
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useNavigationStore } from '../../src/store/modules/navigation.ts'
 
 describe('navigation store — modal & dialog state', () => {

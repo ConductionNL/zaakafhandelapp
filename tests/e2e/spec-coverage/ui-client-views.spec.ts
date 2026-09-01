@@ -6,9 +6,9 @@
  * @see openspec/specs/ui-client-views/spec.md
  */
 
-import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers.ts'
 
 test.describe('ui-client-views — klanten, contactmomenten, taken views', () => {
 	// @e2e openspec/specs/ui-client-views/spec.md#loading-the-klanten-list

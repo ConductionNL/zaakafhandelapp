@@ -18,9 +18,11 @@
  * @see openspec/specs/ui-search-navigation/spec.md (navigation contract)
  */
 
-import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal, expandNav, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import type { Page } from '@playwright/test'
+
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, expandNav, openIndexSidebar } from './helpers.ts'
 
 /**
  * The main-section nav entries and the page heading each lands on. Dashboard
