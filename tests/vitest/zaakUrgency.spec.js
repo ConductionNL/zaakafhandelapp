@@ -7,7 +7,7 @@
  * closed/undated zaken, the planned-deadline warning, and the label mapping.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { deriveZaakUrgency, urgencyLabel } from '../../src/services/zaakUrgency.js'
 
 const TODAY = new Date('2026-06-15T12:00:00Z')

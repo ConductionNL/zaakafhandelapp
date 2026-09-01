@@ -6,8 +6,9 @@
  */
 
 import type { Locator, Page } from '@playwright/test'
+
 import { expect } from '@playwright/test'
-import { APP } from '../app-path'
+import { APP } from '../app-path.ts'
 
 /**
  * Map a human nav label to its stable manifest menu id (the testid suffix

@@ -20,9 +20,11 @@
  * data-dependent surface the CRUD-persistence specs assert against.
  */
 
-import { type Page, type Locator, expect } from '@playwright/test'
-import { dismissSupportModal } from '../spec-coverage/helpers'
-import { APP } from '../app-path'
+import type { Locator, Page } from '@playwright/test'
+
+import { expect } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal } from '../spec-coverage/helpers.ts'
 
 export { APP }
 

@@ -24,9 +24,11 @@
  * @see openspec/specs/domain-entities/spec.md
  */
 
-import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import type { Page } from '@playwright/test'
+
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, openIndexSidebar } from './helpers.ts'
 
 /**
  * Assert the shared index-view chrome on the page currently loaded.

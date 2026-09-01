@@ -74,8 +74,8 @@ function loadAjv() {
 	// "https://json-schema.org/draft/2020-12/schema"). Standard Ajv (v7+)
 	// does not auto-load the 2020 meta-schema; we need the `ajv/dist/2020`
 	// entry point.
-	let Ajv2020 = null
-	let addFormats = null
+	let Ajv2020
+	let addFormats
 	try {
 		Ajv2020 = require('ajv/dist/2020').default || require('ajv/dist/2020')
 	} catch (_) {

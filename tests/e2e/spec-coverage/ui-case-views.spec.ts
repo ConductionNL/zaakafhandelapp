@@ -9,14 +9,14 @@
  * drive the empty-state UI, which renders deterministically without seed).
  */
 
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
 import {
 	dismissSupportModal,
 	expandNav,
 	navEntryByLabel,
 	openIndexSidebar,
-} from './helpers'
-import { APP } from '../app-path'
+} from './helpers.ts'
 
 test.describe('ui-case-views — case list and detail views', () => {
 	// @e2e openspec/specs/ui-case-views/spec.md#loading-the-zaken-list

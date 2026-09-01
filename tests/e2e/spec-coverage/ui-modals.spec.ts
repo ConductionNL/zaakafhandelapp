@@ -9,9 +9,9 @@
  * all create/edit/delete flows are cancelled after assertion.
  */
 
-import { test, expect } from '@playwright/test'
-import { dismissSupportModal } from './helpers'
-import { APP } from '../app-path'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal } from './helpers.ts'
 
 test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	// @e2e openspec/specs/ui-modals/spec.md#opening-an-edit-modal

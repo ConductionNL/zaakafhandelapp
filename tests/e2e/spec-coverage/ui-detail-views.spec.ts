@@ -27,9 +27,11 @@
  * @see openspec/specs/domain-entities/spec.md
  */
 
-import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal } from './helpers'
-import { APP } from '../app-path'
+import type { Page } from '@playwright/test'
+
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal } from './helpers.ts'
 
 // A syntactically-valid-but-nonexistent id. The detail page resolves no
 // record and renders its header chrome + empty body, which is the stable,
