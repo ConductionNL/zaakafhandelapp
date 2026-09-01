@@ -179,6 +179,45 @@ class PageShellContractTest extends TestCase {
 	}//end testPageServesTheAppShell()
 
 	/**
+	 * The SPA catch-all serves the same shell contract as page().
+	 *
+	 * `dashboard#catchAll` at GET /{path} is what makes history-mode deep links
+	 * work: without it only the enumerated page routes resolved and anything
+	 * else (/features-roadmap, /auditTrail, any detail route) 404'd at the
+	 * server. It is a public network-facing endpoint, so it is tested here
+	 * rather than annotated `@contract exclude` — the same reasoning that put
+	 * the five page routes above in this file.
+	 *
+	 * Asserting the FULL shell contract, not merely that it returns something,
+	 * is the point: catchAll() delegates to page(), and a delegation that
+	 * quietly rendered as a guest or pointed at the `error` template would give
+	 * every deep link a blank page while still answering 200.
+	 *
+	 * @return void
+	 */
+	public function testCatchAllServesTheSameShellAsPage(): void {
+		$controller = new DashboardController('zaakafhandelapp', $this->createMock(IRequest::class));
+
+		$response = $controller->catchAll();
+		$page = $controller->page();
+
+		$this->assertSame(Http::STATUS_OK, $response->getStatus(), 'dashboard#catchAll status');
+		$this->assertSame('zaakafhandelapp', $response->getApp(), 'dashboard#catchAll app');
+		$this->assertSame('index', $response->getTemplateName(), 'dashboard#catchAll template');
+		$this->assertSame(
+			TemplateResponse::RENDER_AS_USER,
+			$response->getRenderAs(),
+			'dashboard#catchAll renderAs'
+		);
+		$this->assertSame([], $response->getParams(), 'dashboard#catchAll params');
+
+		// Delegation, stated as an assertion so a future rewrite that stops
+		// delegating has to say so.
+		$this->assertSame($page->getTemplateName(), $response->getTemplateName(), 'catchAll must match page()');
+		$this->assertSame($page->getRenderAs(), $response->getRenderAs(), 'catchAll must match page()');
+	}//end testCatchAllServesTheSameShellAsPage()
+
+	/**
 	 * The deep-link page routes relax connect-src so the SPA can reach the
 	 * configured ZGW endpoints from them.
 	 *

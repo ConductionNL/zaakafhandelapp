@@ -116,7 +116,18 @@ return [
 		// routing. Mirrors \OCA\OpenRegister\AppHost\Routes::standard()'s
 		// own catch-all, spelled inline because this file also declares a
 		// `resources` block that the builder does not carry.
+		//
+		// ⚠️ `(?!api/)` is load-bearing, and its absence is why the ZGW API
+		// answered HTML for a while. Nextcloud's RouteParser processes the
+		// `routes` array BEFORE the `resources` array
+		// (RouteParser::parseDefaultRoutes) and Symfony matches in insertion
+		// order, so even as the LAST entry here this route registers ahead of
+		// all seventeen `api/...` resources declared above. `.+` matches
+		// slashes, so it swallowed GET api/taken, api/klanten, api/zrc/zaken
+		// and the rest, answering the SPA shell with HTTP 200 — a JSON caller
+		// receives HTML and nothing errors loudly. The SPA never needs an
+		// `api/` path.
 		['name' => 'dashboard#catchAll', 'url' => '/{path}', 'verb' => 'GET',
-			'requirements' => ['path' => '.+'], 'defaults' => ['path' => '']]
+			'requirements' => ['path' => '(?!api/).+'], 'defaults' => ['path' => '']]
 	]
 ];
