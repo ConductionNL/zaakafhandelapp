@@ -107,6 +107,16 @@ return [
 		['name' => 'objects#destroy', 'url' => 'api/objects/{objectType}/{id}', 'verb' => 'DELETE'],
 		['name' => 'objects#getAuditTrail', 'url' => 'api/objects/{objectType}/{id}/audit', 'verb' => 'GET'],
 		['name' => 'objects#getRelations', 'url' => 'api/objects/{objectType}/{id}/relations', 'verb' => 'GET'],
-		['name' => 'objects#getUses', 'url' => 'api/objects/{objectType}/{id}/uses', 'verb' => 'GET']
+		['name' => 'objects#getUses', 'url' => 'api/objects/{objectType}/{id}/uses', 'verb' => 'GET'],
+
+		// SPA catch-all — MUST stay last so every explicit route above keeps
+		// priority over the /{path} fallback. Without it only the enumerated
+		// page routes resolve, and anything else (/features-roadmap,
+		// /auditTrail, any detail route) 404s at the server under history
+		// routing. Mirrors \OCA\OpenRegister\AppHost\Routes::standard()'s
+		// own catch-all, spelled inline because this file also declares a
+		// `resources` block that the builder does not carry.
+		['name' => 'dashboard#catchAll', 'url' => '/{path}', 'verb' => 'GET',
+			'requirements' => ['path' => '.+'], 'defaults' => ['path' => '']]
 	]
 ];

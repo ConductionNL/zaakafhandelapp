@@ -68,7 +68,7 @@ export async function spaNavigate(
 	entryRoute = '/zaken',
 ): Promise<void> {
 	void entryRoute
-	await page.goto(`${APP}/#${appRoute}`)
+	await page.goto(`${APP}${appRoute}`)
 	await dismissSupportModal(page)
 	// Confirm the shell mounted (the fragment route renders inside it).
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
