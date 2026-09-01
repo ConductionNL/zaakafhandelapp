@@ -63,7 +63,7 @@ const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail'] as const
 
 /** Open the app on a stable entry page and confirm the nav rendered. */
 async function bootNav(page: Page): Promise<void> {
-	await page.goto(`${APP}/#/zaken`)
+	await page.goto(`${APP}/zaken`)
 	await dismissSupportModal(page)
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 		timeout: 15_000,

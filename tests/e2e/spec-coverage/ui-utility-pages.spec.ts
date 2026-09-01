@@ -46,7 +46,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 	test('in-app dashboard — root route mounts the dashboard shell', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/`)
+		await page.goto(`${APP}/`)
 		await dismissSupportModal(page)
 		// Shell mounts and the Dashboard page host is rendered into the DOM.
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
@@ -68,7 +68,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 	test('dashboard stats — the six manifest stats-block widgets render their titles', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/`)
+		await page.goto(`${APP}/`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 			timeout: 15_000,
@@ -105,7 +105,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 	test('features & roadmap nav — the footer link is reachable from the left nav', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 			timeout: 15_000,
@@ -197,7 +197,7 @@ test.describe('ui-utility-pages — dashboard, roadmap, audit-trail, settings', 
 		const errors: string[] = []
 		page.on('pageerror', (err) => errors.push(err.message))
 		// Dashboard root (server-routed).
-		await page.goto(`${APP}/#/`)
+		await page.goto(`${APP}/`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 			timeout: 15_000,

@@ -124,7 +124,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	test('view-mode toggle — the Table segment switches the medewerkers list to table mode', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/medewerkers`)
+		await page.goto(`${APP}/medewerkers`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 			timeout: 15_000,
@@ -147,7 +147,7 @@ test.describe('ui-record-views — generic index pages render shared list chrome
 	test('rollen create modal — Add button opens the create dialog and cancels cleanly', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/rollen`)
+		await page.goto(`${APP}/rollen`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 			timeout: 15_000,

@@ -69,7 +69,7 @@ async function gotoDetail(
 	plural: string,
 	entityLabel: string,
 ): Promise<void> {
-	await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
+	await page.goto(`${APP}/${plural}/${NO_SUCH}`)
 	await dismissSupportModal(page)
 	await assertDetailChrome(page, entityLabel)
 }
@@ -176,7 +176,7 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 	test('zaken detail from list — clicking a list row opens the detail surface', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('[data-testid="cn-index-page"]')).toBeVisible({
 			timeout: 15_000,
@@ -224,7 +224,7 @@ test.describe('ui-detail-views — generic detail pages render shared header chr
 			'resultaten',
 			'statussen',
 		]) {
-			await page.goto(`${APP}/#/${plural}/${NO_SUCH}`)
+			await page.goto(`${APP}/${plural}/${NO_SUCH}`)
 			await dismissSupportModal(page)
 			await expect(page.locator('[data-testid="cn-detail-page"]')).toBeVisible(
 				{ timeout: 15_000 },

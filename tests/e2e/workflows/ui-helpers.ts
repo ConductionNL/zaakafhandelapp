@@ -48,7 +48,7 @@ export async function widen(page: Page): Promise<void> {
  */
 export async function openIndex(page: Page, plural: string): Promise<Locator> {
 	await widen(page)
-	await page.goto(`${APP}/#/${plural}`)
+	await page.goto(`${APP}/${plural}`)
 	await page.reload()
 	await dismissSupportModal(page)
 	const index = page.locator('[data-testid="cn-index-page"]')
