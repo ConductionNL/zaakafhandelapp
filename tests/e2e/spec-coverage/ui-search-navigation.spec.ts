@@ -20,7 +20,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('searching from the sidebar — /zoeken route renders search view and accepts input', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zoeken`)
+		await page.goto(`${APP}/zoeken`)
 		await dismissSupportModal(page)
 		// Wait for app to mount
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
@@ -45,7 +45,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('saving configuration from the nav panel — Settings button is accessible in nav', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/`)
+		await page.goto(`${APP}/`)
 		await dismissSupportModal(page)
 		// On the Dashboard route neither menu group holds the active route, so
 		// both are collapsed and their entries are hidden until expanded.
@@ -68,7 +68,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('resolving permissions — the app initialises and navigation items are visible to admin', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/`)
+		await page.goto(`${APP}/`)
 		await dismissSupportModal(page)
 		await expandNav(page)
 		// Admin user sees all nav items — confirms permission flags are resolved correctly
@@ -77,7 +77,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 		await expect(navEntryByLabel(page, 'Tasks')).toBeVisible()
 		await expect(navEntryByLabel(page, 'Employees')).toBeVisible()
 		// Navigate to zaken and check "Add Item" — confirming write-permission flag is set for admin
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 10_000,
@@ -90,7 +90,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	}) => {
 		const jsErrors: string[] = []
 		page.on('pageerror', (err) => jsErrors.push(err.message))
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
 		// No uncaught JS errors related to date normalisation
@@ -107,7 +107,7 @@ test.describe('ui-search-navigation — search sidebar, config nav, permissions,
 	test('rendering an icon — navigation SVG/img icons are present in the DOM', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/`)
+		await page.goto(`${APP}/`)
 		await dismissSupportModal(page)
 		await expandNav(page)
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })

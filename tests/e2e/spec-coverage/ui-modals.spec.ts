@@ -18,7 +18,7 @@ test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	test('opening an edit modal — Add Item opens Create Item dialog with Cancel and Create', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 15_000,
@@ -47,7 +47,7 @@ test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	test('editing a field — modal form inputs accept text input', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 15_000,
@@ -76,7 +76,7 @@ test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	test('saving a resource — Create button is enabled in the Add Item modal', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 15_000,
@@ -99,7 +99,7 @@ test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	test('deleting a resource — Actions menu is accessible from the list toolbar', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 15_000,
@@ -117,7 +117,7 @@ test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	test('a failed save — modal can be closed and re-opened (open/close cycle works)', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 15_000,
@@ -145,7 +145,7 @@ test.describe('ui-modals — create/edit/delete modal lifecycle', () => {
 	test('loading options in a modal — klanten Add Item modal mounts without error', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(page.getByRole('button', { name: /^Add /i })).toBeVisible({
 			timeout: 15_000,

@@ -16,10 +16,10 @@ import { APP } from '../app-path'
 
 test.describe('ZaakAfhandelApp — visual baselines', () => {
 	test('dashboard', async ({ page }) => {
-		await shootSurface(page, `${APP}/#/`, 'dashboard.png')
+		await shootSurface(page, `${APP}/`, 'dashboard.png')
 	})
 
 	test('cases list', async ({ page }) => {
-		await shootByNav(page, `${APP}/#/`, 'Cases', 'cases.png')
+		await shootByNav(page, `${APP}/`, 'Cases', 'cases.png')
 	})
 })
