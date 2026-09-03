@@ -577,6 +577,8 @@
         "Linked to contacts": "Связано с контактами",
         "No contacts found.": "Контакты не найдены.",
         "Save to contacts": "Сохранить в контакты",
-        "Search contacts": "Поиск контактов"
+        "Search contacts": "Поиск контактов",
+        "Flow": "Поток",
+        "Flows": "Потоки"
     }
 }

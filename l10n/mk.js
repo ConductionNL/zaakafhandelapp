@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Поврзано со контактите",
         "No contacts found.": "Не се пронајдени контакти.",
         "Save to contacts": "Зачувај во контактите",
-        "Search contacts": "Пребарај контакти"
+        "Search contacts": "Пребарај контакти",
+        "Flow": "Тек",
+        "Flows": "Текови"
     },
     "nplurals=2; plural=(n != 1);"
 )

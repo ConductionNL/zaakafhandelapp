@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Mat de Kontakter verlinkt",
         "No contacts found.": "Keng Kontakter fonnt.",
         "Save to contacts": "An d'Kontakter späicheren",
-        "Search contacts": "Kontakter duerchsichen"
+        "Search contacts": "Kontakter duerchsichen",
+        "Flow": "Oflaf",
+        "Flows": "Ofleef"
     },
     "nplurals=2; plural=(n != 1);"
 )

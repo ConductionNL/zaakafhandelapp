@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Linkitetty yhteystietoihin",
         "No contacts found.": "Yhteystietoja ei löytynyt.",
         "Save to contacts": "Tallenna yhteystietoihin",
-        "Search contacts": "Hae yhteystietoja"
+        "Search contacts": "Hae yhteystietoja",
+        "Flow": "Kulku",
+        "Flows": "Kulut"
     },
     "nplurals=2; plural=(n != 1);"
 )

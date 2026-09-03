@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Nasctha leis na teagmhálacha",
         "No contacts found.": "Níor aimsíodh aon teagmhálacha.",
         "Save to contacts": "Sábháil chuig na teagmhálacha",
-        "Search contacts": "Cuardaigh teagmhálacha"
+        "Search contacts": "Cuardaigh teagmhálacha",
+        "Flow": "Sruth",
+        "Flows": "Sruthanna"
     },
     "nplurals=2; plural=(n != 1);"
 )

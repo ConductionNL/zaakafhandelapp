@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Koblet til kontakter",
         "No contacts found.": "Ingen kontakter funnet.",
         "Save to contacts": "Lagre i kontakter",
-        "Search contacts": "Søk i kontakter"
+        "Search contacts": "Søk i kontakter",
+        "Flow": "Flyt",
+        "Flows": "Flyter"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Saistīts ar kontaktiem",
         "No contacts found.": "Kontakti nav atrasti.",
         "Save to contacts": "Saglabāt kontaktos",
-        "Search contacts": "Meklēt kontaktus"
+        "Search contacts": "Meklēt kontaktus",
+        "Flow": "Plūsma",
+        "Flows": "Plūsmas"
     },
     "nplurals=2; plural=(n != 1);"
 )

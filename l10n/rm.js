@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Collià cun ils contacts",
         "No contacts found.": "Nagins contacts chattads.",
         "Save to contacts": "Memorisar en ils contacts",
-        "Search contacts": "Tschertgar contacts"
+        "Search contacts": "Tschertgar contacts",
+        "Flow": "Flux",
+        "Flows": "Fluxs"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Tengt við tengiliði",
         "No contacts found.": "Engir tengiliðir fundust.",
         "Save to contacts": "Vista í tengiliði",
-        "Search contacts": "Leita í tengiliðum"
+        "Search contacts": "Leita í tengiliðum",
+        "Flow": "Ferli",
+        "Flows": "Ferli"
     },
     "nplurals=2; plural=(n != 1);"
 )

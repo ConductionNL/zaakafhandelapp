@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "I lidhur me kontaktet",
         "No contacts found.": "Nuk u gjet asnjë kontakt.",
         "Save to contacts": "Ruaj te kontaktet",
-        "Search contacts": "Kërko kontakte"
+        "Search contacts": "Kërko kontakte",
+        "Flow": "Rrjedhë",
+        "Flows": "Rrjedha"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Collegato ai contatti",
         "No contacts found.": "Nessun contatto trovato.",
         "Save to contacts": "Salva nei contatti",
-        "Search contacts": "Cerca contatti"
+        "Search contacts": "Cerca contatti",
+        "Flow": "Flusso",
+        "Flows": "Flussi"
     },
     "nplurals=2; plural=(n != 1);"
 )

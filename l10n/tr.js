@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Kişilere bağlı",
         "No contacts found.": "Hiç kişi bulunamadı.",
         "Save to contacts": "Kişilere kaydet",
-        "Search contacts": "Kişileri ara"
+        "Search contacts": "Kişileri ara",
+        "Flow": "Akış",
+        "Flows": "Akışlar"
     },
     "nplurals=2; plural=(n != 1);"
 )

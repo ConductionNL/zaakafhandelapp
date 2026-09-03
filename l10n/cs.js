@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Propojeno s kontakty",
         "No contacts found.": "Nebyly nalezeny žádné kontakty.",
         "Save to contacts": "Uložit do kontaktů",
-        "Search contacts": "Hledat kontakty"
+        "Search contacts": "Hledat kontakty",
+        "Flow": "Tok",
+        "Flows": "Toky"
     },
     "nplurals=2; plural=(n != 1);"
 )

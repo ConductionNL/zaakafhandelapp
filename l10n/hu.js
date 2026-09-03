@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Névjegyekhez kapcsolva",
         "No contacts found.": "Nem található névjegy.",
         "Save to contacts": "Mentés a névjegyekbe",
-        "Search contacts": "Névjegyek keresése"
+        "Search contacts": "Névjegyek keresése",
+        "Flow": "Folyamat",
+        "Flows": "Folyamatok"
     },
     "nplurals=2; plural=(n != 1);"
 )

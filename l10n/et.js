@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Seotud kontaktidega",
         "No contacts found.": "Kontakte ei leitud.",
         "Save to contacts": "Salvesta kontaktidesse",
-        "Search contacts": "Otsi kontakte"
+        "Search contacts": "Otsi kontakte",
+        "Flow": "Voog",
+        "Flows": "Vood"
     },
     "nplurals=2; plural=(n != 1);"
 )

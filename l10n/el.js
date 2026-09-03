@@ -578,7 +578,9 @@ OC.L10N.register(
         "Linked to contacts": "Συνδεδεμένο με επαφές",
         "No contacts found.": "Δεν βρέθηκαν επαφές.",
         "Save to contacts": "Αποθήκευση στις επαφές",
-        "Search contacts": "Αναζήτηση επαφών"
+        "Search contacts": "Αναζήτηση επαφών",
+        "Flow": "Ροή",
+        "Flows": "Ροές"
     },
     "nplurals=2; plural=(n != 1);"
 )
