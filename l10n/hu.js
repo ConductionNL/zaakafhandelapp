@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Mentés a névjegyekbe",
         "Search contacts": "Névjegyek keresése",
         "Flow": "Folyamat",
-        "Flows": "Folyamatok"
+        "Flows": "Folyamatok",
+        "Where the automation lives": "Hol él az automatizálás",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "A folyamatok az, ami kattintás nélkül történik. Itt olvashatja és szerkesztheti őket.",
+        "Open Flows in the menu": "Nyissa meg a Folyamatok menüpontot"
     },
     "nplurals=2; plural=(n != 1);"
 )

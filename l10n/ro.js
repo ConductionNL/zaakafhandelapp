@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Salvează în contacte",
         "Search contacts": "Caută contacte",
         "Flow": "Flux",
-        "Flows": "Fluxuri"
+        "Flows": "Fluxuri",
+        "Where the automation lives": "Unde trăiește automatizarea",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Fluxurile sunt ceea ce se întâmplă fără niciun clic. Citiți-le și editați-le aici.",
+        "Open Flows in the menu": "Deschideți Fluxuri din meniu"
     },
     "nplurals=2; plural=(n != 1);"
 )

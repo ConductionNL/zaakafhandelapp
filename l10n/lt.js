@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Įrašyti į kontaktus",
         "Search contacts": "Ieškoti kontaktų",
         "Flow": "Srautas",
-        "Flows": "Srautai"
+        "Flows": "Srautai",
+        "Where the automation lives": "Kur gyvena automatizavimas",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Srautai yra tai, kas vyksta niekam nespaudžiant. Skaitykite ir redaguokite juos čia.",
+        "Open Flows in the menu": "Atverkite Srautai meniu"
     },
     "nplurals=2; plural=(n != 1);"
 )

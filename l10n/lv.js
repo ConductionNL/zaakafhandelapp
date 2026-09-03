@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Saglabāt kontaktos",
         "Search contacts": "Meklēt kontaktus",
         "Flow": "Plūsma",
-        "Flows": "Plūsmas"
+        "Flows": "Plūsmas",
+        "Where the automation lives": "Kur mīt automatizācija",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Plūsmas ir tas, kas notiek bez klikšķa. Lasiet un rediģējiet tās šeit.",
+        "Open Flows in the menu": "Atveriet Plūsmas izvēlnē"
     },
     "nplurals=2; plural=(n != 1);"
 )

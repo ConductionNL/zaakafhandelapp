@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Сачувај у контакте",
         "Search contacts": "Претражи контакте",
         "Flow": "Ток",
-        "Flows": "Токови"
+        "Flows": "Токови",
+        "Where the automation lives": "Где живи аутоматизација",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Токови су оно што се дешава без иједног клика. Читајте их и уређујте овде.",
+        "Open Flows in the menu": "Отворите Токови у менију"
     },
     "nplurals=2; plural=(n != 1);"
 )

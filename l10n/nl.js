@@ -642,7 +642,10 @@ OC.L10N.register(
         "tasks": "taken",
         "contacts": "contacten",
         "Flow": "Flow",
-        "Flows": "Flows"
+        "Flows": "Flows",
+        "Where the automation lives": "Waar de automatisering zit",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Flows zijn wat er gebeurt zonder dat iemand klikt. Lees en bewerk ze hier.",
+        "Open Flows in the menu": "Open Flows in het menu"
     },
     "nplurals=2; plural=(n != 1);"
 )

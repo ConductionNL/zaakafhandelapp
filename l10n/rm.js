@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Memorisar en ils contacts",
         "Search contacts": "Tschertgar contacts",
         "Flow": "Flux",
-        "Flows": "Fluxs"
+        "Flows": "Fluxs",
+        "Where the automation lives": "Nua che l'automatisaziun viva",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Ils fluxs èn quai che capita senza che insatgi cliccia. Legia e modifitgescha els qua.",
+        "Open Flows in the menu": "Avra Fluxs en il menu"
     },
     "nplurals=2; plural=(n != 1);"
 )

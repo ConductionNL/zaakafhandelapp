@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Lagre i kontakter",
         "Search contacts": "Søk i kontakter",
         "Flow": "Flyt",
-        "Flows": "Flyter"
+        "Flows": "Flyter",
+        "Where the automation lives": "Der automatiseringen bor",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Flyter er det som skjer uten at noen klikker. Les og rediger dem her.",
+        "Open Flows in the menu": "Åpne Flyter i menyen"
     },
     "nplurals=2; plural=(n != 1);"
 )

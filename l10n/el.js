@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Αποθήκευση στις επαφές",
         "Search contacts": "Αναζήτηση επαφών",
         "Flow": "Ροή",
-        "Flows": "Ροές"
+        "Flows": "Ροές",
+        "Where the automation lives": "Πού ζει η αυτοματοποίηση",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Οι ροές είναι αυτό που συμβαίνει χωρίς κανένα κλικ. Διαβάστε και επεξεργαστείτε τες εδώ.",
+        "Open Flows in the menu": "Ανοίξτε τις Ροές στο μενού"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "In Kontakten speichern",
         "Search contacts": "Kontakte durchsuchen",
         "Flow": "Ablauf",
-        "Flows": "Abläufe"
+        "Flows": "Abläufe",
+        "Where the automation lives": "Wo die Automatisierung lebt",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Abläufe sind das, was ohne Klick passiert. Lesen und bearbeiten Sie sie hier.",
+        "Open Flows in the menu": "Öffnen Sie Abläufe im Menü"
     },
     "nplurals=2; plural=(n != 1);"
 )

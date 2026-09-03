@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Tallenna yhteystietoihin",
         "Search contacts": "Hae yhteystietoja",
         "Flow": "Kulku",
-        "Flows": "Kulut"
+        "Flows": "Kulut",
+        "Where the automation lives": "Missä automaatio asuu",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Kulut ovat sitä, mitä tapahtuu ilman napsautusta. Lue ja muokkaa niitä täällä.",
+        "Open Flows in the menu": "Avaa Kulut valikosta"
     },
     "nplurals=2; plural=(n != 1);"
 )

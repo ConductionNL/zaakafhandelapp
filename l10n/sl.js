@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Shrani med stike",
         "Search contacts": "Išči stike",
         "Flow": "Tok",
-        "Flows": "Tokovi"
+        "Flows": "Tokovi",
+        "Where the automation lives": "Kje živi avtomatizacija",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Tokovi so tisto, kar se zgodi brez klika. Tu jih berite in urejajte.",
+        "Open Flows in the menu": "Odprite Tokovi v meniju"
     },
     "nplurals=2; plural=(n != 1);"
 )

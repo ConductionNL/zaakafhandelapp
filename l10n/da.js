@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Gem i kontakter",
         "Search contacts": "Søg i kontakter",
         "Flow": "Flow",
-        "Flows": "Flows"
+        "Flows": "Flows",
+        "Where the automation lives": "Hvor automatiseringen bor",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Flows er det, der sker, uden at nogen klikker. Læs og rediger dem her.",
+        "Open Flows in the menu": "Åbn Flows i menuen"
     },
     "nplurals=2; plural=(n != 1);"
 )

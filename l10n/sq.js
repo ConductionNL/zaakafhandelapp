@@ -580,7 +580,10 @@ OC.L10N.register(
         "Save to contacts": "Ruaj te kontaktet",
         "Search contacts": "Kërko kontakte",
         "Flow": "Rrjedhë",
-        "Flows": "Rrjedha"
+        "Flows": "Rrjedha",
+        "Where the automation lives": "Ku jeton automatizimi",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Rrjedhat janë ajo që ndodh pa klikuar askush. Lexojini dhe redaktojini këtu.",
+        "Open Flows in the menu": "Hapni Rrjedhat në meny"
     },
     "nplurals=2; plural=(n != 1);"
 )
