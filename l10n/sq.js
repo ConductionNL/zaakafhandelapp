@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Rrjedha",
         "Where the automation lives": "Ku jeton automatizimi",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Rrjedhat janë ajo që ndodh pa klikuar askush. Lexojini dhe redaktojini këtu.",
-        "Open Flows in the menu": "Hapni Rrjedhat në meny"
+        "Open Flows in the menu": "Hapni Rrjedhat në meny",
+        "Reports": "Raportet",
+        "Pick a report to open it.": "Zgjidhni një raport për të hapur.",
+        "Who changed what, and when.": "Kush ndryshoi çfarë, dhe kur."
     },
     "nplurals=2; plural=(n != 1);"
 )

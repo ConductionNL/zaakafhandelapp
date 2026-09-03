@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Fluxos",
         "Where the automation lives": "On viu l'automatització",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Els fluxos són el que passa sense que ningú faci clic. Llegiu-los i editeu-los aquí.",
-        "Open Flows in the menu": "Obriu Fluxos al menú"
+        "Open Flows in the menu": "Obriu Fluxos al menú",
+        "Reports": "Informes",
+        "Pick a report to open it.": "Trieu un informe per obrir-lo.",
+        "Who changed what, and when.": "Qui va canviar què, i quan."
     },
     "nplurals=2; plural=(n != 1);"
 )

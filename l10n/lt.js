@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Srautai",
         "Where the automation lives": "Kur gyvena automatizavimas",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Srautai yra tai, kas vyksta niekam nespaudžiant. Skaitykite ir redaguokite juos čia.",
-        "Open Flows in the menu": "Atverkite Srautai meniu"
+        "Open Flows in the menu": "Atverkite Srautai meniu",
+        "Reports": "Ataskaitos",
+        "Pick a report to open it.": "Pasirinkite ataskaitą, kad ją atidarytumėte.",
+        "Who changed what, and when.": "Kas ką pakeitė ir kada."
     },
     "nplurals=2; plural=(n != 1);"
 )

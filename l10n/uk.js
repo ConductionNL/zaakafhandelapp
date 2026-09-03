@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Потоки",
         "Where the automation lives": "Де живе автоматизація",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Потоки це те, що відбувається без жодного кліку. Читайте та редагуйте їх тут.",
-        "Open Flows in the menu": "Відкрийте Потоки в меню"
+        "Open Flows in the menu": "Відкрийте Потоки в меню",
+        "Reports": "Звіти",
+        "Pick a report to open it.": "Виберіть звіт, щоб відкрити його.",
+        "Who changed what, and when.": "Хто що змінив і коли."
     },
     "nplurals=2; plural=(n != 1);"
 )

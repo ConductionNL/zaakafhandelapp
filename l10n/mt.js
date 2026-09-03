@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Flussi",
         "Where the automation lives": "Fejn tgħix l-awtomatizzazzjoni",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Il-flussi huma dak li jiġri mingħajr ma ħadd jikklikkja. Aqrahom u editjahom hawn.",
-        "Open Flows in the menu": "Iftaħ Flussi fil-menu"
+        "Open Flows in the menu": "Iftaħ Flussi fil-menu",
+        "Reports": "Rapporti",
+        "Pick a report to open it.": "Agħżel rapport biex tiftaħ.",
+        "Who changed what, and when.": "Min biddel xiex, u meta."
     },
     "nplurals=2; plural=(n != 1);"
 )

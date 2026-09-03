@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Kulut",
         "Where the automation lives": "Missä automaatio asuu",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Kulut ovat sitä, mitä tapahtuu ilman napsautusta. Lue ja muokkaa niitä täällä.",
-        "Open Flows in the menu": "Avaa Kulut valikosta"
+        "Open Flows in the menu": "Avaa Kulut valikosta",
+        "Reports": "Raportit",
+        "Pick a report to open it.": "Valitse raportti avataksesi sen.",
+        "Who changed what, and when.": "Kuka muutti mitä ja milloin."
     },
     "nplurals=2; plural=(n != 1);"
 )

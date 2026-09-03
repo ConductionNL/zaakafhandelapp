@@ -582,6 +582,9 @@
         "Flows": "Flux",
         "Where the automation lives": "Où vit l'automatisation",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Les flux sont ce qui se passe sans que personne ne clique. Lisez-les et modifiez-les ici.",
-        "Open Flows in the menu": "Ouvrez Flux dans le menu"
+        "Open Flows in the menu": "Ouvrez Flux dans le menu",
+        "Reports": "Rapports",
+        "Pick a report to open it.": "Choisissez un rapport pour l'ouvrir.",
+        "Who changed what, and when.": "Qui a changé quoi, et quand."
     }
 }

@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Fluxs",
         "Where the automation lives": "Nua che l'automatisaziun viva",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Ils fluxs èn quai che capita senza che insatgi cliccia. Legia e modifitgescha els qua.",
-        "Open Flows in the menu": "Avra Fluxs en il menu"
+        "Open Flows in the menu": "Avra Fluxs en il menu",
+        "Reports": "Rapports",
+        "Pick a report to open it.": "Tscherni in rapport per l'avrir.",
+        "Who changed what, and when.": "Tgi ha midà tge, e cura."
     },
     "nplurals=2; plural=(n != 1);"
 )

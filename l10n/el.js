@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Ροές",
         "Where the automation lives": "Πού ζει η αυτοματοποίηση",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Οι ροές είναι αυτό που συμβαίνει χωρίς κανένα κλικ. Διαβάστε και επεξεργαστείτε τες εδώ.",
-        "Open Flows in the menu": "Ανοίξτε τις Ροές στο μενού"
+        "Open Flows in the menu": "Ανοίξτε τις Ροές στο μενού",
+        "Reports": "Εκθέσεις",
+        "Pick a report to open it.": "Επιλέξτε μια αναφορά για να την ανοίξετε.",
+        "Who changed what, and when.": "Ποιος άλλαξε τι, και πότε."
     },
     "nplurals=2; plural=(n != 1);"
 )

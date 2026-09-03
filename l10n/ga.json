@@ -582,6 +582,9 @@
         "Flows": "Sruthanna",
         "Where the automation lives": "Áit a maireann an uathoibriú",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Is iad na sruthanna a tharlaíonn gan cliceáil ar bith. Léigh agus cuir in eagar iad anseo.",
-        "Open Flows in the menu": "Oscail Sruthanna sa roghchlár"
+        "Open Flows in the menu": "Oscail Sruthanna sa roghchlár",
+        "Reports": "Tuarascálacha",
+        "Pick a report to open it.": "Roghnaigh tuarascáil chun í a oscailt.",
+        "Who changed what, and when.": "Cé a d'athraigh cad é, agus cathain."
     }
 }
