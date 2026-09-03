@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Kişilere bağlı",
         "No contacts found.": "Hiç kişi bulunamadı.",
         "Save to contacts": "Kişilere kaydet",
-        "Search contacts": "Kişileri ara"
+        "Search contacts": "Kişileri ara",
+        "Flow": "Akış",
+        "Flows": "Akışlar",
+        "Where the automation lives": "Otomasyon nerede yaşar",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Akışlar, kimse tıklamadan olan şeylerdir. Onları burada okuyun ve düzenleyin.",
+        "Open Flows in the menu": "Menüden Akışlar'ı açın"
     },
     "nplurals=2; plural=(n != 1);"
 )

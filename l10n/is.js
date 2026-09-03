@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Tengt við tengiliði",
         "No contacts found.": "Engir tengiliðir fundust.",
         "Save to contacts": "Vista í tengiliði",
-        "Search contacts": "Leita í tengiliðum"
+        "Search contacts": "Leita í tengiliðum",
+        "Flow": "Ferli",
+        "Flows": "Ferli",
+        "Where the automation lives": "Hvar sjálfvirknin býr",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Ferli eru það sem gerist án þess að nokkur smelli. Lestu og breyttu þeim hér.",
+        "Open Flows in the menu": "Opnaðu Ferli í valmyndinni"
     },
     "nplurals=2; plural=(n != 1);"
 )

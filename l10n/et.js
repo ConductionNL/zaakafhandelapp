@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Seotud kontaktidega",
         "No contacts found.": "Kontakte ei leitud.",
         "Save to contacts": "Salvesta kontaktidesse",
-        "Search contacts": "Otsi kontakte"
+        "Search contacts": "Otsi kontakte",
+        "Flow": "Voog",
+        "Flows": "Vood",
+        "Where the automation lives": "Kus automaatika elab",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Vood on see, mis juhtub ilma klõpsamiseta. Lugege ja muutke neid siin.",
+        "Open Flows in the menu": "Avage menüüs Vood"
     },
     "nplurals=2; plural=(n != 1);"
 )

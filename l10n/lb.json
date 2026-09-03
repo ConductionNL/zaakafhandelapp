@@ -577,6 +577,11 @@
         "Linked to contacts": "Mat de Kontakter verlinkt",
         "No contacts found.": "Keng Kontakter fonnt.",
         "Save to contacts": "An d'Kontakter späicheren",
-        "Search contacts": "Kontakter duerchsichen"
+        "Search contacts": "Kontakter duerchsichen",
+        "Flow": "Oflaf",
+        "Flows": "Ofleef",
+        "Where the automation lives": "Wou d'Automatisatioun wunnt",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Ofleef sinn dat, wat ouni Klick geschitt. Liest a beaarbecht se hei.",
+        "Open Flows in the menu": "Maacht Ofleef am Menü op"
     }
 }

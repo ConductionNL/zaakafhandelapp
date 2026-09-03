@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Связано с контактами",
         "No contacts found.": "Контакты не найдены.",
         "Save to contacts": "Сохранить в контакты",
-        "Search contacts": "Поиск контактов"
+        "Search contacts": "Поиск контактов",
+        "Flow": "Поток",
+        "Flows": "Потоки",
+        "Where the automation lives": "Где живёт автоматизация",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Потоки это то, что происходит без единого клика. Читайте и редактируйте их здесь.",
+        "Open Flows in the menu": "Откройте Потоки в меню"
     },
     "nplurals=2; plural=(n != 1);"
 )

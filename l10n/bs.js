@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Povezano s kontaktima",
         "No contacts found.": "Nijedan kontakt nije pronađen.",
         "Save to contacts": "Sačuvaj u kontakte",
-        "Search contacts": "Pretraži kontakte"
+        "Search contacts": "Pretraži kontakte",
+        "Flow": "Tok",
+        "Flows": "Tokovi",
+        "Where the automation lives": "Gdje živi automatizacija",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Tokovi su ono što se dešava bez ijednog klika. Čitajte ih i uređujte ovdje.",
+        "Open Flows in the menu": "Otvorite Tokovi u meniju"
     },
     "nplurals=2; plural=(n != 1);"
 )

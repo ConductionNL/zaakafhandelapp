@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Collegato ai contatti",
         "No contacts found.": "Nessun contatto trovato.",
         "Save to contacts": "Salva nei contatti",
-        "Search contacts": "Cerca contatti"
+        "Search contacts": "Cerca contatti",
+        "Flow": "Flusso",
+        "Flows": "Flussi",
+        "Where the automation lives": "Dove vive l'automazione",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "I flussi sono ciò che accade senza che nessuno faccia clic. Leggili e modificali qui.",
+        "Open Flows in the menu": "Apri Flussi nel menu"
     },
     "nplurals=2; plural=(n != 1);"
 )

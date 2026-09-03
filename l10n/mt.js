@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Marbut mal-kuntatti",
         "No contacts found.": "Ma nstab l-ebda kuntatt.",
         "Save to contacts": "Issejvja fil-kuntatti",
-        "Search contacts": "Fittex il-kuntatti"
+        "Search contacts": "Fittex il-kuntatti",
+        "Flow": "Fluss",
+        "Flows": "Flussi",
+        "Where the automation lives": "Fejn tgħix l-awtomatizzazzjoni",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Il-flussi huma dak li jiġri mingħajr ma ħadd jikklikkja. Aqrahom u editjahom hawn.",
+        "Open Flows in the menu": "Iftaħ Flussi fil-menu"
     },
     "nplurals=2; plural=(n != 1);"
 )

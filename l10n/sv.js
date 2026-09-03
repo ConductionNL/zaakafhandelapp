@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Länkad till kontakter",
         "No contacts found.": "Inga kontakter hittades.",
         "Save to contacts": "Spara till kontakter",
-        "Search contacts": "Sök kontakter"
+        "Search contacts": "Sök kontakter",
+        "Flow": "Flöde",
+        "Flows": "Flöden",
+        "Where the automation lives": "Var automatiseringen bor",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Flöden är det som händer utan att någon klickar. Läs och redigera dem här.",
+        "Open Flows in the menu": "Öppna Flöden i menyn"
     },
     "nplurals=2; plural=(n != 1);"
 )

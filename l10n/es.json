@@ -577,6 +577,11 @@
         "Linked to contacts": "Vinculado a contactos",
         "No contacts found.": "No se encontraron contactos.",
         "Save to contacts": "Guardar en contactos",
-        "Search contacts": "Buscar contactos"
+        "Search contacts": "Buscar contactos",
+        "Flow": "Flujo",
+        "Flows": "Flujos",
+        "Where the automation lives": "Dónde vive la automatización",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Los flujos son lo que ocurre sin que nadie haga clic. Léalos y edítelos aquí.",
+        "Open Flows in the menu": "Abra Flujos en el menú"
     }
 }

@@ -577,6 +577,11 @@
         "Linked to contacts": "I lidhur me kontaktet",
         "No contacts found.": "Nuk u gjet asnjë kontakt.",
         "Save to contacts": "Ruaj te kontaktet",
-        "Search contacts": "Kërko kontakte"
+        "Search contacts": "Kërko kontakte",
+        "Flow": "Rrjedhë",
+        "Flows": "Rrjedha",
+        "Where the automation lives": "Ku jeton automatizimi",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Rrjedhat janë ajo që ndodh pa klikuar askush. Lexojini dhe redaktojini këtu.",
+        "Open Flows in the menu": "Hapni Rrjedhat në meny"
     }
 }

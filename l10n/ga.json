@@ -577,6 +577,11 @@
         "Linked to contacts": "Nasctha leis na teagmhálacha",
         "No contacts found.": "Níor aimsíodh aon teagmhálacha.",
         "Save to contacts": "Sábháil chuig na teagmhálacha",
-        "Search contacts": "Cuardaigh teagmhálacha"
+        "Search contacts": "Cuardaigh teagmhálacha",
+        "Flow": "Sruth",
+        "Flows": "Sruthanna",
+        "Where the automation lives": "Áit a maireann an uathoibriú",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Is iad na sruthanna a tharlaíonn gan cliceáil ar bith. Léigh agus cuir in eagar iad anseo.",
+        "Open Flows in the menu": "Oscail Sruthanna sa roghchlár"
     }
 }

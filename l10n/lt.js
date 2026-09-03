@@ -578,7 +578,12 @@ OC.L10N.register(
         "Linked to contacts": "Susieta su kontaktais",
         "No contacts found.": "Kontaktų nerasta.",
         "Save to contacts": "Įrašyti į kontaktus",
-        "Search contacts": "Ieškoti kontaktų"
+        "Search contacts": "Ieškoti kontaktų",
+        "Flow": "Srautas",
+        "Flows": "Srautai",
+        "Where the automation lives": "Kur gyvena automatizavimas",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Srautai yra tai, kas vyksta niekam nespaudžiant. Skaitykite ir redaguokite juos čia.",
+        "Open Flows in the menu": "Atverkite Srautai meniu"
     },
     "nplurals=2; plural=(n != 1);"
 )
