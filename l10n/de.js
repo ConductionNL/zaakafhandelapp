@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Abläufe",
         "Where the automation lives": "Wo die Automatisierung lebt",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Abläufe sind das, was ohne Klick passiert. Lesen und bearbeiten Sie sie hier.",
-        "Open Flows in the menu": "Öffnen Sie Abläufe im Menü"
+        "Open Flows in the menu": "Öffnen Sie Abläufe im Menü",
+        "Reports": "Berichte",
+        "Pick a report to open it.": "Wählen Sie einen Bericht, um ihn zu öffnen.",
+        "Who changed what, and when.": "Wer was geändert hat, und wann."
     },
     "nplurals=2; plural=(n != 1);"
 )

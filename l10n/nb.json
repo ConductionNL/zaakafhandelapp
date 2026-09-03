@@ -582,6 +582,9 @@
         "Flows": "Flyter",
         "Where the automation lives": "Der automatiseringen bor",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Flyter er det som skjer uten at noen klikker. Les og rediger dem her.",
-        "Open Flows in the menu": "Åpne Flyter i menyen"
+        "Open Flows in the menu": "Åpne Flyter i menyen",
+        "Reports": "Rapporter",
+        "Pick a report to open it.": "Velg en rapport for å åpne den.",
+        "Who changed what, and when.": "Hvem endret hva, og når."
     }
 }

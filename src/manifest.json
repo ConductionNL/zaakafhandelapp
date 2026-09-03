@@ -148,7 +148,14 @@
 		},
 		{ "id": "Zaaktypen",    "label": "Case types",  "icon": "FolderCogOutline",      "route": "Zaaktypen", "section": "settings", "order": 10 },
 		{ "id": "Rollen",       "label": "Roles",       "icon": "AccountKeyOutline", "route": "Rollen",    "section": "settings", "order": 20 },
-		{ "id": "AuditTrail",   "label": "Audit trail", "icon": "History",    "route": "AuditTrail","section": "settings", "order": 30 },
+		{
+			"id": "ReportsMenu",
+			"label": "Reports",
+			"icon": "ChartBoxOutline",
+			"route": "Reports",
+			"section": "footer",
+			"order": 95
+		},
 		{
 			"id": "Documentation",
 			"label": "Documentation",
@@ -1077,6 +1084,25 @@
 				"documentationUrl": "https://zaakafhandelapp.conduction.nl"
 			},
 			"_note": "Cross-register search surface — defaults to the zaak index; richer ZGW-API multi-register search lands when the lib gains a non-OR data-source abstraction"
+		},
+		{
+			"id": "Reports",
+			"route": "/reports",
+			"type": "reports",
+			"title": "Reports",
+			"config": {
+				"description": "Pick a report to open it.",
+				"cards": [
+					{
+						"id": "AuditTrail",
+						"label": "Audit trail",
+						"description": "Who changed what, and when.",
+						"icon": "History",
+						"route": "AuditTrail"
+					}
+				]
+			},
+			"_note": "ADR-112 / ADR-114 Decision 3. Nothing is invented: the audit trail already existed and was an entry in the SETTINGS foldout, which is where configuration belongs (ADR-044 Decision 3) and an audit trail is not configuration — it is a reading of what happened. The page is untouched and stays routable at /auditTrail; only its menu entry moves, because a report is a card or an entry, never both (ADR-112 Decision 2)."
 		},
 		{
 			"id": "AuditTrail",

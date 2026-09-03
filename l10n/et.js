@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Vood",
         "Where the automation lives": "Kus automaatika elab",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Vood on see, mis juhtub ilma klõpsamiseta. Lugege ja muutke neid siin.",
-        "Open Flows in the menu": "Avage menüüs Vood"
+        "Open Flows in the menu": "Avage menüüs Vood",
+        "Reports": "Aruanded",
+        "Pick a report to open it.": "Valige aruanne, et see avada.",
+        "Who changed what, and when.": "Kes mida muutis ja millal."
     },
     "nplurals=2; plural=(n != 1);"
 )

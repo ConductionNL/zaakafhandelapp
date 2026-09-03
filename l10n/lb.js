@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Ofleef",
         "Where the automation lives": "Wou d'Automatisatioun wunnt",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Ofleef sinn dat, wat ouni Klick geschitt. Liest a beaarbecht se hei.",
-        "Open Flows in the menu": "Maacht Ofleef am Menü op"
+        "Open Flows in the menu": "Maacht Ofleef am Menü op",
+        "Reports": "Berichter",
+        "Pick a report to open it.": "Wielt e Bericht fir hien opzemaachen.",
+        "Who changed what, and when.": "Wien wat geännert huet, a wéini."
     },
     "nplurals=2; plural=(n != 1);"
 )

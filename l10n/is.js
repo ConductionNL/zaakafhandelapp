@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Ferli",
         "Where the automation lives": "Hvar sjálfvirknin býr",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Ferli eru það sem gerist án þess að nokkur smelli. Lestu og breyttu þeim hér.",
-        "Open Flows in the menu": "Opnaðu Ferli í valmyndinni"
+        "Open Flows in the menu": "Opnaðu Ferli í valmyndinni",
+        "Reports": "Skýrslur",
+        "Pick a report to open it.": "Veldu skýrslu til að opna hana.",
+        "Who changed what, and when.": "Hver breytti hverju og hvenær."
     },
     "nplurals=2; plural=(n != 1);"
 )

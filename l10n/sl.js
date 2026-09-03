@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Tokovi",
         "Where the automation lives": "Kje živi avtomatizacija",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Tokovi so tisto, kar se zgodi brez klika. Tu jih berite in urejajte.",
-        "Open Flows in the menu": "Odprite Tokovi v meniju"
+        "Open Flows in the menu": "Odprite Tokovi v meniju",
+        "Reports": "Poročila",
+        "Pick a report to open it.": "Izberite poročilo, da ga odprete.",
+        "Who changed what, and when.": "Kdo je kaj spremenil in kdaj."
     },
     "nplurals=2; plural=(n != 1);"
 )

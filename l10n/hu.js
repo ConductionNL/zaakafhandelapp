@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Folyamatok",
         "Where the automation lives": "Hol él az automatizálás",
         "Flows are what happens without anyone clicking. Read and edit them here.": "A folyamatok az, ami kattintás nélkül történik. Itt olvashatja és szerkesztheti őket.",
-        "Open Flows in the menu": "Nyissa meg a Folyamatok menüpontot"
+        "Open Flows in the menu": "Nyissa meg a Folyamatok menüpontot",
+        "Reports": "Jelentések",
+        "Pick a report to open it.": "Válasszon egy jelentést a megnyitásához.",
+        "Who changed what, and when.": "Ki mit változtatott, és mikor."
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -583,7 +583,10 @@ OC.L10N.register(
         "Flows": "Akışlar",
         "Where the automation lives": "Otomasyon nerede yaşar",
         "Flows are what happens without anyone clicking. Read and edit them here.": "Akışlar, kimse tıklamadan olan şeylerdir. Onları burada okuyun ve düzenleyin.",
-        "Open Flows in the menu": "Menüden Akışlar'ı açın"
+        "Open Flows in the menu": "Menüden Akışlar'ı açın",
+        "Reports": "Raporlar",
+        "Pick a report to open it.": "Açmak için bir rapor seçin.",
+        "Who changed what, and when.": "Kim neyi ne zaman değiştirdi."
     },
     "nplurals=2; plural=(n != 1);"
 )
