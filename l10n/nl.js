@@ -1,8 +1,6 @@
 OC.L10N.register(
     "zaakafhandelapp",
     {
-        "Flows": "Flows",
-        "Flow": "Flow",
         "Start case": "Zaak starten",
         "Cases": "Zaken",
         "Tasks": "Taken",
@@ -642,7 +640,9 @@ OC.L10N.register(
         "You're all set": "U bent klaar om te beginnen",
         "cases": "zaken",
         "tasks": "taken",
-        "contacts": "contacten"
+        "contacts": "contacten",
+        "Flow": "Flow",
+        "Flows": "Flows"
     },
     "nplurals=2; plural=(n != 1);"
 )
