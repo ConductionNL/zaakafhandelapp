@@ -639,6 +639,8 @@
         "You're all set": "U bent klaar om te beginnen",
         "cases": "zaken",
         "tasks": "taken",
-        "contacts": "contacten"
+        "contacts": "contacten",
+        "Flow": "Flow",
+        "Flows": "Flows"
     }
 }

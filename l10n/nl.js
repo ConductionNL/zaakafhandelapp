@@ -1,6 +1,8 @@
 OC.L10N.register(
     "zaakafhandelapp",
     {
+        "Flows": "Flows",
+        "Flow": "Flow",
         "Start case": "Zaak starten",
         "Cases": "Zaken",
         "Tasks": "Taken",

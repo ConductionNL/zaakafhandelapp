@@ -145,7 +145,15 @@
 			"icon": "MapMarkerPath",
 			"route": "FeaturesRoadmap",
 			"section": "footer",
-			"order": 91
+			"order": 100
+		},
+		{
+			"id": "FlowsMenu",
+			"label": "Flows",
+			"icon": "SitemapOutline",
+			"route": "Flows",
+			"section": "settings",
+			"order": 96
 		}
 	],
 	"pages": [
@@ -1062,6 +1070,28 @@
 				"schema": "zaak"
 			},
 			"_note": "ZGW-API audittrail endpoint integration deferred; uses the OR audit-trail surface for now"
+		},
+		{
+			"id": "Flows",
+			"route": "/flows",
+			"type": "index",
+			"title": "Flows",
+			"config": {
+				"entitySource": "flows",
+				"app": "zaakafhandelapp",
+				"rowRoute": "FlowDetail"
+			},
+			"_note": "ADR-110 Decision 4. type:\"index\" over the NAMED flows source, which is the canonical shape: a flow lives in OpenRegister's native flow store, not a register/schema pair, so the object-backed index cannot address it, and nextcloud-vue marks the dedicated `flows` page type deprecated. rowRoute names FlowDetail by route NAME, without which the row click and the Edit action fall back to the source's own /flows path rather than the page declared here."
+		},
+		{
+			"id": "FlowDetail",
+			"route": "/flows/:id",
+			"type": "flow",
+			"title": "Flow",
+			"config": {
+				"app": "zaakafhandelapp"
+			},
+			"_note": "The shared CnFlowDetail canvas over the same single engine (ADR-065), scoped to this app."
 		}
 	]
 }
