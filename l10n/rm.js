@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Avra Fluxs en il menu",
         "Reports": "Rapports",
         "Pick a report to open it.": "Tscherni in rapport per l'avrir.",
-        "Who changed what, and when.": "Tgi ha midà tge, e cura."
+        "Who changed what, and when.": "Tgi ha midà tge, e cura.",
+        "Store": "Butia",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installescha registers, schemas e process ch'autras organisaziuns han publitgà."
     },
     "nplurals=2; plural=(n != 1);"
 )

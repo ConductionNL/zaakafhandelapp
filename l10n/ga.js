@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Oscail Sruthanna sa roghchlár",
         "Reports": "Tuarascálacha",
         "Pick a report to open it.": "Roghnaigh tuarascáil chun í a oscailt.",
-        "Who changed what, and when.": "Cé a d'athraigh cad é, agus cathain."
+        "Who changed what, and when.": "Cé a d'athraigh cad é, agus cathain.",
+        "Store": "Siopa",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Suiteáil cláir, scéimeanna agus sruthanna a d'fhoilsigh eagraíochtaí eile."
     },
     "nplurals=2; plural=(n != 1);"
 )

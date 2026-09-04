@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Otvorte Toky v ponuke",
         "Reports": "Reporty",
         "Pick a report to open it.": "Vyberte report a otvorte ho.",
-        "Who changed what, and when.": "Kto čo zmenil a kedy."
+        "Who changed what, and when.": "Kto čo zmenil a kedy.",
+        "Store": "Obchod",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Nainštalujte registre, schémy a toky zverejnené inými organizáciami."
     }
 }

@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Nyissa meg a Folyamatok menüpontot",
         "Reports": "Jelentések",
         "Pick a report to open it.": "Válasszon egy jelentést a megnyitásához.",
-        "Who changed what, and when.": "Ki mit változtatott, és mikor."
+        "Who changed what, and when.": "Ki mit változtatott, és mikor.",
+        "Store": "Áruház",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Telepítsen más szervezetek által közzétett nyilvántartásokat, sémákat és folyamatokat."
     }
 }

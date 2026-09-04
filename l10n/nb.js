@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Åpne Flyter i menyen",
         "Reports": "Rapporter",
         "Pick a report to open it.": "Velg en rapport for å åpne den.",
-        "Who changed what, and when.": "Hvem endret hva, og når."
+        "Who changed what, and when.": "Hvem endret hva, og når.",
+        "Store": "Butikk",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skjemaer og flyter som andre organisasjoner har publisert."
     },
     "nplurals=2; plural=(n != 1);"
 )

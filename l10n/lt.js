@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Atverkite Srautai meniu",
         "Reports": "Ataskaitos",
         "Pick a report to open it.": "Pasirinkite ataskaitą, kad ją atidarytumėte.",
-        "Who changed what, and when.": "Kas ką pakeitė ir kada."
+        "Who changed what, and when.": "Kas ką pakeitė ir kada.",
+        "Store": "Parduotuvė",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Įdiekite registrus, schemas ir srautus, kuriuos paskelbė kitos organizacijos."
     },
     "nplurals=2; plural=(n != 1);"
 )

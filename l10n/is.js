@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Opnaðu Ferli í valmyndinni",
         "Reports": "Skýrslur",
         "Pick a report to open it.": "Veldu skýrslu til að opna hana.",
-        "Who changed what, and when.": "Hver breytti hverju og hvenær."
+        "Who changed what, and when.": "Hver breytti hverju og hvenær.",
+        "Store": "Verslun",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Settu upp skrár, skemu og flæði sem aðrar stofnanir hafa birt."
     },
     "nplurals=2; plural=(n != 1);"
 )

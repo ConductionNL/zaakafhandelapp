@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Отворете Потоци в менюто",
         "Reports": "Доклади",
         "Pick a report to open it.": "Изберете отчет, за да го отворите.",
-        "Who changed what, and when.": "Кой какво е променил и кога."
+        "Who changed what, and when.": "Кой какво е променил и кога.",
+        "Store": "Магазин",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Инсталирайте регистри, схеми и потоци, публикувани от други организации."
     }
 }

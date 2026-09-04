@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Avage menüüs Vood",
         "Reports": "Aruanded",
         "Pick a report to open it.": "Valige aruanne, et see avada.",
-        "Who changed what, and when.": "Kes mida muutis ja millal."
+        "Who changed what, and when.": "Kes mida muutis ja millal.",
+        "Store": "Pood",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Paigalda registrid, skeemid ja voog, mille teised organisatsioonid on avaldanud."
     },
     "nplurals=2; plural=(n != 1);"
 )

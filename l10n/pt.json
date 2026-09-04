@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Abra Fluxos no menu",
         "Reports": "Relatórios",
         "Pick a report to open it.": "Escolha um relatório para o abrir.",
-        "Who changed what, and when.": "Quem alterou o quê, e quando."
+        "Who changed what, and when.": "Quem alterou o quê, e quando.",
+        "Store": "Loja",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instale registos, esquemas e fluxos publicados por outras organizações."
     }
 }

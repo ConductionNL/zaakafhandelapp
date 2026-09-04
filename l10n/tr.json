@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Menüden Akışlar'ı açın",
         "Reports": "Raporlar",
         "Pick a report to open it.": "Açmak için bir rapor seçin.",
-        "Who changed what, and when.": "Kim neyi ne zaman değiştirdi."
+        "Who changed what, and when.": "Kim neyi ne zaman değiştirdi.",
+        "Store": "Mağaza",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Diğer kuruluşların yayımladığı kayıtları, şemaları ve akışları yükleyin."
     }
 }
