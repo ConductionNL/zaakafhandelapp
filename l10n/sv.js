@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Öppna Flöden i menyn",
         "Reports": "Rapporter",
         "Pick a report to open it.": "Välj en rapport för att öppna den.",
-        "Who changed what, and when.": "Vem ändrade vad, och när."
+        "Who changed what, and when.": "Vem ändrade vad, och när.",
+        "Store": "Butik",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installera register, scheman och flöden som andra organisationer har publicerat."
     },
     "nplurals=2; plural=(n != 1);"
 )

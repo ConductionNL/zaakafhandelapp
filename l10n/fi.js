@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Avaa Kulut valikosta",
         "Reports": "Raportit",
         "Pick a report to open it.": "Valitse raportti avataksesi sen.",
-        "Who changed what, and when.": "Kuka muutti mitä ja milloin."
+        "Who changed what, and when.": "Kuka muutti mitä ja milloin.",
+        "Store": "Kauppa",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Asenna muiden organisaatioiden julkaisemia rekistereitä, skeemoja ja vuokaavioita."
     },
     "nplurals=2; plural=(n != 1);"
 )

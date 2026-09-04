@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Iftaħ Flussi fil-menu",
         "Reports": "Rapporti",
         "Pick a report to open it.": "Agħżel rapport biex tiftaħ.",
-        "Who changed what, and when.": "Min biddel xiex, u meta."
+        "Who changed what, and when.": "Min biddel xiex, u meta.",
+        "Store": "Ħanut",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installa reġistri, skemi u flussi ppubblikati minn organizzazzjonijiet oħra."
     },
     "nplurals=2; plural=(n != 1);"
 )

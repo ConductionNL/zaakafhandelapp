@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Åbn Flows i menuen",
         "Reports": "Rapporter",
         "Pick a report to open it.": "Vælg en rapport for at åbne den.",
-        "Who changed what, and when.": "Hvem ændrede hvad, og hvornår."
+        "Who changed what, and when.": "Hvem ændrede hvad, og hvornår.",
+        "Store": "Butik",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skemaer og flows, som andre organisationer har udgivet."
     }
 }

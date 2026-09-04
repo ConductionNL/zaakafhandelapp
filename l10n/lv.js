@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Atveriet Plūsmas izvēlnē",
         "Reports": "Pārskati",
         "Pick a report to open it.": "Izvēlieties pārskatu, lai to atvērtu.",
-        "Who changed what, and when.": "Kurš ko mainīja un kad."
+        "Who changed what, and when.": "Kurš ko mainīja un kad.",
+        "Store": "Veikals",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalējiet reģistrus, shēmas un plūsmas, ko publicējušas citas organizācijas."
     },
     "nplurals=2; plural=(n != 1);"
 )

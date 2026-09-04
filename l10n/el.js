@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Ανοίξτε τις Ροές στο μενού",
         "Reports": "Εκθέσεις",
         "Pick a report to open it.": "Επιλέξτε μια αναφορά για να την ανοίξετε.",
-        "Who changed what, and when.": "Ποιος άλλαξε τι, και πότε."
+        "Who changed what, and when.": "Ποιος άλλαξε τι, και πότε.",
+        "Store": "Κατάστημα",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Εγκαταστήστε μητρώα, σχήματα και ροές που έχουν δημοσιεύσει άλλοι οργανισμοί."
     },
     "nplurals=2; plural=(n != 1);"
 )

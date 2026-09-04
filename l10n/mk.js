@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Отворете Текови во менито",
         "Reports": "Извештаи",
         "Pick a report to open it.": "Изберете извештај за да го отворите.",
-        "Who changed what, and when.": "Кој што променил и кога."
+        "Who changed what, and when.": "Кој што променил и кога.",
+        "Store": "Продавница",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Инсталирајте регистри, шеми и текови објавени од други организации."
     },
     "nplurals=2; plural=(n != 1);"
 )

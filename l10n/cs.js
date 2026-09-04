@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Otevřete Toky v nabídce",
         "Reports": "Reporty",
         "Pick a report to open it.": "Vyberte report a otevřete jej.",
-        "Who changed what, and when.": "Kdo co změnil a kdy."
+        "Who changed what, and when.": "Kdo co změnil a kdy.",
+        "Store": "Obchod",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Nainstalujte registry, schémata a toky zveřejněné jinými organizacemi."
     },
     "nplurals=2; plural=(n != 1);"
 )

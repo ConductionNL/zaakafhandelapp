@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Адкрыйце Патокі ў меню",
         "Reports": "Звіты",
         "Pick a report to open it.": "Выберыце звіт, каб адкрыць яго.",
-        "Who changed what, and when.": "Хто што змяніў і калі."
+        "Who changed what, and when.": "Хто што змяніў і калі.",
+        "Store": "Крама",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Усталюйце рэестры, схемы і патокі, апублікаваныя іншымі арганізацыямі."
     }
 }

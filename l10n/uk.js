@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Відкрийте Потоки в меню",
         "Reports": "Звіти",
         "Pick a report to open it.": "Виберіть звіт, щоб відкрити його.",
-        "Who changed what, and when.": "Хто що змінив і коли."
+        "Who changed what, and when.": "Хто що змінив і коли.",
+        "Store": "Магазин",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Встановлюйте реєстри, схеми та потоки, опубліковані іншими організаціями."
     },
     "nplurals=2; plural=(n != 1);"
 )

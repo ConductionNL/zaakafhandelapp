@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Deschideți Fluxuri din meniu",
         "Reports": "Rapoarte",
         "Pick a report to open it.": "Alegeți un raport pentru a-l deschide.",
-        "Who changed what, and when.": "Cine ce a schimbat și când."
+        "Who changed what, and when.": "Cine ce a schimbat și când.",
+        "Store": "Magazin",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalați registre, scheme și fluxuri publicate de alte organizații."
     },
     "nplurals=2; plural=(n != 1);"
 )

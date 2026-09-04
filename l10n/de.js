@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Öffnen Sie Abläufe im Menü",
         "Reports": "Berichte",
         "Pick a report to open it.": "Wählen Sie einen Bericht, um ihn zu öffnen.",
-        "Who changed what, and when.": "Wer was geändert hat, und wann."
+        "Who changed what, and when.": "Wer was geändert hat, und wann.",
+        "Store": "Store",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installieren Sie Register, Schemata und Flows, die andere Organisationen veröffentlicht haben."
     },
     "nplurals=2; plural=(n != 1);"
 )

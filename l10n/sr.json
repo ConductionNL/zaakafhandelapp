@@ -585,6 +585,8 @@
         "Open Flows in the menu": "Отворите Токови у менију",
         "Reports": "Извештаји",
         "Pick a report to open it.": "Изаберите извештај да га отворите.",
-        "Who changed what, and when.": "Ко је шта променио и када."
+        "Who changed what, and when.": "Ко је шта променио и када.",
+        "Store": "Продавница",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Инсталирајте регистре, шеме и токове које су објавиле друге организације."
     }
 }

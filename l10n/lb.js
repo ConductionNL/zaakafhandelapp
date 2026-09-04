@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Maacht Ofleef am Menü op",
         "Reports": "Berichter",
         "Pick a report to open it.": "Wielt e Bericht fir hien opzemaachen.",
-        "Who changed what, and when.": "Wien wat geännert huet, a wéini."
+        "Who changed what, and when.": "Wien wat geännert huet, a wéini.",
+        "Store": "Buttek",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installéiert Registeren, Schemaen a Flows déi aner Organisatiounen publizéiert hunn."
     },
     "nplurals=2; plural=(n != 1);"
 )

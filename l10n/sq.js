@@ -586,7 +586,9 @@ OC.L10N.register(
         "Open Flows in the menu": "Hapni Rrjedhat në meny",
         "Reports": "Raportet",
         "Pick a report to open it.": "Zgjidhni një raport për të hapur.",
-        "Who changed what, and when.": "Kush ndryshoi çfarë, dhe kur."
+        "Who changed what, and when.": "Kush ndryshoi çfarë, dhe kur.",
+        "Store": "Dyqani",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instaloni regjistra, skema dhe rrjedha të publikuara nga organizata të tjera."
     },
     "nplurals=2; plural=(n != 1);"
 )
