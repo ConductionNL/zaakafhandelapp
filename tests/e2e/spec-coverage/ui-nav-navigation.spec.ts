@@ -18,9 +18,11 @@
  * @see openspec/specs/ui-search-navigation/spec.md (navigation contract)
  */
 
-import { test, expect, type Page } from '@playwright/test'
-import { dismissSupportModal, expandNav, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import type { Page } from '@playwright/test'
+
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, expandNav, openIndexSidebar } from './helpers.ts'
 
 /**
  * The main-section nav entries and the page heading each lands on. Dashboard
@@ -63,7 +65,7 @@ const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail'] as const
 
 /** Open the app on a stable entry page and confirm the nav rendered. */
 async function bootNav(page: Page): Promise<void> {
-	await page.goto(`${APP}/#/zaken`)
+	await page.goto(`${APP}/zaken`)
 	await dismissSupportModal(page)
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({
 		timeout: 15_000,

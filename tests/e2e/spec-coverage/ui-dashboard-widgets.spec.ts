@@ -13,9 +13,9 @@
  * presentation structure — not data presence.
  */
 
-import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers.ts'
 
 // Front-controller form for the same reason as APP — see tests/e2e/app-path.ts.
 // `php -S` applies no rewrite, so a bare `/apps/dashboard` 404s there.
@@ -42,7 +42,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		page,
 	}) => {
 		// Widgets share the search store with list views. Exercise via the zaken list.
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app nav
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
@@ -62,7 +62,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 	test('rendering a contactmoment item — contactmomenten page renders list chrome', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/contactmomenten`)
+		await page.goto(`${APP}/contactmomenten`)
 		await dismissSupportModal(page)
 		// Wait for app to mount
 		await expect(navEntryByLabel(page, 'Contact moments')).toBeVisible({
@@ -83,7 +83,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 	test('showing a widget item — detail sidebar is accessible from the list', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		// Wait for app to mount first
 		await expect(navEntryByLabel(page, 'Cases')).toBeVisible({ timeout: 15_000 })
@@ -110,7 +110,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 		page,
 	}) => {
 		// The personen widget links into /klanten; verify that page mounts
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
 			timeout: 15_000,
@@ -129,7 +129,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 	test('overdue zaken float to the top of the widget — open-zaken surface mounts', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		await expect(page.locator('nav').filter({ hasText: 'Cases' })).toBeVisible({
 			timeout: 15_000,
@@ -143,7 +143,7 @@ test.describe('ui-dashboard-widgets — NC dashboard widget mount and structure'
 	test('no overdue zaken, no alarm — open-zaken surface renders without an overdue count', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/zaken`)
+		await page.goto(`${APP}/zaken`)
 		await dismissSupportModal(page)
 		// With no overdue zaak the widget shows no overdue-count header; the view
 		// mounts cleanly either way.

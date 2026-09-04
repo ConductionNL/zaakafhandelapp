@@ -577,6 +577,16 @@
         "Linked to contacts": "Συνδεδεμένο με επαφές",
         "No contacts found.": "Δεν βρέθηκαν επαφές.",
         "Save to contacts": "Αποθήκευση στις επαφές",
-        "Search contacts": "Αναζήτηση επαφών"
+        "Search contacts": "Αναζήτηση επαφών",
+        "Flow": "Ροή",
+        "Flows": "Ροές",
+        "Where the automation lives": "Πού ζει η αυτοματοποίηση",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Οι ροές είναι αυτό που συμβαίνει χωρίς κανένα κλικ. Διαβάστε και επεξεργαστείτε τες εδώ.",
+        "Open Flows in the menu": "Ανοίξτε τις Ροές στο μενού",
+        "Reports": "Εκθέσεις",
+        "Pick a report to open it.": "Επιλέξτε μια αναφορά για να την ανοίξετε.",
+        "Who changed what, and when.": "Ποιος άλλαξε τι, και πότε.",
+        "Store": "Κατάστημα",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Εγκαταστήστε μητρώα, σχήματα και ροές που έχουν δημοσιεύσει άλλοι οργανισμοί."
     }
 }

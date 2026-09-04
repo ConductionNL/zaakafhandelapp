@@ -21,18 +21,18 @@
  * @see openspec/specs/ui-case-views/spec.md
  */
 
-import { test, expect } from '@playwright/test'
-import { WorkflowFixtures } from './fixtures'
+import { expect, test } from '@playwright/test'
+import { WorkflowFixtures } from './fixtures.ts'
 import {
-	openIndex,
-	openCreateModal,
 	fillField,
+	openCreateModal,
+	openEditDialog,
+	openIndex,
+	rowAction,
+	rowFor,
 	submitModal,
 	useTableView,
-	rowFor,
-	rowAction,
-	openEditDialog,
-} from './ui-helpers'
+} from './ui-helpers.ts'
 
 const fx = new WorkflowFixtures()
 let RUN = ''

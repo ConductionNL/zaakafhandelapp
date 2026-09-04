@@ -58,12 +58,14 @@ function createObjectStore(id, options = {}) {
 const useObjectStoreFactory = createObjectStore('cn-object-store')
 const useObjectStore = (...args) => useObjectStoreFactory(...args)
 
-const noopPlugin = (name) => () => ({
-	name,
-	state: () => ({}),
-	getters: {},
-	actions: {},
-})
+function noopPlugin(name) {
+	return () => ({
+		name,
+		state: () => ({}),
+		getters: {},
+		actions: {},
+	})
+}
 
 // Real exports the app code reaches for. Anything not listed here is
 // returned as a stub component / no-op function via the Proxy fallback.

@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Связано с контактами",
         "No contacts found.": "Контакты не найдены.",
         "Save to contacts": "Сохранить в контакты",
-        "Search contacts": "Поиск контактов"
+        "Search contacts": "Поиск контактов",
+        "Flow": "Поток",
+        "Flows": "Потоки",
+        "Where the automation lives": "Где живёт автоматизация",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Потоки это то, что происходит без единого клика. Читайте и редактируйте их здесь.",
+        "Open Flows in the menu": "Откройте Потоки в меню",
+        "Reports": "Отчёты",
+        "Pick a report to open it.": "Выберите отчёт, чтобы открыть его.",
+        "Who changed what, and when.": "Кто что изменил и когда.",
+        "Store": "Магазин",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Установите реестры, схемы и потоки, опубликованные другими организациями."
     },
     "nplurals=2; plural=(n != 1);"
 )

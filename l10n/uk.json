@@ -577,6 +577,16 @@
         "Linked to contacts": "Пов’язано з контактами",
         "No contacts found.": "Контактів не знайдено.",
         "Save to contacts": "Зберегти в контакти",
-        "Search contacts": "Пошук контактів"
+        "Search contacts": "Пошук контактів",
+        "Flow": "Потік",
+        "Flows": "Потоки",
+        "Where the automation lives": "Де живе автоматизація",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Потоки це те, що відбувається без жодного кліку. Читайте та редагуйте їх тут.",
+        "Open Flows in the menu": "Відкрийте Потоки в меню",
+        "Reports": "Звіти",
+        "Pick a report to open it.": "Виберіть звіт, щоб відкрити його.",
+        "Who changed what, and when.": "Хто що змінив і коли.",
+        "Store": "Магазин",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Встановлюйте реєстри, схеми та потоки, опубліковані іншими організаціями."
     }
 }

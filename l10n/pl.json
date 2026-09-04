@@ -577,6 +577,16 @@
         "Linked to contacts": "Połączono z kontaktami",
         "No contacts found.": "Nie znaleziono kontaktów.",
         "Save to contacts": "Zapisz w kontaktach",
-        "Search contacts": "Szukaj kontaktów"
+        "Search contacts": "Szukaj kontaktów",
+        "Flow": "Przepływ",
+        "Flows": "Przepływy",
+        "Where the automation lives": "Gdzie mieszka automatyzacja",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Przepływy to to, co dzieje się bez kliknięcia. Czytaj je i edytuj tutaj.",
+        "Open Flows in the menu": "Otwórz Przepływy w menu",
+        "Reports": "Raporty",
+        "Pick a report to open it.": "Wybierz raport, aby go otworzyć.",
+        "Who changed what, and when.": "Kto co zmienił i kiedy.",
+        "Store": "Sklep",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Zainstaluj rejestry, schematy i przepływy opublikowane przez inne organizacje."
     }
 }

@@ -577,6 +577,16 @@
         "Linked to contacts": "Kişilere bağlı",
         "No contacts found.": "Hiç kişi bulunamadı.",
         "Save to contacts": "Kişilere kaydet",
-        "Search contacts": "Kişileri ara"
+        "Search contacts": "Kişileri ara",
+        "Flow": "Akış",
+        "Flows": "Akışlar",
+        "Where the automation lives": "Otomasyon nerede yaşar",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Akışlar, kimse tıklamadan olan şeylerdir. Onları burada okuyun ve düzenleyin.",
+        "Open Flows in the menu": "Menüden Akışlar'ı açın",
+        "Reports": "Raporlar",
+        "Pick a report to open it.": "Açmak için bir rapor seçin.",
+        "Who changed what, and when.": "Kim neyi ne zaman değiştirdi.",
+        "Store": "Mağaza",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Diğer kuruluşların yayımladığı kayıtları, şemaları ve akışları yükleyin."
     }
 }

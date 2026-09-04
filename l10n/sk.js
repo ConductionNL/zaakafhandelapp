@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Prepojené s kontaktmi",
         "No contacts found.": "Nenašli sa žiadne kontakty.",
         "Save to contacts": "Uložiť do kontaktov",
-        "Search contacts": "Vyhľadať kontakty"
+        "Search contacts": "Vyhľadať kontakty",
+        "Flow": "Tok",
+        "Flows": "Toky",
+        "Where the automation lives": "Kde žije automatizácia",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Toky sú to, čo sa deje bez jediného kliknutia. Tu ich čítajte a upravujte.",
+        "Open Flows in the menu": "Otvorte Toky v ponuke",
+        "Reports": "Reporty",
+        "Pick a report to open it.": "Vyberte report a otvorte ho.",
+        "Who changed what, and when.": "Kto čo zmenil a kedy.",
+        "Store": "Obchod",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Nainštalujte registre, schémy a toky zverejnené inými organizáciami."
     },
     "nplurals=2; plural=(n != 1);"
 )

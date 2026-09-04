@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Vinculado a contactos",
         "No contacts found.": "No se encontraron contactos.",
         "Save to contacts": "Guardar en contactos",
-        "Search contacts": "Buscar contactos"
+        "Search contacts": "Buscar contactos",
+        "Flow": "Flujo",
+        "Flows": "Flujos",
+        "Where the automation lives": "Dónde vive la automatización",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Los flujos son lo que ocurre sin que nadie haga clic. Léalos y edítelos aquí.",
+        "Open Flows in the menu": "Abra Flujos en el menú",
+        "Reports": "Informes",
+        "Pick a report to open it.": "Elija un informe para abrirlo.",
+        "Who changed what, and when.": "Quién cambió qué, y cuándo.",
+        "Store": "Tienda",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instale registros, esquemas y flujos publicados por otras organizaciones."
     },
     "nplurals=2; plural=(n != 1);"
 )

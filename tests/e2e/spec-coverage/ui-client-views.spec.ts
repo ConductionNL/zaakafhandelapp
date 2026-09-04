@@ -6,16 +6,16 @@
  * @see openspec/specs/ui-client-views/spec.md
  */
 
-import { test, expect } from '@playwright/test'
-import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers'
-import { APP } from '../app-path'
+import { expect, test } from '@playwright/test'
+import { APP } from '../app-path.ts'
+import { dismissSupportModal, navEntryByLabel, openIndexSidebar } from './helpers.ts'
 
 test.describe('ui-client-views — klanten, contactmomenten, taken views', () => {
 	// @e2e openspec/specs/ui-client-views/spec.md#loading-the-klanten-list
 	test('loading the klanten list — navigating to /klanten renders the list view', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		// The Customers nav item is visible
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
@@ -31,7 +31,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('selecting a klant — detail sidebar with tabs is visible on the klanten page', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		// Wait for app to mount first
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
@@ -59,7 +59,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('searching contactmomenten — contactmomenten list view renders with search support', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/contactmomenten`)
+		await page.goto(`${APP}/contactmomenten`)
 		await dismissSupportModal(page)
 		// Nav item visible
 		await expect(navEntryByLabel(page, 'Contact moments')).toBeVisible({
@@ -86,7 +86,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('closing a taak — taken list view renders with list chrome', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/taken`)
+		await page.goto(`${APP}/taken`)
 		await dismissSupportModal(page)
 		// Nav item visible
 		await expect(navEntryByLabel(page, 'Tasks')).toBeVisible({ timeout: 15_000 })
@@ -100,7 +100,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('rendering a contact icon — navigation renders Contact moments with icon', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/contactmomenten`)
+		await page.goto(`${APP}/contactmomenten`)
 		await dismissSupportModal(page)
 		// Nav confirms icon+label rendering for contact-related items
 		const nav = page.locator('nav').filter({ hasText: 'Contact moments' })
@@ -118,7 +118,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('importing a contact as a klant — klanten view exposes an actions menu for import', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
 			timeout: 15_000,
@@ -134,7 +134,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('already-linked contact is indicated — klanten list renders so linked badges can show', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
 			timeout: 15_000,
@@ -149,7 +149,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('linked badge and export action — klant detail panel mounts on the klanten page', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
 			timeout: 15_000,
@@ -165,7 +165,7 @@ test.describe('ui-client-views — klanten, contactmomenten, taken views', () =>
 	test('hidden without Contacts — klanten view renders cleanly with no import entry point error', async ({
 		page,
 	}) => {
-		await page.goto(`${APP}/#/klanten`)
+		await page.goto(`${APP}/klanten`)
 		await dismissSupportModal(page)
 		await expect(navEntryByLabel(page, 'Customers')).toBeVisible({
 			timeout: 15_000,

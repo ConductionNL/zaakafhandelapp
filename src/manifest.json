@@ -80,6 +80,24 @@
 						}
 					},
 					{
+						"id": "see-flows",
+						"sinceVersion": "0.2.12",
+						"placement": "right",
+						"optional": true,
+						"allowManualNext": true,
+						"title": "Where the automation lives",
+						"body": "Flows are what happens without anyone clicking. Read and edit them here.",
+						"task": "Open Flows in the menu",
+						"target": {
+							"kind": "nav-item",
+							"ref": "Flows"
+						},
+						"advanceOn": {
+							"type": "route-match",
+							"route": "Flows"
+						}
+					},
+					{
 						"id": "done",
 						"sinceVersion": "0.2.7",
 						"placement": "center",
@@ -96,6 +114,14 @@
 				]
 			}
 		]
+	},
+	"store": {
+	  "_note": "Configuration exchange, not rows. A configuration set carries the registers, schemas, objects, views, flows, sources and mappings that make one way of working hold together. There is deliberately NO `installable` allowlist: a set exists to introduce schemas the instance does not have YET, so listing schemas this app already owns would refuse exactly the sets worth installing. The trust boundary for a bundle is its publisher, enforced by the engine's source allowlist and trusted-key check. \u26a0\ufe0f An EMPTY `installable` means install NOTHING, not install anything \u2014 omitting the key and declaring an empty list are different things.",
+	  "types": [
+	    "openregister.configset",
+	    "openregister.flows"
+	  ],
+	  "localRegister": "zaakafhandelapp"
 	},
 	"menu": [
 		{
@@ -130,7 +156,14 @@
 		},
 		{ "id": "Zaaktypen",    "label": "Case types",  "icon": "FolderCogOutline",      "route": "Zaaktypen", "section": "settings", "order": 10 },
 		{ "id": "Rollen",       "label": "Roles",       "icon": "AccountKeyOutline", "route": "Rollen",    "section": "settings", "order": 20 },
-		{ "id": "AuditTrail",   "label": "Audit trail", "icon": "History",    "route": "AuditTrail","section": "settings", "order": 30 },
+		{
+			"id": "ReportsMenu",
+			"label": "Reports",
+			"icon": "ChartBoxOutline",
+			"route": "Reports",
+			"section": "footer",
+			"order": 95
+		},
 		{
 			"id": "Documentation",
 			"label": "Documentation",
@@ -140,15 +173,43 @@
 			"order": 90
 		},
 		{
+		  "id": "StoreMenu",
+		  "label": "Store",
+		  "icon": "StoreOutline",
+		  "route": "Store",
+		  "section": "footer",
+		  "order": 92
+		},
+		{
 			"id": "FeaturesRoadmapMenu",
 			"label": "Features & roadmap",
 			"icon": "MapMarkerPath",
 			"route": "FeaturesRoadmap",
 			"section": "footer",
-			"order": 91
+			"order": 100
+		},
+		{
+			"id": "FlowsMenu",
+			"label": "Flows",
+			"icon": "SitemapOutline",
+			"route": "Flows",
+			"section": "settings",
+			"order": 96
 		}
 	],
 	"pages": [
+		{
+		  "id": "Store",
+		  "route": "/store",
+		  "type": "store",
+		  "title": "Store",
+		  "config": {
+		    "app": "zaakafhandelapp",
+		    "title": "Store",
+		    "description": "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it."
+		  },
+		  "_note": "ADR-114 Decision 4 / ADR-080. Declarative: openregister hosts the store plane, so this app writes NO store controller. With no registry configured the page renders the app's built-in items and makes NO network call."
+		},
 		{
 			"id": "FeaturesRoadmap",
 			"route": "/features-roadmap",
@@ -1053,6 +1114,25 @@
 			"_note": "Cross-register search surface — defaults to the zaak index; richer ZGW-API multi-register search lands when the lib gains a non-OR data-source abstraction"
 		},
 		{
+			"id": "Reports",
+			"route": "/reports",
+			"type": "reports",
+			"title": "Reports",
+			"config": {
+				"description": "Pick a report to open it.",
+				"cards": [
+					{
+						"id": "AuditTrail",
+						"label": "Audit trail",
+						"description": "Who changed what, and when.",
+						"icon": "History",
+						"route": "AuditTrail"
+					}
+				]
+			},
+			"_note": "ADR-112 / ADR-114 Decision 3. Nothing is invented: the audit trail already existed and was an entry in the SETTINGS foldout, which is where configuration belongs (ADR-044 Decision 3) and an audit trail is not configuration — it is a reading of what happened. The page is untouched and stays routable at /auditTrail; only its menu entry moves, because a report is a card or an entry, never both (ADR-112 Decision 2)."
+		},
+		{
 			"id": "AuditTrail",
 			"route": "/auditTrail",
 			"type": "logs",
@@ -1062,6 +1142,28 @@
 				"schema": "zaak"
 			},
 			"_note": "ZGW-API audittrail endpoint integration deferred; uses the OR audit-trail surface for now"
+		},
+		{
+			"id": "Flows",
+			"route": "/flows",
+			"type": "index",
+			"title": "Flows",
+			"config": {
+				"entitySource": "flows",
+				"app": "zaakafhandelapp",
+				"rowRoute": "FlowDetail"
+			},
+			"_note": "ADR-110 Decision 4. type:\"index\" over the NAMED flows source, which is the canonical shape: a flow lives in OpenRegister's native flow store, not a register/schema pair, so the object-backed index cannot address it, and nextcloud-vue marks the dedicated `flows` page type deprecated. rowRoute names FlowDetail by route NAME, without which the row click and the Edit action fall back to the source's own /flows path rather than the page declared here."
+		},
+		{
+			"id": "FlowDetail",
+			"route": "/flows/:id",
+			"type": "flow",
+			"title": "Flow",
+			"config": {
+				"app": "zaakafhandelapp"
+			},
+			"_note": "The shared CnFlowDetail canvas over the same single engine (ADR-065), scoped to this app."
 		}
 	]
 }

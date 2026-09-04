@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Névjegyekhez kapcsolva",
         "No contacts found.": "Nem található névjegy.",
         "Save to contacts": "Mentés a névjegyekbe",
-        "Search contacts": "Névjegyek keresése"
+        "Search contacts": "Névjegyek keresése",
+        "Flow": "Folyamat",
+        "Flows": "Folyamatok",
+        "Where the automation lives": "Hol él az automatizálás",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "A folyamatok az, ami kattintás nélkül történik. Itt olvashatja és szerkesztheti őket.",
+        "Open Flows in the menu": "Nyissa meg a Folyamatok menüpontot",
+        "Reports": "Jelentések",
+        "Pick a report to open it.": "Válasszon egy jelentést a megnyitásához.",
+        "Who changed what, and when.": "Ki mit változtatott, és mikor.",
+        "Store": "Áruház",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Telepítsen más szervezetek által közzétett nyilvántartásokat, sémákat és folyamatokat."
     },
     "nplurals=2; plural=(n != 1);"
 )
