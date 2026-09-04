@@ -41,7 +41,7 @@ Maak een [bug report](https://github.com/ConductionNL/zaakafhandelapp/issues/new
 
 Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issues/new/choose)
     ]]></description>
-	<version>0.2.11-unstable.20260831114943</version>
+	<version>0.2.12-unstable.20260904071508</version>
 	<licence>EUPL-1.2</licence>
 	<author mail="info@conduction.nl" homepage="https://www.conduction.nl/">Conduction</author>
 	<namespace>ZaakAfhandelApp</namespace>
