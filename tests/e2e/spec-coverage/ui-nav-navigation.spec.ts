@@ -46,10 +46,10 @@ const MAIN_NAV: Array<{ id: string; heading: string }> = [
 
 /**
  * Footer-section nav entries that are directly visible in the left nav body.
- * (The settings-section entries — Zaaktypen, Roles, Audit trail — live in
- * the collapsed NcAppNavigation settings slot and are present in the DOM but
- * not visible until expanded; their index pages are covered as hard-goto
- * surfaces by ui-record-views / ui-utility-pages.)
+ * (The settings-section entries — Zaaktypen and Roles — live in the collapsed
+ * NcAppNavigation settings slot and are present in the DOM but not visible
+ * until expanded; their index pages are covered as hard-goto surfaces by
+ * ui-record-views / ui-utility-pages.)
  */
 const FOOTER_NAV_IDS = ['Documentation', 'FeaturesRoadmapMenu'] as const
 
@@ -60,8 +60,19 @@ const FOOTER_NAV_IDS = ['Documentation', 'FeaturesRoadmapMenu'] as const
  * the Nextcloud admin settings page, and because the NcAppNavigation settings
  * foldout is itself labelled "Settings" it rendered as Settings > Settings.
  * The surviving entries are the app's own domain-configuration indexes.
+ *
+ * `AuditTrail` left this list under ADR-112 D2, not by accident. #627 moved it
+ * to a card on the Reports page, because a report is a card OR an entry and
+ * never both, and an audit trail is a reading of what happened rather than
+ * configuration. Its page is untouched and still routable at /auditTrail.
+ *
+ * Nothing is dropped by removing it here: app-chrome.spec.ts asserts BOTH
+ * halves of that move — that no `cn-nav-entry-AuditTrail` exists, and that the
+ * Reports page reached from the footer offers it. This list only claims which
+ * entries the settings foldout still holds, and an id with no menu entry can
+ * never be attached, so leaving it here asserted nothing except a failure.
  */
-const SETTINGS_NAV_IDS = ['Zaaktypen', 'AuditTrail'] as const
+const SETTINGS_NAV_IDS = ['Zaaktypen'] as const
 
 /** Open the app on a stable entry page and confirm the nav rendered. */
 async function bootNav(page: Page): Promise<void> {
