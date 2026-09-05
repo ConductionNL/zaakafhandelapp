@@ -6,5 +6,6 @@
 	},
 	"relocations": {},
 	"removals": [],
-	"settingsSection": ["Zaaktypen", "Rollen", "AuditTrail"]
+	"_settingsSectionNote": "AuditTrail left this list with #627 (ADR-112 D2), which moved it to a card on the Reports page. A settingsSection id with no matching menu entry is a silent no-op, so it sat here pointing at nothing. Removed 2026-09-05.",
+	"settingsSection": ["Zaaktypen", "Rollen"]
 }
