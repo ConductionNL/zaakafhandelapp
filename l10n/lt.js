@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Susieta su kontaktais",
         "No contacts found.": "Kontaktų nerasta.",
         "Save to contacts": "Įrašyti į kontaktus",
-        "Search contacts": "Ieškoti kontaktų"
+        "Search contacts": "Ieškoti kontaktų",
+        "Flow": "Srautas",
+        "Flows": "Srautai",
+        "Where the automation lives": "Kur gyvena automatizavimas",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Srautai yra tai, kas vyksta niekam nespaudžiant. Skaitykite ir redaguokite juos čia.",
+        "Open Flows in the menu": "Atverkite Srautai meniu",
+        "Reports": "Ataskaitos",
+        "Pick a report to open it.": "Pasirinkite ataskaitą, kad ją atidarytumėte.",
+        "Who changed what, and when.": "Kas ką pakeitė ir kada.",
+        "Store": "Parduotuvė",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Įdiekite registrus, schemas ir srautus, kuriuos paskelbė kitos organizacijos."
     },
     "nplurals=2; plural=(n != 1);"
 )

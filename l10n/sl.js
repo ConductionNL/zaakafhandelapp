@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Povezano s stiki",
         "No contacts found.": "Ni najdenih stikov.",
         "Save to contacts": "Shrani med stike",
-        "Search contacts": "Išči stike"
+        "Search contacts": "Išči stike",
+        "Flow": "Tok",
+        "Flows": "Tokovi",
+        "Where the automation lives": "Kje živi avtomatizacija",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Tokovi so tisto, kar se zgodi brez klika. Tu jih berite in urejajte.",
+        "Open Flows in the menu": "Odprite Tokovi v meniju",
+        "Reports": "Poročila",
+        "Pick a report to open it.": "Izberite poročilo, da ga odprete.",
+        "Who changed what, and when.": "Kdo je kaj spremenil in kdaj.",
+        "Store": "Trgovina",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Namestite registre, sheme in tokove, ki so jih objavile druge organizacije."
     },
     "nplurals=2; plural=(n != 1);"
 )

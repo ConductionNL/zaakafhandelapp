@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Mat de Kontakter verlinkt",
         "No contacts found.": "Keng Kontakter fonnt.",
         "Save to contacts": "An d'Kontakter späicheren",
-        "Search contacts": "Kontakter duerchsichen"
+        "Search contacts": "Kontakter duerchsichen",
+        "Flow": "Oflaf",
+        "Flows": "Ofleef",
+        "Where the automation lives": "Wou d'Automatisatioun wunnt",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Ofleef sinn dat, wat ouni Klick geschitt. Liest a beaarbecht se hei.",
+        "Open Flows in the menu": "Maacht Ofleef am Menü op",
+        "Reports": "Berichter",
+        "Pick a report to open it.": "Wielt e Bericht fir hien opzemaachen.",
+        "Who changed what, and when.": "Wien wat geännert huet, a wéini.",
+        "Store": "Buttek",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installéiert Registeren, Schemaen a Flows déi aner Organisatiounen publizéiert hunn."
     },
     "nplurals=2; plural=(n != 1);"
 )

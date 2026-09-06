@@ -19,7 +19,7 @@ import {
 } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import customComponents from './customComponents.js'
 import appIcons from './icons.js'
@@ -133,11 +133,39 @@ const fragments = fragmentCtx
 	.map((key) => fragmentCtx(key))
 const mergedManifest = buildManifest(bundledManifest, fragments, menuLayout)
 
-// vue-router 4 replaces `mode: 'hash'` + `base` with a history object that
+/**
+ * The router base for THIS page load.
+ *
+ * ⚠️ `generateUrl('/apps/zaakafhandelapp')` alone is not enough. Nextcloud
+ * serves the app under BOTH `/apps/zaakafhandelapp/...` and
+ * `/index.php/apps/zaakafhandelapp/...`, but `generateUrl()` returns only the
+ * form the instance is configured for. A visitor arriving on the other form —
+ * a bookmark, an emailed deep link, an integration that hardcodes `/index.php`
+ * — falls outside the router base, vue-router cannot resolve the path, and the
+ * manifest catch-all redirects to `/`. They land on the dashboard with no
+ * error: the deep link is silently swallowed.
+ *
+ * Hash routing never had this, because the route travelled in the fragment and
+ * the path prefix was irrelevant. Measured on stackiq, which moved first:
+ * `/apps/stackiq/komplianties` rendered Compliance while
+ * `/index.php/apps/stackiq/komplianties` rendered the Dashboard. This app's own
+ * e2e suite uses the `/index.php` form (`tests/e2e/app-path.ts`), so without
+ * this it would break on every deep link the suite makes.
+ *
+ * @return {string} The base path vue-router should strip from the URL.
+ */
+function routerBase() {
+	const match = window.location.pathname.match(
+		/^(.*\/apps\/zaakafhandelapp)(?:\/|$)/,
+	)
+	return match ? match[1] : generateUrl('/apps/zaakafhandelapp')
+}
+
+// vue-router 4 replaces the hash history with a WEB history object that
 // carries the base itself, and the router is installed per app instance
 // (`app.use(router)`) rather than through a global `Vue.use(VueRouter)`.
 const router = createRouter({
-	history: createWebHashHistory(generateUrl('/apps/zaakafhandelapp')),
+	history: createWebHistory(routerBase()),
 	linkActiveClass: 'active',
 	routes: routesFromManifest(mergedManifest),
 })

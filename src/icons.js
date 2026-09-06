@@ -42,6 +42,7 @@ import NoteTextOutline from 'vue-material-design-icons/NoteTextOutline.vue'
 import Phone from 'vue-material-design-icons/Phone.vue'
 import ScaleBalance from 'vue-material-design-icons/ScaleBalance.vue'
 import SitemapOutline from 'vue-material-design-icons/SitemapOutline.vue'
+import StoreOutline from 'vue-material-design-icons/StoreOutline.vue'
 import Timeline from 'vue-material-design-icons/Timeline.vue'
 import ViewDashboardOutline from 'vue-material-design-icons/ViewDashboardOutline.vue'
 
@@ -76,6 +77,7 @@ export default {
 	Phone,
 	ScaleBalance,
 	SitemapOutline,
+	StoreOutline,
 	Timeline,
 	ViewDashboardOutline,
 }

@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Звязана з кантактамі",
         "No contacts found.": "Кантакты не знойдзены.",
         "Save to contacts": "Захаваць у кантакты",
-        "Search contacts": "Пошук кантактаў"
+        "Search contacts": "Пошук кантактаў",
+        "Flow": "Паток",
+        "Flows": "Патокі",
+        "Where the automation lives": "Дзе жыве аўтаматызацыя",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Патокі гэта тое, што адбываецца без ніводнага кліку. Чытайце і рэдагуйце іх тут.",
+        "Open Flows in the menu": "Адкрыйце Патокі ў меню",
+        "Reports": "Звіты",
+        "Pick a report to open it.": "Выберыце звіт, каб адкрыць яго.",
+        "Who changed what, and when.": "Хто што змяніў і калі.",
+        "Store": "Крама",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Усталюйце рэестры, схемы і патокі, апублікаваныя іншымі арганізацыямі."
     },
     "nplurals=2; plural=(n != 1);"
 )
