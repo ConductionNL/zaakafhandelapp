@@ -577,6 +577,16 @@
         "Linked to contacts": "Поврзано со контактите",
         "No contacts found.": "Не се пронајдени контакти.",
         "Save to contacts": "Зачувај во контактите",
-        "Search contacts": "Пребарај контакти"
+        "Search contacts": "Пребарај контакти",
+        "Flow": "Тек",
+        "Flows": "Текови",
+        "Where the automation lives": "Каде живее автоматизацијата",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Тековите се тоа што се случува без ниту еден клик. Читајте ги и уредувајте ги тука.",
+        "Open Flows in the menu": "Отворете Текови во менито",
+        "Reports": "Извештаи",
+        "Pick a report to open it.": "Изберете извештај за да го отворите.",
+        "Who changed what, and when.": "Кој што променил и кога.",
+        "Store": "Продавница",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Инсталирајте регистри, шеми и текови објавени од други организации."
     }
 }

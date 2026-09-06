@@ -6,8 +6,9 @@
  */
 
 import type { Locator, Page } from '@playwright/test'
+
 import { expect } from '@playwright/test'
-import { APP } from '../app-path'
+import { APP } from '../app-path.ts'
 
 /**
  * Map a human nav label to its stable manifest menu id (the testid suffix
@@ -68,7 +69,7 @@ export async function spaNavigate(
 	entryRoute = '/zaken',
 ): Promise<void> {
 	void entryRoute
-	await page.goto(`${APP}/#${appRoute}`)
+	await page.goto(`${APP}${appRoute}`)
 	await dismissSupportModal(page)
 	// Confirm the shell mounted (the fragment route renders inside it).
 	await expect(page.locator('[data-testid="cn-app-root"]')).toBeVisible({

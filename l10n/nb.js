@@ -578,7 +578,17 @@ OC.L10N.register(
         "Linked to contacts": "Koblet til kontakter",
         "No contacts found.": "Ingen kontakter funnet.",
         "Save to contacts": "Lagre i kontakter",
-        "Search contacts": "Søk i kontakter"
+        "Search contacts": "Søk i kontakter",
+        "Flow": "Flyt",
+        "Flows": "Flyter",
+        "Where the automation lives": "Der automatiseringen bor",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Flyter er det som skjer uten at noen klikker. Les og rediger dem her.",
+        "Open Flows in the menu": "Åpne Flyter i menyen",
+        "Reports": "Rapporter",
+        "Pick a report to open it.": "Velg en rapport for å åpne den.",
+        "Who changed what, and when.": "Hvem endret hva, og når.",
+        "Store": "Butikk",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skjemaer og flyter som andre organisasjoner har publisert."
     },
     "nplurals=2; plural=(n != 1);"
 )

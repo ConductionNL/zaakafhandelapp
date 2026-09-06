@@ -8,7 +8,7 @@
  * returns null.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import getValidISOstring from '../../src/services/getValidISOstring.js'
 
 describe('getValidISOstring', () => {

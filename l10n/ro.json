@@ -577,6 +577,16 @@
         "Linked to contacts": "Asociat cu contactele",
         "No contacts found.": "Nu s-au găsit contacte.",
         "Save to contacts": "Salvează în contacte",
-        "Search contacts": "Caută contacte"
+        "Search contacts": "Caută contacte",
+        "Flow": "Flux",
+        "Flows": "Fluxuri",
+        "Where the automation lives": "Unde trăiește automatizarea",
+        "Flows are what happens without anyone clicking. Read and edit them here.": "Fluxurile sunt ceea ce se întâmplă fără niciun clic. Citiți-le și editați-le aici.",
+        "Open Flows in the menu": "Deschideți Fluxuri din meniu",
+        "Reports": "Rapoarte",
+        "Pick a report to open it.": "Alegeți un raport pentru a-l deschide.",
+        "Who changed what, and when.": "Cine ce a schimbat și când.",
+        "Store": "Magazin",
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalați registre, scheme și fluxuri publicate de alte organizații."
     }
 }

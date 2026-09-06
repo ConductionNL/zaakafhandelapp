@@ -11,15 +11,15 @@
  * See _visual-helpers.ts for the platform-rendering caveat.
  */
 import { test } from '@playwright/test'
-import { shootSurface, shootByNav } from './_visual-helpers'
-import { APP } from '../app-path'
+import { APP } from '../app-path.ts'
+import { shootByNav, shootSurface } from './_visual-helpers.ts'
 
 test.describe('ZaakAfhandelApp — visual baselines', () => {
 	test('dashboard', async ({ page }) => {
-		await shootSurface(page, `${APP}/#/`, 'dashboard.png')
+		await shootSurface(page, `${APP}/`, 'dashboard.png')
 	})
 
 	test('cases list', async ({ page }) => {
-		await shootByNav(page, `${APP}/#/`, 'Cases', 'cases.png')
+		await shootByNav(page, `${APP}/`, 'Cases', 'cases.png')
 	})
 })

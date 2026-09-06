@@ -51,4 +51,28 @@ class DashboardController extends Controller {
 			[]
 		);
 	}//end page()
+
+	/**
+	 * Serve the SPA for deep links (Vue history mode). Delegates to {@see page()}.
+	 *
+	 * appinfo/routes.php enumerates a page route per index (/zaken, /klanten, …),
+	 * which is why those deep links worked while anything NOT in that list —
+	 * /features-roadmap, /auditTrail, any detail route — 404'd at the server.
+	 * Under hash routing that never showed, because the route travelled in the
+	 * fragment and the server only ever saw the app root.
+	 *
+	 * ⚠️ Probing an enumerated path does NOT prove a catch-all exists. Probe a
+	 * nonsense path: /apps/zaakafhandelapp/zzz-nonsense returned 404 here while
+	 * an app that has the catch-all answers 401.
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @return TemplateResponse
+	 *
+	 * @spec exclude Vue history-mode fallback — delegates to page(); pure framework plumbing, no domain logic.
+	 */
+	public function catchAll(): TemplateResponse {
+		return $this->page();
+	}//end catchAll()
 }//end class
