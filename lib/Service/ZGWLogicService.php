@@ -51,8 +51,45 @@ class ZGWLogicService {
 	 */
 	public function createObjectInformatieObjectZaak(ObjectEntity $zio): void {
 		$arr = $zio->jsonSerialize();
-		$this->createOio($arr['zaak'], $arr['informatieobject'], 'zaak');
+		$this->createOio($this->zioCaseUrl($arr), $arr['informatieobject'], 'zaak');
 	}//end createObjectInformatieObjectZaak()
+
+
+	/**
+	 * The case URL a zaakinformatieobject points at, whichever key it was stored under.
+	 *
+	 * A ZIO reaches us from two producers that disagree about the property name.
+	 * This app's own ZaakInformatieObjectenController requires `zaak`. Dossiq's
+	 * ZgwZrcZaakinformatieobjectRules stores `case`, and has since it renamed the
+	 * property. Reading only `zaak` therefore handed null to createOio(), whose
+	 * first parameter is typed string, and the request died as
+	 * `createOio(): Argument #1 ($objectUrl) must be of type string, null given`
+	 * with no mention of the property that was actually missing.
+	 *
+	 * It reproduces only where both apps are installed, so CI does not see it.
+	 *
+	 * @param array<string,mixed> $arr The serialized zaakinformatieobject.
+	 *
+	 * @return string The case URL.
+	 *
+	 * @throws RuntimeException When the ZIO carries neither key, which is a broken
+	 *                          record rather than a producer disagreement, and is
+	 *                          worth saying so by name.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
+	 */
+	private function zioCaseUrl(array $arr): string {
+		$url = ($arr['case'] ?? $arr['zaak'] ?? null);
+
+		if (is_string($url) === false || $url === '') {
+			throw new RuntimeException(
+				'A zaakinformatieobject must carry the case it belongs to, as either `case` '
+				. '(dossiq) or `zaak` (this app); this one carries neither.'
+			);
+		}
+
+		return $url;
+	}//end zioCaseUrl()
 
 	/**
 	 * Create an OIO for a besluitinformatieobject. BRC-005.
@@ -73,7 +110,9 @@ class ZGWLogicService {
 		$serialized = $object->jsonSerialize();
 
 		if ($schema->getSlug() === $this->registry->getZioSchema()) {
-			$this->deleteOioByFilters($serialized['zaak'], 'zaak', $serialized['informatieobject']);
+			// Same two producers, same disagreement: see zioCaseUrl(). Deleting by
+			// the wrong key would leave the OIO behind rather than fail loudly.
+			$this->deleteOioByFilters($this->zioCaseUrl($serialized), 'zaak', $serialized['informatieobject']);
 		}
 
 		if ($schema->getSlug() === $this->registry->getBioSchema()) {
