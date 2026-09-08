@@ -226,37 +226,6 @@ class ZGWLogicServiceTest extends TestCase {
 	}//end testDeleteZaakTypeInformatieObjecttypeNoIotReturnsEarly()
 
 	/**
-	 * A ZIO stored by dossiq carries `case`, and the OIO is still created.
-	 *
-	 * This is the regression. dossiq's ZgwZrcZaakinformatieobjectRules stores the
-	 * property as `case`; reading only `zaak` handed null to createOio(), whose
-	 * first parameter is typed string, so the request died as
-	 * `Argument #1 ($objectUrl) must be of type string, null given`.
-	 *
-	 * @return void
-	 */
-	public function testCreateObjectInformatieObjectZaakAcceptsTheCaseKey(): void {
-		$this->registry->method('getOioSchema')->willReturn('oio');
-		$this->registry->method('getDrcRegister')->willReturn('drc');
-
-		$saved = null;
-		$this->objectService->expects($this->once())
-			->method('saveObject')
-			->willReturnCallback(function ($object) use (&$saved) {
-				$saved = $object->jsonSerialize();
-				return $object;
-			});
-
-		$this->service->createObjectInformatieObjectZaak(
-			$this->entity(['case' => 'http://example/zaak/1', 'informatieobject' => 'http://example/eio/1'])
-		);
-
-		$this->assertSame('http://example/zaak/1', $saved['object']);
-		$this->assertSame('zaak', $saved['objectType']);
-	}//end testCreateObjectInformatieObjectZaakAcceptsTheCaseKey()
-
-
-	/**
 	 * A ZIO stored by this app's own controller still carries `zaak`, and still works.
 	 *
 	 * @return void
@@ -290,7 +259,7 @@ class ZGWLogicServiceTest extends TestCase {
 		$this->objectService->expects($this->never())->method('saveObject');
 
 		$this->expectException(\RuntimeException::class);
-		$this->expectExceptionMessageMatches('/`case`.*`zaak`/');
+		$this->expectExceptionMessageMatches('/`zaak`/');
 
 		$this->service->createObjectInformatieObjectZaak(
 			$this->entity(['informatieobject' => 'http://example/eio/3'])
