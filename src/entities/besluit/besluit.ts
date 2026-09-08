@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TBesluit } from './besluit.types'
 
 import { z } from 'zod'
@@ -19,7 +19,7 @@ export class Besluit implements TBesluit {
 		this.zaak = source.zaak || ''
 	}
 
-	public validate(): SafeParseReturnType<TBesluit, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string(),
 			url: z.string(),

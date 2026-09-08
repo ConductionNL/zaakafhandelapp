@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { BerichtID, TBericht } from './bericht.types'
 
 import { z } from 'zod'
@@ -45,7 +45,7 @@ export class Bericht implements TBericht {
 		this.volgorde = source.volgorde || ''
 	}
 
-	public validate(): SafeParseReturnType<TBericht, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string(),
 			title: z.string(),

@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TRol } from './rol.types'
 
 import { z } from 'zod'
@@ -76,7 +76,7 @@ export class Rol implements TRol {
 		this.betrokkeneIdentificatie = source.betrokkeneIdentificatie || {}
 	}
 
-	public validate(): SafeParseReturnType<TRol, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string(),
 			url: z.string().url().min(1).max(1000),
@@ -131,7 +131,7 @@ export class Rol implements TRol {
 			// `_expand` carries optionally-expanded related objects (or reference
 			// strings when not expanded); its shape varies per request, so accept
 			// any object here rather than enforcing a fixed sub-schema.
-			_expand: z.record(z.any()),
+			_expand: z.record(z.string(), z.any()),
 			betrokkeneIdentificatie: z
 				.object({
 					identificatie: z.string().optional(),

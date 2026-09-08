@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TZaakType } from './zaakTypen.types'
 
 import { z } from 'zod'
@@ -68,7 +68,7 @@ export class ZaakType implements TZaakType {
 		this.versiedatum = source.versiedatum || ''
 	}
 
-	public validate(): SafeParseReturnType<TZaakType, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string().optional(),
 			identificatie: z.string().min(1),

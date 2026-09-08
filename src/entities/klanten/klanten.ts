@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TKlant, TKlantType } from './klanten.types'
 
 import { z } from 'zod'
@@ -72,7 +72,7 @@ export class Klant implements TKlant {
 		this.contactsUid = source.contactsUid || ''
 	}
 
-	public validate(): SafeParseReturnType<TKlant, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string().optional(),
 			voornaam: z.string().min(1),
