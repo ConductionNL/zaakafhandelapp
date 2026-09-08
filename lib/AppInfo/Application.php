@@ -159,8 +159,12 @@ class Application extends App implements IBootstrap {
 		// documenten / besluiten / catalogi) resolve to nothing on a stock
 		// instance — declaring them would be an outage, not a narrowing.
 		//
-		// The in-handler `$slug === $this->registry->get*Schema()` guards stay
-		// in place as defence in depth.
+		// A declared slug is NOT proof the object is ours: `zaak`, `status`,
+		// `besluit` and `zaakinformatieobject` are ordinary domain words, and
+		// another app on the same instance may name a schema after one of them —
+		// dossiq does. ZGWObjectScopeService makes that call inside the handler,
+		// from the object's register and schema ownership, and every branch
+		// dispatches on its answer rather than on the slug alone.
 		foreach (self::OBJECT_EVENTS as $event) {
 			$this->registerFilteredObjectListener(
 				dispatcher: $dispatcher,

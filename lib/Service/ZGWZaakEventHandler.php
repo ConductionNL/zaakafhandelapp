@@ -39,6 +39,7 @@ class ZGWZaakEventHandler {
 		private readonly ZGWZaakOpschortingVerlengingService $suspensionService,
 		private readonly ZGWRegistryService $registry,
 		private readonly SchemaMapper $schemaMapper,
+		private readonly ZGWObjectScopeService $scope,
 	) {
 	}//end __construct()
 
@@ -52,7 +53,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	public function onObjectCreated(ObjectEntity $obj): void {
-		$slug = $this->slugOf($obj);
+		$slug = $this->scope->ownedSlugOf($obj);
 
 		if ($slug === $this->registry->getStatusSchema()) {
 			// Re-open or close the zaak now that the status record is confirmed persisted.
@@ -94,7 +95,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	public function onObjectUpdated(ObjectEntity $obj): void {
-		if ($this->slugOf($obj) === $this->registry->getZaakSchema()) {
+		if ($this->scope->ownedSlugOf($obj) === $this->registry->getZaakSchema()) {
 			$this->lifecycleService->setVertrouwelijkheidaanduiding($obj);
 		}
 	}//end onObjectUpdated()
@@ -110,7 +111,10 @@ class ZGWZaakEventHandler {
 	 */
 	public function onObjectDeleted(ObjectEntity $obj): void {
 		$schema = $this->schemaMapper->find($obj->getSchema());
-		$slug = $schema->getSlug();
+		$slug = $this->scope->ownedSlugOfSchema($obj, $schema);
+		if ($slug === null) {
+			return;
+		}
 
 		if ($slug === $this->registry->getZioSchema() || $slug === $this->registry->getBioSchema()) {
 			$this->logicService->deleteObjectInformatieObject($obj, $schema);
@@ -139,7 +143,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	public function onObjectCreating(ObjectEntity $obj): void {
-		$slug = $this->slugOf($obj);
+		$slug = $this->scope->ownedSlugOf($obj);
 
 		// Validate close prerequisites (resultaat, gebruiksrechten, date) before the status is
 		// persisted. If any check fails, a CustomValidationException is thrown here and the status
@@ -178,7 +182,7 @@ class ZGWZaakEventHandler {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-007
 	 */
 	public function onObjectUpdating(ObjectEntity $obj): void {
-		if ($this->slugOf($obj) !== $this->registry->getZaakSchema()) {
+		if ($this->scope->ownedSlugOf($obj) !== $this->registry->getZaakSchema()) {
 			return;
 		}
 
@@ -203,15 +207,4 @@ class ZGWZaakEventHandler {
 		$this->caseValidator->checkArchivePrerequisites($obj);
 		$this->caseValidator->checkGegevensgroepen($obj);
 	}//end assertZaakWritable()
-
-	/**
-	 * The slug of the schema an object belongs to.
-	 *
-	 * @param ObjectEntity $obj The object.
-	 *
-	 * @return string The schema slug.
-	 */
-	private function slugOf(ObjectEntity $obj): string {
-		return (string)$this->schemaMapper->find($obj->getSchema())->getSlug();
-	}//end slugOf()
 }//end class

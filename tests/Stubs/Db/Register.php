@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Test stub for OCA\OpenRegister\Db\Schema.
+ * Test stub for OCA\OpenRegister\Db\Register.
  *
  * Fallback used only when the real OpenRegister app is NOT loaded. Concrete so
- * the tests can build a real Schema with a slug for ZGWLogicService routing.
- * No-op when the real class exists.
+ * the tests can build a register with the slug and application stamp
+ * ZGWZaakEventHandler scopes on. No-op when the real class exists.
  *
  * @category Tests
  * @package  OCA\ZaakAfhandelApp\Tests
  *
  * @author    Conduction Development Team <info@conduction.nl>
- * @copyright 2024 Conduction B.V.
+ * @copyright 2026 Conduction B.V.
  * @license   EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  *
  * @link https://github.com/ConductionNL/zaakafhandelapp
@@ -22,22 +22,22 @@ declare(strict_types=1);
 namespace OCA\OpenRegister\Db;
 
 /**
- * Stub for Schema supporting the slug accessor the tests use.
+ * Stub for Register supporting the slug and application accessors the tests use.
  */
-class Schema {
+class Register {
 
 	/**
-	 * @var string|null The schema slug.
+	 * @var string|null The register slug.
 	 */
 	private ?string $slug = null;
 
 	/**
-	 * @var string|null The id of the app that provisioned the schema.
+	 * @var string|null The id of the app that provisioned the register.
 	 */
 	private ?string $application = null;
 
 	/**
-	 * Set the schema slug.
+	 * Set the register slug.
 	 *
 	 * @param string|null $slug The slug.
 	 *
@@ -48,7 +48,7 @@ class Schema {
 	}//end setSlug()
 
 	/**
-	 * Get the schema slug.
+	 * Get the register slug.
 	 *
 	 * @return string|null
 	 */
@@ -57,7 +57,7 @@ class Schema {
 	}//end getSlug()
 
 	/**
-	 * Set the id of the app that provisioned this schema.
+	 * Set the id of the app that provisioned this register.
 	 *
 	 * @param string|null $application The app id.
 	 *
@@ -68,7 +68,7 @@ class Schema {
 	}//end setApplication()
 
 	/**
-	 * Get the id of the app that provisioned this schema.
+	 * Get the id of the app that provisioned this register.
 	 *
 	 * @return string|null
 	 */
