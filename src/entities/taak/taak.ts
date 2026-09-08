@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TTaak, ZaakID } from './taak.types'
 
 import { z } from 'zod'
@@ -36,7 +36,7 @@ export class Taak implements TTaak {
 		this.contactmoment = source.contactmoment || ''
 	}
 
-	public validate(): SafeParseReturnType<TTaak, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string().min(1),
 			title: z.string().min(1),

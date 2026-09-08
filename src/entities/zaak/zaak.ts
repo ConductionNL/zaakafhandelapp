@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TOpschorting, TVerlenging, TZaak, zaakTypeID } from './zaak.types'
 
 import { z } from 'zod'
@@ -65,7 +65,7 @@ export class Zaak implements TZaak {
 		this.verlenging = source.verlenging || { reden: '', duur: '' }
 	}
 
-	public validate(): SafeParseReturnType<TZaak, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string().optional(),
 			uuid: z.string().optional(),
