@@ -86,34 +86,31 @@ class ZGWLogicService {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	private function zioCaseUrl(array $arr): string {
-		// The `case` half of this read is believed unreachable since #665.
+		// `case` was removed here. #663 (mine) added it as the fix for a 500 that
+		// #665 then addressed properly, by scoping: ZGWObjectScopeService decides
+		// whether a written object is ours before any ZGW rule runs, so a
+		// zaakinformatieobject only reaches this method when it sits in one of this
+		// app's own registers.
 		//
-		// ZGWObjectScopeService now decides whether a written object is ours before
-		// any ZGW rule runs, so a zaakinformatieobject only reaches this method if
-		// it sits in one of this app's own ZGW registers. Those registers declare
-		// the property as `zaak`; nothing this app ships writes `case`. The `case`
-		// spelling came from dossiq, which renamed `zaak` to `case` in its #842,
-		// and dossiq's objects are exactly what the scope check now skips.
+		// #665 left the decision to me and named the question to answer first:
+		// does any producer in THIS app's registers write `case`? It does not.
+		// ZaakInformatieObjectenController is the only producer, and validateZioUrls
+		// rejects a body without `zaak` with a 400. The `case` spelling only ever
+		// came from dossiq, whose objects the scope check now skips.
 		//
-		// Left in place on purpose, not by oversight. #663 added it as the fix for
-		// the same 500 that #665 then addressed by scoping, and deleting another
-		// session's merged work in a follow-up they would not see coming is its own
-		// kind of mistake. Whether it goes is an open decision, not a settled one.
-		//
-		// If you are reading this because you want it gone, the question to answer
-		// first is whether any producer of a zaakinformatieobject in one of THIS
-		// app's registers writes `case`. Check the register descriptors on the
-		// target instance and ZaakInformatieObjectenController. If the answer is
-		// no, drop the `case` key here and drop `case` from the exception message
-		// below, and expect #663's testCreateObjectInformatieObjectZaakAcceptsTheCaseKey
-		// to fail: it calls this method directly rather than through the listener,
-		// so it is the one thing still holding the branch alive.
-		$url = ($arr['case'] ?? $arr['zaak'] ?? null);
+		// It is gone rather than commented out because it was worse than dead. The
+		// scope check treats an ABSENT application stamp as ours, deliberately, so
+		// hand-built ZGW registers keep working. That means a foreign row can still
+		// arrive wherever a producer stops stamping. Accepting `case` there would
+		// write an OIO into a register that may not exist; failing here names the
+		// missing property and reports the scoping bug instead.
+		$url = ($arr['zaak'] ?? null);
 
 		if (is_string($url) === false || $url === '') {
 			throw new RuntimeException(
-				'A zaakinformatieobject must carry the case it belongs to, as either `case` '
-				. '(dossiq) or `zaak` (this app); this one carries neither.'
+				'A zaakinformatieobject must carry the case it belongs to as `zaak`; '
+				. 'this one does not. If it carries `case`, it belongs to another app and '
+				. 'should not have reached this cascade: that is a ZGWObjectScopeService bug.'
 			);
 		}
 
