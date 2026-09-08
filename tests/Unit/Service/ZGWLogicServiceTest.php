@@ -19,6 +19,7 @@ namespace OCA\ZaakAfhandelApp\Tests\Unit\Service;
 
 use OCA\OpenRegister\Db\ObjectEntity;
 use OCA\OpenRegister\Db\RegisterMapper;
+use OCA\OpenRegister\Db\Schema;
 use OCA\OpenRegister\Db\SchemaMapper;
 use OCA\OpenRegister\Exception\CustomValidationException;
 use OCA\OpenRegister\Service\ObjectService;
@@ -26,6 +27,7 @@ use OCA\ZaakAfhandelApp\Service\ObjectMapperService;
 use OCA\ZaakAfhandelApp\Service\ZGWLogicService;
 use OCA\ZaakAfhandelApp\Service\ZGWRegistryService;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Tests ZGWLogicService — besluit + OIO operations.
@@ -81,7 +83,8 @@ class ZGWLogicServiceTest extends TestCase {
 			$mapperService,
 			$this->registerMapper,
 			$this->schemaMapper,
-			$this->registry
+			$this->registry,
+			$this->createMock(LoggerInterface::class)
 		);
 	}//end setUp()
 
@@ -320,4 +323,43 @@ class ZGWLogicServiceTest extends TestCase {
 			}//end getId()
 		};
 	}//end idDouble()
+	/**
+	 * REGRESSION: a besluitinformatieobject with no besluit link is refused too.
+	 *
+	 * @return void
+	 */
+	public function testCreateOioForBesluitWithoutBesluitLinkIsRefused(): void {
+		$this->objectService->expects($this->never())->method('saveObject');
+
+		$this->expectException(CustomValidationException::class);
+		$this->service->createObjectInformatieObjectBesluit(
+			$this->entity(['informatieobject' => 'http://example/io/1'])
+		);
+	}//end testCreateOioForBesluitWithoutBesluitLinkIsRefused()
+
+	/**
+	 * REGRESSION: deleting a besluitinformatieobject with no besluit link is refused.
+	 *
+	 * The delete cascade fed `$serialized['besluit']` straight into
+	 * deleteOioByFilters()'s `string $objectUrl`, the same TypeError shape that
+	 * 500'd the create path. It now names the missing relation and attempts no
+	 * lookup or delete.
+	 *
+	 * @return void
+	 */
+	public function testDeleteOioWithoutBesluitLinkIsRefused(): void {
+		$this->objectService->expects($this->never())->method('findAll');
+		$this->objectService->expects($this->never())->method('deleteObjects');
+		$this->registry->method('getZioSchema')->willReturn('zaakinformatieobject');
+		$this->registry->method('getBioSchema')->willReturn('besluitinformatieobject');
+
+		$schema = new Schema();
+		$schema->setSlug('besluitinformatieobject');
+
+		$this->expectException(CustomValidationException::class);
+		$this->service->deleteObjectInformatieObject(
+			$this->entity(['informatieobject' => 'http://example/io/1']),
+			$schema
+		);
+	}//end testDeleteOioWithoutBesluitLinkIsRefused()
 }//end class

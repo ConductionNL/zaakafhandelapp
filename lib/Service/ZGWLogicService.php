@@ -7,6 +7,7 @@ use OCA\OpenRegister\Db\RegisterMapper;
 use OCA\OpenRegister\Db\Schema;
 use OCA\OpenRegister\Db\SchemaMapper;
 use OCA\OpenRegister\Exception\CustomValidationException;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -29,12 +30,14 @@ class ZGWLogicService {
 	 * @param RegisterMapper $registerMapper The register mapper
 	 * @param SchemaMapper $schemaMapper The schema mapper
 	 * @param ZGWRegistryService $registry The registry service
+	 * @param LoggerInterface $logger The logger
 	 */
 	public function __construct(
 		ObjectMapperService $mapperService,
 		private RegisterMapper $registerMapper,
 		private SchemaMapper $schemaMapper,
 		private ZGWRegistryService $registry,
+		private LoggerInterface $logger,
 	) {
 		$objectService = $mapperService->getOpenRegisters();
 		if ($objectService === null) {
@@ -51,7 +54,11 @@ class ZGWLogicService {
 	 */
 	public function createObjectInformatieObjectZaak(ObjectEntity $zio): void {
 		$arr = $zio->jsonSerialize();
-		$this->createOio($this->zioCaseUrl($arr), $arr['informatieobject'], 'zaak');
+		$this->createOio(
+			$this->zioCaseUrl($arr),
+			$this->requiredLink($zio, $arr, 'informatieobject'),
+			'zaak'
+		);
 	}//end createObjectInformatieObjectZaak()
 
 
@@ -79,6 +86,28 @@ class ZGWLogicService {
 	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-001
 	 */
 	private function zioCaseUrl(array $arr): string {
+		// The `case` half of this read is believed unreachable since #665.
+		//
+		// ZGWObjectScopeService now decides whether a written object is ours before
+		// any ZGW rule runs, so a zaakinformatieobject only reaches this method if
+		// it sits in one of this app's own ZGW registers. Those registers declare
+		// the property as `zaak`; nothing this app ships writes `case`. The `case`
+		// spelling came from dossiq, which renamed `zaak` to `case` in its #842,
+		// and dossiq's objects are exactly what the scope check now skips.
+		//
+		// Left in place on purpose, not by oversight. #663 added it as the fix for
+		// the same 500 that #665 then addressed by scoping, and deleting another
+		// session's merged work in a follow-up they would not see coming is its own
+		// kind of mistake. Whether it goes is an open decision, not a settled one.
+		//
+		// If you are reading this because you want it gone, the question to answer
+		// first is whether any producer of a zaakinformatieobject in one of THIS
+		// app's registers writes `case`. Check the register descriptors on the
+		// target instance and ZaakInformatieObjectenController. If the answer is
+		// no, drop the `case` key here and drop `case` from the exception message
+		// below, and expect #663's testCreateObjectInformatieObjectZaakAcceptsTheCaseKey
+		// to fail: it calls this method directly rather than through the listener,
+		// so it is the one thing still holding the branch alive.
 		$url = ($arr['case'] ?? $arr['zaak'] ?? null);
 
 		if (is_string($url) === false || $url === '') {
@@ -98,7 +127,11 @@ class ZGWLogicService {
 	 */
 	public function createObjectInformatieObjectBesluit(ObjectEntity $bio): void {
 		$arr = $bio->jsonSerialize();
-		$this->createOio($arr['besluit'], $arr['informatieobject'], 'besluit');
+		$this->createOio(
+			$this->requiredLink($bio, $arr, 'besluit'),
+			$this->requiredLink($bio, $arr, 'informatieobject'),
+			'besluit'
+		);
 	}//end createObjectInformatieObjectBesluit()
 
 	/**
@@ -112,11 +145,19 @@ class ZGWLogicService {
 		if ($schema->getSlug() === $this->registry->getZioSchema()) {
 			// Same two producers, same disagreement: see zioCaseUrl(). Deleting by
 			// the wrong key would leave the OIO behind rather than fail loudly.
-			$this->deleteOioByFilters($this->zioCaseUrl($serialized), 'zaak', $serialized['informatieobject']);
+			$this->deleteOioByFilters(
+				$this->zioCaseUrl($serialized),
+				'zaak',
+				$this->requiredLink($object, $serialized, 'informatieobject')
+			);
 		}
 
 		if ($schema->getSlug() === $this->registry->getBioSchema()) {
-			$this->deleteOioByFilters($serialized['besluit'], 'besluit', $serialized['informatieobject']);
+			$this->deleteOioByFilters(
+				$this->requiredLink($object, $serialized, 'besluit'),
+				'besluit',
+				$this->requiredLink($object, $serialized, 'informatieobject')
+			);
 		}
 	}//end deleteObjectInformatieObject()
 
@@ -163,6 +204,80 @@ class ZGWLogicService {
 			$this->objectService->deleteObject($this->registry->getObjectIdByEndpointUrl($url));
 		}
 	}//end deleteBesluit()
+
+	/**
+	 * Read a required relation off a ZGW object, refusing the cascade when it is absent.
+	 *
+	 * Reached only for an object this app owns — ZGWZaakEventHandler has already
+	 * established that. So a missing link here is malformed ZGW data, not another
+	 * app's schema that happens to share a slug, and it must not pass quietly: the
+	 * cascade this method feeds is the whole reason the write triggers ZGW logic.
+	 *
+	 * Before this guard the value went straight into a `string` parameter and the
+	 * resulting TypeError surfaced as an unexplained HTTP 500 on the object write.
+	 *
+	 * @param ObjectEntity $object The object carrying the relation.
+	 * @param array<string,mixed> $data Its serialized payload.
+	 * @param string $field The relation field that must be present.
+	 *
+	 * @return string The relation URL.
+	 *
+	 * @throws CustomValidationException When the relation is missing or not a URL string.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-008
+	 */
+	private function requiredLink(ObjectEntity $object, array $data, string $field): string {
+		$value = $this->optionalLink($object, $data, $field);
+		if ($value !== null) {
+			return $value;
+		}
+
+		throw new CustomValidationException(
+			message: sprintf('%s ontbreekt', $field),
+			errors: [
+				[
+					'name' => $field,
+					'code' => 'required',
+					'reason' => sprintf('%s is verplicht om de objectinformatieobject-relatie te leggen', $field),
+				],
+			]
+		);
+	}//end requiredLink()
+
+	/**
+	 * The same read, for a caller that has to continue without the relation.
+	 *
+	 * Returns null rather than throwing, but never silently: a missing relation on
+	 * an object this app owns is logged at error level with the identifiers needed
+	 * to find the row.
+	 *
+	 * @param ObjectEntity $object The object carrying the relation.
+	 * @param array<string,mixed> $data Its serialized payload.
+	 * @param string $field The relation field to read.
+	 *
+	 * @return string|null The relation URL, or null when it is absent.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-008
+	 */
+	private function optionalLink(ObjectEntity $object, array $data, string $field): ?string {
+		$value = ($data[$field] ?? null);
+		if (is_string($value) === true && trim($value) !== '') {
+			return $value;
+		}
+
+		$this->logger->error(
+			'ZaakAfhandelApp: ZGW relation object is missing a required link, cascade skipped',
+			[
+				'field' => $field,
+				'object' => $object->getUuid(),
+				'register' => $object->getRegister(),
+				'schema' => $object->getSchema(),
+				'presentFields' => array_keys($data),
+			]
+		);
+
+		return null;
+	}//end optionalLink()
 
 	private function createOio(string $objectUrl, string $informatieobject, string $objectType): void {
 		$oio = new ObjectEntity();
