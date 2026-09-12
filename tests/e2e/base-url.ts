@@ -21,7 +21,17 @@
  * resolver is what broke openconnector's E2E job, which has hard-failed on
  * every run since with "PLAYWRIGHT_BASE_URL is not set". So accept CI's name
  * too, and only then throw.
+ *
+ * NAMING THE SHARED INSTANCE
+ * --------------------------
+ * Setting one of those variables TO `http://localhost:8080` is still refused
+ * off CI unless the run also sets ZAAKAFHANDELAPP_E2E_ALLOW_SHARED_INSTANCE
+ * (or the fleet-wide E2E_ALLOW_SHARED_INSTANCE) to that same origin. No
+ * default is not the same as no accident: an explicit value can name the
+ * shared container too. See tests/e2e/shared-instance.ts.
  */
+
+import { assertInstancePermitted } from './shared-instance.ts'
 
 /**
  * Resolve the base URL of the Nextcloud instance under test.
@@ -45,5 +55,5 @@ export function resolveBaseUrl(): string {
 		)
 	}
 
-	return url.replace(/\/+$/, '')
+	return assertInstancePermitted(url.replace(/\/+$/, ''))
 }
