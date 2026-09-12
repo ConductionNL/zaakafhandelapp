@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TMedewerker } from './medewerkers.types'
 
 import { z } from 'zod'
@@ -23,7 +23,7 @@ export class Medewerker implements TMedewerker {
 		this.telefoonnummer = source.telefoonnummer || ''
 	}
 
-	public validate(): SafeParseReturnType<TMedewerker, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string().optional(),
 			voornaam: z.string().min(1),

@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TDocument } from './document.types'
 
 import { z } from 'zod'
@@ -144,7 +144,7 @@ export class Document implements TDocument {
 		this._expand = source._expand || null
 	}
 
-	public validate(): SafeParseReturnType<TDocument, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string(),
 			zaak: z.string().nullable(),

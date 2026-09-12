@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TResultaat } from './resultaat.types'
 
 import { z } from 'zod'
@@ -21,7 +21,7 @@ export class Resultaat implements TResultaat {
 		this.toelichting = source.toelichting || ''
 	}
 
-	public validate(): SafeParseReturnType<TResultaat, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string(),
 			url: z.string(),

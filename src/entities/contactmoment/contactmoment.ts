@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod'
+import type { ZodSafeParseResult } from 'zod'
 import type { TContactMoment } from './contactmoment.types'
 
 import { z } from 'zod'
@@ -35,7 +35,7 @@ export class ContactMoment implements TContactMoment {
 		this.kanaal = source.kanaal || ''
 	}
 
-	public validate(): SafeParseReturnType<TContactMoment, unknown> {
+	public validate(): ZodSafeParseResult<unknown> {
 		const schema = z.object({
 			id: z.string().optional(),
 			uuid: z.string().optional(),

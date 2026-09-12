@@ -2,6 +2,8 @@
 
 namespace OCA\ZaakAfhandelApp\Service;
 
+use OCA\ZaakAfhandelApp\AppInfo\Application;
+
 /**
  * Service for ZGW registry and schema slug lookups.
  *
@@ -43,6 +45,69 @@ class ZGWRegistryService {
 		'zaaktype-informatieobjecttype' => 'zaaktypeinformatieobjecttype',
 		'zaaktype' => 'zaaktype',
 	];
+
+	/**
+	 * The app that provisions the ZGW registers and schemas described above.
+	 *
+	 * OpenRegister stamps the importing app id onto every register and schema it
+	 * imports (`Register::getApplication()` / `Schema::getApplication()`), which
+	 * is what lets this app tell its own `zaak` from another app's `zaak`.
+	 */
+	private const OWNING_APPLICATION = Application::APP_ID;
+
+	/**
+	 * Whether a register slug is one of the four canonical ZGW registers.
+	 *
+	 * OpenRegister matches slugs case-insensitively, so this does too.
+	 *
+	 * @param string|null $slug The register slug to test.
+	 *
+	 * @return boolean True when the slug names a ZGW register.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-008
+	 */
+	public function isZgwRegisterSlug(?string $slug): bool {
+		if ($slug === null || $slug === '') {
+			return false;
+		}
+
+		foreach (self::REGISTERS as $registerSlug) {
+			if (strcasecmp($slug, $registerSlug) === 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}//end isZgwRegisterSlug()
+
+	/**
+	 * Whether an OpenRegister `application` stamp proves another app owns the entity.
+	 *
+	 * Deliberately one-directional. An empty stamp is NOT foreign: a register an
+	 * administrator created by hand carries no application at all, and the ZGW
+	 * rules have to keep running on those instances. Only a stamp naming a
+	 * different app is treated as proof, so the narrowing can never take a
+	 * working deployment dark.
+	 *
+	 * Seeded fixtures are stamped with variants such as `openregister.mock` and
+	 * `planninq.demo`, so the comparison uses the app id ahead of the first dot.
+	 *
+	 * @param string|null $application The application stamp to test.
+	 *
+	 * @return boolean True when the stamp names an app other than this one.
+	 *
+	 * @spec openspec/specs/zgw-case-lifecycle/spec.md#REQ-008
+	 */
+	public function isForeignApplication(?string $application): bool {
+		$stamp = trim((string)$application);
+		if ($stamp === '') {
+			return false;
+		}
+
+		$appId = explode('.', $stamp)[0];
+
+		return strcasecmp($appId, self::OWNING_APPLICATION) !== 0;
+	}//end isForeignApplication()
 
 	public function getDrcRegister(): string {
 		return self::REGISTERS['drc'];

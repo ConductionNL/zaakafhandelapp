@@ -2225,16 +2225,16 @@
         },
         {
             "name": "conduction/hydra-gates",
-            "version": "v1.10.0",
+            "version": "v1.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ConductionNL/.github.git",
-                "reference": "d143bc27aecbb44a66c843dba89d374628bf9eef"
+                "reference": "bfb34cc6caa9762f6aa3da66f9a2b573f8442358"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ConductionNL/.github/zipball/d143bc27aecbb44a66c843dba89d374628bf9eef",
-                "reference": "d143bc27aecbb44a66c843dba89d374628bf9eef",
+                "url": "https://api.github.com/repos/ConductionNL/.github/zipball/bfb34cc6caa9762f6aa3da66f9a2b573f8442358",
+                "reference": "bfb34cc6caa9762f6aa3da66f9a2b573f8442358",
                 "shasum": ""
             },
             "require": {
@@ -2273,9 +2273,9 @@
             "support": {
                 "docs": "https://github.com/ConductionNL/.github/blob/main/hydra-gates/README.md",
                 "issues": "https://github.com/ConductionNL/.github/issues",
-                "source": "https://github.com/ConductionNL/.github/tree/v1.10.0"
+                "source": "https://github.com/ConductionNL/.github/tree/v1.16.1"
             },
-            "time": "2026-08-27T16:18:04+00:00"
+            "time": "2026-09-07T08:01:54+00:00"
         },
         {
             "name": "cyclonedx/cyclonedx-library",
@@ -3871,11 +3871,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.2.9",
+            "version": "2.2.13",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/13d6b4f347bad222da436580c8304fa6f83e6bd0",
-                "reference": "13d6b4f347bad222da436580c8304fa6f83e6bd0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9ba9ac76ee9c5cf5b56d58eb5deec6315b7a0260",
+                "reference": "9ba9ac76ee9c5cf5b56d58eb5deec6315b7a0260",
                 "shasum": ""
             },
             "require": {
@@ -3931,7 +3931,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-22T07:38:16+00:00"
+            "time": "2026-09-03T20:38:19+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

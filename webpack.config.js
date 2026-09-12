@@ -163,13 +163,22 @@ webpackConfig.resolve.alias = {
 		__dirname,
 		'node_modules/@nextcloud/dialogs/dist/index.mjs',
 	),
-	// Bypass @nextcloud/axios's `exports` field which only declares the
-	// `import` condition, so the library's transitive CJS `require()` resolves
-	// to this app's installed copy and shares interceptors / CSRF tokens.
-	'@nextcloud/axios$': path.resolve(
-		__dirname,
-		'node_modules/@nextcloud/axios/dist/index.cjs',
-	),
+	// NO ALIAS FOR AXIOS. There used to be one here, pointing at
+	// `node_modules/@nextcloud/axios/dist/index.cjs` so the shared library's
+	// import resolved to this app's copy and interceptors and the CSRF token
+	// stayed shared.
+	//
+	// 2.6.0 dropped CommonJS: it deleted `dist/index.cjs`, removed `main`, and
+	// its `exports` map now declares only `types` and `import`, with the build
+	// at `dist/index.js`. The alias therefore pointed at a file that no longer
+	// exists, and being an exact-match (`$`) rule it took down EVERY consumer of
+	// the bare specifier at once. webpack names the issuer rather than the
+	// alias, so the errors read as `@conduction/nextcloud-vue/dist/esm/...` and
+	// looked like a broken library.
+	//
+	// The single-copy guarantee the alias was written for does not need it:
+	// @conduction/nextcloud-vue declares axios peer-only, so npm hoists exactly
+	// one copy and the bare specifier already resolves to it.
 }
 
 // Allow `.js` import requests to resolve to `.cjs` files. @nextcloud/vue ships

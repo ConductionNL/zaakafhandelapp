@@ -167,3 +167,49 @@ persist the `verlenging` group on the zaak.
 - **WHEN** an extension is attempted
 - **THEN** the system raises a validation error
 
+
+### Requirement: Apply the ZGW rules only to this app's own objects (REQ-008)
+
+The system SHALL decide whether an OpenRegister object write triggers the ZGW
+rules from the object's register and schema ownership, not from the schema slug
+alone. A schema slug such as `zaak`, `status`, `besluit` or
+`zaakinformatieobject` is an ordinary domain word that any app sharing the
+OpenRegister instance may use, and running this app's cascade against another
+app's payload corrupts or rejects that app's write.
+
+The system SHALL treat an object as its own when it sits in one of the four
+canonical ZGW registers, and SHALL skip it only when OpenRegister records that
+another application owns its register or its schema. An object whose ownership
+is unrecorded SHALL remain in scope, so an instance whose ZGW registers were
+created by hand keeps working.
+
+When the rules do apply and a required ZGW relation is absent, the system SHALL
+report the object it could not process and SHALL NOT complete the cascade
+silently.
+
+#### Scenario: Another app's zaakinformatieobject is left alone
+
+- **GIVEN** a second app that ships a `zaakinformatieobject` schema in its own
+  register
+- **WHEN** that app creates one of its own zaakinformatieobjecten
+- **THEN** no ZGW rule runs and the write succeeds
+
+#### Scenario: A zaak in a ZGW register is still processed
+
+- **GIVEN** a `status` object in the `zaken` register
+- **WHEN** it is created
+- **THEN** the case open/close rules run as before
+
+#### Scenario: An unstamped register is still processed
+
+- **GIVEN** ZGW registers an administrator created by hand, carrying no
+  application
+- **WHEN** an object in one of them is written
+- **THEN** the ZGW rules run as before
+
+#### Scenario: A missing relation is reported, not swallowed
+
+- **GIVEN** a zaakinformatieobject this app owns with no `zaak` link
+- **WHEN** it is created
+- **THEN** the system reports the missing relation and creates no
+  objectinformatieobject
