@@ -85,12 +85,20 @@ class ConnectionReportService {
 	];
 
 	/**
-	 * HTTP statuses that say something about the connection, not about one
-	 * request: a refused key, and a gateway that cannot reach the API.
+	 * HTTP statuses that say the API refused the key. They are about the
+	 * connection, not about one request.
 	 *
 	 * @var array<int, int>
 	 */
-	public const CONNECTION_ERROR_STATUSES = [401, 403, 502, 503, 504];
+	public const REFUSED_STATUSES = [401, 403];
+
+	/**
+	 * HTTP statuses that say a gateway could not reach the API. Also about the
+	 * connection: a 500 is left out, because it is often about one request.
+	 *
+	 * @var array<int, int>
+	 */
+	public const GATEWAY_ERROR_STATUSES = [502, 503, 504];
 
 	/**
 	 * Prefix of the app-config key that remembers the last report per source.
@@ -213,11 +221,11 @@ class ConnectionReportService {
 			return ['error', 'The last call to the ' . $where . ' got no answer.'];
 		}
 
-		if (in_array($httpStatus, [401, 403], true) === true) {
+		if (in_array($httpStatus, self::REFUSED_STATUSES, true) === true) {
 			return ['error', 'The ' . $where . ' refused the key (HTTP ' . $httpStatus . ').'];
 		}
 
-		if (in_array($httpStatus, self::CONNECTION_ERROR_STATUSES, true) === true) {
+		if (in_array($httpStatus, self::GATEWAY_ERROR_STATUSES, true) === true) {
 			return ['error', 'The ' . $where . ' answered HTTP ' . $httpStatus . ' on the last call.'];
 		}
 
