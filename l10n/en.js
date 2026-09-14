@@ -586,7 +586,20 @@ OC.L10N.register(
         "Open Flows in the menu": "Open Flows in the menu",
         "Reports": "Reports",
         "Pick a report to open it.": "Pick a report to open it.",
-        "Who changed what, and when.": "Who changed what, and when."
+        "Who changed what, and when.": "Who changed what, and when.",
+        "Integrations": "Integrations",
+        "Connection": "Connection",
+        "Status message": "Status message",
+        "Last checked": "Last checked",
+        "All connections": "All connections",
+        "Add integration": "Add integration",
+        "Open settings": "Open settings",
+        "Configured": "Configured",
+        "Limited": "Limited",
+        "Not configured": "Not configured",
+        "Simulated": "Simulated",
+        "Not available": "Not available",
+        "Error": "Error"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -18,6 +18,7 @@
 //   - openspec/changes/zaakafhandelapp-manifest-v1/design.md
 //   - @conduction/nextcloud-vue → docs/migrating-to-manifest.md
 
+import { generateUrl } from '@nextcloud/router'
 import ZaakBerichtenTab from './components/tabs/ZaakBerichtenTab.vue'
 import ZaakDocumentenTab from './components/tabs/ZaakDocumentenTab.vue'
 import ZaakResultatenTab from './components/tabs/ZaakResultatenTab.vue'
@@ -32,8 +33,17 @@ import ZaakTakenTab from './components/tabs/ZaakTakenTab.vue'
 import AuditTrailView from './views/audit/AuditTrailView.vue'
 // --- Custom-fallback page components (referenced by `pages[].component`) ---
 import SearchView from './views/search/SearchIndex.vue'
+import { createConnectionHandlers } from './services/connectionRegistry.js'
 
 export default {
+	// --- Header-action handler: the Integrations page's Add integration. ---
+	// A FUNCTION, because it leaves the app for integriq's Connections overview
+	// and a header action's `navigate` only pushes a route inside this app.
+	// CnIndexPage resolves a handler name against this map, not `registry`.
+	...createConnectionHandlers({
+		generateUrl,
+		assign: (url) => window.location.assign(url),
+	}),
 	// --- Genuine exception: multi-store search; no abstract analogue. ---
 	SearchView,
 	// --- Migration cost: placeholder navigation entry. ---

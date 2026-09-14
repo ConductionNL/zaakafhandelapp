@@ -7,11 +7,11 @@
 
 ## 2. Page
 
-- [ ] 2.1 Add `src/manifest.d/connection-registry.json` with the page and its settings-gear menu entry.
-- [ ] 2.2 Add `src/services/connectionRegistry.js` with the two formatters and the Add integration handler.
-- [ ] 2.3 Wire the formatters in `src/App.vue` and the handler in `src/customComponents.js`; register `PowerPlugOutline` in `src/icons.js`.
-- [ ] 2.4 Add the strings to `l10n/en` and `l10n/nl`.
-- [ ] 2.5 Cover it in `tests/vitest/connectionRegistry.spec.js`.
+- [x] 2.1 Add `src/manifest.d/connection-registry.json` with the page and its settings-gear menu entry.
+- [x] 2.2 Add `src/services/connectionRegistry.js` with the two formatters and the Add integration handler.
+- [x] 2.3 Wire the formatters in `src/App.vue` and the handler in `src/customComponents.js`; register `PowerPlugOutline` in `src/icons.js`.
+- [x] 2.4 Add the strings to `l10n/en` and `l10n/nl`.
+- [x] 2.5 Cover it in `tests/vitest/connectionRegistry.spec.js`.
 
 ## 3. Reports and refresh
 
