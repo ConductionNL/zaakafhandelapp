@@ -40,6 +40,7 @@ import MapMarkerPath from 'vue-material-design-icons/MapMarkerPath.vue'
 import MessageTextOutline from 'vue-material-design-icons/MessageTextOutline.vue'
 import NoteTextOutline from 'vue-material-design-icons/NoteTextOutline.vue'
 import Phone from 'vue-material-design-icons/Phone.vue'
+import PowerPlugOutline from 'vue-material-design-icons/PowerPlugOutline.vue'
 import ScaleBalance from 'vue-material-design-icons/ScaleBalance.vue'
 import SitemapOutline from 'vue-material-design-icons/SitemapOutline.vue'
 import StoreOutline from 'vue-material-design-icons/StoreOutline.vue'
@@ -75,6 +76,7 @@ export default {
 	MessageTextOutline,
 	NoteTextOutline,
 	Phone,
+	PowerPlugOutline,
 	ScaleBalance,
 	SitemapOutline,
 	StoreOutline,

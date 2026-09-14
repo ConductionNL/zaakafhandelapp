@@ -2,6 +2,7 @@
 
 namespace OCA\ZaakAfhandelApp\Controller;
 
+use OCA\ZaakAfhandelApp\Service\ConnectionReportService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
@@ -74,11 +75,23 @@ class ConfigurationController extends Controller {
 		'organisationKVK',
 	];
 
+	/**
+	 * Constructor.
+	 *
+	 * @param string                       $appName           The app id.
+	 * @param IAppConfig                   $config            Stores the configuration.
+	 * @param IRequest                     $request           The request.
+	 * @param IUserSession                 $userSession       Tells whether someone is signed in.
+	 * @param ConnectionReportService|null $connectionReports Asks integriq to look again after a save.
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
+	 */
 	public function __construct(
 		$appName,
 		private readonly IAppConfig $config,
 		IRequest $request,
 		private readonly IUserSession $userSession,
+		private readonly ?ConnectionReportService $connectionReports = null,
 	) {
 		parent::__construct($appName, $request);
 	}//end __construct()
@@ -118,9 +131,14 @@ class ConfigurationController extends Controller {
 	 * The method is named "save" rather than "create" because it behaves as an upsert —
 	 * it creates or updates configuration keys in a single idempotent POST (L3).
 	 *
+	 * After the write it asks integriq to resolve every connection whose keys
+	 * the save wrote (adopt-connection-registry). That never throws, does
+	 * nothing without integriq, and never changes the response.
+	 *
 	 * @NoCSRFRequired
 	 *
 	 * @spec openspec/specs/app-configuration/spec.md#REQ-001
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
 	 */
 	public function save(): JSONResponse {
 		if ($this->userSession->getUser() === null) {
@@ -138,6 +156,8 @@ class ConfigurationController extends Controller {
 			$this->config->setValueString('zaakafhandelapp', $key, (string)$requestData[$key]);
 			$data[$key] = in_array($key, self::CREDENTIAL_KEYS, true) ? '***' : $this->config->getValueString('zaakafhandelapp', $key);
 		}
+
+		$this->connectionReports?->refreshFromSave(savedKeys: array_keys($data));
 
 		return new JSONResponse($data);
 	}//end save()

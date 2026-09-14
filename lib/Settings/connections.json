@@ -1,0 +1,69 @@
+{
+    "app": "zaakafhandelapp",
+    "connections": [
+        {
+            "key": "zrc",
+            "title": "Zaken API (ZRC)",
+            "description": "Statuses, roles, results, objects, properties and documents of a case, kept in a Zaakregistratiecomponent (ZRC).",
+            "order": 10,
+            "requiredConfig": ["zrcLocation"],
+            "unconfiguredMessage": "No ZRC address is set. Set zrcLocation with occ config:app:set or POST /api/configuration. For an API key, also set zrcAuthType to apiKey and zrcKey."
+        },
+        {
+            "key": "brc",
+            "title": "Besluiten API (BRC)",
+            "description": "Decisions on a case, kept in a Besluitregistratiecomponent (BRC).",
+            "order": 20,
+            "requiredConfig": ["brcLocation"],
+            "unconfiguredMessage": "No BRC address is set. Set brcLocation with occ config:app:set or POST /api/configuration. For an API key, also set brcAuthType to apiKey and brcKey."
+        },
+        {
+            "key": "drc",
+            "title": "Documenten API (DRC)",
+            "description": "Documents, kept in a Documentregistratiecomponent (DRC).",
+            "order": 30,
+            "available": false,
+            "unavailableMessage": "The settings are kept, and nothing in the app calls this API yet. Saving drcLocation changes nothing."
+        },
+        {
+            "key": "ztc",
+            "title": "Catalogi API (ZTC)",
+            "description": "Case types and their catalogues, kept in a Zaaktypecatalogus (ZTC).",
+            "order": 40,
+            "available": false,
+            "unavailableMessage": "The settings are kept, and nothing in the app calls this API yet. Saving ztcLocation changes nothing."
+        },
+        {
+            "key": "orc",
+            "title": "Overige registraties (ORC)",
+            "description": "Other objects, kept in an Overige registratiecomponent (ORC).",
+            "order": 50,
+            "available": false,
+            "unavailableMessage": "The settings are kept, and nothing in the app calls this API yet. Saving orcLocation changes nothing."
+        },
+        {
+            "key": "klanten",
+            "title": "Klanten API",
+            "description": "Customers and their contact details, kept in a Klanten API.",
+            "order": 60,
+            "available": false,
+            "unavailableMessage": "The settings are kept, and nothing in the app calls this API yet. Saving klantenLocation changes nothing."
+        },
+        {
+            "key": "elastic",
+            "title": "Elasticsearch",
+            "description": "A search index in Elasticsearch.",
+            "order": 70,
+            "available": false,
+            "unavailableMessage": "The settings are kept, and nothing in the app calls Elasticsearch yet. Saving elasticLocation changes nothing."
+        },
+        {
+            "key": "mongodb",
+            "title": "MongoDB",
+            "description": "Object storage in a MongoDB cluster.",
+            "order": 80,
+            "available": false,
+            "unavailableMessage": "The settings are kept, and nothing in the app calls MongoDB yet. Saving mongodbLocation changes nothing."
+        }
+    ]
+}

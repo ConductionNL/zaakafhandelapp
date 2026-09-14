@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace OCA\ZaakAfhandelApp\Tests\Unit\Controller;
 
 use OCA\ZaakAfhandelApp\Controller\ConfigurationController;
+use OCA\ZaakAfhandelApp\Service\ConnectionReportService;
 use OCP\AppFramework\Http;
 use OCP\IAppConfig;
 use OCP\IRequest;
@@ -94,17 +95,18 @@ class ConfigurationControllerTest extends TestCase {
 	 *
 	 * @param array<string, mixed> $params The request parameters.
 	 * @param bool $authenticated Whether IUserSession returns a user.
+	 * @param ConnectionReportService|null $reports The connection reporter, or none.
 	 *
 	 * @return ConfigurationController The controller under test.
 	 */
-	private function makeController(array $params, bool $authenticated = true): ConfigurationController {
+	private function makeController(array $params, bool $authenticated = true, ?ConnectionReportService $reports = null): ConfigurationController {
 		$request = $this->createMock(IRequest::class);
 		$request->method('getParams')->willReturn($params);
 
 		$session = $this->createMock(IUserSession::class);
 		$session->method('getUser')->willReturn($authenticated === true ? $this->createMock(IUser::class) : null);
 
-		return new ConfigurationController('zaakafhandelapp', $this->config, $request, $session);
+		return new ConfigurationController('zaakafhandelapp', $this->config, $request, $session, $reports);
 	}//end makeController()
 
 	/**
@@ -183,6 +185,63 @@ class ConfigurationControllerTest extends TestCase {
 		$this->assertArrayNotHasKey('zaakafhandelapp/ztcLocation', $this->written);
 		$this->assertArrayNotHasKey('zaakafhandelapp/zrcKey', $this->written);
 	}//end testAbsentKeysAreNotWritten()
+
+	/**
+	 * A save hands the keys it wrote to the reporter, and nothing it ignored.
+	 *
+	 * Integriq only learns a ZRC address changed if it is asked. The keys are
+	 * the WRITTEN ones: a key outside the allow-list was never saved, so it
+	 * must not trigger a refresh either.
+	 *
+	 * @return void
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
+	 */
+	public function testASaveAsksIntegriqAboutTheKeysItWrote(): void {
+		$reports = $this->createMock(originalClassName: ConnectionReportService::class);
+		$reports->expects($this->once())
+			->method('refreshFromSave')
+			->with(['zrcLocation', 'zrcKey'])
+			->willReturn(['zrc']);
+
+		$response = $this->makeController(
+			params: ['zrcLocation' => 'https://zrc.example/api/v1', 'zrcKey' => self::SECRET, 'installed' => 'no'],
+			reports: $reports
+		)->save();
+
+		$this->assertSame(expected: Http::STATUS_OK, actual: $response->getStatus());
+	}//end testASaveAsksIntegriqAboutTheKeysItWrote()
+
+	/**
+	 * The response is the same with and without the reporter.
+	 *
+	 * @return void
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
+	 */
+	public function testTheResponseIsTheSameWithAndWithoutTheReporter(): void {
+		$params = ['zrcLocation' => 'https://zrc.example/api/v1', 'zrcKey' => self::SECRET];
+
+		$with    = $this->makeController(params: $params, reports: $this->createMock(originalClassName: ConnectionReportService::class))->save();
+		$without = $this->makeController(params: $params)->save();
+
+		$this->assertSame(expected: $without->getData(), actual: $with->getData());
+		$this->assertSame(expected: $without->getStatus(), actual: $with->getStatus());
+	}//end testTheResponseIsTheSameWithAndWithoutTheReporter()
+
+	/**
+	 * An unauthenticated caller asks integriq about nothing.
+	 *
+	 * @return void
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
+	 */
+	public function testAnUnauthenticatedSaveAsksNothing(): void {
+		$reports = $this->createMock(originalClassName: ConnectionReportService::class);
+		$reports->expects($this->never())->method('refreshFromSave');
+
+		$this->makeController(params: ['zrcLocation' => 'https://zrc.example/api/v1'], authenticated: false, reports: $reports)->save();
+	}//end testAnUnauthenticatedSaveAsksNothing()
 
 	/**
 	 * An unauthenticated caller gets 401 and nothing is persisted.

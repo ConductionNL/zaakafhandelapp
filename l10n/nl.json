@@ -649,6 +649,19 @@
         "Pick a report to open it.": "Kies een rapport om het te openen.",
         "Who changed what, and when.": "Wie wat veranderde, en wanneer.",
         "Store": "Store",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installeer registers, schema's en flows die andere organisaties hebben gepubliceerd."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installeer registers, schema's en flows die andere organisaties hebben gepubliceerd.",
+        "Integrations": "Koppelingen",
+        "Connection": "Verbinding",
+        "Status message": "Statusbericht",
+        "Last checked": "Laatst gecontroleerd",
+        "All connections": "Alle verbindingen",
+        "Add integration": "Integratie toevoegen",
+        "Open settings": "Instellingen openen",
+        "Configured": "Ingericht",
+        "Limited": "Beperkt",
+        "Not configured": "Niet geconfigureerd",
+        "Simulated": "Gesimuleerd",
+        "Not available": "Niet beschikbaar",
+        "Error": "Fout"
     }
 }
