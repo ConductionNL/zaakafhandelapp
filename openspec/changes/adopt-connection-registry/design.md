@@ -44,7 +44,7 @@ Without integriq the class check fails first, so nothing is read, stored, sent o
 
 **Why this is cheap enough.** The callback costs a `class_exists` and one app-config read, which Nextcloud has already loaded for the request. A write and an event happen at most once an hour per source while nothing changes.
 
-**The cost it accepts.** Under contract D4 a report outranks rule 5. Once a ZRC call has reported, clearing `zrcLocation` without a save shows the old status until the next call. The next call reports `unconfigured`, so the row does not stay wrong for long.
+**The cost it accepts.** Under contract D4 a report outranks rule 5. Once a ZRC call has reported, a save alone cannot bring back "Required settings are filled.": the row keeps the last report until the next call, and the save only makes that next call report at once. Clearing `zrcLocation` behaves the same way, and the next call reports `unconfigured`. The e2e spec therefore drives a save and a call, and expects the call's report, not rule 5.
 
 ## D3. The refresh
 
@@ -66,6 +66,7 @@ The settings column stays, although no row fills it today. It is the contract's 
 ## D5. Contract misfits
 
 - **A connection with no admin section.** Contract D2 assumes a key is set in a settings section or through `occ`. Zaakafhandelapp's keys are also set through its own REST endpoint. The declaration can only say so in a message.
+- **A report outlives the settings it was about.** Rule 4b ranks any report above rule 5, and `ConnectionRefreshRequestedEvent` re-runs the resolver without touching `lastReport`. An app that reports call outcomes cannot let a save's filled settings speak until it makes another call. A possible amendment: a refresh for a key drops a `lastReport` older than the refresh, or rule 4b ignores it.
 - **Basic auth cannot be configured.** `CallService` reads `zrcClientId` and `zrcSecret` for `basic`, and `ConfigurationController::WRITABLE_KEYS` holds neither. That is a finding for the app, not for the contract.
 
 ## Risks

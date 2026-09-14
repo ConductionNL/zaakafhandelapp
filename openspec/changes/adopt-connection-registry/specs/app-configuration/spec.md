@@ -25,7 +25,7 @@ Zaakafhandelapp SHALL declare its outside connections in `lib/Settings/connectio
 - **AND** every key SHALL be unique
 
 #### Scenario: A saved ZRC address reads configured
-@e2e tests/e2e/workflows/integrations-page.spec.ts
+@e2e exclude Rule 5 runs in integriq and holds only until the first ZRC call reports, and other specs in the suite make ZRC calls; tests/Unit/Settings/ConnectionsDeclarationTest.php asserts the requiredConfig integriq reads, and the ZRC scenario under REQ-ZAA-CONN-002 covers the row in a browser run.
 
 - **GIVEN** integriq has synced zaakafhandelapp's declaration
 - **AND** no ZRC call has been reported yet
@@ -52,11 +52,12 @@ When a save through `ConfigurationController` writes a ZRC or BRC key, zaakafhan
 - **THEN** zaakafhandelapp SHALL send a refresh request for `zrc` and none for `brc`
 
 #### Scenario: A ZRC that does not answer reads error
-@e2e exclude A browser run cannot make the CI instance's ZRC stop answering; tests/Unit/Service/CallServiceConnectionReportTest.php sends a real call to a closed port and asserts the report.
+@e2e tests/e2e/workflows/integrations-page.spec.ts
 
-- **GIVEN** `zrcLocation` points at an address where nothing listens
+- **GIVEN** an admin saved a `zrcLocation` where nothing answers
 - **WHEN** a ZRC call runs
-- **THEN** zaakafhandelapp SHALL report `zrc` as `error`
+- **THEN** zaakafhandelapp SHALL report `zrc` as `error` at once, without waiting out the report memory
+- **AND** the ZRC row SHALL read Error with a message naming the host
 - **AND** the call SHALL fail as it did before this change
 
 #### Scenario: Calls that meet the same thing report once an hour
@@ -78,7 +79,7 @@ When a save through `ConfigurationController` writes a ZRC or BRC key, zaakafhan
 
 Zaakafhandelapp SHALL render an `index` page at `/settings/integrations` over `integriq/app_connection`, reached from the settings gear and preset to `app` equal to `zaakafhandelapp` through its menu entry's `query` (hydra REQ-CONN-006). The page and its menu entry SHALL be admin only. The page SHALL require Integriq, and the menu entry SHALL only render when integriq is installed. The status column SHALL name all six statuses, `limited` included. The page SHALL NOT offer a generic Add button. Its Add integration action SHALL open `/apps/integriq/connections?app=zaakafhandelapp&link=1`.
 
-#### Scenario: The page lists only zaakafhandelapp's rows
+#### Scenario: The page lists only the rows of zaakafhandelapp
 @e2e tests/e2e/workflows/integrations-page.spec.ts
 
 - **GIVEN** zaakafhandelapp and integriq are installed and integriq has synced the declaration
