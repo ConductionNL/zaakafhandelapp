@@ -2,8 +2,8 @@
 
 ## 1. Declare
 
-- [ ] 1.1 Write `lib/Settings/connections.json` with the eight sources `ConfigurationController` saves.
-- [ ] 1.2 Guard the file in `tests/Unit/Settings/ConnectionsDeclarationTest.php`.
+- [x] 1.1 Write `lib/Settings/connections.json` with the eight sources `ConfigurationController` saves.
+- [x] 1.2 Guard the file in `tests/Unit/Settings/ConnectionsDeclarationTest.php`.
 
 ## 2. Page
 
