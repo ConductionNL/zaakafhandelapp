@@ -3,6 +3,7 @@
 namespace OCA\ZaakAfhandelApp\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\TransferStats;
 use OCP\IAppConfig;
 
 /**
@@ -15,8 +16,17 @@ use OCP\IAppConfig;
  * SPDX-License-Identifier: EUPL-1.2
  */
 class CallService {
+	/**
+	 * Constructor.
+	 *
+	 * @param IAppConfig                   $config            Reads the source locations and credentials.
+	 * @param ConnectionReportService|null $connectionReports Tells integriq what a call met, or nothing when absent.
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
+	 */
 	public function __construct(
 		private readonly IAppConfig $config,
+		private readonly ?ConnectionReportService $connectionReports = null,
 	) {
 	}//end __construct()
 
@@ -65,14 +75,44 @@ class CallService {
 	 *
 	 * @param array $config The config to be used for the client.
 	 * @return Client
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
 	 */
 	private function getClient(string $source, array $config = []): Client {
 		// Add any config to the call
 		$config = array_merge_recursive($config, $this->getConfig(source: $source));
 
+		// Guzzle calls `on_stats` once per transfer, with or without an answer,
+		// so every call reports what it met without touching the call itself.
+		if ($this->connectionReports !== null) {
+			$config['on_stats'] = $this->statsObserver(source: $source);
+		}
+
 		// Return the call
 		return new Client($config);
 	}//end getClient()
+
+	/**
+	 * The `on_stats` callback that hands a transfer's outcome to the reporter.
+	 *
+	 * @param string $source The source the call went to, such as `zrc`.
+	 *
+	 * @return callable(TransferStats): void
+	 *
+	 * @spec openspec/changes/adopt-connection-registry/specs/app-configuration/spec.md#requirement-req-zaa-conn-002-a-save-asks-integriq-to-look-again-and-a-zgw-call-reports-what-it-met
+	 */
+	protected function statsObserver(string $source): callable {
+		$reports = $this->connectionReports;
+
+		return static function (TransferStats $stats) use ($reports, $source): void {
+			$httpStatus = null;
+			if ($stats->hasResponse() === true) {
+				$httpStatus = $stats->getResponse()->getStatusCode();
+			}
+
+			$reports?->reportCall(source: $source, httpStatus: $httpStatus);
+		};
+	}//end statsObserver()
 
 	/**
 	 * Decode a Guzzle response body as JSON, returning null on empty or malformed content (#282 bug-4).

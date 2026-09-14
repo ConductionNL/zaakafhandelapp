@@ -15,11 +15,11 @@
 
 ## 3. Reports and refresh
 
-- [ ] 3.1 Add `lib/Service/ConnectionReportService.php`.
-- [ ] 3.2 Report ZRC and BRC call outcomes from `CallService`.
-- [ ] 3.3 Refresh from `ConfigurationController::save()`.
-- [ ] 3.4 Add the integriq event stubs to `tests/Stubs`, `tests/bootstrap.php` and `psalm.xml`.
-- [ ] 3.5 Cover it in `ConnectionReportServiceTest`, `CallServiceConnectionReportTest` and `ConfigurationControllerTest`.
+- [x] 3.1 Add `lib/Service/ConnectionReportService.php`.
+- [x] 3.2 Report ZRC and BRC call outcomes from `CallService`.
+- [x] 3.3 Refresh from `ConfigurationController::save()`.
+- [x] 3.4 Add the integriq event stubs to `tests/Stubs`, `tests/bootstrap.php` and `psalm.xml`.
+- [x] 3.5 Cover it in `ConnectionReportServiceTest`, `CallServiceConnectionReportTest` and `ConfigurationControllerTest`.
 
 ## 4. End to end
 

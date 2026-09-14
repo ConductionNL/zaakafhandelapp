@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace OCA\ZaakAfhandelApp\Tests\Unit\Settings;
 
+use OCA\ZaakAfhandelApp\Service\ConnectionReportService;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -272,6 +273,34 @@ class ConnectionsDeclarationTest extends TestCase {
 			);
 		}
 	}//end testTheUnusedSourcesAreNotAvailableAndSayWhy()
+
+	/**
+	 * The report service reports and refreshes exactly the called sources.
+	 *
+	 * A report for a key the file does not declare is refused by integriq, and
+	 * a required key a save does not refresh leaves the row stale until
+	 * integriq's hourly job.
+	 *
+	 * @return void
+	 */
+	public function testTheReportServiceCoversExactlyTheCalledSources(): void {
+		$withRequiredConfig = array_keys(
+			array_filter(
+				$this->connectionsByKey(),
+				static fn (array $connection): bool => isset($connection['requiredConfig']) === true
+			)
+		);
+
+		$this->assertSame(expected: $withRequiredConfig, actual: array_keys(ConnectionReportService::REPORTED_SOURCES));
+		$this->assertSame(expected: $withRequiredConfig, actual: array_keys(ConnectionReportService::REFRESH_KEYS));
+		foreach ($withRequiredConfig as $key) {
+			$this->assertSame(
+				expected: [],
+				actual: array_diff($this->connectionsByKey()[$key]['requiredConfig'], ConnectionReportService::REFRESH_KEYS[$key]),
+				message: $key . ' has a required key a save does not refresh'
+			);
+		}
+	}//end testTheReportServiceCoversExactlyTheCalledSources()
 
 	/**
 	 * Every PHP file under lib/Controller, concatenated.

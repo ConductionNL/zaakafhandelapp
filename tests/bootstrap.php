@@ -71,3 +71,15 @@ if ($autoloader !== null && is_dir(__DIR__ . '/../vendor/nextcloud/ocp/OCP') ===
 if ($autoloader !== null) {
 	$autoloader->addPsr4('OCA\\OpenRegister\\', __DIR__ . '/Stubs/');
 }
+
+// Integriq's connection-registry events (adopt-connection-registry).
+// ConnectionReportService sends them by string class name behind class_exists
+// (ADR-041), so zaakafhandelapp stays installable without integriq. The stubs
+// mirror hydra connection-registry design D6 verbatim and load only when
+// integriq's real classes are absent. This sits after every addPsr4() above on
+// purpose: the class_exists() probe must not run before those registrations.
+foreach (['ConnectionStatusReportedEvent', 'ConnectionRefreshRequestedEvent'] as $integriqStubEvent) {
+	if (class_exists('\\OCA\\Integriq\\Event\\' . $integriqStubEvent) === false) {
+		include_once __DIR__ . '/Stubs/Integriq/Event/' . $integriqStubEvent . '.php';
+	}
+}
