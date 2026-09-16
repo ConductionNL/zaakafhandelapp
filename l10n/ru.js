@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Выберите отчёт, чтобы открыть его.",
         "Who changed what, and when.": "Кто что изменил и когда.",
         "Store": "Магазин",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Установите реестры, схемы и потоки, опубликованные другими организациями."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Установите реестры, схемы и потоки, опубликованные другими организациями.",
+        "Integrations": "Интеграции",
+        "Connection": "Соединение",
+        "Status message": "Сообщение о состоянии",
+        "Last checked": "Последняя проверка",
+        "All connections": "Все соединения",
+        "Add integration": "Добавить интеграцию",
+        "Open settings": "Открыть настройки",
+        "Configured": "Настроено",
+        "Limited": "Ограничено",
+        "Not configured": "Not configured",
+        "Simulated": "Имитируется",
+        "Not available": "Недоступно",
+        "Error": "Ошибка"
     },
     "nplurals=2; plural=(n != 1);"
 )

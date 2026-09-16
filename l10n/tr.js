@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Açmak için bir rapor seçin.",
         "Who changed what, and when.": "Kim neyi ne zaman değiştirdi.",
         "Store": "Mağaza",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Diğer kuruluşların yayımladığı kayıtları, şemaları ve akışları yükleyin."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Diğer kuruluşların yayımladığı kayıtları, şemaları ve akışları yükleyin.",
+        "Integrations": "Entegrasyonlar",
+        "Connection": "Bağlantı",
+        "Status message": "Durum mesajı",
+        "Last checked": "Son kontrol",
+        "All connections": "Tüm bağlantılar",
+        "Add integration": "Entegrasyon ekle",
+        "Open settings": "Ayarları aç",
+        "Configured": "Yapılandırıldı",
+        "Limited": "Sınırlı",
+        "Not configured": "Yapılandırılmamış",
+        "Simulated": "Simüle ediliyor",
+        "Not available": "Kullanılamıyor",
+        "Error": "Hata"
     },
     "nplurals=2; plural=(n != 1);"
 )

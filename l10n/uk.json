@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Виберіть звіт, щоб відкрити його.",
         "Who changed what, and when.": "Хто що змінив і коли.",
         "Store": "Магазин",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Встановлюйте реєстри, схеми та потоки, опубліковані іншими організаціями."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Встановлюйте реєстри, схеми та потоки, опубліковані іншими організаціями.",
+        "Integrations": "Інтеграції",
+        "Connection": "З'єднання",
+        "Status message": "Повідомлення про стан",
+        "Last checked": "Остання перевірка",
+        "All connections": "Усі з'єднання",
+        "Add integration": "Додати інтеграцію",
+        "Open settings": "Відкрити налаштування",
+        "Configured": "Налаштовано",
+        "Limited": "Обмежено",
+        "Not configured": "Not configured",
+        "Simulated": "Змодельовано",
+        "Not available": "Недоступно",
+        "Error": "Помилка"
     }
 }

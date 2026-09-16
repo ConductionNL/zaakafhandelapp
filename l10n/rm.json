@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Tscherni in rapport per l'avrir.",
         "Who changed what, and when.": "Tgi ha midà tge, e cura.",
         "Store": "Butia",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installescha registers, schemas e process ch'autras organisaziuns han publitgà."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installescha registers, schemas e process ch'autras organisaziuns han publitgà.",
+        "Integrations": "Integrações",
+        "Connection": "Connexiun",
+        "Status message": "Messadi da status",
+        "Last checked": "L'ultima controlla",
+        "All connections": "Tut las connexiuns",
+        "Add integration": "Agiuntar ina integraziun",
+        "Open settings": "Avrir ils parameters",
+        "Configured": "Configurà",
+        "Limited": "Limità",
+        "Not configured": "Betg configurà",
+        "Simulated": "Simulà",
+        "Not available": "Betg disponibel",
+        "Error": "Errur"
     }
 }

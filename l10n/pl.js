@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Wybierz raport, aby go otworzyć.",
         "Who changed what, and when.": "Kto co zmienił i kiedy.",
         "Store": "Sklep",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Zainstaluj rejestry, schematy i przepływy opublikowane przez inne organizacje."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Zainstaluj rejestry, schematy i przepływy opublikowane przez inne organizacje.",
+        "Integrations": "Integracje",
+        "Connection": "Połączenie",
+        "Status message": "Komunikat o stanie",
+        "Last checked": "Ostatnio sprawdzono",
+        "All connections": "Wszystkie połączenia",
+        "Add integration": "Dodaj integrację",
+        "Open settings": "Otwórz ustawienia",
+        "Configured": "Skonfigurowano",
+        "Limited": "Ograniczone",
+        "Not configured": "Not configured",
+        "Simulated": "Symulowane",
+        "Not available": "Niedostępne",
+        "Error": "Błąd"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Odaberite izvješće da ga otvorite.",
         "Who changed what, and when.": "Tko je što promijenio i kada.",
         "Store": "Trgovina",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalirajte registre, sheme i tokove koje su objavile druge organizacije."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalirajte registre, sheme i tokove koje su objavile druge organizacije.",
+        "Integrations": "Integracije",
+        "Connection": "Veza",
+        "Status message": "Poruka o statusu",
+        "Last checked": "Zadnja provjera",
+        "All connections": "Sve veze",
+        "Add integration": "Dodaj integraciju",
+        "Open settings": "Otvori postavke",
+        "Configured": "Konfigurirano",
+        "Limited": "Ograničeno",
+        "Not configured": "Nije konfigurirano",
+        "Simulated": "Simulirano",
+        "Not available": "Nije dostupno",
+        "Error": "Pogreška"
     }
 }

@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Agħżel rapport biex tiftaħ.",
         "Who changed what, and when.": "Min biddel xiex, u meta.",
         "Store": "Ħanut",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installa reġistri, skemi u flussi ppubblikati minn organizzazzjonijiet oħra."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installa reġistri, skemi u flussi ppubblikati minn organizzazzjonijiet oħra.",
+        "Integrations": "Integrazzjonijiet",
+        "Connection": "Konnessjoni",
+        "Status message": "Messaġġ tal-istat",
+        "Last checked": "L-aħħar verifika",
+        "All connections": "Il-konnessjonijiet kollha",
+        "Add integration": "Żid integrazzjoni",
+        "Open settings": "Iftaħ is-settings",
+        "Configured": "Ikkonfigurat",
+        "Limited": "Limitat",
+        "Not configured": "Mhux ikkonfigurat",
+        "Simulated": "Simulat",
+        "Not available": "Mhux disponibbli",
+        "Error": "Żball"
     },
     "nplurals=2; plural=(n != 1);"
 )

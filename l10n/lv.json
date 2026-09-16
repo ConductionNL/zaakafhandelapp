@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Izvēlieties pārskatu, lai to atvērtu.",
         "Who changed what, and when.": "Kurš ko mainīja un kad.",
         "Store": "Veikals",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalējiet reģistrus, shēmas un plūsmas, ko publicējušas citas organizācijas."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalējiet reģistrus, shēmas un plūsmas, ko publicējušas citas organizācijas.",
+        "Integrations": "Integrācijas",
+        "Connection": "Savienojums",
+        "Status message": "Statusa ziņojums",
+        "Last checked": "Pēdējoreiz pārbaudīts",
+        "All connections": "Visi savienojumi",
+        "Add integration": "Pievienot integrāciju",
+        "Open settings": "Atvērt iestatījumus",
+        "Configured": "Konfigurēts",
+        "Limited": "Ierobežots",
+        "Not configured": "Nav konfigurēts",
+        "Simulated": "Simulēts",
+        "Not available": "Nav pieejams",
+        "Error": "Kļūda"
     }
 }

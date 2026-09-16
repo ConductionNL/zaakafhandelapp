@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Pasirinkite ataskaitą, kad ją atidarytumėte.",
         "Who changed what, and when.": "Kas ką pakeitė ir kada.",
         "Store": "Parduotuvė",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Įdiekite registrus, schemas ir srautus, kuriuos paskelbė kitos organizacijos."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Įdiekite registrus, schemas ir srautus, kuriuos paskelbė kitos organizacijos.",
+        "Integrations": "Integracijos",
+        "Connection": "Ryšys",
+        "Status message": "Būsenos pranešimas",
+        "Last checked": "Paskutinį kartą patikrinta",
+        "All connections": "Visi ryšiai",
+        "Add integration": "Pridėti integraciją",
+        "Open settings": "Atverti nustatymus",
+        "Configured": "Sukonfigūruota",
+        "Limited": "Ribota",
+        "Not configured": "Nesukonfigūruota",
+        "Simulated": "Imituota",
+        "Not available": "Neprieinama",
+        "Error": "Klaida"
     },
     "nplurals=2; plural=(n != 1);"
 )

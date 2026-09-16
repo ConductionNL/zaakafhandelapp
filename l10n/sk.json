@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Vyberte report a otvorte ho.",
         "Who changed what, and when.": "Kto čo zmenil a kedy.",
         "Store": "Obchod",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Nainštalujte registre, schémy a toky zverejnené inými organizáciami."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Nainštalujte registre, schémy a toky zverejnené inými organizáciami.",
+        "Integrations": "Integrácie",
+        "Connection": "Pripojenie",
+        "Status message": "Stavová správa",
+        "Last checked": "Naposledy skontrolované",
+        "All connections": "Všetky pripojenia",
+        "Add integration": "Pridať integráciu",
+        "Open settings": "Otvoriť nastavenia",
+        "Configured": "Nakonfigurované",
+        "Limited": "Obmedzené",
+        "Not configured": "Nenakonfigurované",
+        "Simulated": "Simulované",
+        "Not available": "Nie je k dispozícii",
+        "Error": "Chyba"
     }
 }

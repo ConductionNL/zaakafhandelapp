@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Välj en rapport för att öppna den.",
         "Who changed what, and when.": "Vem ändrade vad, och när.",
         "Store": "Butik",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installera register, scheman och flöden som andra organisationer har publicerat."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installera register, scheman och flöden som andra organisationer har publicerat.",
+        "Integrations": "Integrationer",
+        "Connection": "Anslutning",
+        "Status message": "Statusmeddelande",
+        "Last checked": "Senast kontrollerad",
+        "All connections": "Alla anslutningar",
+        "Add integration": "Lägg till integration",
+        "Open settings": "Öppna inställningar",
+        "Configured": "Konfigurerad",
+        "Limited": "Begränsad",
+        "Not configured": "Not configured",
+        "Simulated": "Simulerad",
+        "Not available": "Inte tillgänglig",
+        "Error": "Fel"
     }
 }

@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Odaberite izvještaj da ga otvorite.",
         "Who changed what, and when.": "Ko je šta promijenio i kada.",
         "Store": "Trgovina",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalirajte registre, šeme i tokove koje su objavile druge organizacije."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instalirajte registre, šeme i tokove koje su objavile druge organizacije.",
+        "Integrations": "Integracije",
+        "Connection": "Veza",
+        "Status message": "Poruka o statusu",
+        "Last checked": "Posljednja provjera",
+        "All connections": "Sve veze",
+        "Add integration": "Dodaj integraciju",
+        "Open settings": "Otvori postavke",
+        "Configured": "Konfigurisano",
+        "Limited": "Ograničeno",
+        "Not configured": "Nije konfigurisano",
+        "Simulated": "Simulirano",
+        "Not available": "Nije dostupno",
+        "Error": "Pogreška"
     },
     "nplurals=2; plural=(n != 1);"
 )
