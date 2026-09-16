@@ -21,7 +21,6 @@
 			:customComponents="customComponents"
 			:pageTypes="pageTypes"
 			:registry="registry"
-			:formatters="formatters"
 			appId="zaakafhandelapp"
 			:translate="translateForApp"
 			:permissions="permissions">
@@ -53,7 +52,6 @@ import { translate as ncT } from '@nextcloud/l10n'
 import { reactive } from 'vue'
 import Dialogs from './dialogs/Dialogs.vue'
 import Modals from './modals/Modals.vue'
-import { createConnectionFormatters } from './services/connectionRegistry.js'
 
 export default {
 	name: 'App',
@@ -131,14 +129,6 @@ export default {
 
 	data() {
 		return {
-			/**
-			 * Named cell formatters merged over CnAppRoot's built-ins.
-			 * `connectionStatus` and `connectionSettingsLabel` render the
-			 * Integrations page (adopt-connection-registry); nextcloud-vue
-			 * 2.38.0 ships neither as a built-in. Static, so not reactive.
-			 */
-			formatters: createConnectionFormatters((source) => ncT('zaakafhandelapp', source)),
-
 			objectSidebarState: reactive({
 				active: false,
 				open: true,
