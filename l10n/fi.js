@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Valitse raportti avataksesi sen.",
         "Who changed what, and when.": "Kuka muutti mitä ja milloin.",
         "Store": "Kauppa",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Asenna muiden organisaatioiden julkaisemia rekistereitä, skeemoja ja vuokaavioita."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Asenna muiden organisaatioiden julkaisemia rekistereitä, skeemoja ja vuokaavioita.",
+        "Integrations": "Integraatiot",
+        "Connection": "Yhteys",
+        "Status message": "Tilaviesti",
+        "Last checked": "Viimeksi tarkistettu",
+        "All connections": "Kaikki yhteydet",
+        "Add integration": "Lisää integraatio",
+        "Open settings": "Avaa asetukset",
+        "Configured": "Määritetty",
+        "Limited": "Rajoitettu",
+        "Not configured": "Not configured",
+        "Simulated": "Simuloitu",
+        "Not available": "Ei saatavilla",
+        "Error": "Virhe"
     },
     "nplurals=2; plural=(n != 1);"
 )

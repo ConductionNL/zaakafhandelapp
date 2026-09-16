@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Vælg en rapport for at åbne den.",
         "Who changed what, and when.": "Hvem ændrede hvad, og hvornår.",
         "Store": "Butik",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skemaer og flows, som andre organisationer har udgivet."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skemaer og flows, som andre organisationer har udgivet.",
+        "Integrations": "Integrationer",
+        "Connection": "Forbindelse",
+        "Status message": "Statusbesked",
+        "Last checked": "Senest kontrolleret",
+        "All connections": "Alle forbindelser",
+        "Add integration": "Tilføj integration",
+        "Open settings": "Åbn indstillinger",
+        "Configured": "Konfigureret",
+        "Limited": "Begrænset",
+        "Not configured": "Not configured",
+        "Simulated": "Simuleret",
+        "Not available": "Ikke tilgængelig",
+        "Error": "Fejl"
     },
     "nplurals=2; plural=(n != 1);"
 )

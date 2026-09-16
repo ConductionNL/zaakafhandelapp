@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Válasszon egy jelentést a megnyitásához.",
         "Who changed what, and when.": "Ki mit változtatott, és mikor.",
         "Store": "Áruház",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Telepítsen más szervezetek által közzétett nyilvántartásokat, sémákat és folyamatokat."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Telepítsen más szervezetek által közzétett nyilvántartásokat, sémákat és folyamatokat.",
+        "Integrations": "Integrációk",
+        "Connection": "Kapcsolat",
+        "Status message": "Állapotüzenet",
+        "Last checked": "Utoljára ellenőrizve",
+        "All connections": "Összes kapcsolat",
+        "Add integration": "Integráció hozzáadása",
+        "Open settings": "Beállítások megnyitása",
+        "Configured": "Beállítva",
+        "Limited": "Korlátozott",
+        "Not configured": "Not configured",
+        "Simulated": "Szimulált",
+        "Not available": "Nem érhető el",
+        "Error": "Hiba"
     },
     "nplurals=2; plural=(n != 1);"
 )

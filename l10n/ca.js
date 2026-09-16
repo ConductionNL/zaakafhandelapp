@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Trieu un informe per obrir-lo.",
         "Who changed what, and when.": "Qui va canviar què, i quan.",
         "Store": "Botiga",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instal·leu registres, esquemes i fluxos publicats per altres organitzacions."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instal·leu registres, esquemes i fluxos publicats per altres organitzacions.",
+        "Integrations": "Integracions",
+        "Connection": "Connexió",
+        "Status message": "Missatge d'estat",
+        "Last checked": "Última comprovació",
+        "All connections": "Totes les connexions",
+        "Add integration": "Afegeix una integració",
+        "Open settings": "Obre la configuració",
+        "Configured": "Configurat",
+        "Limited": "Limitat",
+        "Not configured": "No configurat",
+        "Simulated": "Simulat",
+        "Not available": "No disponible",
+        "Error": "Error"
     },
     "nplurals=2; plural=(n != 1);"
 )

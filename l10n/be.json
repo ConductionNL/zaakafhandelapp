@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Выберыце звіт, каб адкрыць яго.",
         "Who changed what, and when.": "Хто што змяніў і калі.",
         "Store": "Крама",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Усталюйце рэестры, схемы і патокі, апублікаваныя іншымі арганізацыямі."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Усталюйце рэестры, схемы і патокі, апублікаваныя іншымі арганізацыямі.",
+        "Integrations": "Интеграции",
+        "Connection": "Злучэнне",
+        "Status message": "Паведамленне пра стан",
+        "Last checked": "Апошняя праверка",
+        "All connections": "Усе злучэнні",
+        "Add integration": "Дадаць інтэграцыю",
+        "Open settings": "Адкрыць налады",
+        "Configured": "Наладжана",
+        "Limited": "Абмежавана",
+        "Not configured": "Не наладжана",
+        "Simulated": "Імітавана",
+        "Not available": "Недаступна",
+        "Error": "Памылка"
     }
 }

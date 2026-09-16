@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Zgjidhni një raport për të hapur.",
         "Who changed what, and when.": "Kush ndryshoi çfarë, dhe kur.",
         "Store": "Dyqani",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instaloni regjistra, skema dhe rrjedha të publikuara nga organizata të tjera."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Instaloni regjistra, skema dhe rrjedha të publikuara nga organizata të tjera.",
+        "Integrations": "Integrime",
+        "Connection": "Lidhje",
+        "Status message": "Mesazh statusi",
+        "Last checked": "Kontrolluar së fundi",
+        "All connections": "Të gjitha lidhjet",
+        "Add integration": "Shto integrim",
+        "Open settings": "Hap cilësimet",
+        "Configured": "I konfiguruar",
+        "Limited": "I kufizuar",
+        "Not configured": "I pakonfiguruar",
+        "Simulated": "I simuluar",
+        "Not available": "Nuk është i disponueshëm",
+        "Error": "Gabim"
     }
 }

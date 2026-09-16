@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Valige aruanne, et see avada.",
         "Who changed what, and when.": "Kes mida muutis ja millal.",
         "Store": "Pood",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Paigalda registrid, skeemid ja voog, mille teised organisatsioonid on avaldanud."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Paigalda registrid, skeemid ja voog, mille teised organisatsioonid on avaldanud.",
+        "Integrations": "Integratsioonid",
+        "Connection": "Ühendus",
+        "Status message": "Olekuteade",
+        "Last checked": "Viimati kontrollitud",
+        "All connections": "Kõik ühendused",
+        "Add integration": "Lisa integratsioon",
+        "Open settings": "Ava seaded",
+        "Configured": "Seadistatud",
+        "Limited": "Piiratud",
+        "Not configured": "Seadistamata",
+        "Simulated": "Simuleeritud",
+        "Not available": "Pole saadaval",
+        "Error": "Viga"
     },
     "nplurals=2; plural=(n != 1);"
 )

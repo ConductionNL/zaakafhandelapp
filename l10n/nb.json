@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Velg en rapport for å åpne den.",
         "Who changed what, and when.": "Hvem endret hva, og når.",
         "Store": "Butikk",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skjemaer og flyter som andre organisasjoner har publisert."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installer registre, skjemaer og flyter som andre organisasjoner har publisert.",
+        "Integrations": "Integrasjoner",
+        "Connection": "Tilkobling",
+        "Status message": "Statusmelding",
+        "Last checked": "Sist kontrollert",
+        "All connections": "Alle tilkoblinger",
+        "Add integration": "Legg til integrasjon",
+        "Open settings": "Åpne innstillinger",
+        "Configured": "Konfigurert",
+        "Limited": "Begrenset",
+        "Not configured": "Not configured",
+        "Simulated": "Simulert",
+        "Not available": "Ikke tilgjengelig",
+        "Error": "Feil"
     }
 }

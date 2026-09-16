@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Veldu skýrslu til að opna hana.",
         "Who changed what, and when.": "Hver breytti hverju og hvenær.",
         "Store": "Verslun",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Settu upp skrár, skemu og flæði sem aðrar stofnanir hafa birt."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Settu upp skrár, skemu og flæði sem aðrar stofnanir hafa birt.",
+        "Integrations": "Samþætting",
+        "Connection": "Tenging",
+        "Status message": "Stöðuskilaboð",
+        "Last checked": "Síðast athugað",
+        "All connections": "Allar tengingar",
+        "Add integration": "Bæta við samþættingu",
+        "Open settings": "Opna stillingar",
+        "Configured": "Stillt",
+        "Limited": "Takmarkað",
+        "Not configured": "Ekki stillt",
+        "Simulated": "Hermt",
+        "Not available": "Ekki tiltækt",
+        "Error": "Villa"
     },
     "nplurals=2; plural=(n != 1);"
 )

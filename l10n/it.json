@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Scegli un rapporto per aprirlo.",
         "Who changed what, and when.": "Chi ha cambiato cosa, e quando.",
         "Store": "Store",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installa registri, schemi e flussi pubblicati da altre organizzazioni."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installa registri, schemi e flussi pubblicati da altre organizzazioni.",
+        "Integrations": "Integrazioni",
+        "Connection": "Connessione",
+        "Status message": "Messaggio di stato",
+        "Last checked": "Ultimo controllo",
+        "All connections": "Tutte le connessioni",
+        "Add integration": "Aggiungi integrazione",
+        "Open settings": "Apri impostazioni",
+        "Configured": "Configurato",
+        "Limited": "Limitato",
+        "Not configured": "Non configurato",
+        "Simulated": "Simulato",
+        "Not available": "Non disponibile",
+        "Error": "Errore"
     }
 }

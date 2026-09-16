@@ -588,7 +588,20 @@ OC.L10N.register(
         "Pick a report to open it.": "Επιλέξτε μια αναφορά για να την ανοίξετε.",
         "Who changed what, and when.": "Ποιος άλλαξε τι, και πότε.",
         "Store": "Κατάστημα",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Εγκαταστήστε μητρώα, σχήματα και ροές που έχουν δημοσιεύσει άλλοι οργανισμοί."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Εγκαταστήστε μητρώα, σχήματα και ροές που έχουν δημοσιεύσει άλλοι οργανισμοί.",
+        "Integrations": "Ενσωματώσεις",
+        "Connection": "Σύνδεση",
+        "Status message": "Μήνυμα κατάστασης",
+        "Last checked": "Τελευταίος έλεγχος",
+        "All connections": "Όλες οι συνδέσεις",
+        "Add integration": "Προσθήκη ενσωμάτωσης",
+        "Open settings": "Άνοιγμα ρυθμίσεων",
+        "Configured": "Διαμορφωμένο",
+        "Limited": "Περιορισμένο",
+        "Not configured": "Μη διαμορφωμένο",
+        "Simulated": "Προσομοιωμένο",
+        "Not available": "Μη διαθέσιμο",
+        "Error": "Σφάλμα"
     },
     "nplurals=2; plural=(n != 1);"
 )

@@ -587,6 +587,19 @@
         "Pick a report to open it.": "Wielt e Bericht fir hien opzemaachen.",
         "Who changed what, and when.": "Wien wat geännert huet, a wéini.",
         "Store": "Buttek",
-        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installéiert Registeren, Schemaen a Flows déi aner Organisatiounen publizéiert hunn."
+        "Install case-handling configurations that other organisations have published: a case type with its stages and deadlines, or the flows behind it.": "Installéiert Registeren, Schemaen a Flows déi aner Organisatiounen publizéiert hunn.",
+        "Integrations": "Integratiounen",
+        "Connection": "Verbindung",
+        "Status message": "Statusmeldung",
+        "Last checked": "Fir d'lescht gepréift",
+        "All connections": "All Verbindungen",
+        "Add integration": "Integratioun derbäisetzen",
+        "Open settings": "Astellungen opmaachen",
+        "Configured": "Konfiguréiert",
+        "Limited": "Limitéiert",
+        "Not configured": "Net konfiguréiert",
+        "Simulated": "Simuléiert",
+        "Not available": "Net disponibel",
+        "Error": "Feeler"
     }
 }
