@@ -36,7 +36,10 @@ describe('connection formatters', () => {
 	it('labels a switched-off connection through the nextcloud-vue built-in', () => {
 		// CnAppRoot lets an app formatter win over a built-in, so a local copy
 		// passed to the shell would shadow the library's labels.
-		expect(read('src', 'App.vue'), 'App.vue passes its own formatters').not.toContain(':formatters=')
+		expect(
+			read('src', 'App.vue'),
+			'App.vue passes its own formatters',
+		).not.toContain(':formatters=')
 		expect(BUILT_IN_FORMATTERS.connectionStatus('disabled')).toBe('Switched off')
 	})
 
@@ -67,8 +70,12 @@ describe('Add integration handler', () => {
 
 		handlers.openIntegriqConnections()
 
-		expect(INTEGRIQ_CONNECTIONS_PATH).toBe('/apps/integriq/connections?app=zaakafhandelapp&link=1')
-		expect(opened).toEqual(['/index.php/apps/integriq/connections?app=zaakafhandelapp&link=1'])
+		expect(INTEGRIQ_CONNECTIONS_PATH).toBe(
+			'/apps/integriq/connections?app=zaakafhandelapp&link=1',
+		)
+		expect(opened).toEqual([
+			'/index.php/apps/integriq/connections?app=zaakafhandelapp&link=1',
+		])
 	})
 })
 
@@ -99,21 +106,32 @@ describe('the Integrations page declaration', () => {
 	})
 
 	it('names only formatters and handlers that exist, and wires the handler into the app', () => {
-		const handlers = createConnectionHandlers({ generateUrl: (p) => p, assign: () => {} })
+		const handlers = createConnectionHandlers({
+			generateUrl: (p) => p,
+			assign: () => {},
+		})
 
 		for (const column of page.config.columns.filter((c) => c.formatter)) {
-			expect(typeof BUILT_IN_FORMATTERS[column.formatter], column.formatter).toBe('function')
+			expect(
+				typeof BUILT_IN_FORMATTERS[column.formatter],
+				column.formatter,
+			).toBe('function')
 		}
 		for (const action of page.config.headerActions) {
 			expect(typeof handlers[action.handler], action.handler).toBe('function')
 		}
 
-		expect(read('src', 'customComponents.js')).toMatch(/^\t\.\.\.createConnectionHandlers\(\{$/m)
+		expect(read('src', 'customComponents.js')).toMatch(
+			/^\t\.\.\.createConnectionHandlers\(\{$/m,
+		)
 	})
 
 	it('names an icon src/icons.js registers', () => {
 		const icons = read('src', 'icons.js')
-		for (const icon of [menu.icon, ...page.config.headerActions.map((a) => a.icon)]) {
+		for (const icon of [
+			menu.icon,
+			...page.config.headerActions.map((a) => a.icon),
+		]) {
 			expect(icons).toContain(`\n\t${icon},`)
 		}
 	})

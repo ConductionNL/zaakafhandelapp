@@ -40,7 +40,8 @@ import { expect, test } from '@playwright/test'
 import { APP } from '../app-path.ts'
 
 /** Integriq's objects endpoint for zaakafhandelapp's connection rows. */
-const CONNECTIONS_API = '/index.php/apps/openregister/api/objects/integriq/app_connection?app=zaakafhandelapp&_limit=50'
+const CONNECTIONS_API =
+	'/index.php/apps/openregister/api/objects/integriq/app_connection?app=zaakafhandelapp&_limit=50'
 
 /** Zaakafhandelapp's configuration endpoint, the only writer of the ZGW keys. */
 const CONFIGURATION_API = `${APP}/api/configuration`
@@ -66,14 +67,20 @@ const UNUSED = ['drc', 'ztc', 'orc', 'klanten', 'elastic', 'mongodb']
  * @param request An admin request context.
  * @return The rows by key.
  */
-async function rowsByKey(request: APIRequestContext): Promise<Record<string, Record<string, unknown>>> {
-	const res = await request.get(CONNECTIONS_API, { headers: { Accept: 'application/json' } })
+async function rowsByKey(
+	request: APIRequestContext,
+): Promise<Record<string, Record<string, unknown>>> {
+	const res = await request.get(CONNECTIONS_API, {
+		headers: { Accept: 'application/json' },
+	})
 	expect(res.ok(), `list integriq/app_connection -> ${res.status()}`).toBeTruthy()
 	const body = await res.json()
 	const byKey: Record<string, Record<string, unknown>> = {}
 	for (const row of (body.results ?? []) as Record<string, unknown>[]) {
 		// A row from another app here means the bare filter was dropped.
-		expect(String(row.app), 'a connection row from another app').toBe('zaakafhandelapp')
+		expect(String(row.app), 'a connection row from another app').toBe(
+			'zaakafhandelapp',
+		)
 		byKey[String(row.key)] = row
 	}
 	return byKey
@@ -85,33 +92,47 @@ async function rowsByKey(request: APIRequestContext): Promise<Record<string, Rec
  * @param page The Playwright page.
  */
 async function openIntegrations(page: Page): Promise<void> {
-	await page.goto(`${APP}/settings/integrations?app=zaakafhandelapp`, { timeout: 60_000 })
+	await page.goto(`${APP}/settings/integrations?app=zaakafhandelapp`, {
+		timeout: 60_000,
+	})
 	await expect(page.locator('.cn-index-page')).toBeVisible({ timeout: 30_000 })
 }
 
 test.describe('Integrations over the connection registry', () => {
-	test('lists the eight declared connections, all of them zaakafhandelapp\'s', async ({ page }) => {
+	test("lists the eight declared connections, all of them zaakafhandelapp's", async ({
+		page,
+	}) => {
 		const byKey = await rowsByKey(page.request)
 		expect(Object.keys(byKey).sort()).toEqual(DECLARED.map((d) => d.key).sort())
 
 		await openIntegrations(page)
 		for (const { title } of DECLARED) {
-			await expect(page.getByRole('row', { name: new RegExp(title.replace(/[()]/g, '\\$&'), 'i') })).toHaveCount(1)
+			await expect(
+				page.getByRole('row', {
+					name: new RegExp(title.replace(/[()]/g, '\\$&'), 'i'),
+				}),
+			).toHaveCount(1)
 		}
 	})
 
-	test('reads Not available for the six APIs nothing calls, and says why', async ({ page }) => {
+	test('reads Not available for the six APIs nothing calls, and says why', async ({
+		page,
+	}) => {
 		const byKey = await rowsByKey(page.request)
 
 		for (const key of UNUSED) {
 			expect(byKey[key]?.status, key).toBe('unavailable')
-			expect(String(byKey[key]?.statusMessage ?? ''), key).toMatch(/settings are kept/i)
+			expect(String(byKey[key]?.statusMessage ?? ''), key).toMatch(
+				/settings are kept/i,
+			)
 			// No admin section writes these keys, so no row offers a link.
 			expect(String(byKey[key]?.settingsUrl ?? ''), key).toBe('')
 		}
 	})
 
-	test('reads Error naming the host once a ZRC call gets no answer', async ({ page }) => {
+	test('reads Error naming the host once a ZRC call gets no answer', async ({
+		page,
+	}) => {
 		const headers = { 'OCS-APIRequest': 'true', Accept: 'application/json' }
 
 		// Snapshot the one key this test writes, and put the VALUE back. The
@@ -131,24 +152,44 @@ test.describe('Integrations over the connection registry', () => {
 
 			// One ZRC call. Its own answer is not under test: it fails, as it did
 			// before this change. What it reports is.
-			await page.request.get(`${APP}/api/zrc/statussen`, { headers, failOnStatusCode: false })
+			await page.request.get(`${APP}/api/zrc/statussen`, {
+				headers,
+				failOnStatusCode: false,
+			})
 
 			// The poll reads without asserting: a throw inside `expect.poll` ends
 			// the poll instead of retrying it.
 			await expect
-				.poll(async () => {
-					const list = await page.request.get(CONNECTIONS_API, { headers: { Accept: 'application/json' } })
-					const rows = list.ok() ? ((await list.json()).results ?? []) : []
-					const zrc = rows.find((row: Record<string, unknown>) => row.key === 'zrc' && row.app === 'zaakafhandelapp')
-					return `${String(zrc?.status ?? '')} ${String(zrc?.statusMessage ?? '')}`
-				}, { timeout: 15_000 })
-				.toBe('error The last call to the ZRC at zrc.example.invalid got no answer.')
+				.poll(
+					async () => {
+						const list = await page.request.get(CONNECTIONS_API, {
+							headers: { Accept: 'application/json' },
+						})
+						const rows = list.ok()
+							? ((await list.json()).results ?? [])
+							: []
+						const zrc = rows.find(
+							(row: Record<string, unknown>) =>
+								row.key === 'zrc' && row.app === 'zaakafhandelapp',
+						)
+						return `${String(zrc?.status ?? '')} ${String(zrc?.statusMessage ?? '')}`
+					},
+					{ timeout: 15_000 },
+				)
+				.toBe(
+					'error The last call to the ZRC at zrc.example.invalid got no answer.',
+				)
 		} finally {
-			await page.request.post(CONFIGURATION_API, { headers, data: { zrcLocation: previous } })
+			await page.request.post(CONFIGURATION_API, {
+				headers,
+				data: { zrcLocation: previous },
+			})
 		}
 	})
 
-	test('sends Add integration to integriq instead of offering a form', async ({ page }) => {
+	test('sends Add integration to integriq instead of offering a form', async ({
+		page,
+	}) => {
 		await openIntegrations(page)
 
 		// No generic Add button: a row nothing declared has nothing to check.
@@ -158,8 +199,15 @@ test.describe('Integrations over the connection registry', () => {
 		// catalogues this change ships, and nothing forces the E2E locale.
 		await page.locator('[data-testid="cn-actions"] button').first().click()
 		await Promise.all([
-			page.waitForURL(/\/apps\/integriq\/connections\?app=zaakafhandelapp&link=1$/, { timeout: 30_000 }),
-			page.getByRole('menuitem', { name: /Add integration|Integratie toevoegen/i }).click(),
+			page.waitForURL(
+				/\/apps\/integriq\/connections\?app=zaakafhandelapp&link=1$/,
+				{ timeout: 30_000 },
+			),
+			page
+				.getByRole('menuitem', {
+					name: /Add integration|Integratie toevoegen/i,
+				})
+				.click(),
 		])
 	})
 })
