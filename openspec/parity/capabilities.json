@@ -7269,8 +7269,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/zaak-lifecycle/spec.md:63: full CRUD and list on /zaken/v1/zaken (GET/POST/PUT/PATCH/DELETE), and procest/openzaak/docs/03-api-specifications.md:81 shows a /_zoek search endpoint with filters; full text search and facets are not evidenced anywhere in the research"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7294,8 +7296,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/04-zgw-standards-zaken.md:66: a case requires a Resultaat before closure and the highest-numbered StatusType is the eindstatus; no rule requiring every linked document to carry gebruiksrechten before closure was found in the research"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7319,8 +7323,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "yes",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/13-case-closure-archiving.md:19: automatic archive parameter derivation on closure reads the ResultaatType's selectielijstklasse and afleidingswijze to calculate archiefactiedatum"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7344,8 +7350,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/08-confidentiality-model.md:18: OpenZaak derives confidentiality from the zaaktype/informatieobjecttype default when not explicitly set, but the research does not confirm a rule that raises rather than allows a lower value than the zaaktype minimum"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7369,8 +7377,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "yes",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/04-zgw-standards-zaken.md:36: Related zaak URLs must validate; invalid references = HTTP 400"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7394,8 +7404,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/07-zgw-standards-besluiten.md:41: the full besluit validation rule list (besluittype resolution, identificatie uniqueness, informatieobject HTTP 200, aardRelatie, besluittype-in-zaaktype, informatieobjecttype-in-besluittype) has no rule requiring the linked document to already be linked to the case"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7419,8 +7431,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "yes",
+			"evidence": {
+				"openzaak": "procest/openzaak/overview.md:157: Zaken, Documenten and Besluiten all have full audit trails via nested /audittrail endpoints; procest/openzaak/specs/besluiten-api/spec.md:53 shows this as a GET-only endpoint (besluiten.lezen scope) with no POST/PUT/PATCH/DELETE listed for any audittrail resource anywhere in the research"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7444,8 +7458,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "yes",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/zaak-relaties/spec.md:43: ZaakBesluit links zaak and besluit as a case-decision sub-resource stored locally, created automatically when a besluit references a zaak (also procest/openzaak/business-logic/besluit-flow.md:9)"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7469,8 +7485,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/overview.md:102: Zaken (ZRC) is ~50 Django models across 4 files storing statuses, roles, results, objects, informatieobjecten and eigenschappen locally in OpenZaak's own database; OpenZaak is itself the ZRC rather than a proxy to an externally hosted one"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7494,8 +7512,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/overview.md:128: Besluiten (BRC) is 2 Django models in components/besluiten/models.py, stored locally; OpenZaak is itself the BRC rather than a proxy to an externally hosted one"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7519,8 +7539,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "yes",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/08-zgw-standards-autorisaties.md:70: all API calls use JWT authentication with HS256, signed with a shared secret and carrying a client_id claim, authenticating machine callers of OpenZaak's own ZGW API"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7544,8 +7566,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "yes",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/catalogi-zaaktypen/spec.md:11: the Catalogi API is OpenZaak's own local configuration backbone; Zaken/Documenten/Besluiten reference types from it directly and it is one of OpenZaak's 5 native locally-stored components (overview.md:171, 13 models)"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7569,8 +7593,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/06-zgw-standards-documenten.md:20: file content is returned via the inhoud attribute (base64 encoded) on the EnkelvoudigInformatieObject resource; no dedicated binary streaming download endpoint is documented in the research"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7594,8 +7620,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/MERGED-ANALYSIS.md:19: 74 Django models with 38+ dedicated API ViewSets, one per resource type, not a single generic create/read/update/delete/audit-trail/relations/uses API for arbitrary OpenRegister object types"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7618,8 +7646,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/openzaak.md:107: No end-user UI, API-only layer; OpenZaak has no Nextcloud integration and no address book concept anywhere in the research"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7642,8 +7672,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/openzaak.md:107: API-only layer with no end-user UI; no Nextcloud address book search capability exists"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7666,8 +7698,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/13-ecosystem-community.md:65: Open Klant, a separate Common Ground component (not part of OpenZaak), handles customer contact management; OpenZaak itself has no klant import feature from any address book"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7690,8 +7724,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/13-ecosystem-community.md:65: klant/contact management is delegated to the separate Open Klant component; no vCard export capability is documented for OpenZaak"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7715,8 +7751,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/13-ecosystem-community.md:63: the Common Ground ecosystem integration table lists Open Notificaties, Open Klant, Objects API and Open Personen (line 68-69); OpenCatalogi publication search is not among them anywhere in the research"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7740,8 +7778,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/00-overview.md:17: UI is Django Admin with no custom frontend; OpenZaak has no Nextcloud integration and so cannot contribute panels to the Nextcloud Dashboard"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7765,8 +7805,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/openzaak.md:108: No workflow engine, no process modeling, BPMN, CMMN, or task management, so there is no task-assignment mechanism to trigger an email on a medewerker field change"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7790,8 +7832,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/00-overview.md:65: Configuratie > Service configuration is an admin dashboard showing all 5 ZGW APIs active/inactive plus external services, similar in spirit to a connections-status page, but it is not gated on any external app and OpenZaak is itself the ZRC/BRC/DRC/ZTC rather than a consumer of them"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7815,8 +7859,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/11-admin-manual.md:98: External API Configuration lets an admin set the API-root, label and auth header for external API credentials (plus NLX outway rewrites and Selectielijst config at specs/00-overview.md:64), configuring locations/credentials for external ZGW-adjacent services from an admin page, though not specifically ZRC/BRC/DRC/ZTC since OpenZaak provides those itself"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7840,8 +7886,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/autorisaties-model/spec.md:179: authorization is JWT M2M with per-zaaktype/informatieobjecttype/besluittype scopes and a max confidentiality level, not OpenRegister organisation multitenancy; unauthorized records are filtered out/invisible rather than delegated to OpenRegister"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7865,8 +7913,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/openzaak.md:107: No end-user UI, API-only layer, requires a separate frontend (ZAC, Valtimo, etc.); OpenZaak has no citizen-facing portal or BSN-scoped self-service exposure of cases, tasks or messages"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7889,8 +7939,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/MERGED-ANALYSIS.md:71: MCP/AI listed as Not available for OpenZaak"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7913,8 +7965,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/00-overview.md:17: UI is Django Admin with no custom frontend; OpenZaak has no page components at all, so no dedicated cross-register search view or cross-app audit trail view exists"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7937,8 +7991,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "no",
+			"evidence": {
+				"openzaak": "procest/openzaak/specs/14-external-api-interop.md:1: OpenZaak's external interoperability model is federated ZGW-to-ZGW plus NLX/Haal Centraal/BAG-BRT/Selectielijst; StUF is not mentioned anywhere in the research corpus (docs, specs, or business-logic)"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7961,8 +8017,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/docs/13-ecosystem-community.md:85: External System Integration lists Haal Centraal for person/address data referenced in zaak roles via external API credentials; this covers BRP lookups at the API/config level but no live KvK lookup or any UI-driven lookup while adding a party is documented, since OpenZaak has no case worker UI"
+			},
 			"origin": "own-code"
 		},
 		{
@@ -7986,8 +8044,10 @@
 			"gzac": "unknown",
 			"zaaksysteem": "unknown",
 			"opencase": "unknown",
-			"openzaak": "unknown",
-			"evidence": {},
+			"openzaak": "partial",
+			"evidence": {
+				"openzaak": "procest/openzaak/business-logic/zgw-data-model.md:107: instance-level sync is documented (ZaakInformatieObject<->ObjectInformatieObject, Zaak-Besluit<->Besluit.zaak, BesluitInformatieObject<->ObjectInformatieObject at lines 109-111), but no explicit bidirectional cleanup rule for the zaaktype-informatieobjecttype junction is documented in the research"
+			},
 			"origin": "own-code"
 		},
 		{
