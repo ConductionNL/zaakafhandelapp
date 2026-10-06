@@ -187,6 +187,19 @@ npm run stylelint       # CSS linting
 | Search | Provided by OpenRegister |
 | Quality | PHPCS, PHPMD, phpmetrics, ESLint, Stylelint |
 
+<!-- discovery:start -->
+## Standards & federation
+
+| Standard | Role | Access |
+|---|---|---|
+| [ZGW Zaken API (ZRC) resources](https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/) 1.5.1 | Provides | Nextcloud login |
+| [ZGW Catalogi API (ZTC) zaaktypen](https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/) 1.3.1 | Provides | Nextcloud login |
+| [ZGW Documenten API (DRC) enkelvoudiginformatieobjecten](https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/) 1.5.0 | Provides | Nextcloud login |
+| [ZGW Besluiten API (BRC)](https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/) 1.0.2 | Provides | Nextcloud login |
+
+Other servers can read this list without logging in, from the Nextcloud capabilities endpoint (published by OpenRegister). Details, federation and admin switches: [docs/standards-and-federation.md](docs/standards-and-federation.md).
+<!-- discovery:end -->
+
 ## Standards & Compliance
 
 - **ZGW (Zaakgericht Werken):** VNG-Realisatie GEMMA case management standard

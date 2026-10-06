@@ -1165,5 +1165,46 @@
 			},
 			"_note": "The shared CnFlowDetail canvas over the same single engine (ADR-065), scoped to this app."
 		}
-	]
+	],
+	"discovery": {
+		"public": true,
+		"standards": [
+			{
+				"id": "zgw-zaken",
+				"name": "ZGW Zaken API (ZRC) resources",
+				"version": "1.5.1",
+				"role": "provides",
+				"access": "authenticated",
+				"endpoint": "/apps/zaakafhandelapp/api/zrc",
+				"specUrl": "https://vng-realisatie.github.io/gemma-zaken/standaard/zaken/"
+			},
+			{
+				"id": "zgw-catalogi",
+				"name": "ZGW Catalogi API (ZTC) zaaktypen",
+				"version": "1.3.1",
+				"role": "provides",
+				"access": "authenticated",
+				"endpoint": "/apps/zaakafhandelapp/api/ztc",
+				"specUrl": "https://vng-realisatie.github.io/gemma-zaken/standaard/catalogi/"
+			},
+			{
+				"id": "zgw-documenten",
+				"name": "ZGW Documenten API (DRC) enkelvoudiginformatieobjecten",
+				"version": "1.5.0",
+				"role": "provides",
+				"access": "authenticated",
+				"endpoint": "/apps/zaakafhandelapp/api/drc",
+				"specUrl": "https://vng-realisatie.github.io/gemma-zaken/standaard/documenten/"
+			},
+			{
+				"id": "zgw-besluiten",
+				"name": "ZGW Besluiten API (BRC)",
+				"version": "1.0.2",
+				"role": "provides",
+				"access": "authenticated",
+				"endpoint": "/apps/zaakafhandelapp/api/brc",
+				"specUrl": "https://vng-realisatie.github.io/gemma-zaken/standaard/besluiten/"
+			}
+		]
+	}
 }
