@@ -71,7 +71,7 @@ Maak een [feature request](https://github.com/ConductionNL/zaakafhandelapp/issue
 		  then report a full assertion tally from an instance with no
 		  OpenRegister installed.
 		-->
-		<nextcloud min-version="32" max-version="34"/>
+		<nextcloud min-version="32" max-version="35"/>
 	</dependencies>
 
 	<settings>
